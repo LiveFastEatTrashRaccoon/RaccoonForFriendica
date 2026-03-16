@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -79,6 +78,7 @@ internal fun CompactTimelineItem(
 ) {
     val contentHorizontalPadding = Spacing.s
     val spoiler = entry.spoilerToDisplay.orEmpty()
+    val coreResources = remember { getCoreResources() }
 
     Column(
         modifier = modifier,
@@ -153,7 +153,7 @@ internal fun CompactTimelineItem(
                         ) {
                             Icon(
                                 modifier = Modifier.size(IconSize.s),
-                                imageVector = Icons.Default.MoreVert,
+                                imageVector = coreResources.moreVert,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onBackground,
                             )

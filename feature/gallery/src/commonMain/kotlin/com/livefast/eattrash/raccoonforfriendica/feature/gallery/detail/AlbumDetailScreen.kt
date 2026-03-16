@@ -17,9 +17,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -65,6 +62,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -85,6 +83,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val lazyGridState = rememberLazyStaggeredGridState()
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     val galleryHelper = remember { getGalleryHelper() }
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
@@ -145,7 +144,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -182,7 +181,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = coreResources.add,
                         contentDescription = LocalStrings.current.actionAddNew,
                     )
                 }
@@ -354,3 +353,6 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
 private sealed interface CustomOptions : OptionId.Custom {
     data object Move : CustomOptions
 }
+
+private const val EXPORT_LIST_MIME_TYPE = "text/plain"
+private const val EXPORT_LIST_FILE_NAME = "user_list.txt"

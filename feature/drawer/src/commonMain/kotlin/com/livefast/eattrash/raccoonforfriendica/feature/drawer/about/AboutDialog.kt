@@ -11,15 +11,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Article
-import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.Gavel
-import androidx.compose.material.icons.filled.OpenInBrowser
-import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getAppInfoRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +42,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val appInfoRepository = remember { getAppInfoRepository() }
     val appInfo by appInfoRepository.appInfo.collectAsState()
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
 
     fun handleAction(block: () -> Unit) {
         onClose?.invoke()
@@ -91,7 +84,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutChangelog,
-                        icon = Icons.AutoMirrored.Default.Article,
+                        icon = coreResources.article,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
@@ -119,7 +112,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                                 style = MaterialTheme.typography.labelLarge,
                             )
                             Icon(
-                                imageVector = Icons.Default.BugReport,
+                                imageVector = coreResources.bugReport,
                                 contentDescription = null,
                             )
                         }
@@ -127,7 +120,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 }
                 item {
                     AboutItem(
-                        icon = Icons.Default.Code,
+                        icon = coreResources.code,
                         text = LocalStrings.current.settingsAboutViewGithub,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
@@ -139,7 +132,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 }
                 item {
                     AboutItem(
-                        icon = Icons.Default.OpenInBrowser,
+                        icon = coreResources.openInBrowser,
                         text = LocalStrings.current.settingsAboutViewFriendica,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
@@ -151,7 +144,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 }
                 item {
                     AboutItem(
-                        icon = Icons.AutoMirrored.Default.Chat,
+                        icon = coreResources.chat,
                         text = LocalStrings.current.settingsAboutMatrix,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
@@ -164,7 +157,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutUserManual,
-                        icon = Icons.Default.Book,
+                        icon = coreResources.book,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
@@ -176,7 +169,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutAcknowledgements,
-                        icon = Icons.Default.VolunteerActivism,
+                        icon = coreResources.volunteerActivism,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
@@ -188,7 +181,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutLicences,
-                        icon = Icons.Default.Gavel,
+                        icon = coreResources.gavel,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {

@@ -7,11 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AspectRatio
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Zoomab
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.ImageDetailViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -69,6 +65,7 @@ fun ImageDetailScreen(
     val errorMessage = LocalStrings.current.messageGenericError
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val drawerCoordinator = remember { getDrawerCoordinator() }
+    val coreResources = remember { getCoreResources() }
     val pagerState =
         rememberPagerState(
             initialPage = initialIndex,
@@ -131,7 +128,7 @@ fun ImageDetailScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -144,7 +141,7 @@ fun ImageDetailScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Download,
+                            imageVector = coreResources.download,
                             contentDescription = LocalStrings.current.actionDownload,
                         )
                     }
@@ -154,7 +151,7 @@ fun ImageDetailScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Share,
+                            imageVector = coreResources.share,
                             contentDescription = LocalStrings.current.actionShare,
                         )
                     }
@@ -165,7 +162,7 @@ fun ImageDetailScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.AspectRatio,
+                                imageVector = coreResources.aspectRatio,
                                 contentDescription = LocalStrings.current.contentScaleTitle,
                             )
                         }

@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,6 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
@@ -86,6 +85,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -165,7 +165,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

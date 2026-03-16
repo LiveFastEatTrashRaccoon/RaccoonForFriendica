@@ -13,10 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -72,6 +68,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
@@ -100,6 +97,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
@@ -181,7 +179,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -215,7 +213,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.MoreVert,
+                                imageVector = coreResources.moreVert,
                                 contentDescription = LocalStrings.current.actionOpenOptions,
                             )
                         }
@@ -290,7 +288,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Create,
+                            imageVector = coreResources.add,
                             contentDescription = LocalStrings.current.actionAddNew,
                         )
                     }

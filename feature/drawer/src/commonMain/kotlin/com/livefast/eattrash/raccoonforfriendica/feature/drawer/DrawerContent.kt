@@ -13,21 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.automirrored.filled.ContactSupport
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Campaign
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.Drafts
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Flaky
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Tag
-import androidx.compose.material.icons.filled.TravelExplore
-import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -68,6 +53,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.about.AboutDialog
@@ -87,6 +73,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val drawerCoordinator = remember { getDrawerCoordinator() }
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     val scope = rememberCoroutineScope()
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }
@@ -154,35 +141,35 @@ fun DrawerContent(modifier: Modifier = Modifier) {
             } else {
                 DrawerShortcut(
                     title = LocalStrings.current.favoritesTitle,
-                    icon = Icons.Default.Favorite,
+                    icon = coreResources.favorite,
                     onSelect = {
                         handleAction { mainRouter.openFavorites() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.bookmarksTitle,
-                    icon = Icons.Default.Bookmarks,
+                    icon = coreResources.bookmarks,
                     onSelect = {
                         handleAction { mainRouter.openBookmarks() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followedHashtagsTitle,
-                    icon = Icons.Default.Tag,
+                    icon = coreResources.tag,
                     onSelect = {
                         handleAction { mainRouter.openFollowedHashtags() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followRequestsTitle,
-                    icon = Icons.Default.Flaky,
+                    icon = coreResources.flaky,
                     onSelect = {
                         handleAction { mainRouter.openFollowRequests() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.manageCirclesTitle,
-                    icon = Icons.Default.Workspaces,
+                    icon = coreResources.workspaces,
                     onSelect = {
                         handleAction { mainRouter.openCircles() }
                     },
@@ -190,7 +177,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasAnnouncements) {
                     DrawerShortcut(
                         title = LocalStrings.current.announcementsTitle,
-                        icon = Icons.Default.Campaign,
+                        icon = coreResources.campaign,
                         onSelect = {
                             handleAction { mainRouter.openAnnouncements() }
                         },
@@ -199,7 +186,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasDirectMessages) {
                     DrawerShortcut(
                         title = LocalStrings.current.directMessagesTitle,
-                        icon = Icons.AutoMirrored.Default.Chat,
+                        icon = coreResources.chat,
                         onSelect = {
                             handleAction { mainRouter.openDirectMessages() }
                         },
@@ -208,7 +195,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasGallery) {
                     DrawerShortcut(
                         title = LocalStrings.current.galleryTitle,
-                        icon = Icons.Default.Dashboard,
+                        icon = coreResources.dashboard,
                         onSelect = {
                             handleAction { mainRouter.openGallery() }
                         },
@@ -216,7 +203,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 }
                 DrawerShortcut(
                     title = LocalStrings.current.unpublishedTitle,
-                    icon = Icons.Default.Drafts,
+                    icon = coreResources.drafts,
                     onSelect = {
                         handleAction { mainRouter.openUnpublished() }
                     },
@@ -224,7 +211,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasCalendar) {
                     DrawerShortcut(
                         title = LocalStrings.current.calendarTitle,
-                        icon = Icons.Default.CalendarMonth,
+                        icon = coreResources.calendarMonth,
                         onSelect = {
                             handleAction { mainRouter.openCalendar() }
                         },
@@ -232,7 +219,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 }
                 DrawerShortcut(
                     title = LocalStrings.current.shortcutsTitle,
-                    icon = Icons.Default.TravelExplore,
+                    icon = coreResources.exploreFill,
                     onSelect = {
                         handleAction { mainRouter.openShortcuts() }
                     },
@@ -241,7 +228,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.nodeInfoTitle,
-                icon = Icons.Default.Info,
+                icon = coreResources.info,
                 onSelect = {
                     handleAction { mainRouter.openNodeInfo() }
                 },
@@ -251,7 +238,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.settingsAbout,
-                icon = Icons.AutoMirrored.Default.ContactSupport,
+                icon = coreResources.support,
                 onSelect = {
                     scope.launch {
                         drawerCoordinator.closeDrawer()
@@ -262,7 +249,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.settingsTitle,
-                icon = Icons.Default.Settings,
+                icon = coreResources.settings,
                 onSelect = {
                     handleAction { mainRouter.openSettings() }
                 },

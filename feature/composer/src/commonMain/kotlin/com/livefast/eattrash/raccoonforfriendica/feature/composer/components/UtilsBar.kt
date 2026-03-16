@@ -5,26 +5,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ScheduleSend
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.AddPhotoAlternate
-import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.FormatBold
-import androidx.compose.material.icons.filled.FormatItalic
-import androidx.compose.material.icons.filled.FormatStrikethrough
-import androidx.compose.material.icons.filled.FormatUnderlined
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.PublicationType
 
 @Composable
@@ -44,6 +34,8 @@ internal fun UtilsBar(
     onClickInlineImage: (() -> Unit)? = null,
     onSubmit: (() -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
+
     Row(
         modifier = modifier.padding(horizontal = Spacing.xxs),
         verticalAlignment = Alignment.CenterVertically,
@@ -60,7 +52,7 @@ internal fun UtilsBar(
                 },
             ) {
                 Icon(
-                    imageVector = Icons.Default.PhotoCamera,
+                    imageVector = coreResources.camera,
                     contentDescription = LocalStrings.current.pickFromGalleryDialogTitle,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -73,7 +65,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.AddPhotoAlternate,
+                        imageVector = coreResources.addPhotoAlternate,
                         contentDescription = LocalStrings.current.actionInsertInlineImage,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -88,7 +80,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Link,
+                        imageVector = coreResources.link,
                         contentDescription = LocalStrings.current.actionInsertLink,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -101,7 +93,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.FormatBold,
+                        imageVector = coreResources.formatBold,
                         contentDescription = LocalStrings.current.formatBold,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -114,7 +106,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.FormatItalic,
+                        imageVector = coreResources.formatItalic,
                         contentDescription = LocalStrings.current.formatItalic,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -127,7 +119,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.FormatUnderlined,
+                        imageVector = coreResources.formatUnderlined,
                         contentDescription = LocalStrings.current.formatUnderlined,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -140,7 +132,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.FormatStrikethrough,
+                        imageVector = coreResources.strikethroughS,
                         contentDescription = LocalStrings.current.formatStrikethrough,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -153,7 +145,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Code,
+                        imageVector = coreResources.code,
                         contentDescription = LocalStrings.current.formatMonospace,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -170,9 +162,9 @@ internal fun UtilsBar(
             Icon(
                 imageVector =
                 when (publicationType) {
-                    PublicationType.Draft -> Icons.Default.Save
-                    is PublicationType.Scheduled -> Icons.AutoMirrored.Default.ScheduleSend
-                    else -> Icons.AutoMirrored.Default.Send
+                    PublicationType.Draft -> coreResources.save
+                    is PublicationType.Scheduled -> coreResources.scheduleSend
+                    else -> coreResources.send
                 },
                 contentDescription = LocalStrings.current.actionSubmit,
                 tint = MaterialTheme.colorScheme.primary,

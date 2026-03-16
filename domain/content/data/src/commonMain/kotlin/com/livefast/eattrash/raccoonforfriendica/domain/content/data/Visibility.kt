@@ -1,15 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.filled.Cottage
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.LockOpen
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 
 sealed interface Visibility {
     // broadest visibility
@@ -47,14 +41,14 @@ private fun Visibility.toSortKey() = when (this) {
 }
 
 @Composable
-fun Visibility.toIcon(): ImageVector = when (this) {
-    Visibility.Direct -> Icons.Default.AlternateEmail
-    Visibility.Private -> Icons.Default.Lock
-    Visibility.Public -> Icons.Default.Public
-    Visibility.LocalPublic -> Icons.Default.Cottage
-    Visibility.Unlisted -> Icons.Default.LockOpen
-    Visibility.LocalUnlisted -> Icons.Default.Cottage
-    is Visibility.Circle -> Icons.Default.Workspaces
+fun Visibility.toIcon(coreResources: CoreResources): ImageVector = when (this) {
+    Visibility.Direct -> coreResources.alternateEmail
+    Visibility.Private -> coreResources.lock
+    Visibility.Public -> coreResources.public
+    Visibility.LocalPublic -> coreResources.cottage
+    Visibility.Unlisted -> coreResources.lockOpen
+    Visibility.LocalUnlisted -> coreResources.cottage
+    is Visibility.Circle -> coreResources.workspaces
 }
 
 @Composable

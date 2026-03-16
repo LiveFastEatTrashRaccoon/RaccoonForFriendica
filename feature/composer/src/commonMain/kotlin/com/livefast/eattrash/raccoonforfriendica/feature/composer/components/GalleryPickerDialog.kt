@@ -23,8 +23,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AlbumImageItem
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
@@ -84,6 +83,7 @@ fun GalleryPickerDialog(
     onClose: ((List<AttachmentModel>?) -> Unit)? = null,
 ) {
     val lazyGridState = rememberLazyStaggeredGridState()
+    val coreResources = remember { getCoreResources() }
     val fullColor = MaterialTheme.colorScheme.onBackground
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
@@ -192,7 +192,7 @@ fun GalleryPickerDialog(
                                     },
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.ArrowDropDown,
+                                        imageVector = coreResources.arrowDropDown,
                                         contentDescription = LocalStrings.current.actionOpenOptions,
                                     )
                                 }

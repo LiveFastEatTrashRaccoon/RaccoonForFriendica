@@ -16,10 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Campaign
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -75,6 +71,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
@@ -121,6 +118,7 @@ fun TimelineScreen(
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
     val clipboardHelper = remember { getClipboardHelper(clipboard) }
+    val coreResources = remember { getCoreResources() }
     var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -195,7 +193,7 @@ fun TimelineScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
+                            imageVector = coreResources.menu,
                             contentDescription = LocalStrings.current.actionOpenSideMenu,
                         )
                     }
@@ -228,7 +226,7 @@ fun TimelineScreen(
                                 },
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Campaign,
+                                    imageVector = coreResources.campaign,
                                     contentDescription = LocalStrings.current.announcementsTitle,
                                 )
                             }
@@ -260,7 +258,7 @@ fun TimelineScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Create,
+                            imageVector = coreResources.add,
                             contentDescription = LocalStrings.current.actionAddNew,
                         )
                     }
@@ -591,7 +589,7 @@ fun TimelineScreen(
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(),
+                            imageVector = it.toIcon(coreResources),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )

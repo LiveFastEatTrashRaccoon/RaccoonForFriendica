@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -65,6 +61,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksItem
@@ -84,6 +81,7 @@ fun ManageBlocksScreen(modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -134,7 +132,7 @@ fun ManageBlocksScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -159,7 +157,7 @@ fun ManageBlocksScreen(modifier: Modifier = Modifier) {
                                 },
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.MoreVert,
+                                    imageVector = coreResources.moreVert,
                                     contentDescription = LocalStrings.current.actionOpenOptions,
                                 )
                             }
@@ -408,7 +406,7 @@ fun ManageBlocksScreen(modifier: Modifier = Modifier) {
                         val selected = rate == changeRateLimitUser?.username?.toDoubleOrNull()
                         if (selected) {
                             Icon(
-                                imageVector = Icons.Default.RadioButtonChecked,
+                                imageVector = coreResources.radioButtonChecked,
                                 contentDescription = LocalStrings.current.itemSelected,
                             )
                         }

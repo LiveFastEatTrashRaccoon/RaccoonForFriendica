@@ -7,11 +7,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ManageAccounts
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
@@ -71,6 +67,7 @@ fun ProfileScreen(
     val scope = rememberCoroutineScope()
     val drawerCoordinator = remember { getDrawerCoordinator() }
     val navigationCoordinator = remember { getNavigationCoordinator() }
+    val coreResources = remember { getCoreResources() }
     val successMessage = LocalStrings.current.messageSuccess
     var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
@@ -115,7 +112,7 @@ fun ProfileScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Menu,
+                                imageVector = coreResources.menu,
                                 contentDescription = LocalStrings.current.actionOpenSideMenu,
                             )
                         }
@@ -127,7 +124,7 @@ fun ProfileScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.ManageAccounts,
+                                imageVector = coreResources.changeCircle,
                                 contentDescription = LocalStrings.current.actionSwitchAccount,
                             )
                         }
@@ -138,7 +135,7 @@ fun ProfileScreen(
                                 },
                             ) {
                                 Icon(
-                                    imageVector = Icons.AutoMirrored.Default.Logout,
+                                    imageVector = coreResources.logout,
                                     contentDescription = LocalStrings.current.actionLogout,
                                 )
                             }
@@ -214,7 +211,7 @@ fun ProfileScreen(
                             onClick = {},
                         ) {
                             Icon(
-                                imageVector = Icons.Default.AddCircle,
+                                imageVector = coreResources.addCircle,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }

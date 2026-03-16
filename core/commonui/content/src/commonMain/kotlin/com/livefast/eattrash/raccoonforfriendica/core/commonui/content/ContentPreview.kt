@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -34,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 
@@ -45,6 +44,7 @@ fun ContentPreview(
     onOpen: ((String) -> Unit)? = null,
     onOpenImage: ((String) -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val type = card.type
@@ -131,7 +131,7 @@ fun ContentPreview(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.PlayArrow,
+                                imageVector = coreResources.playCircle,
                                 contentDescription = LocalStrings.current.actionOpenFullScreen,
                             )
                         }

@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -46,6 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import kotlinx.coroutines.flow.launchIn
@@ -60,6 +57,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = remember { getNavigationCoordinator() }
+    val coreResources = remember { getCoreResources() }
     val genericError = LocalStrings.current.messageGenericError
 
     LaunchedEffect(model) {
@@ -101,7 +99,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -114,7 +112,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Default.Send,
+                            imageVector = coreResources.send,
                             contentDescription = LocalStrings.current.actionSubmit,
                         )
                     }
@@ -181,7 +179,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Clear,
+                                imageVector = coreResources.cancel,
                                 contentDescription = LocalStrings.current.actionClear,
                             )
                         }

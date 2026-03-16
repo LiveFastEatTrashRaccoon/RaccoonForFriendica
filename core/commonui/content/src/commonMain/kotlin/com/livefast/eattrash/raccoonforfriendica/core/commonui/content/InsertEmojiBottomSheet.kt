@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +55,7 @@ fun InsertEmojiBottomSheet(
     onInsertCustom: ((String) -> Unit)? = null,
     onClose: (() -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     val groupedEmojis = emojis.groupBy { it.category.orEmpty() }
     val categories = groupedEmojis.keys.sorted()
 
@@ -99,7 +99,7 @@ fun InsertEmojiBottomSheet(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.Send,
+                                imageVector = coreResources.send,
                                 contentDescription = LocalStrings.current.actionSubmit,
                                 tint = MaterialTheme.colorScheme.primary,
                             )

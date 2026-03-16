@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.mohamedrejeb.calf.ui.web.WebView
 import com.mohamedrejeb.calf.ui.web.rememberWebViewState
 
@@ -30,6 +29,7 @@ import com.mohamedrejeb.calf.ui.web.rememberWebViewState
 fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val drawerCoordinator = remember { getDrawerCoordinator() }
+    val coreResources = remember { getCoreResources() }
     val state = rememberWebViewState(url = url)
 
     LaunchedEffect(Unit) {
@@ -67,7 +67,7 @@ fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

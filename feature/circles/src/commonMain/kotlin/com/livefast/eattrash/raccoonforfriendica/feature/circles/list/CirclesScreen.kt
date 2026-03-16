@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -54,6 +51,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.canBeEdited
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleEditorDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleHeader
@@ -76,6 +74,7 @@ fun CirclesScreen(modifier: Modifier = Modifier) {
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     var confirmDeleteItemId by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val genericError = LocalStrings.current.messageGenericError
@@ -129,7 +128,7 @@ fun CirclesScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -156,7 +155,7 @@ fun CirclesScreen(modifier: Modifier = Modifier) {
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = coreResources.add,
                         contentDescription = LocalStrings.current.actionAddNew,
                     )
                 }

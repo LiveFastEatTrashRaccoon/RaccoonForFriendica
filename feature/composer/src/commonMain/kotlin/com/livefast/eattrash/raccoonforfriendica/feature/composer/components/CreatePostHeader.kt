@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
@@ -59,6 +58,7 @@ internal fun CreatePostHeader(
     changeVisibilityEnabled: Boolean = true,
     onChangeVisibility: ((Visibility) -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
@@ -127,7 +127,7 @@ internal fun CreatePostHeader(
             ) {
                 Icon(
                     modifier = Modifier.size(IconSize.s),
-                    imageVector = visibility.toIcon(),
+                    imageVector = visibility.toIcon(coreResources),
                     contentDescription = visibility.toReadableName(),
                 )
                 Text(
@@ -135,7 +135,7 @@ internal fun CreatePostHeader(
                 )
                 if (changeVisibilityEnabled) {
                     Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
+                        imageVector = coreResources.arrowDropDown,
                         contentDescription = LocalStrings.current.actionChangeVisibility,
                     )
                 } else {
@@ -165,7 +165,7 @@ internal fun CreatePostHeader(
                         },
                         leadingIcon = {
                             Icon(
-                                imageVector = value.toIcon(),
+                                imageVector = value.toIcon(coreResources),
                                 contentDescription = null,
                             )
                         },

@@ -6,14 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -21,6 +20,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
@@ -31,6 +31,7 @@ fun EditFieldItem(
     onDelete: (() -> Unit)? = null,
 ) {
     val focusManager = LocalFocusManager.current
+    val coreResources = remember { getCoreResources() }
 
     Column(
         modifier = modifier,
@@ -61,7 +62,7 @@ fun EditFieldItem(
             trailingIcon = {
                 IconButton(onClick = { onDelete?.invoke() }) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        imageVector = coreResources.close,
                         contentDescription = LocalStrings.current.buttonClose,
                     )
                 }

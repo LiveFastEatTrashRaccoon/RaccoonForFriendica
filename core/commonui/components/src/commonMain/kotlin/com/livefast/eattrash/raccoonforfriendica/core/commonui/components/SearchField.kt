@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
 fun SearchField(
@@ -66,6 +64,8 @@ fun SearchField(
         )
     }
     val valueChangedCallback by rememberUpdatedState(onValueChange)
+    val coreResources = remember { getCoreResources() }
+
     LaunchedEffect(textFieldValue) {
         valueChangedCallback(textFieldValue.text)
     }
@@ -106,7 +106,7 @@ fun SearchField(
                 val iconModifier = Modifier.size(IconSize.m).padding(2.5.dp)
                 Icon(
                     modifier = iconModifier,
-                    imageVector = Icons.Default.Search,
+                    imageVector = coreResources.search,
                     contentDescription = LocalStrings.current.actionSearch,
                     tint = textColor,
                 )
@@ -131,7 +131,7 @@ fun SearchField(
                         iconModifier.clickable {
                             textFieldValue = TextFieldValue()
                         },
-                        imageVector = Icons.Default.Clear,
+                        imageVector = coreResources.cancel,
                         contentDescription = LocalStrings.current.actionClear,
                         tint = textColor,
                     )

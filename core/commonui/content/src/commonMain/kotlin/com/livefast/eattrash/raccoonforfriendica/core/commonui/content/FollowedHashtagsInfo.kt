@@ -7,12 +7,11 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
@@ -20,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -31,6 +31,7 @@ internal fun FollowedHashtagsInfo(
     onOpenTag: ((TagModel) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val coreResources = remember { getCoreResources() }
 
     FlowRow(
         modifier = modifier,
@@ -39,7 +40,7 @@ internal fun FollowedHashtagsInfo(
     ) {
         Icon(
             modifier = Modifier.size(iconSize),
-            imageVector = Icons.Default.Tag,
+            imageVector = coreResources.tag,
             contentDescription = null,
             tint = ancillaryColor,
         )

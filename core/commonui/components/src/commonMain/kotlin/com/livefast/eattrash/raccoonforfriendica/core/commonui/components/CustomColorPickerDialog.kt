@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +38,7 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,9 +48,8 @@ fun CustomColorPickerDialog(
     allowManualSelection: Boolean = false,
     onClose: ((Color?) -> Unit)? = null,
 ) {
-    val controller =
-        rememberColorPickerController().apply {
-        }
+    val controller = rememberColorPickerController()
+    val coreResources = remember { getCoreResources() }
     var selectedColor by remember { mutableStateOf(initialValue) }
     var selectedColorHex by remember { mutableStateOf("") }
     var manualInputDialogOpen by remember { mutableStateOf(false) }
@@ -123,7 +121,7 @@ fun CustomColorPickerDialog(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Edit,
+                            imageVector = coreResources.edit,
                             contentDescription = LocalStrings.current.actionEdit,
                         )
                     }

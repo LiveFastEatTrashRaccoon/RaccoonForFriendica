@@ -15,9 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -75,6 +72,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTe
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
@@ -125,6 +123,7 @@ fun ComposerScreen(
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val galleryHelper = remember { getGalleryHelper() }
     val attachmentCache = remember { getAttachmentCache() }
+    val coreResources = remember { getCoreResources() }
     val focusManager = LocalFocusManager.current
     val missingDataError = LocalStrings.current.messagePostEmptyText
     val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
@@ -292,7 +291,7 @@ fun ComposerScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -415,7 +414,7 @@ fun ComposerScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.MoreVert,
+                                imageVector = coreResources.moreVert,
                                 contentDescription = LocalStrings.current.actionOpenOptions,
                             )
                         }
@@ -919,7 +918,7 @@ fun ComposerScreen(
                         trailingContent = {
                             Icon(
                                 modifier = Modifier.size(IconSize.m),
-                                imageVector = value.type.toIcon(),
+                                imageVector = value.type.toIcon(coreResources),
                                 contentDescription = value.type.toReadableName(),
                                 tint = MaterialTheme.colorScheme.onBackground,
                             )

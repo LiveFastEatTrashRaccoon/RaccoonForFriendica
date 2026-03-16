@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Abc
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledIconButton
@@ -49,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import kotlin.math.roundToInt
 
@@ -63,6 +61,7 @@ fun AlbumImageItem(
     options: List<Option> = emptyList(),
     onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
     val additionalOffset = with(LocalDensity.current) { Spacing.xl.toPx().roundToInt() }
@@ -120,7 +119,7 @@ fun AlbumImageItem(
                 ) {
                     Icon(
                         modifier = Modifier.padding(2.5.dp),
-                        imageVector = Icons.Default.MoreVert,
+                        imageVector = coreResources.moreVert,
                         contentDescription = LocalStrings.current.actionOpenOptions,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
@@ -225,7 +224,7 @@ fun AlbumImageItem(
                     ) {
                         Icon(
                             modifier = iconModifier,
-                            imageVector = Icons.Default.Abc,
+                            imageVector = coreResources.abc,
                             contentDescription = LocalStrings.current.actionShowContentDescription,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )

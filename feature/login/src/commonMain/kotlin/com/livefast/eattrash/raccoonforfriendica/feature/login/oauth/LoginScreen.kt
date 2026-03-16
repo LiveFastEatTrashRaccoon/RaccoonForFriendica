@@ -13,8 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,6 +52,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
@@ -72,6 +71,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = remember { getNavigationCoordinator() }
+    val coreResources = remember { getCoreResources() }
     val uriHandler = LocalUriHandler.current
     val focusManager = LocalFocusManager.current
     val genericError = LocalStrings.current.messageGenericError
@@ -119,7 +119,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

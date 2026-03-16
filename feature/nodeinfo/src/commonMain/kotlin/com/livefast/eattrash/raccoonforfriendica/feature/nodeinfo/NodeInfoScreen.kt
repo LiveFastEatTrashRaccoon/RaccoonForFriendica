@@ -15,13 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.filled.Api
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -66,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemP
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.launch
@@ -89,6 +83,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
@@ -124,7 +119,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -191,7 +186,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                     item {
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderGeneral,
-                            icon = Icons.Default.Info,
+                            icon = coreResources.info,
                         )
                     }
 
@@ -228,7 +223,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                         item {
                             SettingsHeader(
                                 title = LocalStrings.current.nodeInfoSectionContact,
-                                icon = Icons.Default.AlternateEmail,
+                                icon = coreResources.alternateEmail,
                             )
                             ContactUserItem(
                                 modifier =
@@ -251,7 +246,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                         item {
                             SettingsHeader(
                                 title = LocalStrings.current.nodeInfoSectionRules,
-                                icon = Icons.Default.Shield,
+                                icon = coreResources.shield,
                             )
                         }
                         items(rules) { rule ->
@@ -268,7 +263,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                     item {
                         SettingsHeader(
                             title = LocalStrings.current.itemOther,
-                            icon = Icons.Default.Api,
+                            icon = coreResources.api,
                         )
                     }
 
@@ -340,6 +335,7 @@ private fun ContactUserItem(
     onClick: (() -> Unit)? = null,
 ) {
     val avatar = user.avatar.orEmpty()
+    val coreResources = remember { getCoreResources() }
     val avatarSize = IconSize.m
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
@@ -410,7 +406,7 @@ private fun ContactUserItem(
 
             Icon(
                 modifier = Modifier.size(IconSize.s),
-                imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
+                imageVector = coreResources.chevronForward,
                 contentDescription = LocalStrings.current.actionOpenDetail,
             )
         }

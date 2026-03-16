@@ -12,11 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowCircleDown
-import androidx.compose.material.icons.filled.ArrowCircleUp
-import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.prettifyHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -48,6 +45,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
     val sourceProtocol = entry.sourceProtocol.orEmpty()
     val creationDate = entry.created.orEmpty()
     val updateDate = entry.updated.orEmpty()
+    val coreResources = remember { getCoreResources() }
 
     BasicAlertDialog(
         modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
@@ -106,7 +104,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             )
                             Icon(
                                 modifier = Modifier.size(IconSize.s),
-                                imageVector = entry.visibility.toIcon(),
+                                imageVector = entry.visibility.toIcon(coreResources),
                                 contentDescription = entry.visibility.toReadableName(),
                                 tint = fullColor,
                             )
@@ -195,7 +193,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             ) {
                                 Icon(
                                     modifier = Modifier.size(IconSize.m).padding(0.25.dp),
-                                    imageVector = Icons.Default.Update,
+                                    imageVector = coreResources.update,
                                     contentDescription = LocalStrings.current.updateDate,
                                     tint = fullColor,
                                 )
@@ -220,7 +218,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             ) {
                                 Icon(
                                     modifier = Modifier.size(IconSize.m).padding(2.dp),
-                                    imageVector = Icons.Default.Schedule,
+                                    imageVector = coreResources.schedule,
                                     contentDescription = LocalStrings.current.creationDate,
                                     tint = fullColor,
                                 )
@@ -244,7 +242,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                         ) {
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
-                                imageVector = Icons.Default.ArrowCircleUp,
+                                imageVector = coreResources.arrowCircleUp,
                                 contentDescription =
                                 LocalStrings.current.extendedSocialInfoFavorites(entry.favoriteCount),
                                 tint = fullColor,
@@ -257,7 +255,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             Spacer(modifier = Modifier.weight(1f))
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
-                                imageVector = Icons.Default.ArrowCircleDown,
+                                imageVector = coreResources.arrowCircleDown,
                                 contentDescription =
                                 LocalStrings.current.dislikesCount(entry.dislikesCount),
                                 tint = fullColor,
