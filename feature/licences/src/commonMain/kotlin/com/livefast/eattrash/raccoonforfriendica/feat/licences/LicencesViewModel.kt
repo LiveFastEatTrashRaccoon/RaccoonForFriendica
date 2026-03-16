@@ -136,9 +136,9 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                     this +=
                         LicenceItem(
                             type = LicenceItemType.Resource,
-                            title = "Material Design Icons",
-                            subtitle = "A set of icons by Google",
-                            url = LicenceUrls.MATERIAL_ICONS,
+                            title = "Material Symbols",
+                            subtitle = "An icon set by Google",
+                            url = LicenceUrls.MATERIAL_SYMBOLS,
                         )
                     this +=
                         LicenceItem(

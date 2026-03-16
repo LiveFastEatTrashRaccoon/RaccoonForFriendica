@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
@@ -86,6 +83,8 @@ private fun FakeAudioPlayerComposable(
     onPlay: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val coreResources = remember { getCoreResources() }
+
     Box(
         modifier = modifier.background(audioPlayerConfig.backgroundColor),
     ) {
@@ -120,7 +119,7 @@ private fun FakeAudioPlayerComposable(
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            imageVector = Icons.Default.MusicNote,
+                            imageVector = coreResources.musicNote,
                             contentDescription = "",
                             tint = Color.White,
                             modifier = Modifier.fillMaxSize(0.8f), // Scale down the icon size
@@ -200,7 +199,7 @@ private fun FakeAudioPlayerComposable(
                             onClick = onPlay,
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.PlayArrow,
+                                imageVector = coreResources.playArrow,
                                 contentDescription = LocalStrings.current.actionPlay,
                                 tint = audioPlayerConfig.iconsTintColor,
                                 modifier = Modifier.fillMaxSize(),

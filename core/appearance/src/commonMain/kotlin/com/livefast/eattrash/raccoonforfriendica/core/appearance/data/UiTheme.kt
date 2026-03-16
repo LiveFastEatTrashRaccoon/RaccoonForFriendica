@@ -1,13 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.data
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Smartphone
-import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 
 sealed interface UiTheme {
     data object Light : UiTheme
@@ -41,9 +38,10 @@ fun UiTheme?.toReadableName(): String = when (this) {
     else -> LocalStrings.current.systemDefault
 }
 
-fun UiTheme.toIcon(): ImageVector = when (this) {
-    UiTheme.Black -> Icons.Default.DarkMode
-    UiTheme.Dark -> Icons.Outlined.DarkMode
-    UiTheme.Light -> Icons.Default.LightMode
-    else -> Icons.Default.Smartphone
+@Composable
+fun UiTheme.toIcon(coreResources: CoreResources): ImageVector = when (this) {
+    UiTheme.Black -> coreResources.darkModeFill
+    UiTheme.Dark -> coreResources.darkMode
+    UiTheme.Light -> coreResources.lightMode
+    else -> coreResources.computer
 }

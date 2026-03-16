@@ -4,9 +4,9 @@ import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +53,7 @@ fun SectionSelector(
             Modifier
         }
     if (scrollable) {
-        ScrollableTabRow(
+        PrimaryScrollableTabRow(
             modifier = modifier,
             selectedTabIndex = currentSection,
             edgePadding = Spacing.xs,
@@ -78,7 +78,7 @@ fun SectionSelector(
             },
         )
     } else {
-        TabRow(
+        PrimaryTabRow(
             modifier = modifier,
             selectedTabIndex = currentSection,
             tabs = {

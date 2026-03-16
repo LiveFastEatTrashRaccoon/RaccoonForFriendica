@@ -11,9 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -66,6 +63,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
@@ -108,6 +106,7 @@ fun ExploreScreen(
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
     val clipboardHelper = remember { getClipboardHelper(clipboard) }
+    val coreResources = remember { getCoreResources() }
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
@@ -171,7 +170,7 @@ fun ExploreScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
+                            imageVector = coreResources.menu,
                             contentDescription = LocalStrings.current.actionOpenSideMenu,
                         )
                     }
@@ -185,7 +184,7 @@ fun ExploreScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = coreResources.search,
                                 contentDescription = LocalStrings.current.actionSearch,
                             )
                         }

@@ -12,10 +12,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Abc
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import kotlin.math.roundToInt
 
 @Composable
@@ -62,6 +59,7 @@ fun ContentImage(
     onClick: (() -> Unit)? = null,
     centerComposable: (@Composable () -> Unit) = {},
 ) {
+    val coreResources = remember { getCoreResources() }
     var revealing by remember { mutableStateOf(!sensitive) }
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
@@ -179,7 +177,7 @@ fun ContentImage(
                     ) {
                         Icon(
                             modifier = iconModifier,
-                            imageVector = Icons.Default.Abc,
+                            imageVector = coreResources.abc,
                             contentDescription = LocalStrings.current.actionShowContentDescription,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -196,9 +194,9 @@ fun ContentImage(
                         modifier = iconModifier,
                         imageVector =
                         if (revealing) {
-                            Icons.Default.VisibilityOff
+                            coreResources.visibilityOff
                         } else {
-                            Icons.Default.Visibility
+                            coreResources.visibility
                         },
                         contentDescription = LocalStrings.current.actionToggleReveal,
                         tint = MaterialTheme.colorScheme.onBackground,

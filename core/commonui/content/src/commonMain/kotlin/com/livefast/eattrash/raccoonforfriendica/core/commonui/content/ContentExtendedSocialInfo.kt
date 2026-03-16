@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
 fun ContentExtendedSocialInfo(
@@ -31,6 +30,8 @@ fun ContentExtendedSocialInfo(
     onOpenUsersReblog: (() -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val coreResources = remember { getCoreResources() }
+
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
@@ -50,7 +51,7 @@ fun ContentExtendedSocialInfo(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.s),
-                imageVector = Icons.Default.Repeat,
+                imageVector = coreResources.repeat,
                 contentDescription = null,
                 tint = ancillaryColor,
             )
@@ -79,7 +80,7 @@ fun ContentExtendedSocialInfo(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.s),
-                imageVector = Icons.Default.FavoriteBorder,
+                imageVector = coreResources.favorite,
                 contentDescription = null,
                 tint = ancillaryColor,
             )

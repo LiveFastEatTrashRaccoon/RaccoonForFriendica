@@ -2,11 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.bottomnavigation
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Article
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -22,6 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
 internal fun RowScope.BottomNavigationItem(
@@ -30,6 +27,7 @@ internal fun RowScope.BottomNavigationItem(
     onClick: (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val coreResources = remember { getCoreResources() }
 
     NavigationBarItem(
         onClick = {
@@ -54,7 +52,7 @@ internal fun RowScope.BottomNavigationItem(
                 },
             ) {
                 Icon(
-                    imageVector = section.toIcon(),
+                    imageVector = section.toIcon(coreResources),
                     contentDescription = null,
                 )
             }
@@ -70,11 +68,12 @@ internal fun RowScope.BottomNavigationItem(
     )
 }
 
-private fun BottomNavigationSection.toIcon(): ImageVector = when (this) {
-    BottomNavigationSection.Explore -> Icons.Default.Explore
-    BottomNavigationSection.Home -> Icons.AutoMirrored.Default.Article
-    is BottomNavigationSection.Inbox -> Icons.Default.Inbox
-    BottomNavigationSection.Profile -> Icons.Default.AccountCircle
+@Composable
+private fun BottomNavigationSection.toIcon(coreResources: CoreResources): ImageVector = when (this) {
+    BottomNavigationSection.Explore -> coreResources.exploreFill
+    BottomNavigationSection.Home -> coreResources.homeFill
+    is BottomNavigationSection.Inbox -> coreResources.inboxFill
+    BottomNavigationSection.Profile -> coreResources.accountCircleFill
 }
 
 @Composable

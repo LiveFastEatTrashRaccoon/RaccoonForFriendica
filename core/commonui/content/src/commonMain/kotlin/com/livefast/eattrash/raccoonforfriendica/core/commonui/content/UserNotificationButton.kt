@@ -10,9 +10,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.getNextAction
@@ -25,6 +27,8 @@ fun UserNotificationButton(
     pending: Boolean = false,
     onClick: ((NotificationStatusNextAction) -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
+
     Box(
         modifier = modifier,
     ) {
@@ -36,7 +40,7 @@ fun UserNotificationButton(
                 },
             ) {
                 Icon(
-                    imageVector = status.toIcon(),
+                    imageVector = status.toIcon(coreResources),
                     contentDescription =
                     when (status) {
                         NotificationStatus.Disabled -> "Notifications disabled"

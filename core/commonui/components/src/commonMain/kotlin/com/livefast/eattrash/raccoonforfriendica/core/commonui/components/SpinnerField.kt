@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,6 +32,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
 fun SpinnerField(
@@ -48,6 +47,7 @@ fun SpinnerField(
     values: List<Pair<String, String>> = emptyList(),
     onValueChange: ((String) -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     val focusRequester = remember { FocusRequester() }
     var readOnly by remember { mutableStateOf(true) }
     var expanded by remember { mutableStateOf(false) }
@@ -80,7 +80,7 @@ fun SpinnerField(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
+                            imageVector = coreResources.arrowDropDown,
                             contentDescription = LocalStrings.current.actionSelect,
                         )
                     }

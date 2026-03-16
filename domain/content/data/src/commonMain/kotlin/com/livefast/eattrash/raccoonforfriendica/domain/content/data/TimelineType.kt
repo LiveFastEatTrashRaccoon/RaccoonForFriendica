@@ -1,13 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Cottage
-import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.TravelExplore
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 
 sealed interface TimelineType {
     data object All : TimelineType
@@ -47,10 +43,10 @@ fun Int.toTimelineType(): TimelineType = when (this) {
 }
 
 @Composable
-fun TimelineType.toIcon(): ImageVector = when (this) {
-    TimelineType.All -> Icons.Default.Public
-    TimelineType.Local -> Icons.Default.Cottage
-    TimelineType.Subscriptions -> Icons.Default.Book
-    is TimelineType.Circle -> (circle?.type ?: CircleType.Other).toIcon()
-    is TimelineType.Foreign -> Icons.Default.TravelExplore
+fun TimelineType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
+    TimelineType.All -> coreResources.public
+    TimelineType.Local -> coreResources.cottage
+    TimelineType.Subscriptions -> coreResources.book
+    is TimelineType.Circle -> (circle?.type ?: CircleType.Other).toIcon(coreResources)
+    is TimelineType.Foreign -> coreResources.exploreFill
 }

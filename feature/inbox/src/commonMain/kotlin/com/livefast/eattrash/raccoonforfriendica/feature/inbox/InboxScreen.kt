@@ -12,10 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DoneAll
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -78,6 +75,7 @@ fun InboxScreen(
     val mainRouter = remember { getMainRouter() }
     val scope = rememberCoroutineScope()
     val drawerCoordinator = remember { getDrawerCoordinator() }
+    val coreResources = remember { getCoreResources() }
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDismissAllDialogOpen by remember { mutableStateOf(false) }
@@ -130,7 +128,7 @@ fun InboxScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
+                            imageVector = coreResources.menu,
                             contentDescription = LocalStrings.current.actionOpenSideMenu,
                         )
                     }
@@ -143,7 +141,7 @@ fun InboxScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.FilterList,
+                                imageVector = coreResources.filterList,
                                 contentDescription = LocalStrings.current.actionFilter,
                             )
                         }
@@ -159,7 +157,7 @@ fun InboxScreen(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = Icons.Default.DoneAll,
+                                    imageVector = coreResources.doneAll,
                                     contentDescription = LocalStrings.current.actionDismissAllNotifications,
                                 )
                             }

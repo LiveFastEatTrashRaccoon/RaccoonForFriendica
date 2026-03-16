@@ -9,20 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Loop
-import androidx.compose.material.icons.filled.PersonAdd
-import androidx.compose.material.icons.filled.Poll
-import androidx.compose.material.icons.filled.PostAdd
-import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +30,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -57,6 +51,7 @@ internal fun NotificationItem(
     onClickUserRelationship: ((String, RelationshipStatusNextAction) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val coreResources = remember { getCoreResources() }
     val entry = notification.entry
     val user = notification.user
     val contentHorizontalPadding = Spacing.xs
@@ -72,7 +67,7 @@ internal fun NotificationItem(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.s).padding(1.dp),
-                imageVector = notification.type.toIcon(),
+                imageVector = notification.type.toIcon(coreResources),
                 contentDescription = null,
                 tint = ancillaryColor,
             )
@@ -191,14 +186,14 @@ private fun NotificationType.toReadableName(): String = when (this) {
 }
 
 @Composable
-private fun NotificationType.toIcon(): ImageVector = when (this) {
-    NotificationType.Entry -> Icons.Default.PostAdd
-    NotificationType.Favorite -> Icons.Default.Favorite
-    NotificationType.Follow -> Icons.Default.PersonAdd
-    NotificationType.FollowRequest -> Icons.Default.PersonAdd
-    NotificationType.Mention -> Icons.Default.ChatBubble
-    NotificationType.Poll -> Icons.Default.Poll
-    NotificationType.Reblog -> Icons.Default.Loop
-    NotificationType.Update -> Icons.Default.Edit
-    NotificationType.Unknown -> Icons.Default.QuestionMark
+private fun NotificationType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
+    NotificationType.Entry -> coreResources.postAdd
+    NotificationType.Favorite -> coreResources.favoriteFill
+    NotificationType.Follow -> coreResources.personAdd
+    NotificationType.FollowRequest -> coreResources.personAdd
+    NotificationType.Mention -> coreResources.alternateEmail
+    NotificationType.Poll -> coreResources.barChart
+    NotificationType.Reblog -> coreResources.rocketLaunchFill
+    NotificationType.Update -> coreResources.edit
+    NotificationType.Unknown -> coreResources.notifications
 }

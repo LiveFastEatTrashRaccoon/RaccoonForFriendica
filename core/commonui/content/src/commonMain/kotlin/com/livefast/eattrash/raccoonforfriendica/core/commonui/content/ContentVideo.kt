@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -25,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
 fun ContentVideo(
@@ -35,6 +34,7 @@ fun ContentVideo(
     onClick: (() -> Unit)? = null,
 ) {
     var shouldBeRendered by remember { mutableStateOf(autoload) }
+    val coreResources = remember { getCoreResources() }
 
     Box(
         modifier = modifier.fillMaxWidth(),
@@ -64,7 +64,7 @@ fun ContentVideo(
                 },
             ) {
                 Icon(
-                    imageVector = Icons.Default.PlayArrow,
+                    imageVector = coreResources.playCircle,
                     contentDescription = LocalStrings.current.actionOpenFullScreen,
                 )
             }

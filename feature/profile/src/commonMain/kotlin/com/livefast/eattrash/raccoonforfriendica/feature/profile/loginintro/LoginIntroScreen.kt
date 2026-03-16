@@ -17,9 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +57,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
@@ -103,6 +101,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
         )
         PlatformLink(
             title = LocalStrings.current.moreInfo,
+            resources = resources,
             onClick = {
                 moreInfoBottomSheetOpened = true
             },
@@ -127,6 +126,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
 
         PlatformLink(
             title = LocalStrings.current.helpMeChooseAnInstance,
+            resources = resources,
             onClick = {
                 uriHandler.openExternally(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
             },
@@ -175,6 +175,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
         }
         PlatformLink(
             title = LocalStrings.current.helpMeChooseAnInstance,
+            resources = resources,
             onClick = {
                 uriHandler.openExternally(LoginIntroLinks.MASTODON_INSTANCE_HELP)
             },
@@ -218,6 +219,7 @@ private fun PlatformHeader(
     painter: Painter? = null,
     onClickInfo: (() -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     val fullColor = MaterialTheme.colorScheme.onBackground
 
     Row(
@@ -255,7 +257,7 @@ private fun PlatformHeader(
                         .clickable {
                             onClickInfo()
                         },
-                imageVector = Icons.Default.Info,
+                imageVector = coreResources.info,
                 contentDescription = LocalStrings.current.moreInfo,
             )
         }
@@ -265,6 +267,7 @@ private fun PlatformHeader(
 @Composable
 private fun PlatformLink(
     title: String,
+    resources: CoreResources,
     modifier: Modifier = Modifier,
     underline: Boolean = true,
     onClick: (() -> Unit)? = null,
@@ -313,7 +316,7 @@ private fun PlatformLink(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.MoreVert,
+                        imageVector = resources.moreVert,
                         contentDescription = LocalStrings.current.itemOther,
                         tint = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
                     )

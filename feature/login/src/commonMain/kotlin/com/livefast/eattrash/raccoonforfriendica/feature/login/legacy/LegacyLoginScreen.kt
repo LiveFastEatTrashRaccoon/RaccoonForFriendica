@@ -17,10 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.autofill
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
@@ -76,6 +73,7 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = remember { getNavigationCoordinator() }
+    val coreResources = remember { getCoreResources() }
     val genericError = LocalStrings.current.messageGenericError
     val successMessage = LocalStrings.current.messageSuccess
     val focusManager = LocalFocusManager.current
@@ -123,7 +121,7 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -299,9 +297,9 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
                         },
                         imageVector =
                         if (transformation == VisualTransformation.None) {
-                            Icons.Default.VisibilityOff
+                            coreResources.visibilityOff
                         } else {
-                            Icons.Default.Visibility
+                            coreResources.visibility
                         },
                         contentDescription = LocalStrings.current.actionToggleReveal,
                         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),

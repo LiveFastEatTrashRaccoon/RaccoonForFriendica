@@ -6,15 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -26,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 
@@ -39,6 +38,7 @@ internal fun PollForm(
     onEditOption: ((Int, String) -> Unit)? = null,
     onEditExpirationDate: (() -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     val focusManager = LocalFocusManager.current
 
     Row(
@@ -63,7 +63,7 @@ internal fun PollForm(
                 },
             ) {
                 Icon(
-                    imageVector = Icons.Default.AddCircle,
+                    imageVector = coreResources.addCircle,
                     contentDescription = LocalStrings.current.actionAddNew,
                 )
             }
@@ -111,7 +111,7 @@ internal fun PollForm(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        imageVector = coreResources.close,
                         contentDescription = LocalStrings.current.buttonClose,
                     )
                 }

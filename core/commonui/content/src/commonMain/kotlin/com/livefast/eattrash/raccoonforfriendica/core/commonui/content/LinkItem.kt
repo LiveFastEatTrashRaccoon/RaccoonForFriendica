@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 
 @Composable
@@ -172,6 +171,8 @@ fun LinkItem(
 
 @Composable
 private fun UrlBanner(url: String, modifier: Modifier = Modifier) {
+    val coreResources = remember { getCoreResources() }
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -185,7 +186,7 @@ private fun UrlBanner(url: String, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.labelMedium,
         )
         Icon(
-            imageVector = Icons.Default.Link,
+            imageVector = coreResources.link,
             contentDescription = LocalStrings.current.actionOpenLink,
         )
     }

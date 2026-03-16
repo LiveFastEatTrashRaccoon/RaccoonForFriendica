@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -41,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
@@ -157,6 +156,8 @@ private fun PollCardOption(
     onVote: (() -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(CornerSize.xl)
+    val coreResources = remember { getCoreResources() }
+
     Row(
         modifier =
         modifier
@@ -217,7 +218,7 @@ private fun PollCardOption(
                     Modifier
                         .padding(Spacing.xxs)
                         .fillMaxSize(),
-                    imageVector = Icons.Default.Check,
+                    imageVector = coreResources.check,
                     contentDescription = LocalStrings.current.highestScore,
                 )
             }

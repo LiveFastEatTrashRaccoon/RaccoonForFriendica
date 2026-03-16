@@ -18,9 +18,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -61,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
@@ -87,6 +85,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    val coreResources = remember { getCoreResources() }
     val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username } ?: ""
     val genericError = LocalStrings.current.messageGenericError
     val followRequiredMessage = LocalStrings.current.followRequiredMessage
@@ -168,7 +167,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -220,7 +219,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Default.Send,
+                        imageVector = coreResources.send,
                         contentDescription = LocalStrings.current.actionSubmit,
                     )
                 }

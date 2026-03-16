@@ -16,14 +16,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.BuildCircle
-import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,6 +74,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsS
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import kotlinx.coroutines.flow.launchIn
@@ -100,6 +93,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val galleryHelper = remember { getGalleryHelper() }
+    val coreResources = remember { getCoreResources() }
     val uriHandler = LocalUriHandler.current
     val genericError = LocalStrings.current.messageGenericError
     val messageSuccess = LocalStrings.current.messageSuccess
@@ -168,7 +162,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -208,7 +202,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                                 },
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.MoreVert,
+                                    imageVector = coreResources.moreVert,
                                     contentDescription = LocalStrings.current.actionOpenOptions,
                                 )
                             }
@@ -292,7 +286,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
         ) {
             item {
                 SettingsHeader(
-                    icon = Icons.Default.AccountCircle,
+                    icon = coreResources.accountCircleFill,
                     title = LocalStrings.current.editProfileSectionPersonal,
                 )
             }
@@ -359,7 +353,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
 
             item {
                 SettingsHeader(
-                    icon = Icons.Default.Camera,
+                    icon = coreResources.image,
                     title = LocalStrings.current.editProfileSectionImages,
                 )
             }
@@ -395,7 +389,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
 
             item {
                 SettingsHeader(
-                    icon = Icons.Default.ViewAgenda,
+                    icon = coreResources.viewAgenda,
                     title = LocalStrings.current.editProfileSectionFields,
                     rightButton = {
                         IconButton(
@@ -405,7 +399,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Default.AddCircle,
+                                imageVector = coreResources.addCircle,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
@@ -432,7 +426,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             }
             item {
                 SettingsHeader(
-                    icon = Icons.Default.BuildCircle,
+                    icon = coreResources.buildCircle,
                     title = LocalStrings.current.editProfileSectionFlags,
                 )
             }

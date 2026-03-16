@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +33,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentTi
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 
 @Composable
@@ -46,6 +45,7 @@ fun CalendarRow(
     onClick: (() -> Unit)? = null,
     onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
+    val coreResources = remember { getCoreResources() }
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
 
@@ -87,7 +87,7 @@ fun CalendarRow(
                     ) {
                         Icon(
                             modifier = Modifier.size(IconSize.s),
-                            imageVector = Icons.Default.MoreVert,
+                            imageVector = coreResources.moreVert,
                             contentDescription = LocalStrings.current.actionOpenOptions,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )

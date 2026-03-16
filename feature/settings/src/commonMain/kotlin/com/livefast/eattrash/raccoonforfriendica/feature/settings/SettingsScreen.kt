@@ -12,13 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Explicit
-import androidx.compose.material.icons.filled.Handyman
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -171,7 +164,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -207,7 +200,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // General section
                     SettingsHeader(
                         title = LocalStrings.current.settingsHeaderGeneral,
-                        icon = Icons.Default.Settings,
+                        icon = coreResources.settings,
                     )
                     SettingsRow(
                         title = LocalStrings.current.settingsItemLanguage,
@@ -372,7 +365,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // Look & feel section
                     SettingsHeader(
                         title = LocalStrings.current.settingsHeaderLookAndFeel,
-                        icon = Icons.Default.Style,
+                        icon = coreResources.style,
                     )
                     SettingsRow(
                         title = LocalStrings.current.settingsItemTimelineLayout,
@@ -456,7 +449,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
                     // NSFW section
                     SettingsHeader(
-                        icon = Icons.Default.Explicit,
+                        icon = coreResources.explicit,
                         title = LocalStrings.current.settingsHeaderNsfw,
                     )
                     if (uiState.isLogged) {
@@ -485,7 +478,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
                     // Debug section
                     SettingsHeader(
-                        icon = Icons.Default.BugReport,
+                        icon = coreResources.bugReport,
                         title = LocalStrings.current.settingsSectionDebug,
                     )
                     SettingsSwitchRow(
@@ -505,7 +498,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // Other section
                     if (uiState.supportSettingsImportExport) {
                         SettingsHeader(
-                            icon = Icons.Default.Handyman,
+                            icon = coreResources.handyman,
                             title = LocalStrings.current.itemOther,
                         )
                         SettingsRow(
@@ -569,7 +562,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = theme.toIcon(),
+                            imageVector = theme.toIcon(coreResources),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -738,7 +731,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(),
+                            imageVector = it.toIcon(coreResources),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -781,7 +774,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(),
+                            imageVector = it.toIcon(coreResources),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -809,7 +802,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(),
+                            imageVector = it.toIcon(coreResources),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )

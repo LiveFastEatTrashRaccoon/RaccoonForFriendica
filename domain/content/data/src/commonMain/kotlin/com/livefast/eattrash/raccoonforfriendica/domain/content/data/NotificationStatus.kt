@@ -1,9 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 
 sealed interface NotificationStatus {
     data object Enabled : NotificationStatus
@@ -17,7 +16,8 @@ fun RelationshipModel.toNotificationStatus(): NotificationStatus? = when {
     else -> NotificationStatus.Disabled
 }
 
-fun NotificationStatus.toIcon(): ImageVector = when (this) {
-    NotificationStatus.Disabled -> Icons.Outlined.Notifications
-    NotificationStatus.Enabled -> Icons.Default.NotificationsActive
+@Composable
+fun NotificationStatus.toIcon(coreResources: CoreResources): ImageVector = when (this) {
+    NotificationStatus.Disabled -> coreResources.notifications
+    NotificationStatus.Enabled -> coreResources.notificationsActive
 }

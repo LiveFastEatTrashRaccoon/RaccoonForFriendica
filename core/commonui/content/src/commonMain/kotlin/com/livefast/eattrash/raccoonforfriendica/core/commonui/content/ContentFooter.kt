@@ -8,19 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Reply
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.RocketLaunch
-import androidx.compose.material.icons.filled.ThumbDown
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.outlined.RocketLaunch
-import androidx.compose.material.icons.outlined.ThumbDown
-import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -47,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 
 @Composable
 fun ContentFooter(
@@ -76,6 +64,7 @@ fun ContentFooter(
     val canLikeAndDislike = onFavorite != null && onDislike != null
     val itemModifier = Modifier.clearAndSetSemantics { }.padding(horizontal = Spacing.s)
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+    val coreResources = remember { getCoreResources() }
 
     Row(
         modifier =
@@ -89,7 +78,7 @@ fun ContentFooter(
         if (onReply != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = Icons.AutoMirrored.Default.Reply,
+                icon = coreResources.reply,
                 contentDescription = null,
                 value = replyCount,
                 onClick = onReply,
@@ -98,8 +87,8 @@ fun ContentFooter(
         if (onReblog != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = Icons.Outlined.RocketLaunch,
-                toggledIcon = Icons.Filled.RocketLaunch,
+                icon = coreResources.rocketLaunch,
+                toggledIcon = coreResources.rocketLaunchFill,
                 contentDescription = null,
                 value = reblogCount,
                 toggled = reblogged,
@@ -112,15 +101,15 @@ fun ContentFooter(
                 modifier = itemModifier,
                 icon =
                 if (canLikeAndDislike) {
-                    Icons.Outlined.ThumbUp
+                    coreResources.thumbUp
                 } else {
-                    Icons.Default.FavoriteBorder
+                    coreResources.favorite
                 },
                 toggledIcon =
                 if (canLikeAndDislike) {
-                    Icons.Default.ThumbUp
+                    coreResources.thumbUpFill
                 } else {
-                    Icons.Default.Favorite
+                    coreResources.favoriteFill
                 },
                 contentDescription = null,
                 value = favoriteCount,
@@ -132,8 +121,8 @@ fun ContentFooter(
         if (onDislike != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = Icons.Outlined.ThumbDown,
-                toggledIcon = Icons.Default.ThumbDown,
+                icon = coreResources.thumbDown,
+                toggledIcon = coreResources.thumbDownFill,
                 contentDescription = null,
                 value = dislikeCount,
                 toggled = disliked,
@@ -144,8 +133,8 @@ fun ContentFooter(
         if (onBookmark != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = Icons.Default.BookmarkBorder,
-                toggledIcon = Icons.Default.Bookmark,
+                icon = coreResources.bookmark,
+                toggledIcon = coreResources.bookmarkFill,
                 contentDescription = null,
                 toggled = bookmarked,
                 loading = bookmarkLoading,
@@ -181,7 +170,7 @@ fun ContentFooter(
                 ) {
                     Icon(
                         modifier = Modifier.size(IconSize.s),
-                        imageVector = Icons.Default.MoreVert,
+                        imageVector = coreResources.moreVert,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )

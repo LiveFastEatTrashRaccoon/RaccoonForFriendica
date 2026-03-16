@@ -1,13 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 
 sealed interface CircleType {
     data object UserDefined : CircleType
@@ -20,11 +16,11 @@ sealed interface CircleType {
 }
 
 @Composable
-fun CircleType.toIcon(): ImageVector = when (this) {
-    CircleType.Group -> Icons.Default.Group
-    CircleType.Predefined -> Icons.Default.Lightbulb
-    CircleType.UserDefined -> Icons.Default.Workspaces
-    CircleType.Other -> Icons.Default.Circle
+fun CircleType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
+    CircleType.Group -> coreResources.group
+    CircleType.Predefined -> coreResources.lightbulb
+    CircleType.UserDefined -> coreResources.workspaces
+    CircleType.Other -> coreResources.circle
 }
 
 @Composable

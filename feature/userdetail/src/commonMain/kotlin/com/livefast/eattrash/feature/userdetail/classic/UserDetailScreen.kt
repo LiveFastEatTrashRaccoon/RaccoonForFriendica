@@ -16,11 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Reply
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -90,6 +85,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadabl
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
@@ -124,6 +120,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val uriHandler = LocalUriHandler.current
     val mainRouter = remember { getMainRouter() }
+    val coreResources = remember { getCoreResources() }
     val lazyListState = rememberLazyListState()
     val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
@@ -219,7 +216,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -294,7 +291,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                             ) {
                                 Icon(
                                     modifier = Modifier.size(IconSize.s),
-                                    imageVector = Icons.Default.MoreVert,
+                                    imageVector = coreResources.moreVert,
                                     contentDescription = LocalStrings.current.actionOpenOptions,
                                 )
                             }
@@ -409,7 +406,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Default.Reply,
+                        imageVector = coreResources.reply,
                         contentDescription = LocalStrings.current.actionReply,
                     )
                 }
@@ -951,7 +948,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                             rate == uiState.rateLimit?.rate || (rate >= 1 && uiState.rateLimit == null)
                         if (selected) {
                             Icon(
-                                imageVector = Icons.Default.RadioButtonChecked,
+                                imageVector = coreResources.radioButtonChecked,
                                 contentDescription = LocalStrings.current.itemSelected,
                             )
                         }
