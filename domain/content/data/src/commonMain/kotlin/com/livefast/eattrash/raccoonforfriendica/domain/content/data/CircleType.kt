@@ -19,7 +19,7 @@ sealed interface CircleType {
 fun CircleType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
     CircleType.Group -> coreResources.group
     CircleType.Predefined -> coreResources.lightbulb
-    CircleType.UserDefined -> coreResources.workspaces
+    CircleType.UserDefined -> coreResources.workspacesFill
     CircleType.Other -> coreResources.circle
 }
 

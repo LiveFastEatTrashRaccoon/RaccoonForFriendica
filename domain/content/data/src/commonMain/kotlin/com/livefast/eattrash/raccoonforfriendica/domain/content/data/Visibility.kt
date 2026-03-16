@@ -48,7 +48,7 @@ fun Visibility.toIcon(coreResources: CoreResources): ImageVector = when (this) {
     Visibility.LocalPublic -> coreResources.cottage
     Visibility.Unlisted -> coreResources.lockOpen
     Visibility.LocalUnlisted -> coreResources.cottage
-    is Visibility.Circle -> coreResources.workspaces
+    is Visibility.Circle -> coreResources.workspacesFill
 }
 
 @Composable

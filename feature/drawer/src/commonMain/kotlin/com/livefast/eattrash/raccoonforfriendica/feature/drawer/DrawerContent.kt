@@ -141,14 +141,14 @@ fun DrawerContent(modifier: Modifier = Modifier) {
             } else {
                 DrawerShortcut(
                     title = LocalStrings.current.favoritesTitle,
-                    icon = coreResources.favorite,
+                    icon = coreResources.favoriteFill,
                     onSelect = {
                         handleAction { mainRouter.openFavorites() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.bookmarksTitle,
-                    icon = coreResources.bookmarks,
+                    icon = coreResources.bookmarksFill,
                     onSelect = {
                         handleAction { mainRouter.openBookmarks() }
                     },
@@ -169,7 +169,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.manageCirclesTitle,
-                    icon = coreResources.workspaces,
+                    icon = coreResources.workspacesFill,
                     onSelect = {
                         handleAction { mainRouter.openCircles() }
                     },
@@ -186,7 +186,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasDirectMessages) {
                     DrawerShortcut(
                         title = LocalStrings.current.directMessagesTitle,
-                        icon = coreResources.chat,
+                        icon = coreResources.chatFill,
                         onSelect = {
                             handleAction { mainRouter.openDirectMessages() }
                         },
@@ -203,7 +203,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 }
                 DrawerShortcut(
                     title = LocalStrings.current.unpublishedTitle,
-                    icon = coreResources.drafts,
+                    icon = coreResources.stylusFountainPenFill,
                     onSelect = {
                         handleAction { mainRouter.openUnpublished() }
                     },
@@ -211,7 +211,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasCalendar) {
                     DrawerShortcut(
                         title = LocalStrings.current.calendarTitle,
-                        icon = coreResources.calendarMonth,
+                        icon = coreResources.calendarMonthFill,
                         onSelect = {
                             handleAction { mainRouter.openCalendar() }
                         },
@@ -228,7 +228,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.nodeInfoTitle,
-                icon = coreResources.info,
+                icon = coreResources.dnsFill,
                 onSelect = {
                     handleAction { mainRouter.openNodeInfo() }
                 },
@@ -249,7 +249,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.settingsTitle,
-                icon = coreResources.settings,
+                icon = coreResources.settingsFill,
                 onSelect = {
                     handleAction { mainRouter.openSettings() }
                 },
