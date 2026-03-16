@@ -11,7 +11,7 @@
 </div>
 
 <div align="center">
-  <img alt="application icon" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/androidApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher.webp" width="180" height="auto" />
+  <img alt="application icon" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/b679628388ebad9299a06491334c27026d66b86c/androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width="180" height="auto" />
 </div>
 
 # RaccoonForFriendica
