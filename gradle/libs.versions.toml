@@ -1,9 +1,9 @@
 [versions]
-agp = "9.0.0"
 android-compileSdk = "36"
 android-minSdk = "26"
 android-targetSdk = "36"
 
+agp = "9.0.0"
 androidx-activity = "1.13.0"
 androidx-browser = "1.9.0"
 androidx-crypto = "1.1.0"
@@ -18,9 +18,11 @@ calf = "0.9.0"
 coil = "3.4.0"
 compose-colorpicker = "1.1.3"
 compose-m3 = "1.9.0"
+compose-m3-adaptive = "1.2.0"
 compose-multiplatform-media-player = "1.0.53"
 compose-plugin = "1.10.2"
 compose-ui-test = "1.10.5"
+compose-m3-wsc = "1.9.0"
 connectivity = "2.4.1"
 espresso = "3.7.0"
 junit = "4.13.2"
@@ -76,13 +78,17 @@ compose-components-resources = { module = "org.jetbrains.compose.components:comp
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-plugin" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose-plugin" }
 compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose-plugin" }
-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-m3" }
+compose-m3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-m3" }
+compose-m3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-m3-adaptive" }
+compose-m3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-m3-adaptive" }
+compose-m3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "compose-m3-adaptive" }
+compose-m3-wsc = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-m3-wsc" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-plugin" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-plugin" }
 compose-ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "compose-plugin" }
 compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-ui-test" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui-test" }
-compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-plugin" }
+compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-plugin" }
 
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }

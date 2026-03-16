@@ -93,7 +93,6 @@ dependencies {
     implementation(projects.domain.content.repository)
     implementation(projects.domain.identity.repository)
 
-    debugImplementation(compose.uiTooling)
-    debugImplementation(compose.preview)
+    debugImplementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.test.manifest)
 }
