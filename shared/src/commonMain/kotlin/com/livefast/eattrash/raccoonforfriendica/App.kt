@@ -175,6 +175,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                     },
                 ) {
                     val canPop by drawerCoordinator.drawerOpened.collectAsState()
+                    @Suppress("DEPRECATION")
                     PredictiveBackHandler(enabled = canPop) {
                         // if the drawer is open, closes it
                         scope.launch {

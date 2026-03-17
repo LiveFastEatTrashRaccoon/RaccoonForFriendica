@@ -258,6 +258,7 @@ fun ComposerScreen(
         }.launchIn(this)
     }
 
+    @Suppress("DEPRECATION")
     PredictiveBackHandler(enabled = uiState.hasUnsavedChanges) {
         if (uiState.hasUnsavedChanges) {
             confirmBackWithUnsavedChangesDialogOpen = true
