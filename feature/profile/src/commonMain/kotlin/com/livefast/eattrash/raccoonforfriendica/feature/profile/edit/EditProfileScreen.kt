@@ -130,6 +130,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                 }
             }.launchIn(this)
     }
+    @Suppress("DEPRECATION")
     PredictiveBackHandler(enabled = uiState.hasUnsavedChanges) {
         confirmBackWithUnsavedChangesDialog = true
     }
