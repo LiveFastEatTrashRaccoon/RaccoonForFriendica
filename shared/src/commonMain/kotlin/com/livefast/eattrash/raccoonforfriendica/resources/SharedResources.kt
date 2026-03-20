@@ -54,6 +54,7 @@ import raccoonforfriendica.shared.generated.resources.computer
 import raccoonforfriendica.shared.generated.resources.cottage
 import raccoonforfriendica.shared.generated.resources.dark_mode
 import raccoonforfriendica.shared.generated.resources.dark_mode_fill
+import raccoonforfriendica.shared.generated.resources.dashboard
 import raccoonforfriendica.shared.generated.resources.diaspora_small
 import raccoonforfriendica.shared.generated.resources.dns_fill
 import raccoonforfriendica.shared.generated.resources.done_all
@@ -354,7 +355,7 @@ internal class SharedResources : CoreResources {
         @Composable get() = vectorResource(Res.drawable.dark_mode_fill)
 
     override val dashboard: ImageVector
-        @Composable get() = vectorResource(Res.drawable.dark_mode_fill)
+        @Composable get() = vectorResource(Res.drawable.dashboard)
 
     override val dnsFill: ImageVector
         @Composable get() = vectorResource(Res.drawable.dns_fill)
