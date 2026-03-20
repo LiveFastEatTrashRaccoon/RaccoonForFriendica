@@ -24,6 +24,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -64,6 +65,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoo
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
@@ -153,7 +156,7 @@ fun ExploreScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
-                windowInsets = topAppBarState.toWindowInsets(),
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
@@ -162,17 +165,19 @@ fun ExploreScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                drawerCoordinator.toggleDrawer()
-                            }
-                        },
-                    ) {
-                        Icon(
-                            imageVector = coreResources.menu,
-                            contentDescription = LocalStrings.current.actionOpenSideMenu,
-                        )
+                    if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerCoordinator.toggleDrawer()
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = coreResources.menu,
+                                contentDescription = LocalStrings.current.actionOpenSideMenu,
+                            )
+                        }
                     }
                 },
                 actions = {

@@ -40,6 +40,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineD
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarEventFooter
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.di.EventDetailViewModelArgs
 import kotlinx.coroutines.launch
@@ -74,7 +75,7 @@ fun EventDetailScreen(eventId: String, modifier: Modifier = Modifier) {
         topBar = {
             TopAppBar(
                 modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                windowInsets = topAppBarState.toWindowInsets(),
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
