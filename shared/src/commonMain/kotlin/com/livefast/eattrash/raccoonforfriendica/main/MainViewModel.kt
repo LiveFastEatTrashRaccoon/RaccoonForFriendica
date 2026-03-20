@@ -40,9 +40,7 @@ class MainViewModel(private val inboxManager: InboxManager) :
     private fun getSections(inboxUnread: Int) = listOf(
         BottomNavigationSection.Home,
         BottomNavigationSection.Explore,
-        BottomNavigationSection.Inbox(
-            unreadItems = inboxUnread,
-        ),
+        BottomNavigationSection.Inbox(unreadItems = inboxUnread),
         BottomNavigationSection.Profile,
     )
 }
