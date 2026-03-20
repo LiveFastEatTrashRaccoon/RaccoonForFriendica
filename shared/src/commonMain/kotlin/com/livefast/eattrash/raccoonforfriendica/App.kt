@@ -1,16 +1,27 @@
 package com.livefast.eattrash.raccoonforfriendica
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
@@ -28,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getNetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
@@ -38,6 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustom
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.getCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.PermanentDrawerContent
 import com.livefast.eattrash.raccoonforfriendica.navigation.buildNavigationGraph
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -165,29 +178,64 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
     ) {
         ProvideCustomUriHandler {
             ProvideStrings(lang = currentSettings?.lang ?: Locales.EN) {
-                ModalNavigationDrawer(
-                    drawerState = drawerState,
-                    gesturesEnabled = drawerGesturesEnabled,
-                    drawerContent = {
-                        ProvideCustomFontScale {
-                            DrawerContent()
+                if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    ModalNavigationDrawer(
+                        drawerState = drawerState,
+                        gesturesEnabled = drawerGesturesEnabled,
+                        drawerContent = {
+                            ProvideCustomFontScale {
+                                DrawerContent()
+                            }
+                        },
+                    ) {
+                        val canPop by drawerCoordinator.drawerOpened.collectAsState()
+                        @Suppress("DEPRECATION")
+                        PredictiveBackHandler(enabled = canPop) {
+                            // if the drawer is open, closes it
+                            scope.launch {
+                                drawerCoordinator.toggleDrawer()
+                            }
                         }
-                    },
-                ) {
-                    val canPop by drawerCoordinator.drawerOpened.collectAsState()
-                    @Suppress("DEPRECATION")
-                    PredictiveBackHandler(enabled = canPop) {
-                        // if the drawer is open, closes it
-                        scope.launch {
-                            drawerCoordinator.toggleDrawer()
+                        ProvideCustomFontScale {
+                            NavHost(
+                                navController = navController,
+                                startDestination = Destination.Main,
+                            ) {
+                                buildNavigationGraph()
+                            }
                         }
                     }
+                } else {
                     ProvideCustomFontScale {
-                        NavHost(
-                            navController = navController,
-                            startDestination = Destination.Main,
-                        ) {
-                            buildNavigationGraph()
+                        Scaffold(
+                            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                        ) { paddingValues ->
+                            val startDestination: Destination = Destination.Main
+                            var selectedDestination by rememberSaveable { mutableStateOf(startDestination) }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(paddingValues),
+                            ) {
+                                PermanentNavigationDrawer(
+                                    drawerContent = {
+                                        PermanentDrawerContent(
+                                            currentDestination = selectedDestination,
+                                            onSelectDestination = { destination ->
+                                                selectedDestination = destination
+                                                navController.navigate(destination)
+                                            },
+                                        )
+                                    },
+                                ) {
+                                    NavHost(
+                                        navController = navController,
+                                        startDestination = startDestination,
+                                    ) {
+                                        buildNavigationGraph()
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -195,3 +243,4 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
         }
     }
 }
+

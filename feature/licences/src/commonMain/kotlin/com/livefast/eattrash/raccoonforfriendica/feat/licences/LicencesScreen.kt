@@ -31,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.components.LicenceItem
 
@@ -50,7 +51,7 @@ fun LicencesScreen(modifier: Modifier = Modifier) {
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
-                windowInsets = topAppBarState.toWindowInsets(),
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(

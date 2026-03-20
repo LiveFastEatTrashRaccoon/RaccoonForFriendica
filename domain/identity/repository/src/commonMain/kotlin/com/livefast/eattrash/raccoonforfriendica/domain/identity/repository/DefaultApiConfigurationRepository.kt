@@ -20,8 +20,8 @@ internal class DefaultApiConfigurationRepository(
 
     override suspend fun changeNode(value: String) {
         node.update { value }
-        provider.changeNode(value)
         keyStore.save(KEY_LAST_NODE, value)
+        provider.changeNode(value)
     }
 
     override suspend fun setAuth(credentials: ApiCredentials?) {

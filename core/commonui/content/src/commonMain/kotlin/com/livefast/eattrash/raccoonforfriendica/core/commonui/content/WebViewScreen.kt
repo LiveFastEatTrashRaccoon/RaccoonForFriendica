@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.mohamedrejeb.calf.ui.web.WebView
 import com.mohamedrejeb.calf.ui.web.rememberWebViewState
 
@@ -60,7 +62,7 @@ fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +46,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
@@ -95,7 +98,7 @@ fun ProfileScreen(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets(),
+                    windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                     scrollBehavior = scrollBehavior,
                     title = {
                         Text(
@@ -104,17 +107,19 @@ fun ProfileScreen(
                         )
                     },
                     navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                scope.launch {
-                                    drawerCoordinator.toggleDrawer()
-                                }
-                            },
-                        ) {
-                            Icon(
-                                imageVector = coreResources.menu,
-                                contentDescription = LocalStrings.current.actionOpenSideMenu,
-                            )
+                        if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                            IconButton(
+                                onClick = {
+                                    scope.launch {
+                                        drawerCoordinator.toggleDrawer()
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = coreResources.menu,
+                                    contentDescription = LocalStrings.current.actionOpenSideMenu,
+                                )
+                            }
                         }
                     },
                     actions = {

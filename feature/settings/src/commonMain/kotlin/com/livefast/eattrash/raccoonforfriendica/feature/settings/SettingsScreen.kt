@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,6 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AboutDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
@@ -67,6 +69,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.getFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
@@ -129,7 +133,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     var fileInputOpened by remember { mutableStateOf(false) }
     var settingsContent by remember { mutableStateOf<String?>(null) }
     var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
-    var replyDepthBottoSheepOpened by remember { mutableStateOf(false) }
+    var replyDepthBottomSheepOpened by remember { mutableStateOf(false) }
+    var aboutDialogOpened by remember { mutableStateOf(false) }
 
     PermissionControllerWrapperBindEffect(controller = controller)
     LaunchedEffect(model) {
@@ -148,7 +153,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
-                windowInsets = topAppBarState.toWindowInsets(),
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
@@ -157,7 +162,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()
@@ -358,7 +363,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         title = LocalStrings.current.settingsItemConversationReplyDepth,
                         value = uiState.replyDepth.toString(),
                         onTap = {
-                            replyDepthBottoSheepOpened = true
+                            replyDepthBottomSheepOpened = true
                         },
                     )
 
@@ -480,6 +485,12 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     SettingsHeader(
                         icon = coreResources.bugReport,
                         title = LocalStrings.current.settingsSectionDebug,
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsAbout,
+                        onTap = {
+                            aboutDialogOpened = true
+                        },
                     )
                     SettingsSwitchRow(
                         title = LocalStrings.current.settingsItemCrashReportEnabled,
@@ -1067,16 +1078,23 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    if (replyDepthBottoSheepOpened) {
+    if (replyDepthBottomSheepOpened) {
         CustomModalBottomSheet(
             title = LocalStrings.current.settingsItemConversationReplyDepth,
             items = REPLY_DEPTH_VALUES.map { CustomModalBottomSheetItem(label = it.toString()) },
             onSelect = { index ->
-                replyDepthBottoSheepOpened = false
+                replyDepthBottomSheepOpened = false
                 if (index != null) {
                     val value = REPLY_DEPTH_VALUES[index]
                     model.reduce(SettingsMviModel.Intent.ChangeReplyDepth(value))
                 }
+            },
+        )
+    }
+    if (aboutDialogOpened) {
+        AboutDialog(
+            onClose = {
+                aboutDialogOpened = false
             },
         )
     }

@@ -75,6 +75,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import kotlinx.coroutines.flow.launchIn
@@ -141,7 +142,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
         topBar = {
             TopAppBar(
                 modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                windowInsets = topAppBarState.toWindowInsets(),
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(

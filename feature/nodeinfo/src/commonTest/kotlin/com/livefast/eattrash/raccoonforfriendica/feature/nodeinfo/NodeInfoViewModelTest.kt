@@ -5,7 +5,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import dev.mokkery.answering.returns
@@ -57,6 +61,13 @@ class NodeInfoViewModelTest {
         mock<SettingsRepository> {
             every { current } returns MutableStateFlow(SettingsModel())
         }
+    private val identityRepository =
+        mock<IdentityRepository> {
+            every { currentUser } returns MutableStateFlow(null)
+        }
+    private val apiConfigurationRepository = mock<ApiConfigurationRepository>()
+    private val supportedFeatureRepository = mock<SupportedFeatureRepository>()
+    private val credentialsRepository = mock<CredentialsRepository>()
 
     private lateinit var sut: NodeInfoMviModel
 
@@ -114,7 +125,11 @@ class NodeInfoViewModelTest {
     }
 
     private fun viewModelFactory() = NodeInfoViewModel(
+        apiConfigurationRepository = apiConfigurationRepository,
+        identityRepository = identityRepository,
         nodeInfoRepository = nodeInfoRepository,
+        credentialsRepository = credentialsRepository,
+        supportedFeatureRepository = supportedFeatureRepository,
         emojiHelper = emojiHelper,
         imageAutoloadObserver = imageAutoloadObserver,
         settingsRepository = settingsRepository,

@@ -1,6 +1,9 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.drawer.about
+package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
@@ -25,6 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -200,4 +207,74 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
             }
         }
     }
+}
+
+@Composable
+private fun AboutItem(
+    text: String,
+    modifier: Modifier = Modifier,
+    painter: Painter? = null,
+    icon: ImageVector? = null,
+    textDecoration: TextDecoration = TextDecoration.None,
+    value: String = "",
+    onClick: (() -> Unit)? = null,
+) {
+    Row(
+        modifier =
+        modifier
+            .padding(
+                horizontal = Spacing.xs,
+                vertical = Spacing.s,
+            ).clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+                onClick?.invoke()
+            },
+        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val imageModifier = Modifier.Companion.size(22.dp)
+        if (painter != null) {
+            Image(
+                modifier = imageModifier,
+                painter = painter,
+                contentDescription = null,
+                colorFilter = ColorFilter.Companion.tint(MaterialTheme.colorScheme.onBackground),
+            )
+        } else if (icon != null) {
+            Image(
+                modifier = imageModifier,
+                imageVector = icon,
+                contentDescription = null,
+                colorFilter = ColorFilter.Companion.tint(MaterialTheme.colorScheme.onBackground),
+            )
+        }
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            textDecoration = textDecoration,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        if (value.isNotEmpty()) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+    }
+}
+
+private object AboutConstants {
+    const val CHANGELOG_URL =
+        "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/releases/latest"
+    const val WEBSITE_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica"
+    const val GROUP_URL = "https://poliverso.org/profile/raccoonforfriendicaapp"
+    const val MANUAL_URL =
+        "https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/main"
+    const val MATRIX_URL = "https://matrix.to/#/#raccoonforfriendicaapp:matrix.org"
 }

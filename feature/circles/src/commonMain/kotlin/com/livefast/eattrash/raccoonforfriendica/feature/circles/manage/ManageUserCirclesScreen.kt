@@ -39,6 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.ManageCircleItem
@@ -92,7 +93,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
         {
             TopAppBar(
                 modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                windowInsets = topAppBarState.toWindowInsets(),
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(

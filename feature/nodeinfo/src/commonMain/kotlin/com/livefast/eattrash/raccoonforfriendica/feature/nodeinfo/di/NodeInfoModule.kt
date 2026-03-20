@@ -9,7 +9,11 @@ val nodeInfoModule =
     DI.Module("NodeInfoModule") {
         bindViewModel {
             NodeInfoViewModel(
+                apiConfigurationRepository = instance(),
+                identityRepository = instance(),
                 nodeInfoRepository = instance(),
+                credentialsRepository = instance(),
+                supportedFeatureRepository = instance(),
                 settingsRepository = instance(),
                 emojiHelper = instance(),
                 imageAutoloadObserver = instance(),
