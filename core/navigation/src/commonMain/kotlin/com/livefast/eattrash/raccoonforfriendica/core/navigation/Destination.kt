@@ -140,4 +140,13 @@ sealed interface Destination {
 
     @Serializable
     data class ManageUserCircles(val userId: String) : Destination
+
+    @Serializable
+    data object Explore : Destination
+
+    @Serializable
+    data object Inbox : Destination
+
+    @Serializable
+    data object Profile : Destination
 }

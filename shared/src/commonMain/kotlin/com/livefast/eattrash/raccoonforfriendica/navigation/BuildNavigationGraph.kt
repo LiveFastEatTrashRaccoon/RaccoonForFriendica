@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.main.AcknowledgementsScreen
@@ -20,6 +21,9 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailScreen
@@ -27,11 +31,19 @@ import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryScr
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount.NewAccountScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
@@ -213,5 +225,18 @@ internal fun NavGraphBuilder.buildNavigationGraph() {
     composable<Destination.ManageUserCircles> {
         val route: Destination.ManageUserCircles = it.toRoute()
         ManageUserCirclesScreen(userId = route.userId)
+    }
+    composable<Destination.Explore> {
+        val viewModel: ExploreMviModel = getViewModel<ExploreViewModel>()
+        ExploreScreen(viewModel)
+    }
+    composable<Destination.Inbox> {
+        val viewModel: InboxMviModel = getViewModel<InboxViewModel>()
+        InboxScreen(viewModel)
+    }
+    composable<Destination.Profile> {
+        val viewModel: ProfileMviModel = getViewModel<ProfileViewModel>()
+        val myAccountModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
+        ProfileScreen(model = viewModel, myAccountModel = myAccountModel)
     }
 }
