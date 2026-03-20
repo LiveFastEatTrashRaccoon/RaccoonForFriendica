@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.PermanentDrawerViewModel
 import org.kodein.di.DI
 import org.kodein.di.instance
 
@@ -17,6 +18,13 @@ val drawerModule =
                 emojiHelper = instance(),
                 imageAutoloadObserver = instance(),
                 accountRepository = instance(),
+            )
+        }
+        bindViewModel {
+            PermanentDrawerViewModel(
+                identityRepository = instance(),
+                inboxManager = instance(),
+                supportedFeatureRepository = instance(),
             )
         }
     }
