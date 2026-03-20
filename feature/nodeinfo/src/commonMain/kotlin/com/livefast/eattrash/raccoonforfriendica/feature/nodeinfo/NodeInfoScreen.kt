@@ -26,11 +26,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +53,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ChangeInstanceDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentTitle
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
@@ -60,24 +65,68 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 fun NodeInfoScreen(modifier: Modifier = Modifier) {
     val model: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
     val uiState by model.uiState.collectAsState()
+    val navigationCoordinator = remember { getNavigationCoordinator() }
+    var changeInstanceDialogOpened by remember { mutableStateOf(false) }
+    val successMessage = LocalStrings.current.messageSuccess
+
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    NodeInfoMviModel.Effect.AnonymousChangeNodeSuccess -> {
+                        changeInstanceDialogOpened = false
+                        navigationCoordinator.showGlobalMessage(successMessage)
+                    }
+                }
+            }.launchIn(this)
+    }
+
     NodeInfoScreenScaffold(
         modifier = modifier,
-        state = uiState,
+        uiState = uiState,
+        onOpenChangeInstance = {
+            changeInstanceDialogOpened = true
+        },
     )
+
+    if (changeInstanceDialogOpened) {
+        ChangeInstanceDialog(
+            nodeName = uiState.anonymousChangeNodeName,
+            validationInProgress = uiState.anonymousChangeNodeValidationInProgress,
+            validationError = uiState.anonymousChangeNodeNameError,
+            onClose = {
+                changeInstanceDialogOpened = false
+            },
+            onNodeChange = { value ->
+                model.reduce(NodeInfoMviModel.Intent.SetAnonymousChangeNode(value))
+            },
+            onSubmit = {
+                model.reduce(NodeInfoMviModel.Intent.SubmitAnonymousChangeNode)
+            },
+        )
+    }
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @VisibleForTesting
-fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = Modifier) {
+fun NodeInfoScreenScaffold(
+    uiState: NodeInfoMviModel.State,
+    modifier: Modifier = Modifier,
+    onOpenChangeInstance: (() -> Unit)? = null,
+) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = remember { getNavigationCoordinator() }
@@ -101,7 +150,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
         topBar = {
             TopAppBar(
                 modifier = Modifier.clickable { scope.launch { goBackToTop() } },
-                windowInsets = topAppBarState.toWindowInsets(),
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
@@ -112,7 +161,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()
@@ -121,6 +170,20 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                             Icon(
                                 imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    if (!uiState.isLogged) {
+                        IconButton(
+                            onClick = {
+                                onOpenChangeInstance?.invoke()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = coreResources.changeCircle,
+                                contentDescription = LocalStrings.current.changeNodeDialogTitle,
                             )
                         }
                     }
@@ -135,7 +198,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                     .padding(padding)
                     .fillMaxWidth()
                     .then(
-                        if (state.hideNavigationBarWhileScrolling) {
+                        if (uiState.hideNavigationBarWhileScrolling) {
                             Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                         } else {
                             Modifier
@@ -144,7 +207,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                 state = lazyListState,
                 verticalArrangement = Arrangement.spacedBy(Spacing.s),
             ) {
-                val info = state.info
+                val info = uiState.info
                 if (info == null) {
                     item {
                         UserItemPlaceholder(
@@ -179,7 +242,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                             modifier = Modifier.padding(horizontal = Spacing.s),
                             thumbnail = info.thumbnail,
                             uri = info.uri,
-                            autoloadImages = state.autoloadImages,
+                            autoloadImages = uiState.autoloadImages,
                         )
                     }
 
@@ -196,7 +259,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                             ContentTitle(
                                 modifier = Modifier.padding(horizontal = Spacing.m),
                                 content = title,
-                                autoloadImages = state.autoloadImages,
+                                autoloadImages = uiState.autoloadImages,
                                 onOpenUrl = {
                                     uriHandler.openUri(it)
                                 },
@@ -210,7 +273,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                             ContentBody(
                                 modifier = Modifier.padding(horizontal = Spacing.m),
                                 content = description,
-                                autoloadImages = state.autoloadImages,
+                                autoloadImages = uiState.autoloadImages,
                                 onOpenUrl = {
                                     uriHandler.openUri(it)
                                 },
@@ -233,7 +296,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                                     end = Spacing.s,
                                 ),
                                 user = contact,
-                                autoloadImages = state.autoloadImages,
+                                autoloadImages = uiState.autoloadImages,
                                 onClick = {
                                     mainRouter.openUserDetail(contact)
                                 },
@@ -241,7 +304,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                         }
                     }
 
-                    val rules = state.info.rules
+                    val rules = uiState.info.rules
                     if (rules.isNotEmpty()) {
                         item {
                             SettingsHeader(
@@ -271,7 +334,7 @@ fun NodeInfoScreenScaffold(state: NodeInfoMviModel.State, modifier: Modifier = M
                         SettingsRow(
                             title = LocalStrings.current.settingsAboutAppVersion,
                             value =
-                            state.info.version
+                            uiState.info.version
                                 ?: LocalStrings.current.shortUnavailable,
                         )
                     }
