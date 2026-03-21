@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -57,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRoute
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.components.MediaAlbumItem
@@ -129,6 +131,22 @@ fun GalleryScreen(modifier: Modifier = Modifier) {
                             Icon(
                                 imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)) {
+                        IconButton(
+                            shape = MaterialTheme.shapes.small,
+                            colors = IconButtonDefaults.filledTonalIconButtonColors(),
+                            onClick = {
+                                createDialogOpened = true
+                            },
+                        ) {
+                            Icon(
+                                imageVector = coreResources.add,
+                                contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
                     }
