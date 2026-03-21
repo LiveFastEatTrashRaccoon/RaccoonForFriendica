@@ -22,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -74,6 +75,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRoute
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
@@ -238,28 +240,10 @@ fun TimelineScreen(
                             }
                         }
                     }
-                },
-            )
-        },
-        floatingActionButton = {
-            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-                if (uiState.currentUserId != null) {
-                    AnimatedVisibility(
-                        visible = isFabVisible,
-                        enter =
-                        slideInVertically(
-                            initialOffsetY = { it * 2 },
-                        ),
-                        exit =
-                        slideOutVertically(
-                            targetOffsetY = { it * 2 },
-                        ),
-                    ) {
-                        FloatingActionButton(
-                            modifier =
-                            Modifier.padding(
-                                bottom = Dimensions.floatingActionButtonBottomInset + bottomNavigationInset,
-                            ),
+                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded) && uiState.currentUserId != null) {
+                        IconButton(
+                            shape = MaterialTheme.shapes.small,
+                            colors = IconButtonDefaults.filledTonalIconButtonColors(),
                             onClick = {
                                 mainRouter.openComposer()
                             },
@@ -269,6 +253,36 @@ fun TimelineScreen(
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
+                    }
+                },
+            )
+        },
+        floatingActionButton = {
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded) && uiState.currentUserId != null) {
+                AnimatedVisibility(
+                    visible = isFabVisible,
+                    enter =
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
+                    exit =
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
+                ) {
+                    FloatingActionButton(
+                        modifier =
+                        Modifier.padding(
+                            bottom = Dimensions.floatingActionButtonBottomInset + bottomNavigationInset,
+                        ),
+                        onClick = {
+                            mainRouter.openComposer()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = coreResources.add,
+                            contentDescription = LocalStrings.current.actionAddNew,
+                        )
                     }
                 }
             }

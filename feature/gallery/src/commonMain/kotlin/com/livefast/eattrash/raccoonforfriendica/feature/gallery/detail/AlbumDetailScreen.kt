@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -31,6 +32,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,6 +65,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
@@ -147,6 +150,22 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                             Icon(
                                 imageVector = coreResources.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)) {
+                        IconButton(
+                            shape = MaterialTheme.shapes.small,
+                            colors = IconButtonDefaults.filledTonalIconButtonColors(),
+                            onClick = {
+                                openImagePicker = true
+                            },
+                        ) {
+                            Icon(
+                                imageVector = coreResources.add,
+                                contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
                     }
