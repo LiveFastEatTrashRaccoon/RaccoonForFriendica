@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.FollowHashtagItem
@@ -50,8 +49,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FollowedHashtagsScreen(modifier: Modifier = Modifier) {
-    val model: FollowedHashtagsMviModel = getViewModel<FollowedHashtagsViewModel>()
+fun FollowedHashtagsScreen(model: FollowedHashtagsMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val topAppBarState = rememberTopAppBarState()

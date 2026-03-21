@@ -40,7 +40,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -71,7 +70,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toFavorites
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.di.FavoritesViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -79,9 +77,7 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen(type: Int, modifier: Modifier = Modifier) {
-    val model: FavoritesMviModel =
-        getViewModel<FavoritesViewModel>(arg = FavoritesViewModelArgs(type.toFavoritesType()))
+fun FavoritesScreen(type: Int, model: FavoritesMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val topAppBarState = rememberTopAppBarState()

@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
@@ -59,8 +58,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(modifier: Modifier = Modifier) {
-    val model: CalendarMviModel = getViewModel<CalendarViewModel>()
+fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

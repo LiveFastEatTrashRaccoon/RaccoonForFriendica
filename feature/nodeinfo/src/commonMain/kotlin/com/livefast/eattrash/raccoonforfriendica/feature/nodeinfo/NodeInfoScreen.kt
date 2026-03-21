@@ -50,7 +50,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ChangeInstanceDialog
@@ -74,8 +73,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
-fun NodeInfoScreen(modifier: Modifier = Modifier) {
-    val model: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
+fun NodeInfoScreen(model: NodeInfoMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }

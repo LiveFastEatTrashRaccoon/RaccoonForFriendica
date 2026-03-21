@@ -41,7 +41,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
@@ -62,8 +61,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationListScreen(modifier: Modifier = Modifier) {
-    val model: ConversationListMviModel = getViewModel<ConversationListViewModel>()
+fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val mainRouter = remember { getMainRouter() }

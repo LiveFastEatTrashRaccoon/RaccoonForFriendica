@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
@@ -59,8 +58,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UnpublishedScreen(modifier: Modifier = Modifier) {
-    val model: UnpublishedMviModel = getViewModel<UnpublishedViewModel>()
+fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val topAppBarState = rememberTopAppBarState()
