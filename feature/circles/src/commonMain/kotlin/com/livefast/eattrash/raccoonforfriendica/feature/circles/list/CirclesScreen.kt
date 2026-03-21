@@ -43,7 +43,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
@@ -68,8 +67,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CirclesScreen(modifier: Modifier = Modifier) {
-    val model: CirclesMviModel = getViewModel<CirclesViewModel>()
+fun CirclesScreen(model: CirclesMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

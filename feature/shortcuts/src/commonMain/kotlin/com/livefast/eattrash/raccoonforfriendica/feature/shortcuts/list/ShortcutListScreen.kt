@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericListItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
@@ -56,8 +55,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShortcutListScreen(modifier: Modifier = Modifier) {
-    val model: ShortcutListMviModel = getViewModel<ShortcutListViewModel>()
+fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

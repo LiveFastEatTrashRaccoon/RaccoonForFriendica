@@ -42,10 +42,11 @@ fun PermanentDrawerContent(
         add(Destination.Main)
         add(Destination.Explore)
         if (uiState.isLogged) {
+            add(Destination.Inbox)
+            add(Destination.Profile)
             add(Destination.Favorites(type = FavoritesType.Favorites.toInt()))
             add(Destination.Favorites(type = FavoritesType.Bookmarks.toInt()))
             add(Destination.FollowedHashtags)
-            add(Destination.Inbox)
             add(Destination.FollowRequests)
             add(Destination.Circles)
             if (uiState.hasAnnouncements) {
@@ -63,7 +64,6 @@ fun PermanentDrawerContent(
             }
             add(Destination.ShortcutList)
         }
-        add(Destination.Profile)
         add(Destination.NodeInfo)
         add(Destination.Settings)
     }

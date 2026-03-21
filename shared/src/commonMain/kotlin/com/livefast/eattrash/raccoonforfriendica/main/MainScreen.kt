@@ -57,7 +57,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier, timelineViewModel: TimelineMviModel? = null) {
     val model: MainMviModel = getViewModel<MainViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
@@ -174,6 +174,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 }
             },
         ) {
+            // preload ViewModels for all top-level sections as well as lazy list states
             val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
             val timelineLazyListState = rememberLazyListState()
             val exploreModel: ExploreMviModel = getViewModel<ExploreViewModel>()
@@ -230,7 +231,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 }
             },
         ) {
-            val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
+            val timelineModel: TimelineMviModel = timelineViewModel ?: getViewModel<TimelineViewModel>()
             val timelineLazyListState = rememberLazyListState()
             TimelineScreen(
                 model = timelineModel,

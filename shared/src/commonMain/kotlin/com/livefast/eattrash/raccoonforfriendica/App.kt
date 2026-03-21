@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
@@ -42,6 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getNetworkStateObserver
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getActiveAccountMonitor
@@ -49,8 +51,39 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getS
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.getCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.PermanentDrawerContent
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.favorites.di.FavoritesViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
 import com.livefast.eattrash.raccoonforfriendica.navigation.buildNavigationGraph
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -228,11 +261,46 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                         )
                                     },
                                 ) {
+                                    val timelineViewModel: TimelineMviModel = getViewModel<TimelineViewModel>()
+                                    val exploreViewModel: ExploreMviModel = getViewModel<ExploreViewModel>()
+                                    val inboxViewModel : InboxMviModel = getViewModel<InboxViewModel>()
+                                    val profileViewModel: ProfileMviModel = getViewModel<ProfileViewModel>()
+                                    val myAccountViewModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
+                                    val favoritesViewModel: FavoritesMviModel =
+                                        getViewModel<FavoritesViewModel>(FavoritesViewModelArgs(type = FavoritesType.Favorites))
+                                    val bookmarksViewModel: FavoritesMviModel =
+                                        getViewModel<FavoritesViewModel>(FavoritesViewModelArgs(type = FavoritesType.Bookmarks))
+                                    val followedHashtagsViewModel: FollowedHashtagsMviModel = getViewModel<FollowedHashtagsViewModel>()
+                                    val followRequestsViewModel: FollowRequestsMviModel = getViewModel<FollowRequestsViewModel>()
+                                    val circlesViewModel: CirclesMviModel = getViewModel<CirclesViewModel>()
+                                    val conversationListViewModel: ConversationListMviModel = getViewModel<ConversationListViewModel>()
+                                    val galleryViewModel: GalleryMviModel = getViewModel<GalleryViewModel>()
+                                    val unpublishedViewModel: UnpublishedMviModel = getViewModel<UnpublishedViewModel>()
+                                    val calendarViewModel: CalendarMviModel = getViewModel<CalendarViewModel>()
+                                    val shortcutListViewModel: ShortcutListMviModel = getViewModel<ShortcutListViewModel>()
+                                    val nodeInfoViewModel: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
                                     NavHost(
                                         navController = navController,
                                         startDestination = startDestination,
                                     ) {
-                                        buildNavigationGraph()
+                                        buildNavigationGraph(
+                                            timelineViewModel = timelineViewModel,
+                                            exploreViewModel = exploreViewModel,
+                                            inboxViewModel = inboxViewModel,
+                                            profileViewModel = profileViewModel,
+                                            myAccountViewModel = myAccountViewModel,
+                                            favoritesViewModel = favoritesViewModel,
+                                            bookmarksViewModel = bookmarksViewModel,
+                                            followedHashtagsViewModel = followedHashtagsViewModel,
+                                            followRequestsViewModel = followRequestsViewModel,
+                                            circlesViewModel = circlesViewModel,
+                                            conversationListViewModel = conversationListViewModel,
+                                            galleryViewModel = galleryViewModel,
+                                            unpublishedViewModel = unpublishedViewModel,
+                                            calendarViewModel = calendarViewModel,
+                                            shortcutListViewModel = shortcutListViewModel,
+                                            nodeInfoViewModel = nodeInfoViewModel,
+                                        )
                                     }
                                 }
                             }
