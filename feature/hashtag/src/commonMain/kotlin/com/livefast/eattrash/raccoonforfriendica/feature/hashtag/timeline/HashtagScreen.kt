@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,7 +77,11 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
+fun HashtagScreen(
+    tag: String,
+    modifier: Modifier = Modifier,
+    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
+) {
     val model: HashtagMviModel = getViewModel<HashtagViewModel>(arg = HashtagViewModelArgs(tag))
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
@@ -100,6 +105,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
 
     fun goBackToTop() {
         runCatching {
@@ -122,10 +128,14 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier) {
                     }
 
                     is HashtagMviModel.Effect.OpenDetail -> {
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
-                            swipeNavigationEnabled = true,
-                        )
+                        if (customOnSelectCallback != null) {
+                            customOnSelectCallback?.invoke(event.entry)
+                        } else {
+                            mainRouter.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
 
                     is HashtagMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)

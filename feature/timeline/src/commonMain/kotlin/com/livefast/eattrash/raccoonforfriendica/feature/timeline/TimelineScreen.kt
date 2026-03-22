@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -101,6 +102,7 @@ fun TimelineScreen(
     model: TimelineMviModel,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
+    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
@@ -131,6 +133,7 @@ fun TimelineScreen(
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
 
     suspend fun goBackToTop() {
         runCatching {
@@ -151,11 +154,16 @@ fun TimelineScreen(
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is TimelineMviModel.Effect.OpenDetail ->
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
-                            swipeNavigationEnabled = true,
-                        )
+                    is TimelineMviModel.Effect.OpenDetail -> {
+                        if (customOnSelectCallback != null) {
+                            customOnSelectCallback?.invoke(event.entry)
+                        } else {
+                            mainRouter.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
+                    }
 
                     is TimelineMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
@@ -356,8 +364,8 @@ fun TimelineScreen(
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onClick = { e ->
-                            model.reduce(TimelineMviModel.Intent.WillOpenDetail(e))
+                        onClick = { entry ->
+                            model.reduce(TimelineMviModel.Intent.WillOpenDetail(entry))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {

@@ -23,12 +23,15 @@ interface ViewModelCreationArgs
  * Obtain a reference to the [ViewModel] for a given screen.
  *
  * @param T [ViewModel] which is going to be returned
+ * @param key The key to use to identify the [ViewModel] instance
+ * @param arg [ViewModelCreationArgs] to be used to instantiate the [ViewModel]
  * @return an instance of the [ViewModel]
  */
 @Composable
-inline fun <reified T : ViewModel> getViewModel(arg: ViewModelCreationArgs? = null): T {
+inline fun <reified T : ViewModel> getViewModel(key: String? = null, arg: ViewModelCreationArgs? = null): T {
     val factory by localDI().instance<ViewModelProvider.Factory>()
     return viewModel(
+        key = key,
         factory = factory,
         extras = MutableCreationExtras().apply {
             if (arg != null) {

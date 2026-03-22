@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,7 +77,11 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
+fun CircleTimelineScreen(
+    id: String,
+    modifier: Modifier = Modifier,
+    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
+) {
     val model: CircleTimelineMviModel =
         getViewModel<CircleTimelineViewModel>(arg = CircleTimelineViewModelArgs(id))
     val uiState by model.uiState.collectAsState()
@@ -101,6 +106,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
 
     suspend fun goBackToTop() {
         runCatching {
@@ -125,10 +131,14 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                     }
 
                     is CircleTimelineMviModel.Effect.OpenDetail -> {
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
-                            swipeNavigationEnabled = true,
-                        )
+                        if (customOnSelectCallback != null) {
+                            customOnSelectCallback?.invoke(event.entry)
+                        } else {
+                            mainRouter.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
 
                     is CircleTimelineMviModel.Effect.OpenUrl ->
