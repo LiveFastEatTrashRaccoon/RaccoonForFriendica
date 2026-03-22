@@ -20,7 +20,18 @@ actual fun ByteArray.toComposeImageBitmap(): ImageBitmap = Image.makeFromEncoded
 actual fun IntArray.toComposeImageBitmap(width: Int, height: Int): ImageBitmap {
     val bmp = Bitmap()
     val info = ImageInfo(width, height, ColorType.RGBA_8888, ColorAlphaType.PREMUL)
-    bmp.installPixels(info, map { it.toByte() }.toByteArray(), info.minRowBytes)
+
+    // manually convert ARGB to RGBA because Skia's RGBA_8888 expects this specific byte order
+    val pixels = ByteArray(width * height * 4)
+    for (i in indices) {
+        val argb = this[i]
+        pixels[i * 4] = ((argb shr 16) and 0xff).toByte()     // R
+        pixels[i * 4 + 1] = ((argb shr 8) and 0xff).toByte()  // G
+        pixels[i * 4 + 2] = (argb and 0xff).toByte()          // B
+        pixels[i * 4 + 3] = ((argb shr 24) and 0xff).toByte() // A
+    }
+    bmp.installPixels(info, pixels, info.minRowBytes)
+
     return bmp.asComposeImageBitmap()
 }
 
