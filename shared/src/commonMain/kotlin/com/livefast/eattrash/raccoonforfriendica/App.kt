@@ -298,9 +298,9 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                     val profileViewModel: ProfileMviModel = getViewModel<ProfileViewModel>()
                                     val myAccountViewModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
                                     val favoritesViewModel: FavoritesMviModel =
-                                        getViewModel<FavoritesViewModel>(FavoritesViewModelArgs(type = FavoritesType.Favorites))
+                                        getViewModel<FavoritesViewModel>(arg = FavoritesViewModelArgs(type = FavoritesType.Favorites))
                                     val bookmarksViewModel: FavoritesMviModel =
-                                        getViewModel<FavoritesViewModel>(FavoritesViewModelArgs(type = FavoritesType.Bookmarks))
+                                        getViewModel<FavoritesViewModel>(arg = FavoritesViewModelArgs(type = FavoritesType.Bookmarks))
                                     val followedHashtagsViewModel: FollowedHashtagsMviModel = getViewModel<FollowedHashtagsViewModel>()
                                     val followRequestsViewModel: FollowRequestsMviModel = getViewModel<FollowRequestsViewModel>()
                                     val circlesViewModel: CirclesMviModel = getViewModel<CirclesViewModel>()
