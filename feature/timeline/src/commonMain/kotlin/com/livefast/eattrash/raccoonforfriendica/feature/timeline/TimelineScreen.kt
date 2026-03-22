@@ -101,6 +101,7 @@ fun TimelineScreen(
     model: TimelineMviModel,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
+    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
@@ -151,11 +152,16 @@ fun TimelineScreen(
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is TimelineMviModel.Effect.OpenDetail ->
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
-                            swipeNavigationEnabled = true,
-                        )
+                    is TimelineMviModel.Effect.OpenDetail -> {
+                        if (customOnSelectAction != null) {
+                            customOnSelectAction(event.entry)
+                        } else {
+                            mainRouter.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
+                    }
 
                     is TimelineMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
@@ -356,8 +362,8 @@ fun TimelineScreen(
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onClick = { e ->
-                            model.reduce(TimelineMviModel.Intent.WillOpenDetail(e))
+                        onClick = { entry ->
+                            model.reduce(TimelineMviModel.Intent.WillOpenDetail(entry))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
