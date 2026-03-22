@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.CircleTimelineWithEntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.adaptive.HashtagWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
@@ -122,7 +123,7 @@ internal fun NavGraphBuilder.buildNavigationGraph(
     }
     composable<Destination.HashTag> {
         val route: Destination.HashTag = it.toRoute()
-        HashtagScreen(route.tag)
+        HashtagWithEntryDetailScreen(route.tag)
     }
     composable<Destination.UserList> {
         val route: Destination.UserList = it.toRoute()
