@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.CircleTimelineWithEntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.adaptive.FavoritesWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.HashtagWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
@@ -356,7 +357,7 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
             FavoritesType.Bookmarks -> favoritesViewModel
             FavoritesType.Favorites -> bookmarksViewModel
         }
-        FavoritesScreen(model = model, type = route.type)
+        FavoritesWithEntryDetailScreen(model = model, type = route.type)
     }
     composable<Destination.FollowedHashtags> {
         FollowedHashtagsScreen(followedHashtagsViewModel)
