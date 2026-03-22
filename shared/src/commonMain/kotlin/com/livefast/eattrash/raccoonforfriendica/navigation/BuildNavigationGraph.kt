@@ -9,6 +9,7 @@ import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.CircleTimelineWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.FavoritesWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.HashtagWithEntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.adaptive.SearchWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
@@ -378,7 +379,7 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
         )
     }
     composable<Destination.Search> {
-        SearchScreen()
+        SearchWithEntryDetailScreen()
     }
     composable<Destination.Thread> {
         val destination: Destination.Thread = it.toRoute()
