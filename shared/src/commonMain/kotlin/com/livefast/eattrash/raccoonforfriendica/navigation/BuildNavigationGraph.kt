@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.navigation
 
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
@@ -7,6 +9,7 @@ import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toFavoritesType
@@ -32,6 +35,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.Con
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesViewModel
@@ -50,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.Hashta
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksScreen
@@ -58,8 +63,10 @@ import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount.NewAccountScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
@@ -70,6 +77,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.Shortcut
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline.ShortcutTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
@@ -77,9 +85,31 @@ import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
 
-internal fun NavGraphBuilder.buildNavigationGraph() {
+internal fun NavGraphBuilder.buildNavigationGraph(
+    timelineViewModel: TimelineMviModel,
+    timelineLazyListState: LazyListState,
+    exploreViewModel: ExploreMviModel,
+    exploreLazyListState: LazyListState,
+    inboxViewModel: InboxMviModel,
+    inboxLazyListState: LazyListState,
+    profileViewModel: ProfileMviModel,
+    myAccountViewModel: MyAccountMviModel,
+    myAccountLazyListState: LazyListState,
+) {
     composable<Destination.Main> {
-        MainScreen()
+        // preload ViewModels for all top-level sections as well as lazy list states
+
+        MainScreen(
+            timelineViewModel = timelineViewModel,
+            exploreViewModel = exploreViewModel,
+            inboxViewModel = inboxViewModel,
+            profileViewModel = profileViewModel,
+            myAccountViewModel = myAccountViewModel,
+            timelineLazyListState = timelineLazyListState,
+            exploreLazyListState = exploreLazyListState,
+            inboxLazyListState = inboxLazyListState,
+            myAccountLazyListState = myAccountLazyListState,
+        )
     }
     composable<Destination.EntryDetail> {
         val route: Destination.EntryDetail = it.toRoute()
@@ -260,13 +290,16 @@ internal fun NavGraphBuilder.buildNavigationGraph() {
     }
 }
 
-// when the permanent navigation drawer is present, preload ViewModels for all top-level sections
-internal fun NavGraphBuilder.buildNavigationGraph(
+internal fun NavGraphBuilder.buildNavigationGraphExpanded(
     timelineViewModel: TimelineMviModel,
+    timelineLazyListState: LazyListState,
     exploreViewModel: ExploreMviModel,
+    exploreLazyListState: LazyListState,
     inboxViewModel: InboxMviModel,
+    inboxLazyListState: LazyListState,
     profileViewModel: ProfileMviModel,
     myAccountViewModel: MyAccountMviModel,
+    myAccountLazyListState: LazyListState,
     favoritesViewModel: FavoritesMviModel,
     bookmarksViewModel: FavoritesMviModel,
     followedHashtagsViewModel: FollowedHashtagsMviModel,
@@ -282,6 +315,15 @@ internal fun NavGraphBuilder.buildNavigationGraph(
     composable<Destination.Main> {
         MainScreen(
             timelineViewModel = timelineViewModel,
+            exploreViewModel = exploreViewModel,
+            inboxViewModel = inboxViewModel,
+            profileViewModel = profileViewModel,
+            myAccountViewModel = myAccountViewModel,
+            timelineLazyListState = timelineLazyListState,
+            exploreLazyListState = exploreLazyListState,
+            inboxLazyListState = inboxLazyListState,
+            myAccountLazyListState = myAccountLazyListState,
+            lockedSection = BottomNavigationSection.Home,
         )
     }
     composable<Destination.EntryDetail> {
@@ -455,15 +497,45 @@ internal fun NavGraphBuilder.buildNavigationGraph(
         ManageUserCirclesScreen(userId = route.userId)
     }
     composable<Destination.Explore> {
-        ExploreScreen(exploreViewModel)
+        MainScreen(
+            timelineViewModel = timelineViewModel,
+            exploreViewModel = exploreViewModel,
+            inboxViewModel = inboxViewModel,
+            profileViewModel = profileViewModel,
+            myAccountViewModel = myAccountViewModel,
+            timelineLazyListState = timelineLazyListState,
+            exploreLazyListState = exploreLazyListState,
+            inboxLazyListState = inboxLazyListState,
+            myAccountLazyListState = myAccountLazyListState,
+            lockedSection = BottomNavigationSection.Explore,
+        )
     }
     composable<Destination.Inbox> {
-        InboxScreen(inboxViewModel)
+        MainScreen(
+            timelineViewModel = timelineViewModel,
+            exploreViewModel = exploreViewModel,
+            inboxViewModel = inboxViewModel,
+            profileViewModel = profileViewModel,
+            myAccountViewModel = myAccountViewModel,
+            timelineLazyListState = timelineLazyListState,
+            exploreLazyListState = exploreLazyListState,
+            inboxLazyListState = inboxLazyListState,
+            myAccountLazyListState = myAccountLazyListState,
+            lockedSection = BottomNavigationSection.Inbox(0),
+        )
     }
     composable<Destination.Profile> {
-        ProfileScreen(
-            model = profileViewModel,
-            myAccountModel = myAccountViewModel,
+        MainScreen(
+            timelineViewModel = timelineViewModel,
+            exploreViewModel = exploreViewModel,
+            inboxViewModel = inboxViewModel,
+            profileViewModel = profileViewModel,
+            myAccountViewModel = myAccountViewModel,
+            timelineLazyListState = timelineLazyListState,
+            exploreLazyListState = exploreLazyListState,
+            inboxLazyListState = inboxLazyListState,
+            myAccountLazyListState = myAccountLazyListState,
+            lockedSection = BottomNavigationSection.Profile,
         )
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
@@ -85,6 +86,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewMo
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
 import com.livefast.eattrash.raccoonforfriendica.navigation.buildNavigationGraph
+import com.livefast.eattrash.raccoonforfriendica.navigation.buildNavigationGraphExpanded
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
@@ -230,11 +232,31 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                             }
                         }
                         ProvideCustomFontScale {
+                            // preload ViewModels for all top-level sections
+                            val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
+                            val exploreModel: ExploreMviModel = getViewModel<ExploreViewModel>()
+                            val inboxModel: InboxMviModel = getViewModel<InboxViewModel>()
+                            val profileModel: ProfileMviModel = getViewModel<ProfileViewModel>()
+                            val myAccountModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
+                            val timelineLazyListState = rememberLazyListState()
+                            val exploreLazyListState = rememberLazyListState()
+                            val inboxLazyListState = rememberLazyListState()
+                            val myAccountLazyListState = rememberLazyListState()
                             NavHost(
                                 navController = navController,
                                 startDestination = Destination.Main,
                             ) {
-                                buildNavigationGraph()
+                                buildNavigationGraph(
+                                    timelineViewModel = timelineModel,
+                                    exploreViewModel = exploreModel,
+                                    inboxViewModel = inboxModel,
+                                    profileViewModel = profileModel,
+                                    myAccountViewModel = myAccountModel,
+                                    timelineLazyListState = timelineLazyListState,
+                                    exploreLazyListState = exploreLazyListState,
+                                    inboxLazyListState = inboxLazyListState,
+                                    myAccountLazyListState = myAccountLazyListState,
+                                )
                             }
                         }
                     }
@@ -261,6 +283,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                         )
                                     },
                                 ) {
+                                    // preload ViewModels for all top-level sections
                                     val timelineViewModel: TimelineMviModel = getViewModel<TimelineViewModel>()
                                     val exploreViewModel: ExploreMviModel = getViewModel<ExploreViewModel>()
                                     val inboxViewModel : InboxMviModel = getViewModel<InboxViewModel>()
@@ -279,16 +302,24 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                     val calendarViewModel: CalendarMviModel = getViewModel<CalendarViewModel>()
                                     val shortcutListViewModel: ShortcutListMviModel = getViewModel<ShortcutListViewModel>()
                                     val nodeInfoViewModel: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
+                                    val timelineLazyListState = rememberLazyListState()
+                                    val exploreLazyListState = rememberLazyListState()
+                                    val inboxLazyListState = rememberLazyListState()
+                                    val myAccountLazyListState = rememberLazyListState()
                                     NavHost(
                                         navController = navController,
                                         startDestination = startDestination,
                                     ) {
-                                        buildNavigationGraph(
+                                        buildNavigationGraphExpanded(
                                             timelineViewModel = timelineViewModel,
+                                            timelineLazyListState = timelineLazyListState,
                                             exploreViewModel = exploreViewModel,
+                                            exploreLazyListState = exploreLazyListState,
                                             inboxViewModel = inboxViewModel,
+                                            inboxLazyListState = inboxLazyListState,
                                             profileViewModel = profileViewModel,
                                             myAccountViewModel = myAccountViewModel,
+                                            myAccountLazyListState = myAccountLazyListState,
                                             favoritesViewModel = favoritesViewModel,
                                             bookmarksViewModel = bookmarksViewModel,
                                             followedHashtagsViewModel = followedHashtagsViewModel,

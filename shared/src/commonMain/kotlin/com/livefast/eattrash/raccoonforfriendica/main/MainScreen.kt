@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.main
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
@@ -40,106 +40,113 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier, timelineViewModel: TimelineMviModel? = null) {
+fun MainScreen(
+    timelineViewModel: TimelineMviModel,
+    exploreViewModel: ExploreMviModel,
+    inboxViewModel: InboxMviModel,
+    profileViewModel: ProfileMviModel,
+    myAccountViewModel: MyAccountMviModel,
+    timelineLazyListState: LazyListState,
+    exploreLazyListState: LazyListState,
+    inboxLazyListState: LazyListState,
+    myAccountLazyListState: LazyListState,
+    modifier: Modifier = Modifier,
+    lockedSection: BottomNavigationSection = BottomNavigationSection.Home,
+) {
     val model: MainMviModel = getViewModel<MainViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = remember { getNavigationCoordinator() }
     val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-        var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }
-        val bottomNavigationInsetPx = WindowInsets.navigationBars.getBottom(LocalDensity.current)
-        val scrollConnection =
-            remember {
-                object : NestedScrollConnection {
-                    override fun onPreScroll(
-                        available: Offset,
-                        source: NestedScrollSource,
-                    ): Offset {
-                        val delta = available.y
-                        val newOffset =
-                            (uiState.bottomBarOffsetHeightPx + delta).coerceIn(
-                                // 2 times:
-                                // - once for the actual offset due to the translation amount
-                                // - once for the bottom inset artificially applied to NavigationBar
-                                -(bottomBarHeightPx + bottomNavigationInsetPx) * 2,
-                                0f,
-                            )
-                        model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(newOffset))
-                        return Offset.Zero
-                    }
+    var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }
+    val bottomNavigationInsetPx = WindowInsets.navigationBars.getBottom(LocalDensity.current)
+    val scrollConnection =
+        remember {
+            object : NestedScrollConnection {
+                override fun onPreScroll(
+                    available: Offset,
+                    source: NestedScrollSource,
+                ): Offset {
+                    val delta = available.y
+                    val newOffset =
+                        (uiState.bottomBarOffsetHeightPx + delta).coerceIn(
+                            // 2 times:
+                            // - once for the actual offset due to the translation amount
+                            // - once for the bottom inset artificially applied to NavigationBar
+                            -(bottomBarHeightPx + bottomNavigationInsetPx) * 2,
+                            0f,
+                        )
+                    model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(newOffset))
+                    return Offset.Zero
                 }
             }
-        navigationCoordinator.setBottomBarScrollConnection(scrollConnection)
-        val exitMessage = LocalStrings.current.messageConfirmExit
-        val bottomNavController = rememberNavController()
+        }
+    navigationCoordinator.setBottomBarScrollConnection(scrollConnection)
+    val exitMessage = LocalStrings.current.messageConfirmExit
+    val bottomNavController = rememberNavController()
 
-        LaunchedEffect(navigationCoordinator) {
-            if (navigationCoordinator.currentBottomNavSection.value == null) {
-                navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
-            }
-
-            navigationCoordinator.exitMessageVisible
-                .onEach { visible ->
-                    if (visible) {
-                        snackbarHostState.showSnackbar(message = exitMessage)
-                        navigationCoordinator.setExitMessageVisible(false)
-                    }
-                }.launchIn(this)
-            navigationCoordinator.globalMessage
-                .onEach { message ->
-                    snackbarHostState.showSnackbar(message = message)
-                }.launchIn(this)
-
-            navigationCoordinator.currentBottomNavSection.onEach {
-                // when the current tab changes, reset the bottom bar offset to the default value
-                model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(0f))
-            }.launchIn(this)
-
-            val adapter = DefaultBottomNavigationAdapter(bottomNavController)
-            navigationCoordinator.setBottomNavigator(adapter)
+    LaunchedEffect(navigationCoordinator) {
+        if (navigationCoordinator.currentBottomNavSection.value == null) {
+            navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
         }
 
-        Scaffold(
-            modifier = modifier,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        modifier =
-                            Modifier
-                                .graphicsLayer {
-                                    translationY =
-                                        (-uiState.bottomBarOffsetHeightPx)
-                                            .coerceAtMost(bottomBarHeightPx - bottomNavigationInsetPx)
-                                },
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
-                    )
+        navigationCoordinator.exitMessageVisible
+            .onEach { visible ->
+                if (visible) {
+                    snackbarHostState.showSnackbar(message = exitMessage)
+                    navigationCoordinator.setExitMessageVisible(false)
                 }
-            },
-            bottomBar = {
+            }.launchIn(this)
+        navigationCoordinator.globalMessage
+            .onEach { message ->
+                snackbarHostState.showSnackbar(message = message)
+            }.launchIn(this)
+
+        navigationCoordinator.currentBottomNavSection.onEach {
+            // when the current tab changes, reset the bottom bar offset to the default value
+            model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(0f))
+        }.launchIn(this)
+
+        val adapter = DefaultBottomNavigationAdapter(bottomNavController)
+        navigationCoordinator.setBottomNavigator(adapter)
+    }
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    modifier =
+                        Modifier
+                            .graphicsLayer {
+                                translationY =
+                                    (-uiState.bottomBarOffsetHeightPx)
+                                        .coerceAtMost(bottomBarHeightPx - bottomNavigationInsetPx)
+                            },
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+        bottomBar = {
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                 NavigationBar(
                     modifier =
                         Modifier
@@ -172,71 +179,68 @@ fun MainScreen(modifier: Modifier = Modifier, timelineViewModel: TimelineMviMode
                         )
                     }
                 }
-            },
-        ) {
-            // preload ViewModels for all top-level sections as well as lazy list states
-            val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
-            val timelineLazyListState = rememberLazyListState()
-            val exploreModel: ExploreMviModel = getViewModel<ExploreViewModel>()
-            val exploreLazyListState = rememberLazyListState()
-            val inboxModel: InboxMviModel = getViewModel<InboxViewModel>()
-            val inboxLazyListState = rememberLazyListState()
-            val profileModel: ProfileMviModel = getViewModel<ProfileViewModel>()
-            val myAccountModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
-            val myAccountLazyListState = rememberLazyListState()
+            }
+        },
+    ) {
+        if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
             NavHost(
                 navController = bottomNavController,
                 startDestination = BottomNavigationSection.Home,
             ) {
                 composable<BottomNavigationSection.Home> {
                     TimelineScreen(
-                        model = timelineModel,
+                        model = timelineViewModel,
                         lazyListState = timelineLazyListState,
                     )
                 }
                 composable<BottomNavigationSection.Explore> {
                     ExploreScreen(
-                        model = exploreModel,
+                        model = exploreViewModel,
                         lazyListState = exploreLazyListState,
                     )
                 }
                 composable<BottomNavigationSection.Inbox> {
                     InboxScreen(
-                        model = inboxModel,
+                        model = inboxViewModel,
                         lazyListState = inboxLazyListState,
                     )
                 }
                 composable<BottomNavigationSection.Profile> {
                     ProfileScreen(
-                        model = profileModel,
-                        myAccountModel = myAccountModel,
+                        model = profileViewModel,
+                        myAccountModel = myAccountViewModel,
                         myAccountLazyListState = myAccountLazyListState,
                     )
                 }
             }
-        }
-    } else {
-        Scaffold(
-            modifier = modifier,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            snackbarHost = {
-                SnackbarHost(
-                    hostState = snackbarHostState,
-                ) { data ->
-                    Snackbar(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        snackbarData = data,
+        } else {
+            when(lockedSection) {
+                BottomNavigationSection.Home -> {
+                    TimelineScreen(
+                        model = timelineViewModel,
+                        lazyListState = timelineLazyListState,
                     )
                 }
-            },
-        ) {
-            val timelineModel: TimelineMviModel = timelineViewModel ?: getViewModel<TimelineViewModel>()
-            val timelineLazyListState = rememberLazyListState()
-            TimelineScreen(
-                model = timelineModel,
-                lazyListState = timelineLazyListState,
-            )
+                BottomNavigationSection.Explore -> {
+                    ExploreScreen(
+                        model = exploreViewModel,
+                        lazyListState = exploreLazyListState,
+                    )
+                }
+                is BottomNavigationSection.Inbox -> {
+                    InboxScreen(
+                        model = inboxViewModel,
+                        lazyListState = inboxLazyListState,
+                    )
+                }
+                BottomNavigationSection.Profile -> {
+                    ProfileScreen(
+                        model = profileViewModel,
+                        myAccountModel = myAccountViewModel,
+                        myAccountLazyListState = myAccountLazyListState,
+                    )
+                }
+            }
         }
     }
 }
