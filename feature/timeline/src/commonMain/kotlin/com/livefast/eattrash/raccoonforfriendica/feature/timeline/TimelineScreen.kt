@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -132,6 +133,7 @@ fun TimelineScreen(
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
 
     suspend fun goBackToTop() {
         runCatching {
@@ -153,8 +155,8 @@ fun TimelineScreen(
                     }
 
                     is TimelineMviModel.Effect.OpenDetail -> {
-                        if (customOnSelectAction != null) {
-                            customOnSelectAction(event.entry)
+                        if (customOnSelectCallback != null) {
+                            customOnSelectCallback?.invoke(event.entry)
                         } else {
                             mainRouter.openEntryDetail(
                                 entry = event.entry,
