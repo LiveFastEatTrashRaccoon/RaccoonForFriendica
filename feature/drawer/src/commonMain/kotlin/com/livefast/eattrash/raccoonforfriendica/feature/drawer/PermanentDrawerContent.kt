@@ -41,9 +41,9 @@ fun PermanentDrawerContent(
     val destinations = buildList {
         add(Destination.Main)
         add(Destination.Explore)
+        add(Destination.Inbox)
+        add(Destination.Profile)
         if (uiState.isLogged) {
-            add(Destination.Inbox)
-            add(Destination.Profile)
             add(Destination.Favorites(type = FavoritesType.Favorites.toInt()))
             add(Destination.Favorites(type = FavoritesType.Bookmarks.toInt()))
             add(Destination.FollowedHashtags)
