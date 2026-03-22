@@ -78,6 +78,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
@@ -98,8 +99,14 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Modifier = Modifier) {
+fun EntryDetailScreen(
+    id: String,
+    swipeNavigationEnabled: Boolean,
+    modifier: Modifier = Modifier,
+    customBackAction: (() -> Unit)? = null,
+) {
     val model: EntryDetailMviModel = getViewModel<EntryDetailViewModel>(
+        key = id,
         arg = EntryDetailViewModelArgs(id = id, swipeNavigationEnabled = swipeNavigationEnabled),
     )
     val uiState by model.uiState.collectAsState()
@@ -180,10 +187,14 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (navigationCoordinator.canPop.value || customBackAction != null) {
                         IconButton(
                             onClick = {
-                                navigationCoordinator.pop()
+                                if (customBackAction != null) {
+                                    customBackAction()
+                                } else {
+                                    navigationCoordinator.pop()
+                                }
                             },
                         ) {
                             Icon(
@@ -194,7 +205,7 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
                     }
                 },
                 actions = {
-                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)) {
+                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded) && uiState.currentUserId != null) {
                         IconButton(
                             shape = MaterialTheme.shapes.small,
                             colors = IconButtonDefaults.filledTonalIconButtonColors(),
@@ -218,7 +229,7 @@ fun EntryDetailScreen(id: String, swipeNavigationEnabled: Boolean, modifier: Mod
             )
         },
         floatingActionButton = {
-            if (uiState.currentUserId != null) {
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded) && uiState.currentUserId != null) {
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
