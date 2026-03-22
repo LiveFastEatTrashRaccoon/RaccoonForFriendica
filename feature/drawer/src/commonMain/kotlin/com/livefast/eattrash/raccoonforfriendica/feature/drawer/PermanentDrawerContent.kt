@@ -41,9 +41,9 @@ fun PermanentDrawerContent(
     val destinations = buildList {
         add(Destination.Main)
         add(Destination.Explore)
+        add(Destination.Inbox)
+        add(Destination.Profile)
         if (uiState.isLogged) {
-            add(Destination.Inbox)
-            add(Destination.Profile)
             add(Destination.Favorites(type = FavoritesType.Favorites.toInt()))
             add(Destination.Favorites(type = FavoritesType.Bookmarks.toInt()))
             add(Destination.FollowedHashtags)
@@ -126,7 +126,11 @@ fun PermanentDrawerContent(
                     if (destination == Destination.Inbox && uiState.unreadItems > 0 && uiState.isExpanded) {
                         Badge {
                             Text(
-                                text = if (uiState.unreadItems <= 10) "$uiState.unreadItems" else "10+",
+                                text = if (uiState.unreadItems <= 10) {
+                                    "${uiState.unreadItems}"
+                                } else {
+                                    "10+"
+                                },
                                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp),
                             )
                         }
