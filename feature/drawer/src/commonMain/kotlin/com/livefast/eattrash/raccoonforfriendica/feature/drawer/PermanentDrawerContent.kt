@@ -126,7 +126,11 @@ fun PermanentDrawerContent(
                     if (destination == Destination.Inbox && uiState.unreadItems > 0 && uiState.isExpanded) {
                         Badge {
                             Text(
-                                text = if (uiState.unreadItems <= 10) "$uiState.unreadItems" else "10+",
+                                text = if (uiState.unreadItems <= 10) {
+                                    "${uiState.unreadItems}"
+                                } else {
+                                    "10+"
+                                },
                                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.sp),
                             )
                         }
