@@ -74,10 +74,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsS
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -89,12 +92,12 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val navigationCoordinator = rememberNavigationCoordinator()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val galleryHelper = remember { getGalleryHelper() }
-    val coreResources = remember { getCoreResources() }
+    val galleryHelper = rememberGalleryHelper()
+    val coreResources = rememberCoreResources()
     val uriHandler = LocalUriHandler.current
     val genericError = LocalStrings.current.messageGenericError
     val messageSuccess = LocalStrings.current.messageSuccess

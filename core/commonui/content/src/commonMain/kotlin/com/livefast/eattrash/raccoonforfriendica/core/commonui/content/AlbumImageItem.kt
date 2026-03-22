@@ -46,7 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import kotlin.math.roundToInt
 
@@ -61,7 +61,7 @@ fun AlbumImageItem(
     options: List<Option> = emptyList(),
     onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
     val additionalOffset = with(LocalDensity.current) { Spacing.xl.toPx().roundToInt() }

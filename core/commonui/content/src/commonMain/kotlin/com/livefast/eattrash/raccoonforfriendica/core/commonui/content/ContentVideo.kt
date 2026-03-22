@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 fun ContentVideo(
@@ -33,8 +33,8 @@ fun ContentVideo(
     autoload: Boolean = true,
     onClick: (() -> Unit)? = null,
 ) {
+    val coreResources = rememberCoreResources()
     var shouldBeRendered by remember { mutableStateOf(autoload) }
-    val coreResources = remember { getCoreResources() }
 
     Box(
         modifier = modifier.fillMaxWidth(),

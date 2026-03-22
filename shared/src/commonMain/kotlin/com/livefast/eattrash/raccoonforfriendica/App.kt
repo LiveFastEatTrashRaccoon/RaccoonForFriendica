@@ -30,25 +30,33 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.getL10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.rememberL10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultNavigationAdapter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getNetworkStateObserver
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberNetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getSettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.rememberSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getSetupAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberActiveAccountMonitor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.getCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
@@ -104,15 +112,15 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
         crashReportManager.initialize()
     }
 
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val l10nManager = remember { getL10nManager() }
-    val themeRepository = remember { getThemeRepository() }
-    val settingsRepository = remember { getSettingsRepository() }
-    val activeAccountMonitor = remember { getActiveAccountMonitor() }
-    val setupAccountUseCase = remember { getSetupAccountUseCase() }
-    val networkStateObserver = remember { getNetworkStateObserver() }
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val l10nManager = rememberL10nManager()
+    val themeRepository = rememberThemeRepository()
+    val settingsRepository = rememberSettingsRepository()
+    val activeAccountMonitor = rememberActiveAccountMonitor()
+    val setupAccountUseCase = rememberSetupAccountUseCase()
+    val networkStateObserver = rememberNetworkStateObserver()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val drawerCoordinator = remember { getDrawerCoordinator() }
+    val drawerCoordinator = rememberDrawerCoordinator()
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
     val currentSettings by settingsRepository.current.collectAsState()
     val scope = rememberCoroutineScope()

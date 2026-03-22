@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.prettifyHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -45,7 +44,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
     val sourceProtocol = entry.sourceProtocol.orEmpty()
     val creationDate = entry.created.orEmpty()
     val updateDate = entry.updated.orEmpty()
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
 
     BasicAlertDialog(
         modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),

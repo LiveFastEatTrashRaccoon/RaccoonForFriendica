@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 fun SearchField(
@@ -64,7 +64,7 @@ fun SearchField(
         )
     }
     val valueChangedCallback by rememberUpdatedState(onValueChange)
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
 
     LaunchedEffect(textFieldValue) {
         valueChangedCallback(textFieldValue.text)

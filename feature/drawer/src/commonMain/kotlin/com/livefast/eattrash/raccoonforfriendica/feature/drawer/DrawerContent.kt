@@ -36,10 +36,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AboutDial
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ChangeInstanceDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerShortcut
 import kotlinx.coroutines.delay
@@ -53,10 +53,10 @@ import kotlin.time.Duration.Companion.milliseconds
 fun DrawerContent(modifier: Modifier = Modifier) {
     val model: DrawerMviModel = getViewModel<DrawerViewModel>()
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val drawerCoordinator = remember { getDrawerCoordinator() }
-    val mainRouter = remember { getMainRouter() }
-    val coreResources = remember { getCoreResources() }
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val drawerCoordinator = rememberDrawerCoordinator()
+    val mainRouter = rememberMainRouter()
+    val coreResources = rememberCoreResources()
     val scope = rememberCoroutineScope()
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }

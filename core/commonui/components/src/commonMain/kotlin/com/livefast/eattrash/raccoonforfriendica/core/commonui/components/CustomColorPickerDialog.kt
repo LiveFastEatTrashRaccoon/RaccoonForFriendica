@@ -38,7 +38,7 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +49,7 @@ fun CustomColorPickerDialog(
     onClose: ((Color?) -> Unit)? = null,
 ) {
     val controller = rememberColorPickerController()
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     var selectedColor by remember { mutableStateOf(initialValue) }
     var selectedColorHex by remember { mutableStateOf("") }
     var manualInputDialogOpen by remember { mutableStateOf(false) }

@@ -36,7 +36,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultBottomNavigationAdapter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
@@ -67,7 +67,7 @@ fun MainScreen(
 ) {
     val model: MainMviModel = getViewModel<MainViewModel>()
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val navigationCoordinator = rememberNavigationCoordinator()
     val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

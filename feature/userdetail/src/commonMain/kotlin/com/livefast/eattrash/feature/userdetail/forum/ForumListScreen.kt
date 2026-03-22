@@ -56,7 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.rememberFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
@@ -68,14 +68,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberClipboardHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
@@ -84,7 +84,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -98,20 +98,20 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val navigationCoordinator = rememberNavigationCoordinator()
     val uriHandler = LocalUriHandler.current
-    val mainRouter = remember { getMainRouter() }
-    val coreResources = remember { getCoreResources() }
+    val mainRouter = rememberMainRouter()
+    val coreResources = rememberCoreResources()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
+    val fabNestedScrollConnection = rememberFabNestedScrollConnection()
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val shareHelper = remember { getShareHelper() }
-    val actionRepository = remember { getEntryActionRepository() }
+    val shareHelper = rememberShareHelper()
+    val actionRepository = rememberEntryActionRepository()
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
-    val clipboardHelper = remember { getClipboardHelper(clipboard) }
+    val clipboardHelper = rememberClipboardHelper(clipboard)
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }

@@ -34,12 +34,12 @@ import chaintech.videoplayer.model.AudioFile
 import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.ui.audio.AudioPlayerComposable
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 fun AudioPlayer(urls: List<String>, titles: List<String>, modifier: Modifier = Modifier, autoplay: Boolean = false) {
     var isInitial by remember { mutableStateOf(true) }
-    val resources = remember { getCoreResources() }
+    val resources = rememberCoreResources()
 
     if (!autoplay && isInitial) {
         FakeAudioPlayerComposable(
@@ -83,7 +83,7 @@ private fun FakeAudioPlayerComposable(
     onPlay: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
 
     Box(
         modifier = modifier.background(audioPlayerConfig.backgroundColor),

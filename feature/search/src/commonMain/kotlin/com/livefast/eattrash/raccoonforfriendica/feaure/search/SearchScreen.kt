@@ -62,14 +62,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getClipboardHelper
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getShareHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberClipboardHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -78,7 +78,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.getEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableName
@@ -92,21 +92,21 @@ import kotlin.time.Duration
 fun SearchScreen(modifier: Modifier = Modifier) {
     val model: SearchMviModel = getViewModel<SearchViewModel>()
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val navigationCoordinator = rememberNavigationCoordinator()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
-    val mainRouter = remember { getMainRouter() }
+    val mainRouter = rememberMainRouter()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val shareHelper = remember { getShareHelper() }
-    val actionRepository = remember { getEntryActionRepository() }
+    val shareHelper = rememberShareHelper()
+    val actionRepository = rememberEntryActionRepository()
     val searchFieldFocusRequester = remember { FocusRequester() }
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
-    val clipboardHelper = remember { getClipboardHelper(clipboard) }
+    val clipboardHelper = rememberClipboardHelper(clipboard)
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }

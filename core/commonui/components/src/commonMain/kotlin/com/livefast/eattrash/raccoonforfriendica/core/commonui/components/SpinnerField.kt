@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 fun SpinnerField(
@@ -47,7 +47,7 @@ fun SpinnerField(
     values: List<Pair<String, String>> = emptyList(),
     onValueChange: ((String) -> Unit)? = null,
 ) {
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     val focusRequester = remember { FocusRequester() }
     var readOnly by remember { mutableStateOf(true) }
     var expanded by remember { mutableStateOf(false) }

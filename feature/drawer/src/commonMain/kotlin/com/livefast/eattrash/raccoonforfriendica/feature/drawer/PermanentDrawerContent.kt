@@ -26,7 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 
@@ -67,8 +67,7 @@ fun PermanentDrawerContent(
         add(Destination.NodeInfo)
         add(Destination.Settings)
     }
-    val coreResources = getCoreResources()
-
+    val coreResources = rememberCoreResources()
     val drawerWidth by animateDpAsState(if (uiState.isExpanded) 220.dp else 72.dp)
 
     Column(

@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.contentToDisplay
@@ -72,7 +72,7 @@ internal fun DistractionFreeTimelineItem(
     onReply: ((TimelineEntryModel) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
 ) {
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     val contentHorizontalPadding = Spacing.s
     val spoiler = entry.spoilerToDisplay.orEmpty()
 

@@ -52,11 +52,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
-import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.getFileSystemManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.rememberFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
@@ -89,10 +89,10 @@ fun UserListScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val mainRouter = remember { getMainRouter() }
-    val coreResources = remember { getCoreResources() }
-    val fileSystemManager = remember { getFileSystemManager() }
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val mainRouter = rememberMainRouter()
+    val coreResources = rememberCoreResources()
+    val fileSystemManager = rememberFileSystemManager()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val successMessage = LocalStrings.current.messageSuccess
