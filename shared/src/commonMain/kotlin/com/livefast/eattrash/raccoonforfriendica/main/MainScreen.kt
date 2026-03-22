@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.livefast.eattrash.raccoonforfriendica.adaptive.ExploreWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.TimelineWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
@@ -223,7 +224,7 @@ fun MainScreen(
                     )
                 }
                 BottomNavigationSection.Explore -> {
-                    ExploreScreen(
+                    ExploreWithEntryDetailScreen(
                         model = exploreViewModel,
                         lazyListState = exploreLazyListState,
                     )
