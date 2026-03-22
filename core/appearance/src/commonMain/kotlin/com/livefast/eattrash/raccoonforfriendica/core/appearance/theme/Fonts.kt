@@ -9,6 +9,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 /*
  * Reference:
@@ -16,7 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResour
  */
 @Composable
 fun UiFontFamily.toTypography(): Typography {
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     val fontFamily =
         when (this) {
             UiFontFamily.AtkinsonHyperlegible -> coreResources.atkinsonHyperlegible

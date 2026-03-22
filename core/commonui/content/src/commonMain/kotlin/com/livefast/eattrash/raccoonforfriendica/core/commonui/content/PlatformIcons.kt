@@ -1,13 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.Painter
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 fun String.toPlatformIcon(): Painter {
-    val resources = remember { getCoreResources() }
+    val resources = rememberCoreResources()
     val platformName = lowercase()
     return when (platformName) {
         "bluesky" -> resources.blueskySmallLogo

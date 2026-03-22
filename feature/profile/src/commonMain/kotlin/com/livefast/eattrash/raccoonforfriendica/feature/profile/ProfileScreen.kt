@@ -45,7 +45,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -68,9 +71,9 @@ fun ProfileScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val scope = rememberCoroutineScope()
-    val drawerCoordinator = remember { getDrawerCoordinator() }
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val coreResources = remember { getCoreResources() }
+    val drawerCoordinator = rememberDrawerCoordinator()
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val coreResources = rememberCoreResources()
     val successMessage = LocalStrings.current.messageSuccess
     var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }

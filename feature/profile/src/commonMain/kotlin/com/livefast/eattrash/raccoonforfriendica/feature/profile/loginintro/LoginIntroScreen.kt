@@ -59,6 +59,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 
@@ -68,7 +69,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
     val model: LoginIntroMviModel = getViewModel<LoginIntroViewModel>()
     val uriHandler = LocalUriHandler.current
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val resources = remember { getCoreResources() }
+    val resources = rememberCoreResources()
     var moreInfoBottomSheetOpened by remember { mutableStateOf(false) }
 
     Column(
@@ -219,7 +220,7 @@ private fun PlatformHeader(
     painter: Painter? = null,
     onClickInfo: (() -> Unit)? = null,
 ) {
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     val fullColor = MaterialTheme.colorScheme.onBackground
 
     Row(

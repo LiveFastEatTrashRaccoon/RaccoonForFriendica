@@ -45,8 +45,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Progre
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
@@ -71,8 +71,8 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val coreResources = remember { getCoreResources() }
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val coreResources = rememberCoreResources()
     var categoryBottomSheetOpened by remember { mutableStateOf(false) }
     var ruleSelectionOpened by remember { mutableStateOf(false) }
     val genericError = LocalStrings.current.messageGenericError

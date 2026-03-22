@@ -55,19 +55,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTextualInfoDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.getFabNestedScrollConnection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.rememberFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AlbumImageItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.di.AlbumDetailViewModelArgs
@@ -80,15 +80,15 @@ import kotlinx.coroutines.launch
 fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val model: AlbumDetailMviModel = getViewModel<AlbumDetailViewModel>(arg = AlbumDetailViewModelArgs(name))
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator = remember { getNavigationCoordinator() }
+    val navigationCoordinator = rememberNavigationCoordinator()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyStaggeredGridState()
-    val fabNestedScrollConnection = remember { getFabNestedScrollConnection() }
-    val mainRouter = remember { getMainRouter() }
-    val coreResources = remember { getCoreResources() }
-    val galleryHelper = remember { getGalleryHelper() }
+    val fabNestedScrollConnection = rememberFabNestedScrollConnection()
+    val mainRouter = rememberMainRouter()
+    val coreResources = rememberCoreResources()
+    val galleryHelper = rememberGalleryHelper()
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
     val genericError = LocalStrings.current.messageGenericError

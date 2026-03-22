@@ -58,7 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AlbumImageItem
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
@@ -83,7 +83,7 @@ fun GalleryPickerDialog(
     onClose: ((List<AttachmentModel>?) -> Unit)? = null,
 ) {
     val lazyGridState = rememberLazyStaggeredGridState()
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
     val fullColor = MaterialTheme.colorScheme.onBackground
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }

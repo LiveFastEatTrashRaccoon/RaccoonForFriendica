@@ -15,13 +15,12 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.mohamedrejeb.calf.ui.web.WebView
 import com.mohamedrejeb.calf.ui.web.rememberWebViewState
@@ -29,9 +28,9 @@ import com.mohamedrejeb.calf.ui.web.rememberWebViewState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val drawerCoordinator = remember { getDrawerCoordinator() }
-    val coreResources = remember { getCoreResources() }
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val drawerCoordinator = rememberDrawerCoordinator()
+    val coreResources = rememberCoreResources()
     val state = rememberWebViewState(url = url)
 
     LaunchedEffect(Unit) {

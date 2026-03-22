@@ -64,15 +64,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
-import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.getFileSystemManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.rememberFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapperBindEffect
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
@@ -104,11 +104,11 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val mainRouter = remember { getMainRouter() }
-    val coreResources = remember { getCoreResources() }
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val mainRouter = rememberMainRouter()
+    val coreResources = rememberCoreResources()
     val scope = rememberCoroutineScope()
-    val fileSystemManager = remember { getFileSystemManager() }
+    val fileSystemManager = rememberFileSystemManager()
     val snackbarHostState = remember { SnackbarHostState() }
     val successMessage = LocalStrings.current.messageSuccess
     val errorMessage = LocalStrings.current.messageGenericError

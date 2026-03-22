@@ -38,18 +38,18 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getAppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberAppInfoRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val uriHandler = LocalUriHandler.current
-    val appInfoRepository = remember { getAppInfoRepository() }
+    val appInfoRepository = rememberAppInfoRepository()
     val appInfo by appInfoRepository.appInfo.collectAsState()
-    val mainRouter = remember { getMainRouter() }
-    val coreResources = remember { getCoreResources() }
+    val mainRouter = rememberMainRouter()
+    val coreResources = rememberCoreResources()
 
     fun handleAction(block: () -> Unit) {
         onClose?.invoke()

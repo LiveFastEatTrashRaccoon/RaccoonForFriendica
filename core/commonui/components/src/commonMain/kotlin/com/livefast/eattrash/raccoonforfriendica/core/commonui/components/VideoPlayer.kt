@@ -10,7 +10,7 @@ import chaintech.videoplayer.host.MediaPlayerHost
 import chaintech.videoplayer.model.ScreenResize
 import chaintech.videoplayer.ui.preview.VideoPreviewComposable
 import chaintech.videoplayer.ui.video.VideoPlayerComposable
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 fun VideoPlayer(
@@ -19,7 +19,7 @@ fun VideoPlayer(
     contentScale: ContentScale = ContentScale.FillWidth,
     muted: Boolean = true,
 ) {
-    val resources = remember { getCoreResources() }
+    val resources = rememberCoreResources()
     val playerHost =
         remember {
             MediaPlayerHost(

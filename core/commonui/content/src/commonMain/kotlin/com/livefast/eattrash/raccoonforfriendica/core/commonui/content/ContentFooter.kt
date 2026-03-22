@@ -34,7 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 fun ContentFooter(
@@ -64,7 +64,7 @@ fun ContentFooter(
     val canLikeAndDislike = onFavorite != null && onDislike != null
     val itemModifier = Modifier.clearAndSetSemantics { }.padding(horizontal = Spacing.s)
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
 
     Row(
         modifier =

@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
 @Composable
 internal fun RowScope.BottomNavigationItem(
@@ -27,7 +28,7 @@ internal fun RowScope.BottomNavigationItem(
     onClick: (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val coreResources = remember { getCoreResources() }
+    val coreResources = rememberCoreResources()
 
     NavigationBarItem(
         onClick = {

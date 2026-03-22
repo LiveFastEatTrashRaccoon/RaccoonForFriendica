@@ -37,9 +37,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Progre
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ZoomableImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.ImageDetailViewModelArgs
 import kotlinx.coroutines.flow.launchIn
@@ -63,11 +63,9 @@ fun ImageDetailScreen(
         )
     val uiState by model.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val successMessage = LocalStrings.current.messageSuccess
-    val errorMessage = LocalStrings.current.messageGenericError
-    val navigationCoordinator = remember { getNavigationCoordinator() }
-    val drawerCoordinator = remember { getDrawerCoordinator() }
-    val coreResources = remember { getCoreResources() }
+    val navigationCoordinator = rememberNavigationCoordinator()
+    val drawerCoordinator = rememberDrawerCoordinator()
+    val coreResources = rememberCoreResources()
     val pagerState =
         rememberPagerState(
             initialPage = initialIndex,
@@ -75,6 +73,8 @@ fun ImageDetailScreen(
         )
     var shareModeBottomSheetOpened by remember { mutableStateOf(false) }
     var scaleModeBottomSheetOpened by remember { mutableStateOf(false) }
+    val successMessage = LocalStrings.current.messageSuccess
+    val errorMessage = LocalStrings.current.messageGenericError
     val isVideo = videoIndices.contains(uiState.currentIndex)
 
     LaunchedEffect(pagerState) {

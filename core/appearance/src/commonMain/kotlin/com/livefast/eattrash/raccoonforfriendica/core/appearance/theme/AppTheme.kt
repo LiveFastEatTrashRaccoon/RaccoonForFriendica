@@ -11,13 +11,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getBarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getColorSchemeProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberBarColorProvider
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberColorSchemeProvider
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
 
 @Composable
 fun AppTheme(useDynamicColors: Boolean, barTheme: UiBarTheme, content: @Composable () -> Unit) {
-    val repository = remember { getThemeRepository() }
+    val repository = rememberThemeRepository()
     val themeState by repository.theme.collectAsState()
     val customSeedColor by repository.customSeedColor.collectAsState()
-    val colorSchemeProvider = remember { getColorSchemeProvider() }
+    val colorSchemeProvider = rememberColorSchemeProvider()
     val colorScheme =
         colorSchemeProvider.getColorScheme(
             theme = themeState,
@@ -29,7 +32,7 @@ fun AppTheme(useDynamicColors: Boolean, barTheme: UiBarTheme, content: @Composab
     val fontFamily by repository.fontFamily.collectAsState()
     val typography = fontFamily.toTypography()
 
-    val barColorProvider = remember { getBarColorProvider() }
+    val barColorProvider = rememberBarColorProvider()
     barColorProvider.setBarColorAccordingToTheme(
         theme = themeState,
         barTheme = barTheme,
