@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -88,6 +89,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
@@ -114,7 +116,11 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
+fun UserDetailScreen(
+    id: String,
+    modifier: Modifier = Modifier,
+    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
+) {
     val model: UserDetailMviModel = getViewModel<UserDetailViewModel>(
         arg = UserDetailViewModelArgs(id),
     )
@@ -153,6 +159,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var changeRateLimitBottomSheetOpen by remember { mutableStateOf(false) }
+    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
 
     suspend fun goBackToTop() {
         runCatching {
@@ -185,10 +192,14 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
                     }
 
                     is UserDetailMviModel.Effect.OpenDetail -> {
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
-                            swipeNavigationEnabled = true,
-                        )
+                        if (customOnSelectCallback != null) {
+                            customOnSelectCallback?.invoke(event.entry)
+                        } else {
+                            mainRouter.openEntryDetail(
+                                entry = event.entry,
+                                swipeNavigationEnabled = true,
+                            )
+                        }
                     }
 
                     is UserDetailMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
@@ -408,7 +419,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier) {
             )
         },
         floatingActionButton = {
-            if (uiState.currentUserId != null) {
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded) && uiState.currentUserId != null) {
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =

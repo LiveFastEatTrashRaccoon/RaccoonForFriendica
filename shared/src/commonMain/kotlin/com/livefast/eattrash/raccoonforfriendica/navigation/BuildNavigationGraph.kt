@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.adaptive.CircleTimelineWithEntr
 import com.livefast.eattrash.raccoonforfriendica.adaptive.FavoritesWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.HashtagWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.SearchWithEntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.adaptive.UserDetailWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
@@ -333,7 +334,7 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
     }
     composable<Destination.UserDetail> {
         val route: Destination.UserDetail = it.toRoute()
-        UserDetailScreen(id = route.userId)
+        UserDetailWithEntryDetailScreen(id = route.userId)
     }
     composable<Destination.Settings> {
         SettingsScreen()
