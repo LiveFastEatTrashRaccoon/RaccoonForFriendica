@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.composable.ConfigureNotificationTypeDialog
@@ -68,6 +70,7 @@ fun InboxScreen(
     model: InboxMviModel,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
+    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
@@ -83,6 +86,7 @@ fun InboxScreen(
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDismissAllDialogOpen by remember { mutableStateOf(false) }
     var configureSelectedTypesDialogOpen by remember { mutableStateOf(false) }
+    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
 
     suspend fun goBackToTop() {
         runCatching {
@@ -216,7 +220,11 @@ fun InboxScreen(
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         onOpenEntry = { entry ->
-                            mainRouter.openEntryDetail(entry.original)
+                            if (customOnSelectCallback != null) {
+                                customOnSelectCallback?.invoke(entry.original)
+                            } else {
+                                mainRouter.openEntryDetail(entry.original)
+                            }
                             model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
