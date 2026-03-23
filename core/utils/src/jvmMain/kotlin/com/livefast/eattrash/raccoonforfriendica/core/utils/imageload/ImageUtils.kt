@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import coil3.annotation.ExperimentalCoilApi
 import coil3.decode.Decoder
 import coil3.decode.SkiaImageDecoder
 import coil3.network.NetworkFetcher
@@ -39,6 +40,7 @@ actual fun getNativeDecoders(): List<Decoder.Factory> = buildList {
     add(SkiaImageDecoder.Factory())
 }
 
+@OptIn(ExperimentalCoilApi::class)
 actual fun getNativeFetchers(): List<NetworkFetcher.Factory> = buildList {
     val httpClient = HttpClient(provideHttpClientEngine())
     add(KtorNetworkFetcherFactory(httpClient))
