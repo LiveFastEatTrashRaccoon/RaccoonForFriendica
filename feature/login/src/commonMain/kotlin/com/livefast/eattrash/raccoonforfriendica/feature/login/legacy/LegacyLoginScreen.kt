@@ -41,7 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
@@ -206,18 +206,8 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
             // user name
             TextField(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .autofill(
-                        autofillTypes =
-                        listOf(
-                            AutofillType.Username,
-                            AutofillType.EmailAddress,
-                        ),
-                        onFill = { value ->
-                            model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
-                        },
-                    ),
+                Modifier.fillMaxWidth()
+                    .autofill(contentTypes = listOf(ContentType.Username, ContentType.EmailAddress)),
                 label = {
                     Text(text = LocalStrings.current.fieldUsername)
                 },
@@ -258,12 +248,7 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
                 modifier =
                 Modifier
                     .fillMaxWidth()
-                    .autofill(
-                        autofillTypes = listOf(AutofillType.Password),
-                        onFill = { value ->
-                            model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
-                        },
-                    ),
+                    .autofill(contentTypes = listOf(ContentType.Password)),
                 label = {
                     Text(text = LocalStrings.current.fieldPassword)
                 },
