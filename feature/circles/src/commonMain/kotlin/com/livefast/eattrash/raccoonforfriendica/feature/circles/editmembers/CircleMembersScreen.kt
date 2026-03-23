@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleAddUserDialog
@@ -65,7 +67,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CircleMembersScreen(id: String, modifier: Modifier = Modifier) {
+fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAction: (() -> Unit)? = null) {
     val model: CircleMembersMviModel =
         getViewModel<CircleMembersViewModel>(arg = CircleMembersViewModelArgs(id))
     val uiState by model.uiState.collectAsState()
@@ -81,6 +83,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier) {
     val coreResources = rememberCoreResources()
     val genericError = LocalStrings.current.messageGenericError
     var confirmRemoveUserId by remember { mutableStateOf<String?>(null) }
+    val customBackCallback by rememberUpdatedState(customBackAction)
 
     fun goBackToTop() {
         runCatching {
@@ -120,7 +123,11 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier) {
                     if (navigationCoordinator.canPop.value) {
                         IconButton(
                             onClick = {
-                                navigationCoordinator.pop()
+                                if (customBackCallback != null) {
+                                    customBackCallback?.invoke()
+                                } else {
+                                    navigationCoordinator.pop()
+                                }
                             },
                         ) {
                             Icon(
@@ -149,26 +156,28 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier) {
             )
         },
         floatingActionButton = {
-            AnimatedVisibility(
-                visible = isFabVisible,
-                enter =
-                slideInVertically(
-                    initialOffsetY = { it * 2 },
-                ),
-                exit =
-                slideOutVertically(
-                    targetOffsetY = { it * 2 },
-                ),
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        model.reduce(CircleMembersMviModel.Intent.ToggleAddUsersDialog(true))
-                    },
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                AnimatedVisibility(
+                    visible = isFabVisible,
+                    enter =
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
+                    exit =
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
-                    Icon(
-                        imageVector = coreResources.add,
-                        contentDescription = LocalStrings.current.actionAddNew,
-                    )
+                    FloatingActionButton(
+                        onClick = {
+                            model.reduce(CircleMembersMviModel.Intent.ToggleAddUsersDialog(true))
+                        },
+                    ) {
+                        Icon(
+                            imageVector = coreResources.add,
+                            contentDescription = LocalStrings.current.actionAddNew,
+                        )
+                    }
                 }
             }
         },
