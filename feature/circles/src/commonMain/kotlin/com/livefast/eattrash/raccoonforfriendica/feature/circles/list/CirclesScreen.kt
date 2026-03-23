@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,7 +68,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CirclesScreen(model: CirclesMviModel, modifier: Modifier = Modifier) {
+fun CirclesScreen(
+    model: CirclesMviModel,
+    modifier: Modifier = Modifier,
+    customOpenAction: ((String) -> Unit)? = null,
+) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -81,6 +86,7 @@ fun CirclesScreen(model: CirclesMviModel, modifier: Modifier = Modifier) {
     var confirmDeleteItemId by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val genericError = LocalStrings.current.messageGenericError
+    val customOpenCallback by rememberUpdatedState(customOpenAction)
 
     fun goBackToTop() {
         runCatching {
@@ -157,26 +163,28 @@ fun CirclesScreen(model: CirclesMviModel, modifier: Modifier = Modifier) {
         },
         floatingActionButton =
         {
-            AnimatedVisibility(
-                visible = isFabVisible,
-                enter =
-                slideInVertically(
-                    initialOffsetY = { it * 2 },
-                ),
-                exit =
-                slideOutVertically(
-                    targetOffsetY = { it * 2 },
-                ),
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        model.reduce(CirclesMviModel.Intent.OpenEditor())
-                    },
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                AnimatedVisibility(
+                    visible = isFabVisible,
+                    enter =
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
+                    exit =
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
                 ) {
-                    Icon(
-                        imageVector = coreResources.add,
-                        contentDescription = LocalStrings.current.actionAddNew,
-                    )
+                    FloatingActionButton(
+                        onClick = {
+                            model.reduce(CirclesMviModel.Intent.OpenEditor())
+                        },
+                    ) {
+                        Icon(
+                            imageVector = coreResources.add,
+                            contentDescription = LocalStrings.current.actionAddNew,
+                        )
+                    }
                 }
             }
         },
@@ -261,7 +269,11 @@ fun CirclesScreen(model: CirclesMviModel, modifier: Modifier = Modifier) {
                                         }
 
                                         CustomOptions.EditMembers -> {
-                                            mainRouter.openCircleEditMembers(item.circle.id)
+                                            if (customOpenCallback != null) {
+                                                customOpenCallback?.invoke(item.circle.id)
+                                            } else {
+                                                mainRouter.openCircleEditMembers(item.circle.id)
+                                            }
                                         }
 
                                         OptionId.Delete -> confirmDeleteItemId = item.circle.id
