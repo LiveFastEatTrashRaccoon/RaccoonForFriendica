@@ -17,7 +17,7 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index(
-            value = ["userHandle", "accountId"],
+            value = ["accountId", "userHandle"],
             unique = true,
         ),
     ],
