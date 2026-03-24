@@ -43,12 +43,15 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > androidApp/keystore.jks
 
-      - name: Build release APK
+      - name: Build Android package
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: ./gradlew assembleRelease --stacktrace
+
+      - name: Build Debian package
+        run: ./gradlew :shared:packageDeb --stacktrace
 
       - name: Upload release build to artifacts
         uses: actions/upload-artifact@v7
@@ -56,6 +59,7 @@ jobs:
           name: release-artifacts
           path: |
             androidApp/build/outputs/apk/release/*.apk
+            shared/build/compose/binaries/main/deb/*.deb
 
       - name: Create Github release
         uses: softprops/action-gh-release@v2
@@ -64,3 +68,4 @@ jobs:
           prerelease: true
           files: |
             androidApp/build/outputs/apk/release/*.apk
+            shared/build/compose/binaries/main/deb/*.deb
