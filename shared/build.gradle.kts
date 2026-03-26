@@ -126,6 +126,14 @@ compose.desktop {
     }
 }
 
+linuxDebConfig {
+    // set StartupWMClass to fix taskbar icon
+    startupWMClass.set("Main")
+
+    // for t64 dependencies compatibility with older OSes
+    enableT64AlternativeDeps.set(true)
+}
+
 dependencies {
     kover(projects.core.appearance)
     kover(projects.core.navigation)
