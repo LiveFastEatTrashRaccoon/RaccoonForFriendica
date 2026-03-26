@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.room).apply(false)
     alias(libs.plugins.kotlinx.kover).apply(false)
     alias(libs.plugins.spotless).apply(false)
+    alias(libs.plugins.compose.desktop.linux.deps).apply(false)
 }
 
 tasks.register("clean", Delete::class) {
