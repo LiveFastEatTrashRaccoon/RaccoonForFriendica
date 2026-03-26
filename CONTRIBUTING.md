@@ -10,24 +10,24 @@ compatible version of Android Studio — you can have a look
 for the compatibility matrix between versions of Gradle, AGP and Android Studio and
 [here](https://kotlinlang.org/docs/multiplatform-compatibility-guide.html)
 for the compatibility between the Kotlin Multiplatform plugin, Kotlin, Gradle and AGP.
-Alternatively, you can try and use IntelliJ IDEA (or Fleet) but some extra steps may be needed to
-ensure everything fits and runs together.
+Alternatively, you can try and use IntelliJ IDEA but some extra steps may be needed to ensure
+everything fits and runs together.
 
 In order for Gradle to build, you will need to have a JDK installed on your local development
 machine, if you are using stock Android Studio it ships with the default JetBrains runtime, you
-could have a look in the Settings dialog under the section "Build, Execution, Deployment > Build
-Tools > Gradle"in the "Gradle JDK" location drop-down menu.
+could have a look in the Settings dialog under the section "Build, Execution, Deployment" > "Build
+Tools" > "Gradle" in the "Gradle JDK" location drop-down menu.
 
-If you want to use your custom JDK (e.g. under Linux you want to try OpenJDK instead), please make
+If you want to use a custom JDK (e.g. under Linux you want to try OpenJDK instead), please make
 sure that it has a suitable version, according
 to [this page](https://docs.gradle.org/current/userguide/compatibility.html).
 
-Since building this project requires a quite lot of RAM due to its multi-module structure
+Since building this project requires quite a lot of RAM due to its multi-module structure
 and to the fact that it is quite a complex project, please make sure that the `gradle.properties`
 file in the root folder contains proper memory settings for the JVM and the Kotlin compile daemon:
 
 ```properties
-org.gradle.jvmargs=-Xmx4096M -Dfile.encoding=UTF-8 -Dkotlin.daemon.jvm.options\="-Xmx4096M"
+org.gradle.jvmargs=-Xmx4096M -Dfile.encoding=UTF-8 -Dkotlin.daemon.jvm.options\="-Xmx8192M"
 ```
 
 Finally, this app uses Sentry for crash reporting, but its configuration is not committed in the
