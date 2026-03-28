@@ -20,7 +20,7 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(libs.findLibrary("compose-m3-adaptive-navigation").dependency)
                     implementation(libs.findLibrary("compose-m3-wsc").dependency)
                     implementation(libs.findLibrary("androidx-lifecycle-viewmodel-compose").dependency)
-                    implementation(libs.findLibrary("compose-ui-backhandler").dependency)
+                    implementation(libs.findLibrary("compose-navigationevent").dependency)
                 }
             }
             jvmMain {

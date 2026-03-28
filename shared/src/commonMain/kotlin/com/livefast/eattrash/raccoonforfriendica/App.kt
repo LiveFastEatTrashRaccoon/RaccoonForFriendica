@@ -23,11 +23,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
@@ -226,13 +228,16 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                             },
                         ) {
                             val canPop by drawerCoordinator.drawerOpened.collectAsState()
-                            @Suppress("DEPRECATION")
-                            PredictiveBackHandler(enabled = canPop) {
-                                // if the drawer is open, closes it
-                                scope.launch {
-                                    drawerCoordinator.toggleDrawer()
-                                }
-                            }
+                            val navState = rememberNavigationEventState(NavigationEventInfo.None)
+                            NavigationBackHandler(
+                                state = navState,
+                                isBackEnabled = canPop,
+                                onBackCompleted = {
+                                    scope.launch {
+                                        drawerCoordinator.toggleDrawer()
+                                    }
+                                },
+                            )
                             ProvideCustomFontScale {
                                 // preload ViewModels for all top-level sections
                                 val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
