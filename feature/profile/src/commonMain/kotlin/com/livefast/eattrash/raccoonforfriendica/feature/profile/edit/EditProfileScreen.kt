@@ -41,7 +41,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
@@ -58,6 +57,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -104,6 +106,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
     var hasDisplayNameFocus by remember { mutableStateOf(false) }
     var hasBioFocus by remember { mutableStateOf(false) }
     var insertEmojiModalOpen by remember { mutableStateOf(false) }
+    val navState = rememberNavigationEventState(NavigationEventInfo.None)
 
     fun goBackToTop() {
         runCatching {
@@ -130,10 +133,16 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                 }
             }.launchIn(this)
     }
-    @Suppress("DEPRECATION")
-    PredictiveBackHandler(enabled = uiState.hasUnsavedChanges) {
-        confirmBackWithUnsavedChangesDialog = true
-    }
+
+    NavigationBackHandler(
+        state = navState,
+        isBackEnabled = uiState.hasUnsavedChanges,
+        onBackCompleted = {
+            scope.launch {
+                confirmBackWithUnsavedChangesDialog = true
+            }
+        },
+    )
 
     Scaffold(
         modifier = modifier.safeImePadding(),
