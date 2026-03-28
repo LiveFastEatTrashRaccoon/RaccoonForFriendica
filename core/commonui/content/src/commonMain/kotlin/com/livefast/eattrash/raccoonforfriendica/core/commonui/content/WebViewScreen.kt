@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.mohamedrejeb.calf.ui.web.WebView
 import com.mohamedrejeb.calf.ui.web.rememberWebViewState
@@ -30,7 +30,6 @@ import com.mohamedrejeb.calf.ui.web.rememberWebViewState
 fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
     val navigationCoordinator = rememberNavigationCoordinator()
     val drawerCoordinator = rememberDrawerCoordinator()
-    val coreResources = rememberCoreResources()
     val state = rememberWebViewState(url = url)
 
     LaunchedEffect(Unit) {
@@ -68,7 +67,7 @@ fun WebViewScreen(url: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

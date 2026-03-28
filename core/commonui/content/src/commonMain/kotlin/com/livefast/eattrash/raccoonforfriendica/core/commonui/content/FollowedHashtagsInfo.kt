@@ -18,7 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -30,7 +30,6 @@ internal fun FollowedHashtagsInfo(
     onOpenTag: ((TagModel) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
 
     FlowRow(
         modifier = modifier,
@@ -39,7 +38,7 @@ internal fun FollowedHashtagsInfo(
     ) {
         Icon(
             modifier = Modifier.size(iconSize),
-            imageVector = coreResources.tag,
+            imageVector = LocalResources.current.tag,
             contentDescription = null,
             tint = ancillaryColor,
         )

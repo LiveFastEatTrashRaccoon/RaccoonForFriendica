@@ -48,7 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
@@ -81,7 +81,6 @@ fun InboxScreen(
     val mainRouter = rememberMainRouter()
     val scope = rememberCoroutineScope()
     val drawerCoordinator = rememberDrawerCoordinator()
-    val coreResources = rememberCoreResources()
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDismissAllDialogOpen by remember { mutableStateOf(false) }
@@ -136,7 +135,7 @@ fun InboxScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.menu,
+                                imageVector = LocalResources.current.menu,
                                 contentDescription = LocalStrings.current.actionOpenSideMenu,
                             )
                         }
@@ -150,7 +149,7 @@ fun InboxScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.filterList,
+                                imageVector = LocalResources.current.filterList,
                                 contentDescription = LocalStrings.current.actionFilter,
                             )
                         }
@@ -166,7 +165,7 @@ fun InboxScreen(
                                 )
                             } else {
                                 Icon(
-                                    imageVector = coreResources.doneAll,
+                                    imageVector = LocalResources.current.doneAll,
                                     contentDescription = LocalStrings.current.actionDismissAllNotifications,
                                 )
                             }

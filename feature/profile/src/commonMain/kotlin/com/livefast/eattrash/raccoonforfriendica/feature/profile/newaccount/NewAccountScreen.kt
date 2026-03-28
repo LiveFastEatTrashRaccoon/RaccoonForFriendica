@@ -14,14 +14,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 
@@ -31,7 +28,6 @@ fun NewAccountScreen(modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
-    val coreResources = rememberCoreResources()
 
     Scaffold(
         modifier = modifier,
@@ -54,7 +50,7 @@ fun NewAccountScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

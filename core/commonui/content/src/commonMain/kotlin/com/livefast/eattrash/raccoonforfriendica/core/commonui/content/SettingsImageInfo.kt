@@ -22,7 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.toComposeImageBitmap
 
 @Composable
@@ -36,7 +36,6 @@ fun SettingsImageInfo(
     bytes: ByteArray? = null,
     onEdit: (() -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
 
     Box(
@@ -82,7 +81,7 @@ fun SettingsImageInfo(
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        imageVector = coreResources.fileOpen,
+                        imageVector = LocalResources.current.fileOpen,
                         contentDescription = LocalStrings.current.pickFromGalleryDialogTitle,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )

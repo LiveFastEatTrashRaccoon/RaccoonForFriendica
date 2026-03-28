@@ -38,7 +38,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
@@ -60,7 +60,6 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
     val navigationCoordinator = rememberNavigationCoordinator()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val coreResources = rememberCoreResources()
     var confirmAddItemId by remember { mutableStateOf<String?>(null) }
     var confirmRemoveItemId by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -109,7 +108,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

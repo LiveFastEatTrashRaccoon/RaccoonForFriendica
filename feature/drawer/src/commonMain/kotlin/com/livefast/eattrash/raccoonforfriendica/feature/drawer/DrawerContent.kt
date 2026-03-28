@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerShortcut
 import kotlinx.coroutines.delay
@@ -56,7 +56,6 @@ fun DrawerContent(modifier: Modifier = Modifier) {
     val navigationCoordinator = rememberNavigationCoordinator()
     val drawerCoordinator = rememberDrawerCoordinator()
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     val scope = rememberCoroutineScope()
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }
@@ -124,35 +123,35 @@ fun DrawerContent(modifier: Modifier = Modifier) {
             } else {
                 DrawerShortcut(
                     title = LocalStrings.current.favoritesTitle,
-                    icon = coreResources.favoriteFill,
+                    icon = LocalResources.current.favoriteFill,
                     onSelect = {
                         handleAction { mainRouter.openFavorites() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.bookmarksTitle,
-                    icon = coreResources.bookmarksFill,
+                    icon = LocalResources.current.bookmarksFill,
                     onSelect = {
                         handleAction { mainRouter.openBookmarks() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followedHashtagsTitle,
-                    icon = coreResources.tag,
+                    icon = LocalResources.current.tag,
                     onSelect = {
                         handleAction { mainRouter.openFollowedHashtags() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.followRequestsTitle,
-                    icon = coreResources.flaky,
+                    icon = LocalResources.current.flaky,
                     onSelect = {
                         handleAction { mainRouter.openFollowRequests() }
                     },
                 )
                 DrawerShortcut(
                     title = LocalStrings.current.manageCirclesTitle,
-                    icon = coreResources.workspacesFill,
+                    icon = LocalResources.current.workspacesFill,
                     onSelect = {
                         handleAction { mainRouter.openCircles() }
                     },
@@ -160,7 +159,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasAnnouncements) {
                     DrawerShortcut(
                         title = LocalStrings.current.announcementsTitle,
-                        icon = coreResources.campaign,
+                        icon = LocalResources.current.campaign,
                         onSelect = {
                             handleAction { mainRouter.openAnnouncements() }
                         },
@@ -169,7 +168,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasDirectMessages) {
                     DrawerShortcut(
                         title = LocalStrings.current.directMessagesTitle,
-                        icon = coreResources.chatFill,
+                        icon = LocalResources.current.chatFill,
                         onSelect = {
                             handleAction { mainRouter.openDirectMessages() }
                         },
@@ -178,7 +177,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasGallery) {
                     DrawerShortcut(
                         title = LocalStrings.current.galleryTitle,
-                        icon = coreResources.dashboard,
+                        icon = LocalResources.current.dashboard,
                         onSelect = {
                             handleAction { mainRouter.openGallery() }
                         },
@@ -186,7 +185,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 }
                 DrawerShortcut(
                     title = LocalStrings.current.unpublishedTitle,
-                    icon = coreResources.stylusFountainPenFill,
+                    icon = LocalResources.current.stylusFountainPenFill,
                     onSelect = {
                         handleAction { mainRouter.openUnpublished() }
                     },
@@ -194,7 +193,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 if (uiState.hasCalendar) {
                     DrawerShortcut(
                         title = LocalStrings.current.calendarTitle,
-                        icon = coreResources.calendarMonthFill,
+                        icon = LocalResources.current.calendarMonthFill,
                         onSelect = {
                             handleAction { mainRouter.openCalendar() }
                         },
@@ -202,7 +201,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
                 }
                 DrawerShortcut(
                     title = LocalStrings.current.shortcutsTitle,
-                    icon = coreResources.exploreFill,
+                    icon = LocalResources.current.exploreFill,
                     onSelect = {
                         handleAction { mainRouter.openShortcuts() }
                     },
@@ -211,7 +210,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.nodeInfoTitle,
-                icon = coreResources.dnsFill,
+                icon = LocalResources.current.dnsFill,
                 onSelect = {
                     handleAction { mainRouter.openNodeInfo() }
                 },
@@ -221,7 +220,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.settingsAbout,
-                icon = coreResources.support,
+                icon = LocalResources.current.support,
                 onSelect = {
                     scope.launch {
                         drawerCoordinator.closeDrawer()
@@ -232,7 +231,7 @@ fun DrawerContent(modifier: Modifier = Modifier) {
 
             DrawerShortcut(
                 title = LocalStrings.current.settingsTitle,
-                icon = coreResources.settingsFill,
+                icon = LocalResources.current.settingsFill,
                 onSelect = {
                     handleAction { mainRouter.openSettings() }
                 },

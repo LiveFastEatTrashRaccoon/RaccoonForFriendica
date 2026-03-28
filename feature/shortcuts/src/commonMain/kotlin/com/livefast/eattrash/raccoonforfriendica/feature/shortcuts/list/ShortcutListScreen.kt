@@ -46,7 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import kotlinx.coroutines.flow.launchIn
@@ -63,7 +63,6 @@ fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifie
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     var confirmDeleteItem by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val genericError = LocalStrings.current.messageGenericError
@@ -110,7 +109,7 @@ fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifie
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

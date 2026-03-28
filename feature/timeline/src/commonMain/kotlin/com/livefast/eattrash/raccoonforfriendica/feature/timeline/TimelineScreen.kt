@@ -74,7 +74,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -125,7 +125,6 @@ fun TimelineScreen(
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
     val clipboardHelper = rememberClipboardHelper(clipboard)
-    val coreResources = rememberCoreResources()
     var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -207,7 +206,7 @@ fun TimelineScreen(
                                 },
                             ) {
                                 Icon(
-                                    imageVector = coreResources.menu,
+                                    imageVector = LocalResources.current.menu,
                                     contentDescription = LocalStrings.current.actionOpenSideMenu,
                                 )
                             }
@@ -242,7 +241,7 @@ fun TimelineScreen(
                                 },
                             ) {
                                 Icon(
-                                    imageVector = coreResources.campaign,
+                                    imageVector = LocalResources.current.campaign,
                                     contentDescription = LocalStrings.current.announcementsTitle,
                                 )
                             }
@@ -257,7 +256,7 @@ fun TimelineScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.add,
+                                imageVector = LocalResources.current.add,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
@@ -288,7 +287,7 @@ fun TimelineScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.add,
+                            imageVector = LocalResources.current.add,
                             contentDescription = LocalStrings.current.actionAddNew,
                         )
                     }
@@ -619,7 +618,7 @@ fun TimelineScreen(
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(coreResources),
+                            imageVector = it.toIcon(LocalResources.current),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )

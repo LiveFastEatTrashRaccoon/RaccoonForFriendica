@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReactionModel
 
 @Composable
@@ -25,8 +25,6 @@ internal fun AnnouncementReactions(
     onAdd: ((String) -> Unit)? = null,
     onRemove: ((String) -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -51,7 +49,7 @@ internal fun AnnouncementReactions(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.l),
-                imageVector = coreResources.addCircle,
+                imageVector = LocalResources.current.addCircle,
                 contentDescription = LocalStrings.current.actionAddReaction,
                 tint = MaterialTheme.colorScheme.primary,
             )

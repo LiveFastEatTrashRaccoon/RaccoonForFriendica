@@ -31,7 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.prettifyHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -44,7 +44,6 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
     val sourceProtocol = entry.sourceProtocol.orEmpty()
     val creationDate = entry.created.orEmpty()
     val updateDate = entry.updated.orEmpty()
-    val coreResources = rememberCoreResources()
 
     BasicAlertDialog(
         modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
@@ -103,7 +102,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             )
                             Icon(
                                 modifier = Modifier.size(IconSize.s),
-                                imageVector = entry.visibility.toIcon(coreResources),
+                                imageVector = entry.visibility.toIcon(LocalResources.current),
                                 contentDescription = entry.visibility.toReadableName(),
                                 tint = fullColor,
                             )
@@ -192,7 +191,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             ) {
                                 Icon(
                                     modifier = Modifier.size(IconSize.m).padding(0.25.dp),
-                                    imageVector = coreResources.update,
+                                    imageVector = LocalResources.current.update,
                                     contentDescription = LocalStrings.current.updateDate,
                                     tint = fullColor,
                                 )
@@ -217,7 +216,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             ) {
                                 Icon(
                                     modifier = Modifier.size(IconSize.m).padding(2.dp),
-                                    imageVector = coreResources.schedule,
+                                    imageVector = LocalResources.current.schedule,
                                     contentDescription = LocalStrings.current.creationDate,
                                     tint = fullColor,
                                 )
@@ -241,7 +240,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                         ) {
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
-                                imageVector = coreResources.arrowCircleUp,
+                                imageVector = LocalResources.current.arrowCircleUp,
                                 contentDescription =
                                 LocalStrings.current.extendedSocialInfoFavorites(entry.favoriteCount),
                                 tint = fullColor,
@@ -254,7 +253,7 @@ fun EntryDetailDialog(entry: TimelineEntryModel, modifier: Modifier = Modifier, 
                             Spacer(modifier = Modifier.weight(1f))
                             Icon(
                                 modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
-                                imageVector = coreResources.arrowCircleDown,
+                                imageVector = LocalResources.current.arrowCircleDown,
                                 contentDescription =
                                 LocalStrings.current.dislikesCount(entry.dislikesCount),
                                 tint = fullColor,

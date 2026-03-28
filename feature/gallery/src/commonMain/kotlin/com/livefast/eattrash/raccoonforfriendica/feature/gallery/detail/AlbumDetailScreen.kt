@@ -64,7 +64,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
@@ -87,7 +87,6 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val lazyGridState = rememberLazyStaggeredGridState()
     val fabNestedScrollConnection = rememberFabNestedScrollConnection()
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     val galleryHelper = rememberGalleryHelper()
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
@@ -148,7 +147,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -164,7 +163,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.add,
+                                imageVector = LocalResources.current.add,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
@@ -201,7 +200,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.add,
+                        imageVector = LocalResources.current.add,
                         contentDescription = LocalStrings.current.actionAddNew,
                     )
                 }

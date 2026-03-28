@@ -18,7 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun ContentExtendedSocialInfo(
@@ -29,7 +29,6 @@ fun ContentExtendedSocialInfo(
     onOpenUsersReblog: (() -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
 
     Row(
         modifier = modifier,
@@ -50,7 +49,7 @@ fun ContentExtendedSocialInfo(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.s),
-                imageVector = coreResources.repeat,
+                imageVector = LocalResources.current.repeat,
                 contentDescription = null,
                 tint = ancillaryColor,
             )
@@ -79,7 +78,7 @@ fun ContentExtendedSocialInfo(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.s),
-                imageVector = coreResources.favorite,
+                imageVector = LocalResources.current.favorite,
                 contentDescription = null,
                 tint = ancillaryColor,
             )

@@ -25,7 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun SettingsRow(
@@ -41,7 +41,6 @@ fun SettingsRow(
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
 
     Row(
         modifier =
@@ -116,7 +115,7 @@ fun SettingsRow(
         }
         if (disclosureIndicator) {
             Icon(
-                imageVector = coreResources.chevronForward,
+                imageVector = LocalResources.current.chevronForward,
                 tint = fullColor,
                 contentDescription = LocalStrings.current.actionOpenDetail,
             )

@@ -29,7 +29,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun GenericListItem(
@@ -42,7 +42,6 @@ fun GenericListItem(
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
 
@@ -92,7 +91,7 @@ fun GenericListItem(
                 ) {
                     Icon(
                         modifier = Modifier.size(IconSize.s),
-                        imageVector = coreResources.moreVert,
+                        imageVector = LocalResources.current.moreVert,
                         contentDescription = LocalStrings.current.actionOpenOptions,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )

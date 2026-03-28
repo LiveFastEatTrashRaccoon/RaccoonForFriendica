@@ -41,7 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,7 +55,6 @@ fun InsertEmojiBottomSheet(
     onInsertCustom: ((String) -> Unit)? = null,
     onClose: (() -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
     val groupedEmojis = emojis.groupBy { it.category.orEmpty() }
     val categories = groupedEmojis.keys.sorted()
 
@@ -99,7 +98,7 @@ fun InsertEmojiBottomSheet(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.send,
+                                imageVector = LocalResources.current.send,
                                 contentDescription = LocalStrings.current.actionSubmit,
                                 tint = MaterialTheme.colorScheme.primary,
                             )

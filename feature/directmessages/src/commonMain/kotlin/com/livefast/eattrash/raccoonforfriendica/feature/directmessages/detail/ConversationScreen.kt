@@ -58,7 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
@@ -86,7 +86,6 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val coreResources = rememberCoreResources()
     val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username } ?: ""
     val genericError = LocalStrings.current.messageGenericError
     val followRequiredMessage = LocalStrings.current.followRequiredMessage
@@ -168,7 +167,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -220,7 +219,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.send,
+                        imageVector = LocalResources.current.send,
                         contentDescription = LocalStrings.current.actionSubmit,
                     )
                 }

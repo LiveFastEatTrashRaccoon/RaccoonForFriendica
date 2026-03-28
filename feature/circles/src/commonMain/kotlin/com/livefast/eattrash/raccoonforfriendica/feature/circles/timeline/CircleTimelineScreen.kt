@@ -56,7 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberClipboardHelper
@@ -91,7 +91,6 @@ fun CircleTimelineScreen(
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -176,7 +175,7 @@ fun CircleTimelineScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }

@@ -65,7 +65,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
@@ -111,7 +111,6 @@ fun ExploreScreen(
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
     val clipboardHelper = rememberClipboardHelper(clipboard)
-    val coreResources = rememberCoreResources()
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
@@ -177,7 +176,7 @@ fun ExploreScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.menu,
+                                imageVector = LocalResources.current.menu,
                                 contentDescription = LocalStrings.current.actionOpenSideMenu,
                             )
                         }
@@ -192,7 +191,7 @@ fun ExploreScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.search,
+                                imageVector = LocalResources.current.search,
                                 contentDescription = LocalStrings.current.actionSearch,
                             )
                         }

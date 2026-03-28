@@ -63,7 +63,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemP
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
@@ -130,7 +130,6 @@ fun NodeInfoScreenScaffold(
     val navigationCoordinator = rememberNavigationCoordinator()
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
@@ -166,7 +165,7 @@ fun NodeInfoScreenScaffold(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -180,7 +179,7 @@ fun NodeInfoScreenScaffold(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.changeCircle,
+                                imageVector = LocalResources.current.changeCircle,
                                 contentDescription = LocalStrings.current.changeNodeDialogTitle,
                             )
                         }
@@ -247,7 +246,7 @@ fun NodeInfoScreenScaffold(
                     item {
                         SettingsHeader(
                             title = LocalStrings.current.settingsHeaderGeneral,
-                            icon = coreResources.info,
+                            icon = LocalResources.current.info,
                         )
                     }
 
@@ -284,7 +283,7 @@ fun NodeInfoScreenScaffold(
                         item {
                             SettingsHeader(
                                 title = LocalStrings.current.nodeInfoSectionContact,
-                                icon = coreResources.alternateEmail,
+                                icon = LocalResources.current.alternateEmail,
                             )
                             ContactUserItem(
                                 modifier =
@@ -307,7 +306,7 @@ fun NodeInfoScreenScaffold(
                         item {
                             SettingsHeader(
                                 title = LocalStrings.current.nodeInfoSectionRules,
-                                icon = coreResources.shield,
+                                icon = LocalResources.current.shield,
                             )
                         }
                         items(rules) { rule ->
@@ -324,7 +323,7 @@ fun NodeInfoScreenScaffold(
                     item {
                         SettingsHeader(
                             title = LocalStrings.current.itemOther,
-                            icon = coreResources.api,
+                            icon = LocalResources.current.api,
                         )
                     }
 
@@ -396,7 +395,6 @@ private fun ContactUserItem(
     onClick: (() -> Unit)? = null,
 ) {
     val avatar = user.avatar.orEmpty()
-    val coreResources = rememberCoreResources()
     val avatarSize = IconSize.m
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
@@ -467,7 +465,7 @@ private fun ContactUserItem(
 
             Icon(
                 modifier = Modifier.size(IconSize.s),
-                imageVector = coreResources.chevronForward,
+                imageVector = LocalResources.current.chevronForward,
                 contentDescription = LocalStrings.current.actionOpenDetail,
             )
         }

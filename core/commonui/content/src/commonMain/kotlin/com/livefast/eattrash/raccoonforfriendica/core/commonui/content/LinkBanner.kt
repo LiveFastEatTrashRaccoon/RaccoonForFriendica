@@ -17,11 +17,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun LinkBanner(url: String, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    val coreResources = rememberCoreResources()
     if (url.isNotEmpty()) {
         Row(
             modifier =
@@ -48,7 +47,7 @@ fun LinkBanner(url: String, modifier: Modifier = Modifier, onClick: (() -> Unit)
                 style = MaterialTheme.typography.labelMedium,
             )
             Icon(
-                imageVector = coreResources.link,
+                imageVector = LocalResources.current.link,
                 contentDescription = LocalStrings.current.actionOpenLink,
             )
         }

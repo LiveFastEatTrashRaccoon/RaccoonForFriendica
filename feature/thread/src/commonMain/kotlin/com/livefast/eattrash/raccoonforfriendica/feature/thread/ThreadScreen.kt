@@ -77,7 +77,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -114,7 +114,6 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
     val navigationCoordinator = rememberNavigationCoordinator()
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     val scope = rememberCoroutineScope()
     val fabNestedScrollConnection = rememberFabNestedScrollConnection()
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
@@ -179,7 +178,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -201,7 +200,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.reply,
+                                imageVector = LocalResources.current.reply,
                                 contentDescription = LocalStrings.current.actionReply,
                             )
                         }
@@ -234,7 +233,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.reply,
+                            imageVector = LocalResources.current.reply,
                             contentDescription = LocalStrings.current.actionReply,
                         )
                     }

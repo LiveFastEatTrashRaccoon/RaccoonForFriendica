@@ -10,22 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
 @Composable
 internal fun CircleHeader(type: CircleType, modifier: Modifier = Modifier) {
-    val coreResources = rememberCoreResources()
-
     Row(
         modifier = modifier.padding(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Icon(
-            imageVector = type.toIcon(coreResources),
+            imageVector = type.toIcon(LocalResources.current),
             contentDescription = type.toReadableName(),
             tint = MaterialTheme.colorScheme.onBackground,
         )

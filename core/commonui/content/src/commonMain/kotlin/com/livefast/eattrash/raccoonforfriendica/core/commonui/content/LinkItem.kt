@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 
 @Composable
@@ -171,8 +171,6 @@ fun LinkItem(
 
 @Composable
 private fun UrlBanner(url: String, modifier: Modifier = Modifier) {
-    val coreResources = rememberCoreResources()
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -186,7 +184,7 @@ private fun UrlBanner(url: String, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.labelMedium,
         )
         Icon(
-            imageVector = coreResources.link,
+            imageVector = LocalResources.current.link,
             contentDescription = LocalStrings.current.actionOpenLink,
         )
     }

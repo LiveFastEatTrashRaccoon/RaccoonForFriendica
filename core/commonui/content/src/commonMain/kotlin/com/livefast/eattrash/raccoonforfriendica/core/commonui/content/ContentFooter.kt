@@ -34,7 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun ContentFooter(
@@ -64,7 +64,6 @@ fun ContentFooter(
     val canLikeAndDislike = onFavorite != null && onDislike != null
     val itemModifier = Modifier.clearAndSetSemantics { }.padding(horizontal = Spacing.s)
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
-    val coreResources = rememberCoreResources()
 
     Row(
         modifier =
@@ -78,7 +77,7 @@ fun ContentFooter(
         if (onReply != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = coreResources.reply,
+                icon = LocalResources.current.reply,
                 contentDescription = null,
                 value = replyCount,
                 onClick = onReply,
@@ -87,8 +86,8 @@ fun ContentFooter(
         if (onReblog != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = coreResources.rocketLaunch,
-                toggledIcon = coreResources.rocketLaunchFill,
+                icon = LocalResources.current.rocketLaunch,
+                toggledIcon = LocalResources.current.rocketLaunchFill,
                 contentDescription = null,
                 value = reblogCount,
                 toggled = reblogged,
@@ -101,15 +100,15 @@ fun ContentFooter(
                 modifier = itemModifier,
                 icon =
                 if (canLikeAndDislike) {
-                    coreResources.thumbUp
+                    LocalResources.current.thumbUp
                 } else {
-                    coreResources.favorite
+                    LocalResources.current.favorite
                 },
                 toggledIcon =
                 if (canLikeAndDislike) {
-                    coreResources.thumbUpFill
+                    LocalResources.current.thumbUpFill
                 } else {
-                    coreResources.favoriteFill
+                    LocalResources.current.favoriteFill
                 },
                 contentDescription = null,
                 value = favoriteCount,
@@ -121,8 +120,8 @@ fun ContentFooter(
         if (onDislike != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = coreResources.thumbDown,
-                toggledIcon = coreResources.thumbDownFill,
+                icon = LocalResources.current.thumbDown,
+                toggledIcon = LocalResources.current.thumbDownFill,
                 contentDescription = null,
                 value = dislikeCount,
                 toggled = disliked,
@@ -133,8 +132,8 @@ fun ContentFooter(
         if (onBookmark != null) {
             FooterItem(
                 modifier = itemModifier,
-                icon = coreResources.bookmark,
-                toggledIcon = coreResources.bookmarkFill,
+                icon = LocalResources.current.bookmark,
+                toggledIcon = LocalResources.current.bookmarkFill,
                 contentDescription = null,
                 toggled = bookmarked,
                 loading = bookmarkLoading,
@@ -170,7 +169,7 @@ fun ContentFooter(
                 ) {
                     Icon(
                         modifier = Modifier.size(IconSize.s),
-                        imageVector = coreResources.moreVert,
+                        imageVector = LocalResources.current.moreVert,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )

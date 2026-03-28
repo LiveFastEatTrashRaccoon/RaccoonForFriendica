@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.PublicationType
 
 @Composable
@@ -33,8 +33,6 @@ internal fun UtilsBar(
     onClickInlineImage: (() -> Unit)? = null,
     onSubmit: (() -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
-
     Row(
         modifier = modifier.padding(horizontal = Spacing.xxs),
         verticalAlignment = Alignment.CenterVertically,
@@ -51,7 +49,7 @@ internal fun UtilsBar(
                 },
             ) {
                 Icon(
-                    imageVector = coreResources.camera,
+                    imageVector = LocalResources.current.camera,
                     contentDescription = LocalStrings.current.pickFromGalleryDialogTitle,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -64,7 +62,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.addPhotoAlternate,
+                        imageVector = LocalResources.current.addPhotoAlternate,
                         contentDescription = LocalStrings.current.actionInsertInlineImage,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -79,7 +77,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.link,
+                        imageVector = LocalResources.current.link,
                         contentDescription = LocalStrings.current.actionInsertLink,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -92,7 +90,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.formatBold,
+                        imageVector = LocalResources.current.formatBold,
                         contentDescription = LocalStrings.current.formatBold,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -105,7 +103,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.formatItalic,
+                        imageVector = LocalResources.current.formatItalic,
                         contentDescription = LocalStrings.current.formatItalic,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -118,7 +116,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.formatUnderlined,
+                        imageVector = LocalResources.current.formatUnderlined,
                         contentDescription = LocalStrings.current.formatUnderlined,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -131,7 +129,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.strikethroughS,
+                        imageVector = LocalResources.current.strikethroughS,
                         contentDescription = LocalStrings.current.formatStrikethrough,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -144,7 +142,7 @@ internal fun UtilsBar(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.code,
+                        imageVector = LocalResources.current.code,
                         contentDescription = LocalStrings.current.formatMonospace,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -161,9 +159,9 @@ internal fun UtilsBar(
             Icon(
                 imageVector =
                 when (publicationType) {
-                    PublicationType.Draft -> coreResources.save
-                    is PublicationType.Scheduled -> coreResources.scheduleSend
-                    else -> coreResources.send
+                    PublicationType.Draft -> LocalResources.current.save
+                    is PublicationType.Scheduled -> LocalResources.current.scheduleSend
+                    else -> LocalResources.current.send
                 },
                 contentDescription = LocalStrings.current.actionSubmit,
                 tint = MaterialTheme.colorScheme.primary,

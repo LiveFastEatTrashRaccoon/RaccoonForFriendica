@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.getNextAction
@@ -26,8 +26,6 @@ fun UserNotificationButton(
     pending: Boolean = false,
     onClick: ((NotificationStatusNextAction) -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
-
     Box(
         modifier = modifier,
     ) {
@@ -39,7 +37,7 @@ fun UserNotificationButton(
                 },
             ) {
                 Icon(
-                    imageVector = status.toIcon(coreResources),
+                    imageVector = status.toIcon(LocalResources.current),
                     contentDescription =
                     when (status) {
                         NotificationStatus.Disabled -> "Notifications disabled"

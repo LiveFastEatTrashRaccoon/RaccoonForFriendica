@@ -26,7 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
@@ -41,7 +41,6 @@ internal fun ReblogInfo(
     val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
     val onOpenUserModifier =
         if (onOpenUser != null) {
             Modifier
@@ -66,7 +65,7 @@ internal fun ReblogInfo(
         // There is no need for a contentDescription here as this is decorative image with no click handler
         Icon(
             modifier = Modifier.size(iconSize),
-            imageVector = coreResources.repeat,
+            imageVector = LocalResources.current.repeat,
             contentDescription = null,
             tint = ancillaryColor,
         )

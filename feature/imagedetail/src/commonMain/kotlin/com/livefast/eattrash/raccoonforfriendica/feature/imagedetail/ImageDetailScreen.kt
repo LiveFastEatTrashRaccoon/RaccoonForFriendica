@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Zoomab
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.ImageDetailViewModelArgs
 import kotlinx.coroutines.flow.launchIn
@@ -65,7 +65,6 @@ fun ImageDetailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
     val drawerCoordinator = rememberDrawerCoordinator()
-    val coreResources = rememberCoreResources()
     val pagerState =
         rememberPagerState(
             initialPage = initialIndex,
@@ -131,7 +130,7 @@ fun ImageDetailScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -144,7 +143,7 @@ fun ImageDetailScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.download,
+                            imageVector = LocalResources.current.download,
                             contentDescription = LocalStrings.current.actionDownload,
                         )
                     }
@@ -154,7 +153,7 @@ fun ImageDetailScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.share,
+                            imageVector = LocalResources.current.share,
                             contentDescription = LocalStrings.current.actionShare,
                         )
                     }
@@ -165,7 +164,7 @@ fun ImageDetailScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.aspectRatio,
+                                imageVector = LocalResources.current.aspectRatio,
                                 contentDescription = LocalStrings.current.contentScaleTitle,
                             )
                         }

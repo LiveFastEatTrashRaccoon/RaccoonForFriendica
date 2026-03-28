@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberAppInfoRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +49,6 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val appInfoRepository = rememberAppInfoRepository()
     val appInfo by appInfoRepository.appInfo.collectAsState()
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
 
     fun handleAction(block: () -> Unit) {
         onClose?.invoke()
@@ -91,7 +90,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutChangelog,
-                        icon = coreResources.article,
+                        icon = LocalResources.current.article,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
@@ -119,7 +118,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                                 style = MaterialTheme.typography.labelLarge,
                             )
                             Icon(
-                                imageVector = coreResources.bugReport,
+                                imageVector = LocalResources.current.bugReport,
                                 contentDescription = null,
                             )
                         }
@@ -127,7 +126,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 }
                 item {
                     AboutItem(
-                        icon = coreResources.code,
+                        icon = LocalResources.current.code,
                         text = LocalStrings.current.settingsAboutViewGithub,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
@@ -139,7 +138,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 }
                 item {
                     AboutItem(
-                        icon = coreResources.openInBrowser,
+                        icon = LocalResources.current.openInBrowser,
                         text = LocalStrings.current.settingsAboutViewFriendica,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
@@ -151,7 +150,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 }
                 item {
                     AboutItem(
-                        icon = coreResources.chatFill,
+                        icon = LocalResources.current.chatFill,
                         text = LocalStrings.current.settingsAboutMatrix,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
@@ -164,7 +163,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutUserManual,
-                        icon = coreResources.book,
+                        icon = LocalResources.current.book,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
@@ -176,7 +175,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutAcknowledgements,
-                        icon = coreResources.volunteerActivism,
+                        icon = LocalResources.current.volunteerActivism,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
@@ -188,7 +187,7 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
                 item {
                     AboutItem(
                         text = LocalStrings.current.settingsAboutLicences,
-                        icon = coreResources.gavel,
+                        icon = LocalResources.current.gavel,
                         textDecoration = TextDecoration.Underline,
                         onClick = {
                             handleAction {
