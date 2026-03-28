@@ -6,6 +6,7 @@ plugins {
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
     id("com.livefast.eattrash.serialization")
+    alias(libs.plugins.compose.desktop.linux.deps)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.mokkery)
@@ -123,6 +124,14 @@ compose.desktop {
             }
         }
     }
+}
+
+linuxDebConfig {
+    // set StartupWMClass to fix taskbar icon
+    startupWMClass.set("Main")
+
+    // for t64 dependencies compatibility with older OSes
+    enableT64AlternativeDeps.set(true)
 }
 
 dependencies {

@@ -22,7 +22,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
-          gradle-version: 8.14.3
+          gradle-version: 9.3.0
 
       - name: Create Sentry config file
         env:

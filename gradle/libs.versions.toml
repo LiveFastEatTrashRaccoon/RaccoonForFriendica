@@ -17,6 +17,7 @@ androidx-work = "2.11.1"
 calf = "0.10.0"
 coil = "3.4.0"
 compose-colorpicker = "1.1.3"
+compose-desktop-linux-deps = "0.2.5"
 compose-m3 = "1.9.0"
 compose-m3-adaptive = "1.2.0"
 compose-multiplatform-media-player = "1.0.53"
@@ -153,6 +154,7 @@ android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version
 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+compose-desktop-linux-deps = { id = "io.github.kdroidfilter.compose.linux.packagedeps", version.ref = "compose-desktop-linux-deps" }
 
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
