@@ -46,7 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsR
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
@@ -72,7 +72,6 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
-    val coreResources = rememberCoreResources()
     var categoryBottomSheetOpened by remember { mutableStateOf(false) }
     var ruleSelectionOpened by remember { mutableStateOf(false) }
     val genericError = LocalStrings.current.messageGenericError
@@ -130,7 +129,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -143,7 +142,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.send,
+                            imageVector = LocalResources.current.send,
                             contentDescription = LocalStrings.current.actionSubmit,
                         )
                     }

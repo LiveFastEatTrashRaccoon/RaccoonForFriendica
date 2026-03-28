@@ -77,7 +77,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -124,7 +124,6 @@ fun EntryDetailScreen(
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
     val clipboardHelper = rememberClipboardHelper(clipboard)
-    val coreResources = rememberCoreResources()
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -198,7 +197,7 @@ fun EntryDetailScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -220,7 +219,7 @@ fun EntryDetailScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.reply,
+                                imageVector = LocalResources.current.reply,
                                 contentDescription = LocalStrings.current.actionReply,
                             )
                         }
@@ -253,7 +252,7 @@ fun EntryDetailScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.reply,
+                            imageVector = LocalResources.current.reply,
                             contentDescription = LocalStrings.current.actionReply,
                         )
                     }

@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun SearchField(
@@ -64,7 +64,6 @@ fun SearchField(
         )
     }
     val valueChangedCallback by rememberUpdatedState(onValueChange)
-    val coreResources = rememberCoreResources()
 
     LaunchedEffect(textFieldValue) {
         valueChangedCallback(textFieldValue.text)
@@ -106,7 +105,7 @@ fun SearchField(
                 val iconModifier = Modifier.size(IconSize.m).padding(2.5.dp)
                 Icon(
                     modifier = iconModifier,
-                    imageVector = coreResources.search,
+                    imageVector = LocalResources.current.search,
                     contentDescription = LocalStrings.current.actionSearch,
                     tint = textColor,
                 )
@@ -131,7 +130,7 @@ fun SearchField(
                         iconModifier.clickable {
                             textFieldValue = TextFieldValue()
                         },
-                        imageVector = coreResources.cancel,
+                        imageVector = LocalResources.current.cancel,
                         contentDescription = LocalStrings.current.actionClear,
                         tint = textColor,
                     )

@@ -22,7 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
@@ -33,7 +33,6 @@ fun UserFields(
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
 
     Column(
         modifier = modifier.padding(horizontal = Spacing.s),
@@ -84,7 +83,7 @@ fun UserFields(
                 if (field.verified) {
                     Icon(
                         modifier = Modifier.size(IconSize.s),
-                        imageVector = coreResources.verified,
+                        imageVector = LocalResources.current.verified,
                         contentDescription = LocalStrings.current.verifiedField,
                         tint = Color.Green,
                     )

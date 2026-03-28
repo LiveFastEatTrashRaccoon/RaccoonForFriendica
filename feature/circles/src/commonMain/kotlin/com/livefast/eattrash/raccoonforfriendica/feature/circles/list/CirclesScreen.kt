@@ -53,7 +53,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -82,7 +82,6 @@ fun CirclesScreen(
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     var confirmDeleteItemId by remember { mutableStateOf<String?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
     val genericError = LocalStrings.current.messageGenericError
@@ -137,7 +136,7 @@ fun CirclesScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -153,7 +152,7 @@ fun CirclesScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.add,
+                                imageVector = LocalResources.current.add,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
@@ -181,7 +180,7 @@ fun CirclesScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.add,
+                            imageVector = LocalResources.current.add,
                             contentDescription = LocalStrings.current.actionAddNew,
                         )
                     }

@@ -30,7 +30,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -50,7 +50,6 @@ internal fun NotificationItem(
     onClickUserRelationship: ((String, RelationshipStatusNextAction) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
     val entry = notification.entry
     val user = notification.user
     val contentHorizontalPadding = Spacing.xs
@@ -66,7 +65,7 @@ internal fun NotificationItem(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.s).padding(1.dp),
-                imageVector = notification.type.toIcon(coreResources),
+                imageVector = notification.type.toIcon(LocalResources.current),
                 contentDescription = null,
                 tint = ancillaryColor,
             )

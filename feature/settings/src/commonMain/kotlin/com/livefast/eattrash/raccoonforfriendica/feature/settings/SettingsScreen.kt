@@ -66,7 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
@@ -106,7 +106,6 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     val scope = rememberCoroutineScope()
     val fileSystemManager = rememberFileSystemManager()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -169,7 +168,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -205,7 +204,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // General section
                     SettingsHeader(
                         title = LocalStrings.current.settingsHeaderGeneral,
-                        icon = coreResources.settingsFill,
+                        icon = LocalResources.current.settingsFill,
                     )
                     SettingsRow(
                         title = LocalStrings.current.settingsItemLanguage,
@@ -370,7 +369,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // Look & feel section
                     SettingsHeader(
                         title = LocalStrings.current.settingsHeaderLookAndFeel,
-                        icon = coreResources.styleFill,
+                        icon = LocalResources.current.styleFill,
                     )
                     SettingsRow(
                         title = LocalStrings.current.settingsItemTimelineLayout,
@@ -454,7 +453,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
                     // NSFW section
                     SettingsHeader(
-                        icon = coreResources.explicitFill,
+                        icon = LocalResources.current.explicitFill,
                         title = LocalStrings.current.settingsHeaderNsfw,
                     )
                     if (uiState.isLogged) {
@@ -483,7 +482,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
                     // Debug section
                     SettingsHeader(
-                        icon = coreResources.bugReport,
+                        icon = LocalResources.current.bugReport,
                         title = LocalStrings.current.settingsSectionDebug,
                     )
                     SettingsRow(
@@ -509,7 +508,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     // Other section
                     if (uiState.supportSettingsImportExport) {
                         SettingsHeader(
-                            icon = coreResources.handymanFill,
+                            icon = LocalResources.current.handymanFill,
                             title = LocalStrings.current.itemOther,
                         )
                         SettingsRow(
@@ -573,7 +572,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = theme.toIcon(coreResources),
+                            imageVector = theme.toIcon(LocalResources.current),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -742,7 +741,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(coreResources),
+                            imageVector = it.toIcon(LocalResources.current),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -785,7 +784,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(coreResources),
+                            imageVector = it.toIcon(LocalResources.current),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -813,7 +812,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(coreResources),
+                            imageVector = it.toIcon(LocalResources.current),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -983,8 +982,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     leadingContent = {
                         val painter =
                             when (value) {
-                                AppIconVariant.Alt -> coreResources.appIconAlt
-                                else -> coreResources.appIconDefault
+                                AppIconVariant.Alt -> LocalResources.current.appIconAlt
+                                else -> LocalResources.current.appIconDefault
                             }
                         Image(
                             modifier = Modifier.size(IconSize.m),

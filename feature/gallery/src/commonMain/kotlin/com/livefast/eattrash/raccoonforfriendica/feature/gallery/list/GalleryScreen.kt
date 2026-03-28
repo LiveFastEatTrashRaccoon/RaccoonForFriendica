@@ -55,7 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -71,7 +71,6 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
     val mainRouter = rememberMainRouter()
-    val coreResources = rememberCoreResources()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -127,7 +126,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -143,7 +142,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.add,
+                                imageVector = LocalResources.current.add,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
@@ -180,7 +179,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.add,
+                        imageVector = LocalResources.current.add,
                         contentDescription = LocalStrings.current.actionAddNew,
                     )
                 }

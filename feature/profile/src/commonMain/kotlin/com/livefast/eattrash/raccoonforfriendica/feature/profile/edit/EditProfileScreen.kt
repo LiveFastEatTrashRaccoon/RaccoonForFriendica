@@ -73,13 +73,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -97,7 +94,6 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val galleryHelper = rememberGalleryHelper()
-    val coreResources = rememberCoreResources()
     val uriHandler = LocalUriHandler.current
     val genericError = LocalStrings.current.messageGenericError
     val messageSuccess = LocalStrings.current.messageSuccess
@@ -167,7 +163,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -207,7 +203,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                                 },
                             ) {
                                 Icon(
-                                    imageVector = coreResources.moreVert,
+                                    imageVector = LocalResources.current.moreVert,
                                     contentDescription = LocalStrings.current.actionOpenOptions,
                                 )
                             }
@@ -291,7 +287,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
         ) {
             item {
                 SettingsHeader(
-                    icon = coreResources.accountCircleFill,
+                    icon = LocalResources.current.accountCircleFill,
                     title = LocalStrings.current.editProfileSectionPersonal,
                 )
             }
@@ -358,7 +354,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
 
             item {
                 SettingsHeader(
-                    icon = coreResources.image,
+                    icon = LocalResources.current.image,
                     title = LocalStrings.current.editProfileSectionImages,
                 )
             }
@@ -394,7 +390,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
 
             item {
                 SettingsHeader(
-                    icon = coreResources.viewAgenda,
+                    icon = LocalResources.current.viewAgenda,
                     title = LocalStrings.current.editProfileSectionFields,
                     rightButton = {
                         IconButton(
@@ -404,7 +400,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.addCircle,
+                                imageVector = LocalResources.current.addCircle,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }
@@ -431,7 +427,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             }
             item {
                 SettingsHeader(
-                    icon = coreResources.buildCircle,
+                    icon = LocalResources.current.buildCircle,
                     title = LocalStrings.current.editProfileSectionFlags,
                 )
             }

@@ -58,8 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 
@@ -69,7 +68,6 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
     val model: LoginIntroMviModel = getViewModel<LoginIntroViewModel>()
     val uriHandler = LocalUriHandler.current
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val resources = rememberCoreResources()
     var moreInfoBottomSheetOpened by remember { mutableStateOf(false) }
 
     Column(
@@ -102,7 +100,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
         )
         PlatformLink(
             title = LocalStrings.current.moreInfo,
-            resources = resources,
+            resources = LocalResources.current,
             onClick = {
                 moreInfoBottomSheetOpened = true
             },
@@ -111,7 +109,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
         PlatformHeader(
             modifier = Modifier.padding(top = Spacing.m),
             title = LocalStrings.current.loginFriendicaHeader,
-            painter = resources.friendicaLogo,
+            painter = LocalResources.current.friendicaLogo,
             onClickInfo = {
                 uriHandler.openExternally(LoginIntroLinks.ABOUT_FRIENDICA)
             },
@@ -127,7 +125,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
 
         PlatformLink(
             title = LocalStrings.current.helpMeChooseAnInstance,
-            resources = resources,
+            resources = LocalResources.current,
             onClick = {
                 uriHandler.openExternally(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
             },
@@ -159,7 +157,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
         PlatformHeader(
             modifier = Modifier.padding(top = Spacing.xs),
             title = LocalStrings.current.loginMastodonHeader,
-            painter = resources.mastodonLogo,
+            painter = LocalResources.current.mastodonLogo,
             onClickInfo = {
                 uriHandler.openExternally(LoginIntroLinks.ABOUT_MASTODON)
             },
@@ -176,7 +174,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
         }
         PlatformLink(
             title = LocalStrings.current.helpMeChooseAnInstance,
-            resources = resources,
+            resources = LocalResources.current,
             onClick = {
                 uriHandler.openExternally(LoginIntroLinks.MASTODON_INSTANCE_HELP)
             },
@@ -220,7 +218,6 @@ private fun PlatformHeader(
     painter: Painter? = null,
     onClickInfo: (() -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
     val fullColor = MaterialTheme.colorScheme.onBackground
 
     Row(
@@ -258,7 +255,7 @@ private fun PlatformHeader(
                         .clickable {
                             onClickInfo()
                         },
-                imageVector = coreResources.info,
+                imageVector = LocalResources.current.info,
                 contentDescription = LocalStrings.current.moreInfo,
             )
         }

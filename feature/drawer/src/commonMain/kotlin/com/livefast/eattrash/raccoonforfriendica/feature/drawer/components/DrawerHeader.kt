@@ -26,7 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
@@ -43,7 +43,6 @@ internal fun DrawerHeader(
     val avatarSize = 52.dp
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
-    val coreResources = rememberCoreResources()
 
     Row(
         modifier =
@@ -117,7 +116,7 @@ internal fun DrawerHeader(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.arrowDropDown,
+                            imageVector = LocalResources.current.arrowDropDown,
                             contentDescription = LocalStrings.current.actionSwitchAccount,
                         )
                     }
@@ -159,7 +158,7 @@ internal fun DrawerHeader(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.arrowDropDown,
+                            imageVector = LocalResources.current.arrowDropDown,
                             contentDescription = LocalStrings.current.changeNodeDialogTitle,
                         )
                     }

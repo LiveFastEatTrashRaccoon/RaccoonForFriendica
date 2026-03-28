@@ -19,7 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 
 @Composable
@@ -30,7 +30,6 @@ fun EditFieldItem(
     onDelete: (() -> Unit)? = null,
 ) {
     val focusManager = LocalFocusManager.current
-    val coreResources = rememberCoreResources()
 
     Column(
         modifier = modifier,
@@ -61,7 +60,7 @@ fun EditFieldItem(
             trailingIcon = {
                 IconButton(onClick = { onDelete?.invoke() }) {
                     Icon(
-                        imageVector = coreResources.close,
+                        imageVector = LocalResources.current.close,
                         contentDescription = LocalStrings.current.buttonClose,
                     )
                 }

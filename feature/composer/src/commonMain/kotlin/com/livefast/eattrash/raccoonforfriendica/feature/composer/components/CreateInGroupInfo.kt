@@ -16,11 +16,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 internal fun CreateInGroupInfo(username: String, modifier: Modifier = Modifier) {
-    val coreResources = rememberCoreResources()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     Row(
@@ -30,7 +29,7 @@ internal fun CreateInGroupInfo(username: String, modifier: Modifier = Modifier) 
     ) {
         Icon(
             modifier = Modifier.size(IconSize.s),
-            imageVector = coreResources.postAdd,
+            imageVector = LocalResources.current.postAdd,
             contentDescription = null,
             tint = ancillaryColor,
         )

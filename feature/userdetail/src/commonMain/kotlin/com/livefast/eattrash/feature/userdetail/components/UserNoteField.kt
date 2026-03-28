@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun UserNoteField(
@@ -25,8 +25,6 @@ fun UserNoteField(
     onChangeNote: ((String) -> Unit)? = null,
     onSave: (() -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
-
     Box(modifier = modifier) {
         OutlinedTextField(
             colors =
@@ -62,7 +60,7 @@ fun UserNoteField(
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.save,
+                            imageVector = LocalResources.current.save,
                             contentDescription = LocalStrings.current.actionSave,
                         )
                     }

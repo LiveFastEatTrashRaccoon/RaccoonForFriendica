@@ -37,7 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
@@ -58,7 +58,6 @@ internal fun CreatePostHeader(
     changeVisibilityEnabled: Boolean = true,
     onChangeVisibility: ((Visibility) -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
@@ -127,7 +126,7 @@ internal fun CreatePostHeader(
             ) {
                 Icon(
                     modifier = Modifier.size(IconSize.s),
-                    imageVector = visibility.toIcon(coreResources),
+                    imageVector = visibility.toIcon(LocalResources.current),
                     contentDescription = visibility.toReadableName(),
                 )
                 Text(
@@ -135,7 +134,7 @@ internal fun CreatePostHeader(
                 )
                 if (changeVisibilityEnabled) {
                     Icon(
-                        imageVector = coreResources.arrowDropDown,
+                        imageVector = LocalResources.current.arrowDropDown,
                         contentDescription = LocalStrings.current.actionChangeVisibility,
                     )
                 } else {
@@ -165,7 +164,7 @@ internal fun CreatePostHeader(
                         },
                         leadingIcon = {
                             Icon(
-                                imageVector = value.toIcon(coreResources),
+                                imageVector = value.toIcon(LocalResources.current),
                                 contentDescription = null,
                             )
                         },

@@ -43,12 +43,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
@@ -73,7 +70,6 @@ fun ProfileScreen(
     val scope = rememberCoroutineScope()
     val drawerCoordinator = rememberDrawerCoordinator()
     val navigationCoordinator = rememberNavigationCoordinator()
-    val coreResources = rememberCoreResources()
     val successMessage = LocalStrings.current.messageSuccess
     var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
@@ -119,7 +115,7 @@ fun ProfileScreen(
                                 },
                             ) {
                                 Icon(
-                                    imageVector = coreResources.menu,
+                                    imageVector = LocalResources.current.menu,
                                     contentDescription = LocalStrings.current.actionOpenSideMenu,
                                 )
                             }
@@ -132,7 +128,7 @@ fun ProfileScreen(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.changeCircle,
+                                imageVector = LocalResources.current.changeCircle,
                                 contentDescription = LocalStrings.current.actionSwitchAccount,
                             )
                         }
@@ -143,7 +139,7 @@ fun ProfileScreen(
                                 },
                             ) {
                                 Icon(
-                                    imageVector = coreResources.logout,
+                                    imageVector = LocalResources.current.logout,
                                     contentDescription = LocalStrings.current.actionLogout,
                                 )
                             }
@@ -219,7 +215,7 @@ fun ProfileScreen(
                             onClick = {},
                         ) {
                             Icon(
-                                imageVector = coreResources.addCircle,
+                                imageVector = LocalResources.current.addCircle,
                                 contentDescription = LocalStrings.current.actionAddNew,
                             )
                         }

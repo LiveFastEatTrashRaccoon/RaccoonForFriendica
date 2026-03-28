@@ -42,7 +42,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
@@ -58,7 +58,6 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
-    val coreResources = rememberCoreResources()
     val genericError = LocalStrings.current.messageGenericError
 
     LaunchedEffect(model) {
@@ -100,7 +99,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -113,7 +112,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
                         },
                     ) {
                         Icon(
-                            imageVector = coreResources.send,
+                            imageVector = LocalResources.current.send,
                             contentDescription = LocalStrings.current.actionSubmit,
                         )
                     }
@@ -180,7 +179,7 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.cancel,
+                                imageVector = LocalResources.current.cancel,
                                 contentDescription = LocalStrings.current.actionClear,
                             )
                         }

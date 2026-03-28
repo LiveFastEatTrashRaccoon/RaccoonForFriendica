@@ -18,8 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 internal fun RowScope.BottomNavigationItem(
@@ -28,7 +27,6 @@ internal fun RowScope.BottomNavigationItem(
     onClick: (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val coreResources = rememberCoreResources()
 
     NavigationBarItem(
         onClick = {
@@ -53,7 +51,7 @@ internal fun RowScope.BottomNavigationItem(
                 },
             ) {
                 Icon(
-                    imageVector = section.toIcon(coreResources),
+                    imageVector = section.toIcon(LocalResources.current),
                     contentDescription = null,
                 )
             }

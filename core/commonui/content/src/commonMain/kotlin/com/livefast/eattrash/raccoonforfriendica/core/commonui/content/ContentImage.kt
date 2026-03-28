@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import kotlin.math.roundToInt
 
 @Composable
@@ -59,7 +59,6 @@ fun ContentImage(
     onClick: (() -> Unit)? = null,
     centerComposable: (@Composable () -> Unit) = {},
 ) {
-    val coreResources = rememberCoreResources()
     var revealing by remember { mutableStateOf(!sensitive) }
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
@@ -177,7 +176,7 @@ fun ContentImage(
                     ) {
                         Icon(
                             modifier = iconModifier,
-                            imageVector = coreResources.abc,
+                            imageVector = LocalResources.current.abc,
                             contentDescription = LocalStrings.current.actionShowContentDescription,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -194,9 +193,9 @@ fun ContentImage(
                         modifier = iconModifier,
                         imageVector =
                         if (revealing) {
-                            coreResources.visibilityOff
+                            LocalResources.current.visibilityOff
                         } else {
-                            coreResources.visibility
+                            LocalResources.current.visibility
                         },
                         contentDescription = LocalStrings.current.actionToggleReveal,
                         tint = MaterialTheme.colorScheme.onBackground,

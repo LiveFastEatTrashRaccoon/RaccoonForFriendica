@@ -56,7 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.autofill
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
@@ -74,7 +74,6 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
-    val coreResources = rememberCoreResources()
     val genericError = LocalStrings.current.messageGenericError
     val successMessage = LocalStrings.current.messageSuccess
     val focusManager = LocalFocusManager.current
@@ -122,7 +121,7 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.arrowBack,
+                                imageVector = LocalResources.current.arrowBack,
                                 contentDescription = LocalStrings.current.actionGoBack,
                             )
                         }
@@ -283,9 +282,9 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
                         },
                         imageVector =
                         if (transformation == VisualTransformation.None) {
-                            coreResources.visibilityOff
+                            LocalResources.current.visibilityOff
                         } else {
-                            coreResources.visibility
+                            LocalResources.current.visibility
                         },
                         contentDescription = LocalStrings.current.actionToggleReveal,
                         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),

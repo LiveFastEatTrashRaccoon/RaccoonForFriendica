@@ -2,14 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.getCoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 /*
  * Reference:
@@ -17,12 +15,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreR
  */
 @Composable
 fun UiFontFamily.toTypography(): Typography {
-    val coreResources = rememberCoreResources()
     val fontFamily =
         when (this) {
-            UiFontFamily.AtkinsonHyperlegible -> coreResources.atkinsonHyperlegible
-            UiFontFamily.Exo2 -> coreResources.exo2
-            UiFontFamily.NotoSans -> coreResources.notoSans
+            UiFontFamily.AtkinsonHyperlegible -> LocalResources.current.atkinsonHyperlegible
+            UiFontFamily.Exo2 -> LocalResources.current.exo2
+            UiFontFamily.NotoSans -> LocalResources.current.notoSans
             else -> FontFamily.Default
         }
     return Typography(

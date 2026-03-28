@@ -23,7 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 
@@ -37,7 +37,6 @@ internal fun PollForm(
     onEditOption: ((Int, String) -> Unit)? = null,
     onEditExpirationDate: (() -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
     val focusManager = LocalFocusManager.current
 
     Row(
@@ -62,7 +61,7 @@ internal fun PollForm(
                 },
             ) {
                 Icon(
-                    imageVector = coreResources.addCircle,
+                    imageVector = LocalResources.current.addCircle,
                     contentDescription = LocalStrings.current.actionAddNew,
                 )
             }
@@ -110,7 +109,7 @@ internal fun PollForm(
                     },
                 ) {
                     Icon(
-                        imageVector = coreResources.close,
+                        imageVector = LocalResources.current.close,
                         contentDescription = LocalStrings.current.buttonClose,
                     )
                 }

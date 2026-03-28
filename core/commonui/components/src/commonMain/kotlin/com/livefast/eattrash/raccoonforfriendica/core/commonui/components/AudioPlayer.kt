@@ -34,17 +34,16 @@ import chaintech.videoplayer.model.AudioFile
 import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.ui.audio.AudioPlayerComposable
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun AudioPlayer(urls: List<String>, titles: List<String>, modifier: Modifier = Modifier, autoplay: Boolean = false) {
     var isInitial by remember { mutableStateOf(true) }
-    val resources = rememberCoreResources()
 
     if (!autoplay && isInitial) {
         FakeAudioPlayerComposable(
             modifier = modifier,
-            audioPlayerConfig = resources.audioPlayerConfig,
+            audioPlayerConfig = LocalResources.current.audioPlayerConfig,
             onPlay = {
                 isInitial = false
             },
@@ -58,7 +57,7 @@ fun AudioPlayer(urls: List<String>, titles: List<String>, modifier: Modifier = M
             }
         AudioPlayerComposable(
             modifier = modifier,
-            audioPlayerConfig = resources.audioPlayerConfig,
+            audioPlayerConfig = LocalResources.current.audioPlayerConfig,
             playerHost = playerHost,
             audios =
             urls.mapIndexed { idx, url ->
@@ -83,8 +82,6 @@ private fun FakeAudioPlayerComposable(
     onPlay: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val coreResources = rememberCoreResources()
-
     Box(
         modifier = modifier.background(audioPlayerConfig.backgroundColor),
     ) {
@@ -119,7 +116,7 @@ private fun FakeAudioPlayerComposable(
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            imageVector = coreResources.musicNote,
+                            imageVector = LocalResources.current.musicNote,
                             contentDescription = "",
                             tint = Color.White,
                             modifier = Modifier.fillMaxSize(0.8f), // Scale down the icon size
@@ -199,7 +196,7 @@ private fun FakeAudioPlayerComposable(
                             onClick = onPlay,
                         ) {
                             Icon(
-                                imageVector = coreResources.playArrow,
+                                imageVector = LocalResources.current.playArrow,
                                 contentDescription = LocalStrings.current.actionPlay,
                                 tint = audioPlayerConfig.iconsTintColor,
                                 modifier = Modifier.fillMaxSize(),

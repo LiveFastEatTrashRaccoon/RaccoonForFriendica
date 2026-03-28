@@ -18,14 +18,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.models.LicenceItem
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.models.LicenceItemType
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.models.toIcon
 
 @Composable
 internal fun LicenceItem(item: LicenceItem, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
-    val coreResources = rememberCoreResources()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
 
@@ -52,7 +51,7 @@ internal fun LicenceItem(item: LicenceItem, modifier: Modifier = Modifier, onCli
         item.type?.also { type ->
             Icon(
                 modifier = Modifier.size(IconSize.m),
-                imageVector = type.toIcon(coreResources),
+                imageVector = type.toIcon(LocalResources.current),
                 contentDescription =
                 when (type) {
                     LicenceItemType.Library -> "Library"

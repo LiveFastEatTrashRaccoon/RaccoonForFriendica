@@ -39,7 +39,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
@@ -156,7 +156,6 @@ private fun PollCardOption(
     onVote: (() -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(CornerSize.xl)
-    val coreResources = rememberCoreResources()
 
     Row(
         modifier =
@@ -218,7 +217,7 @@ private fun PollCardOption(
                     Modifier
                         .padding(Spacing.xxs)
                         .fillMaxSize(),
-                    imageVector = coreResources.check,
+                    imageVector = LocalResources.current.check,
                     contentDescription = LocalStrings.current.highestScore,
                 )
             }

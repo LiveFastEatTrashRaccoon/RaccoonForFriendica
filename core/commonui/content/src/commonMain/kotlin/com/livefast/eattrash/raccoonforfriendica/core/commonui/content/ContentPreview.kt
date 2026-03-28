@@ -32,7 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 
@@ -44,7 +44,6 @@ fun ContentPreview(
     onOpen: ((String) -> Unit)? = null,
     onOpenImage: ((String) -> Unit)? = null,
 ) {
-    val coreResources = rememberCoreResources()
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val type = card.type
@@ -131,7 +130,7 @@ fun ContentPreview(
                             },
                         ) {
                             Icon(
-                                imageVector = coreResources.playCircle,
+                                imageVector = LocalResources.current.playCircle,
                                 contentDescription = LocalStrings.current.actionOpenFullScreen,
                             )
                         }
