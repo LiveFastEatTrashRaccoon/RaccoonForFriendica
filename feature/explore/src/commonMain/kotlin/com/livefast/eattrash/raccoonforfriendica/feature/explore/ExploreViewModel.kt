@@ -125,6 +125,7 @@ class ExploreViewModel(
             apiConfigurationRepository.node
                 .onEach { node ->
                     updateState { it.copy(currentNode = node) }
+                    refresh()
                 }.launchIn(this)
         }
     }

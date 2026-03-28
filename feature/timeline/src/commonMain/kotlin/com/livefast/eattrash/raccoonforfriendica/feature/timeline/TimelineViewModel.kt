@@ -132,6 +132,9 @@ class TimelineViewModel(
             apiConfigurationRepository.node
                 .onEach { node ->
                     updateState { it.copy(currentNode = node) }
+                    refresh(
+                        forceRefresh = true,
+                    )
                 }.launchIn(this)
 
             combine(

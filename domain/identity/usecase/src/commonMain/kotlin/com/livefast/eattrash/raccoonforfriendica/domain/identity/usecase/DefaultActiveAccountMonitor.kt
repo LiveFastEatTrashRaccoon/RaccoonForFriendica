@@ -89,9 +89,7 @@ internal class DefaultActiveAccountMonitor(
     }
 
     private suspend fun process(account: AccountModel?) {
-        val defaultNode = apiConfigurationRepository.getDefaultNode()
         if (account == null) {
-            apiConfigurationRepository.changeNode(defaultNode)
             apiConfigurationRepository.setAuth(null)
             supportedFeatureRepository.refresh()
 
@@ -109,6 +107,7 @@ internal class DefaultActiveAccountMonitor(
             announcementsManager.clearUnreadCount()
             followedHashtagCache.clear()
         } else {
+            val defaultNode = apiConfigurationRepository.getDefaultNode()
             val node = account.handle.nodeName ?: defaultNode
             val credentials = accountCredentialsCache.get(account.id)
             apiConfigurationRepository.changeNode(node)
