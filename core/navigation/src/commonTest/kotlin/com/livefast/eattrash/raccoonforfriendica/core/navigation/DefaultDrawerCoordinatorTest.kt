@@ -56,4 +56,15 @@ class DefaultDrawerCoordinatorTest {
             assertEquals(DrawerEvent.Toggle, evt)
         }
     }
+
+    @Test
+    fun `when changeDrawerOpened then state is updated`() = runTest {
+        val initial = sut.drawerOpened.value
+        assertFalse(initial)
+
+        sut.changeDrawerOpened(true)
+
+        val value = sut.drawerOpened.value
+        assertTrue(value)
+    }
 }

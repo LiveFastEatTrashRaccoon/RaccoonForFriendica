@@ -77,4 +77,34 @@ class DefaultThemeRepositoryTest {
         val resAfter = sut.customSeedColor.value
         assertEquals(Color.Red, resAfter)
     }
+
+    @Test
+    fun `when getCommentBarColors then value is as expected`() {
+        val blueColors = sut.getCommentBarColors(CommentBarTheme.Blue)
+        assertEquals(6, blueColors.size)
+        assertEquals(Color(0xFF012A4A), blueColors[0])
+
+        val greenColors = sut.getCommentBarColors(CommentBarTheme.Green)
+        assertEquals(6, greenColors.size)
+        assertEquals(Color(0xFF1B4332), greenColors[0])
+
+        val redColors = sut.getCommentBarColors(CommentBarTheme.Red)
+        assertEquals(6, redColors.size)
+        assertEquals(Color(0xFF6A040F), redColors[0])
+
+        val rainbowColors = sut.getCommentBarColors(CommentBarTheme.Rainbow)
+        assertEquals(6, rainbowColors.size)
+        assertEquals(Color(0xFF9400D3), rainbowColors[0])
+    }
+
+    @Test
+    fun `when getCommentBarColor then value is as expected`() {
+        sut.changeCommentBarTheme(CommentBarTheme.Blue)
+        val colors = sut.getCommentBarColors(CommentBarTheme.Blue)
+
+        assertEquals(colors[0], sut.getCommentBarColor(0))
+        assertEquals(colors[1], sut.getCommentBarColor(1))
+        assertEquals(colors[5], sut.getCommentBarColor(5))
+        assertEquals(colors[0], sut.getCommentBarColor(6))
+    }
 }
