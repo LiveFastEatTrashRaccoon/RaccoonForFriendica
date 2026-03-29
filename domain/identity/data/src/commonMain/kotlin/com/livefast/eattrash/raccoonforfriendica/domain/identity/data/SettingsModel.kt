@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.data
 
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
@@ -12,6 +13,7 @@ data class SettingsModel(
     val accountId: Long = 0,
     val lang: String = "en",
     val theme: UiTheme = UiTheme.Default,
+    val commentBarTheme: CommentBarTheme = CommentBarTheme.Rainbow,
     val fontFamily: UiFontFamily = UiFontFamily.Default,
     val fontScale: UiFontScale = UiFontScale.Normal,
     val dynamicColors: Boolean = false,
