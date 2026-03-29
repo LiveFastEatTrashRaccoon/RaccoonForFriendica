@@ -53,7 +53,6 @@ fun ThemeColor.toReadableName(): String = when (this) {
     ThemeColor.White -> LocalStrings.current.themeColorWhite
 }
 
-@Composable
 fun ThemeColor.toEmoji(): String = when (this) {
     ThemeColor.Blue -> "\uD83D\uDC33"
     ThemeColor.LightBlue -> "\uD83D\uDC2C"
