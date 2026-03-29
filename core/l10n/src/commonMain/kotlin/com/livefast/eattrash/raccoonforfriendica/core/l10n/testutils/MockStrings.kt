@@ -259,6 +259,14 @@ class MockStrings : Strings {
         @Composable get() = retrieve("colorPickerDialogInsertHex")
     override val colorPickerDialogTitle: String
         @Composable get() = retrieve("colorPickerDialogTitle")
+    override val commentBarThemeBlue: String
+        @Composable get() = retrieve("commentBarThemeBlue")
+    override val commentBarThemeGreen: String
+        @Composable get() = retrieve("commentBarThemeGreen")
+    override val commentBarThemeRainbow: String
+        @Composable get() = retrieve("commentBarThemeRainbow")
+    override val commentBarThemeRed: String
+        @Composable get() = retrieve("commentBarThemeRed")
     override val confirmChangeMarkupMode: String
         @Composable get() = retrieve("confirmChangeMarkupMode")
     override val contentScaleFillHeight: String
@@ -705,6 +713,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("settingsItemBlockedAndMuted")
     override val settingsItemBlurNsfw: String
         @Composable get() = retrieve("settingsItemBlurNsfw")
+    override val settingsItemCommentBarTheme: String
+        @Composable get() = retrieve("settingsItemCommentBarTheme")
     override val settingsItemConversationReplyDepth: String
         @Composable get() = retrieve("settingsItemConversationReplyDepth")
     override val settingsItemCrashReportEnabled: String
