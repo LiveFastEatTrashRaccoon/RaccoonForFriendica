@@ -143,6 +143,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                 if (settings != null) {
                     l10nManager.changeLanguage(settings.lang)
                     themeRepository.changeTheme(settings.theme)
+                    themeRepository.changeCommentBarTheme(settings.commentBarTheme)
                     themeRepository.changeFontFamily(settings.fontFamily)
                     themeRepository.changeFontScale(settings.fontScale)
                     themeRepository.changeCustomSeedColor(

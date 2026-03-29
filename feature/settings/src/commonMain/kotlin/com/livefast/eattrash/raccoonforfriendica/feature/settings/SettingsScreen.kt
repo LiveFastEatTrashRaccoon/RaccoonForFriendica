@@ -36,6 +36,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
@@ -46,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toScaleFactor
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
@@ -54,10 +57,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewMod
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomColorPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.MultiColorPreview
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AboutDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsMultiColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -108,11 +113,13 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     val mainRouter = rememberMainRouter()
     val scope = rememberCoroutineScope()
     val fileSystemManager = rememberFileSystemManager()
+    val themeRepository = rememberThemeRepository()
     val snackbarHostState = remember { SnackbarHostState() }
     val successMessage = LocalStrings.current.messageSuccess
     val errorMessage = LocalStrings.current.messageGenericError
     var languageBottomSheetOpened by remember { mutableStateOf(false) }
     var themeBottomSheetOpened by remember { mutableStateOf(false) }
+    var commentBarThemeBottomSheetOpened by remember { mutableStateOf(false) }
     var fontFamilyBottomSheetOpened by remember { mutableStateOf(false) }
     var fontScaleBottomSheetOpened by remember { mutableStateOf(false) }
     var themeColorBottomSheetOpened by remember { mutableStateOf(false) }
@@ -383,6 +390,13 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         value = uiState.theme.toReadableName(),
                         onTap = {
                             themeBottomSheetOpened = true
+                        },
+                    )
+                    SettingsMultiColorRow(
+                        title = LocalStrings.current.settingsItemCommentBarTheme,
+                        values = themeRepository.getCommentBarColors(uiState.commentBarTheme),
+                        onTap = {
+                            commentBarThemeBottomSheetOpened = true
                         },
                     )
                     SettingsRow(
@@ -1029,6 +1043,48 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 if (index != null) {
                     model.reduce(
                         SettingsMviModel.Intent.ChangeBarTheme(values[index]),
+                    )
+                }
+            },
+        )
+    }
+
+    if (commentBarThemeBottomSheetOpened) {
+        val values =
+            listOf(
+                CommentBarTheme.Rainbow,
+                CommentBarTheme.Blue,
+                CommentBarTheme.Green,
+                CommentBarTheme.Red,
+            )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemCommentBarTheme,
+            items = values.map { barTheme ->
+                val colors = themeRepository.getCommentBarColors(barTheme)
+                CustomModalBottomSheetItem(
+                    leadingContent = {
+                        MultiColorPreview(
+                            modifier =
+                            Modifier
+                                .padding(start = Spacing.xs)
+                                .size(36.dp),
+                            colors = colors,
+                        )
+                    },
+                    label = barTheme.toReadableName(),
+                    trailingContent = {
+                        Text(
+                            text = barTheme.toEmoji(),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    },
+                )
+            },
+            onSelect = { index ->
+                commentBarThemeBottomSheetOpened = false
+                if (index != null) {
+                    model.reduce(
+                        SettingsMviModel.Intent.ChangeCommentBarTheme(values[index]),
                     )
                 }
             },

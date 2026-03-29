@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
@@ -80,6 +81,8 @@ interface SettingsMviModel : MviModel<SettingsMviModel.Intent, SettingsMviModel.
         data class ImportSettings(val content: String) : Intent
 
         data class ChangeReplyDepth(val depth: Int) : Intent
+
+        data class ChangeCommentBarTheme(val commentBarTheme: CommentBarTheme) : Intent
     }
 
     data class State(
@@ -127,6 +130,7 @@ interface SettingsMviModel : MviModel<SettingsMviModel.Intent, SettingsMviModel.
         val isBarThemeSupported: Boolean = false,
         val replyDepth: Int = 1,
         val availableUrlOpeningModes: List<UrlOpeningMode> = emptyList(),
+        val commentBarTheme: CommentBarTheme = CommentBarTheme.Rainbow,
     )
 
     sealed interface Effect {
