@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
@@ -152,6 +153,12 @@ class SettingsViewModel(
                         it.copy(theme = theme)
                     }
                 }.launchIn(this)
+            themeRepository.commentBarTheme
+                .onEach { theme ->
+                    updateState {
+                        it.copy(commentBarTheme = theme)
+                    }
+                }.launchIn(this)
             themeRepository.fontFamily
                 .onEach { fontFamily ->
                     updateState {
@@ -269,6 +276,11 @@ class SettingsViewModel(
             is SettingsMviModel.Intent.ChangeTheme ->
                 viewModelScope.launch {
                     changeTheme(intent.theme)
+                }
+
+            is SettingsMviModel.Intent.ChangeCommentBarTheme ->
+                viewModelScope.launch {
+                    changeCommentBarTheme(intent.commentBarTheme)
                 }
 
             is SettingsMviModel.Intent.ChangeDynamicColors ->
@@ -406,6 +418,12 @@ class SettingsViewModel(
     private suspend fun changeTheme(value: UiTheme) {
         val currentSettings = settingsRepository.current.value ?: return
         val newSettings = currentSettings.copy(theme = value)
+        saveSettings(newSettings)
+    }
+
+    private suspend fun changeCommentBarTheme(value: CommentBarTheme) {
+        val currentSettings = settingsRepository.current.value ?: return
+        val newSettings = currentSettings.copy(commentBarTheme = value)
         saveSettings(newSettings)
     }
 

@@ -135,6 +135,10 @@ import raccoonforfriendica.shared.generated.resources.circle_type_predefined
 import raccoonforfriendica.shared.generated.resources.circle_type_user_defined
 import raccoonforfriendica.shared.generated.resources.color_picker_dialog_insert_hex
 import raccoonforfriendica.shared.generated.resources.color_picker_dialog_title
+import raccoonforfriendica.shared.generated.resources.comment_bar_theme_blue
+import raccoonforfriendica.shared.generated.resources.comment_bar_theme_green
+import raccoonforfriendica.shared.generated.resources.comment_bar_theme_rainbow
+import raccoonforfriendica.shared.generated.resources.comment_bar_theme_red
 import raccoonforfriendica.shared.generated.resources.confirm_change_markup_mode
 import raccoonforfriendica.shared.generated.resources.content_scale_fill_height
 import raccoonforfriendica.shared.generated.resources.content_scale_fill_width
@@ -365,6 +369,7 @@ import raccoonforfriendica.shared.generated.resources.settings_item_app_icon
 import raccoonforfriendica.shared.generated.resources.settings_item_bar_theme
 import raccoonforfriendica.shared.generated.resources.settings_item_blocked_and_muted
 import raccoonforfriendica.shared.generated.resources.settings_item_blur_nsfw
+import raccoonforfriendica.shared.generated.resources.settings_item_comment_bar_theme
 import raccoonforfriendica.shared.generated.resources.settings_item_conversation_reply_depth
 import raccoonforfriendica.shared.generated.resources.settings_item_crash_report_enabled
 import raccoonforfriendica.shared.generated.resources.settings_item_default_post_visibility
@@ -718,6 +723,14 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.color_picker_dialog_insert_hex)
     override val colorPickerDialogTitle: String
         @Composable get() = stringResource(Res.string.color_picker_dialog_title)
+    override val commentBarThemeBlue: String
+        @Composable get() = stringResource(Res.string.comment_bar_theme_blue)
+    override val commentBarThemeGreen: String
+        @Composable get() = stringResource(Res.string.comment_bar_theme_green)
+    override val commentBarThemeRainbow: String
+        @Composable get() = stringResource(Res.string.comment_bar_theme_rainbow)
+    override val commentBarThemeRed: String
+        @Composable get() = stringResource(Res.string.comment_bar_theme_red)
     override val confirmChangeMarkupMode: String
         @Composable get() = stringResource(Res.string.confirm_change_markup_mode)
     override val contentScaleFillHeight: String
@@ -1164,6 +1177,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.settings_item_blocked_and_muted)
     override val settingsItemBlurNsfw: String
         @Composable get() = stringResource(Res.string.settings_item_blur_nsfw)
+    override val settingsItemCommentBarTheme: String
+        @Composable get() = stringResource(Res.string.settings_item_comment_bar_theme)
     override val settingsItemConversationReplyDepth: String
         @Composable get() = stringResource(Res.string.settings_item_conversation_reply_depth)
     override val settingsItemCrashReportEnabled: String

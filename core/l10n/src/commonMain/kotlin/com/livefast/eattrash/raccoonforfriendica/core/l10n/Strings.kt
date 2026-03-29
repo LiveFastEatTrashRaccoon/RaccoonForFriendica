@@ -127,6 +127,10 @@ interface Strings {
     val circleTypeUserDefined: String @Composable get
     val colorPickerDialogInsertHex: String @Composable get
     val colorPickerDialogTitle: String @Composable get
+    val commentBarThemeBlue: String @Composable get
+    val commentBarThemeGreen: String @Composable get
+    val commentBarThemeRainbow: String @Composable get
+    val commentBarThemeRed: String @Composable get
     val confirmChangeMarkupMode: String @Composable get
     val contentScaleFillHeight: String @Composable get
     val contentScaleFillWidth: String @Composable get
@@ -350,6 +354,7 @@ interface Strings {
     val settingsItemBarTheme: String @Composable get
     val settingsItemBlockedAndMuted: String @Composable get
     val settingsItemBlurNsfw: String @Composable get
+    val settingsItemCommentBarTheme: String @Composable get
     val settingsItemConversationReplyDepth: String @Composable get
     val settingsItemCrashReportEnabled: String @Composable get
     val settingsItemDefaultPostVisibility: String @Composable get

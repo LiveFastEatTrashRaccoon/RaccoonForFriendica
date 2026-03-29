@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.repository
 
 import androidx.compose.ui.graphics.Color
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
@@ -21,6 +22,17 @@ class DefaultThemeRepositoryTest {
 
         val resAfter = sut.theme.value
         assertEquals(UiTheme.Dark, resAfter)
+    }
+
+    @Test
+    fun `when changeCommentBarTheme then value is as expected`() {
+        val resBefore = sut.commentBarTheme.value
+        assertEquals(CommentBarTheme.Rainbow, resBefore)
+
+        sut.changeCommentBarTheme(CommentBarTheme.Blue)
+
+        val resAfter = sut.commentBarTheme.value
+        assertEquals(CommentBarTheme.Blue, resAfter)
     }
 
     @Test

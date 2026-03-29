@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toCommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toInt
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toTimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toUIBarTheme
@@ -69,6 +70,7 @@ private fun SettingsEntity.toModel() = SettingsModel(
     barTheme = barTheme.toUIBarTheme(),
     timelineLayout = timelineLayout.toTimelineLayout(),
     replyDepth = replyDepth,
+    commentBarTheme = commentBarTheme.toCommentBarTheme(),
 )
 
 private fun SettingsModel.toEntity() = SettingsEntity(
@@ -98,4 +100,5 @@ private fun SettingsModel.toEntity() = SettingsEntity(
     barTheme = barTheme.toInt(),
     timelineLayout = timelineLayout.toInt(),
     replyDepth = replyDepth,
+    commentBarTheme = commentBarTheme.toInt(),
 )
