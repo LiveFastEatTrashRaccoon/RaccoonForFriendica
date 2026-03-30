@@ -54,7 +54,7 @@ jobs:
         run: ./gradlew :shared:koverXmlReport
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: false
           files: ./shared/build/reports/kover/report.xml
