@@ -14,6 +14,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.MockStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.testutils.MockResources
 import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestApplication
 import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestRule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
@@ -172,6 +174,7 @@ class NodeInfoScreenScaffoldTest {
                         this["actionOpenDetail"] = "Open detail"
                     },
                 LocalUriHandler provides uriHandler,
+                LocalResources provides MockResources,
             ) {
                 NodeInfoScreenScaffold(state)
             }
