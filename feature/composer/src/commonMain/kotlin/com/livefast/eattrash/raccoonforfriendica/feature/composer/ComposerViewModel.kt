@@ -337,11 +337,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.AddGroupReference ->
-                addMention(
-                    handle = intent.handle,
-                    privateToGroup = true,
-                )
+            is ComposerMviModel.Intent.AddGroupReference -> addMention(handle = intent.handle)
 
             is ComposerMviModel.Intent.UserSearchSetQuery ->
                 viewModelScope.launch {
