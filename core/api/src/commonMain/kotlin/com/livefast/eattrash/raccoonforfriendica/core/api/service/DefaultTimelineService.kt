@@ -40,7 +40,7 @@ internal class DefaultTimelineService(private val baseUrl: String, private val c
     }
 
     override suspend fun getList(id: String, maxId: String?, minId: String?, limit: Int): List<Status> =
-        client.get("$baseUrl/v1/timelines/list/&$id") {
+        client.get("$baseUrl/v1/timelines/list/$id") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
