@@ -11,7 +11,7 @@ class MockStrings : Strings {
     }
 
     override val accountAge: String
-        @Composable get() = retrieve("accountAgeaccountAge")
+        @Composable get() = retrieve("accountAge")
     override val accountSectionAll: String
         @Composable get() = retrieve("accountSectionAll")
     override val accountSectionMedia: String
