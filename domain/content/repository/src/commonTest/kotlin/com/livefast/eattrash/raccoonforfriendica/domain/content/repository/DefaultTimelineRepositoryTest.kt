@@ -412,7 +412,7 @@ class DefaultTimelineRepositoryTest {
     }
 
     @Test
-    fun `given no results when getLocal on foreign instance then result and interactions are as expected`() = runTest {
+    fun `given no results when getLocal on other instance then result and interactions are as expected`() = runTest {
         val otherInstance = "node"
         everySuspend {
             timelineService.getPublic(
@@ -450,7 +450,7 @@ class DefaultTimelineRepositoryTest {
     }
 
     @Test
-    fun `given results when getLocal on foreign instance then result and interactions are as expected`() = runTest {
+    fun `given results when getLocal on other instance then result and interactions are as expected`() = runTest {
         val otherInstance = "node"
         everySuspend {
             timelineService.getPublic(
@@ -516,6 +516,87 @@ class DefaultTimelineRepositoryTest {
                 minId = null,
                 limit = 20,
                 local = true,
+            )
+        }
+        verify {
+            otherProvider.changeNode(otherInstance)
+            otherProvider.timeline
+        }
+        verify(VerifyMode.not) {
+            provider.timeline
+        }
+    }
+    // endregion
+
+    // region getHashtag
+    @Test
+    fun `given results when getHashtag then result and interactions are as expected`() = runTest {
+        val hashtag = "tag"
+        everySuspend {
+            timelineService.getHashtag(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                hashtag = any(),
+            )
+        } returns ((19 downTo 0).map { Status(id = "$it") } to "42")
+
+        val res =
+            sut.getHashtag(
+                hashtag = hashtag,
+                pageCursor = null,
+            )
+
+        assertNotNull(res)
+        assertEquals("42", res.cursor)
+        assertEquals(20, res.list.size)
+        assertEquals("0", res.list.last().id)
+        verifySuspend {
+            timelineService.getHashtag(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                hashtag = hashtag,
+            )
+        }
+        verify {
+            provider.timeline
+        }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
+
+    @Test
+    fun `given results when getHashtag on other instance then result and interactions are as expected`() = runTest {
+        val hashtag = "tag"
+        val otherInstance = "node"
+        everySuspend {
+            timelineService.getHashtag(
+                maxId = any(),
+                minId = any(),
+                limit = any(),
+                hashtag = any(),
+            )
+        } returns ((19 downTo 0).map { Status(id = "$it") } to "42")
+
+        val res =
+            sut.getHashtag(
+                hashtag = hashtag,
+                pageCursor = null,
+                otherInstance = otherInstance,
+            )
+
+        assertNotNull(res)
+        assertEquals("42", res.cursor)
+        assertEquals(20, res.list.size)
+        assertEquals("0", res.list.last().id)
+        verifySuspend {
+            timelineService.getHashtag(
+                maxId = null,
+                minId = null,
+                limit = 20,
+                hashtag = hashtag,
             )
         }
         verify {
