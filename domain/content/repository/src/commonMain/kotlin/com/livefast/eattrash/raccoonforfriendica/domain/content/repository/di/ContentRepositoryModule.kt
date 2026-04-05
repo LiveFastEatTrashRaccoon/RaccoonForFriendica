@@ -247,6 +247,7 @@ val contentRepositoryModule =
             singleton {
                 DefaultTimelineEntryRepository(
                     provider = instance(tag = "default"),
+                    otherProvider = instance(tag = "other"),
                 )
             }
         }
@@ -262,6 +263,7 @@ val contentRepositoryModule =
             singleton {
                 DefaultTrendingRepository(
                     provider = instance(tag = "default"),
+                    otherProvider = instance(tag = "other"),
                     json = instance(),
                 )
             }
@@ -270,6 +272,7 @@ val contentRepositoryModule =
             singleton {
                 DefaultUserRepository(
                     provider = instance(tag = "default"),
+                    otherProvider = instance(tag = "other"),
                 )
             }
         }

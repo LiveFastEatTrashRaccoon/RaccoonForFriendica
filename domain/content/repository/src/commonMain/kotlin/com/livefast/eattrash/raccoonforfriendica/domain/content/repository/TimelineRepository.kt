@@ -14,7 +14,11 @@ interface TimelineRepository {
         otherInstance: String? = null,
     ): List<TimelineEntryModel>?
 
-    suspend fun getHashtag(hashtag: String, pageCursor: String? = null): ListWithPageCursor<TimelineEntryModel>?
+    suspend fun getHashtag(
+        hashtag: String,
+        pageCursor: String? = null,
+        otherInstance: String? = null,
+    ): ListWithPageCursor<TimelineEntryModel>?
 
     suspend fun getCircle(id: String, pageCursor: String? = null): List<TimelineEntryModel>?
 }

@@ -18,13 +18,14 @@ interface TimelineEntryRepository {
         onlyMedia: Boolean = false,
         enableCache: Boolean = false,
         refresh: Boolean = false,
+        otherInstance: String? = null,
     ): List<TimelineEntryModel>?
 
-    suspend fun getById(id: String): TimelineEntryModel?
+    suspend fun getById(id: String, otherInstance: String? = null): TimelineEntryModel?
 
-    suspend fun getSource(id: String): TimelineEntryModel?
+    suspend fun getSource(id: String, otherInstance: String? = null): TimelineEntryModel?
 
-    suspend fun getContext(id: String): TimelineContextModel?
+    suspend fun getContext(id: String, otherInstance: String? = null): TimelineContextModel?
 
     suspend fun reblog(id: String): TimelineEntryModel?
 
@@ -46,9 +47,17 @@ interface TimelineEntryRepository {
 
     suspend fun getBookmarks(pageCursor: String? = null): List<TimelineEntryModel>?
 
-    suspend fun getUsersWhoFavorited(id: String, pageCursor: String? = null): List<UserModel>?
+    suspend fun getUsersWhoFavorited(
+        id: String,
+        pageCursor: String? = null,
+        otherInstance: String? = null,
+    ): List<UserModel>?
 
-    suspend fun getUsersWhoReblogged(id: String, pageCursor: String? = null): List<UserModel>?
+    suspend fun getUsersWhoReblogged(
+        id: String,
+        pageCursor: String? = null,
+        otherInstance: String? = null,
+    ): List<UserModel>?
 
     suspend fun create(
         localId: String,

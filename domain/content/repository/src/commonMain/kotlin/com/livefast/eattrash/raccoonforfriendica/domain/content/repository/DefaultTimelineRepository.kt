@@ -72,17 +72,16 @@ internal class DefaultTimelineRepository(
         pageCursor: String?,
         refresh: Boolean,
         otherInstance: String?,
-    ): List<TimelineEntryModel>? {
-        if (otherInstance.isNullOrEmpty()) {
-            if (refresh) {
-                mutex.withLock {
-                    cachedValues.clear()
-                }
+    ): List<TimelineEntryModel>? = withProvider(otherInstance) { provider ->
+        if (refresh && otherInstance.isNullOrEmpty()) {
+            mutex.withLock {
+                cachedValues.clear()
             }
-            if (pageCursor == null && cachedValues.isNotEmpty()) {
-                return cachedValues
-            }
-            return runCatching {
+        }
+        if (pageCursor == null && cachedValues.isNotEmpty() && otherInstance.isNullOrEmpty()) {
+            cachedValues
+        } else {
+            runCatching {
                 val response =
                     provider.timeline.getPublic(
                         maxId = pageCursor,
@@ -92,26 +91,7 @@ internal class DefaultTimelineRepository(
                 response
                     .map { it.toModelWithReply() }
                     .also {
-                        if (pageCursor == null) {
-                            mutex.withLock {
-                                cachedValues.addAll(it)
-                            }
-                        }
-                    }
-            }.getOrNull()
-        } else {
-            return runCatching {
-                otherProvider.changeNode(otherInstance)
-                val response =
-                    otherProvider.timeline.getPublic(
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                        local = true,
-                    )
-                response
-                    .map { it.toModelWithReply().copy(foreign = true) }
-                    .also {
-                        if (pageCursor == null) {
+                        if (pageCursor == null && otherInstance.isNullOrEmpty()) {
                             mutex.withLock {
                                 cachedValues.addAll(it)
                             }
@@ -121,16 +101,20 @@ internal class DefaultTimelineRepository(
         }
     }
 
-    override suspend fun getHashtag(hashtag: String, pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? =
-        runCatching {
-            val (list, cursor) =
-                provider.timeline.getHashtag(
-                    hashtag = hashtag,
-                    maxId = pageCursor,
-                    limit = DEFAULT_PAGE_SIZE,
-                )
-            ListWithPageCursor(list = list.map { it.toModelWithReply() }, cursor = cursor)
-        }.getOrNull()
+    override suspend fun getHashtag(
+        hashtag: String,
+        pageCursor: String?,
+        otherInstance: String?,
+    ): ListWithPageCursor<TimelineEntryModel>? = runCatching {
+        val (list, cursor) = withProvider(otherInstance) { provider ->
+            provider.timeline.getHashtag(
+                hashtag = hashtag,
+                maxId = pageCursor,
+                limit = DEFAULT_PAGE_SIZE,
+            )
+        }
+        ListWithPageCursor(list = list.map { it.toModelWithReply() }, cursor = cursor)
+    }.getOrNull()
 
     override suspend fun getCircle(id: String, pageCursor: String?): List<TimelineEntryModel>? = runCatching {
         val response =
@@ -141,6 +125,15 @@ internal class DefaultTimelineRepository(
             )
         response.map { it.toModelWithReply() }
     }.getOrNull()
+
+    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
+        if (otherInstance.isNullOrEmpty()) {
+            return block(provider)
+        } else {
+            otherProvider.changeNode(otherInstance)
+            return block(otherProvider)
+        }
+    }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20
