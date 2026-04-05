@@ -21,7 +21,10 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
 
-internal class DefaultTimelineEntryRepository(private val provider: ServiceProvider) : TimelineEntryRepository {
+internal class DefaultTimelineEntryRepository(
+    private val provider: ServiceProvider,
+    private val otherProvider: ServiceProvider,
+) : TimelineEntryRepository {
     private val mutex = Mutex()
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
 
@@ -36,46 +39,54 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
         onlyMedia: Boolean,
         enableCache: Boolean,
         refresh: Boolean,
-    ): List<TimelineEntryModel>? {
-        if (refresh) {
+        otherInstance: String?,
+    ): List<TimelineEntryModel>? = withProvider(otherInstance) { provider ->
+        if (refresh && otherInstance.isNullOrEmpty()) {
             mutex.withLock {
                 cachedValues.clear()
             }
         }
-        if (pageCursor == null && cachedValues.isNotEmpty() && enableCache) {
-            return cachedValues
-        }
-        return runCatching {
-            provider.user
-                .getStatuses(
-                    id = userId,
-                    excludeReblogs = excludeReblogs,
-                    maxId = pageCursor,
-                    excludeReplies = excludeReplies,
-                    pinned = pinned,
-                    onlyMedia = onlyMedia,
-                    limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModelWithReply() }
-                .also {
-                    if (pageCursor == null && enableCache) {
-                        mutex.withLock {
-                            cachedValues.addAll(it)
+        if (pageCursor == null && cachedValues.isNotEmpty() && enableCache && otherInstance.isNullOrEmpty()) {
+            cachedValues
+        } else {
+            runCatching {
+                provider.user
+                    .getStatuses(
+                        id = userId,
+                        excludeReblogs = excludeReblogs,
+                        maxId = pageCursor,
+                        excludeReplies = excludeReplies,
+                        pinned = pinned,
+                        onlyMedia = onlyMedia,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModelWithReply() }
+                    .also {
+                        if (pageCursor == null && enableCache && otherInstance.isNullOrEmpty()) {
+                            mutex.withLock {
+                                cachedValues.addAll(it)
+                            }
                         }
                     }
-                }
-        }.getOrNull()
+            }.getOrNull()
+        }
     }
 
-    override suspend fun getById(id: String): TimelineEntryModel? = runCatching {
-        provider.status.get(id = id).toModelWithReply()
+    override suspend fun getById(id: String, otherInstance: String?): TimelineEntryModel? = runCatching {
+        withProvider(otherInstance) { provider ->
+            provider.status.get(id = id).toModelWithReply()
+        }
     }.getOrNull()
 
-    override suspend fun getSource(id: String): TimelineEntryModel? = runCatching {
-        provider.status.getSource(id = id).toModel()
+    override suspend fun getSource(id: String, otherInstance: String?): TimelineEntryModel? = runCatching {
+        withProvider(otherInstance) { provider ->
+            provider.status.getSource(id = id).toModel()
+        }
     }.getOrNull()
 
-    override suspend fun getContext(id: String): TimelineContextModel? = runCatching {
-        provider.status.getContext(id = id).toModel()
+    override suspend fun getContext(id: String, otherInstance: String?): TimelineContextModel? = runCatching {
+        withProvider(otherInstance) { provider ->
+            provider.status.getContext(id = id).toModel()
+        }
     }.getOrNull()
 
     override suspend fun reblog(id: String): TimelineEntryModel? = runCatching {
@@ -136,22 +147,34 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
             ).map { it.toModelWithReply() }
     }.getOrNull()
 
-    override suspend fun getUsersWhoFavorited(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.status
-            .getFavoritedBy(
-                id = id,
-                maxId = pageCursor,
-                limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModel() }
+    override suspend fun getUsersWhoFavorited(
+        id: String,
+        pageCursor: String?,
+        otherInstance: String?,
+    ): List<UserModel>? = runCatching {
+        withProvider(otherInstance) { provider ->
+            provider.status
+                .getFavoritedBy(
+                    id = id,
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                ).map { it.toModel() }
+        }
     }.getOrNull()
 
-    override suspend fun getUsersWhoReblogged(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.status
-            .getRebloggedBy(
-                id = id,
-                maxId = pageCursor,
-                limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModel() }
+    override suspend fun getUsersWhoReblogged(
+        id: String,
+        pageCursor: String?,
+        otherInstance: String?,
+    ): List<UserModel>? = runCatching {
+        withProvider(otherInstance) { provider ->
+            provider.status
+                .getRebloggedBy(
+                    id = id,
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                ).map { it.toModel() }
+        }
     }.getOrNull()
 
     override suspend fun create(
@@ -294,6 +317,15 @@ internal class DefaultTimelineEntryRepository(private val provider: ServiceProvi
                 },
             )
         return provider.status.undislike(data)
+    }
+
+    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
+        if (otherInstance.isNullOrEmpty()) {
+            return block(provider)
+        } else {
+            otherProvider.changeNode(otherInstance)
+            return block(otherProvider)
+        }
     }
 
     companion object {
