@@ -271,6 +271,7 @@ val contentRepositoryModule =
             singleton {
                 DefaultUserRepository(
                     provider = instance(tag = "default"),
+                    otherProvider = instance(tag = "other"),
                 )
             }
         }

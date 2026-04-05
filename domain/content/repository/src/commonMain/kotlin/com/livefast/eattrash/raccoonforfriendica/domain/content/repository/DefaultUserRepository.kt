@@ -18,7 +18,10 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.parameters
 
-internal class DefaultUserRepository(private val provider: ServiceProvider) : UserRepository {
+internal class DefaultUserRepository(
+    private val provider: ServiceProvider,
+    private val otherProvider: ServiceProvider,
+) : UserRepository {
     private var cachedUser: UserModel? = null
 
     override suspend fun getById(id: String): UserModel? = runCatching {
@@ -70,23 +73,29 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
             ).map { it.user.toModel() }
     }.getOrNull()
 
-    override suspend fun getFollowers(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.user
-            .getFollowers(
-                id = id,
-                maxId = pageCursor,
-                limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModel() }
-    }.getOrNull()
+    override suspend fun getFollowers(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? =
+        runCatching {
+            withProvider(otherInstance) { provider ->
+                provider.user
+                    .getFollowers(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrNull()
 
-    override suspend fun getFollowing(id: String, pageCursor: String?): List<UserModel>? = runCatching {
-        provider.user
-            .getFollowing(
-                id = id,
-                maxId = pageCursor,
-                limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModel() }
-    }.getOrNull()
+    override suspend fun getFollowing(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? =
+        runCatching {
+            withProvider(otherInstance) { provider ->
+                provider.user
+                    .getFollowing(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    ).map { it.toModel() }
+            }
+        }.getOrNull()
 
     override suspend fun getListsContaining(id: String): List<CircleModel>? = runCatching {
         provider.user.getListsContaining(id).map { it.toModel() }
@@ -291,6 +300,15 @@ internal class DefaultUserRepository(private val provider: ServiceProvider) : Us
             )
         provider.user.updatePersonalNote(id = id, data = data).toModel()
     }.getOrNull()
+
+    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
+        if (otherInstance.isNullOrEmpty()) {
+            return block(provider)
+        } else {
+            otherProvider.changeNode(otherInstance)
+            return block(otherProvider)
+        }
+    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20
