@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.logDebug
 import com.livefast.eattrash.raccoonforfriendica.di.initDi
 
 fun main() {
-    Thread.setDefaultUncaughtExceptionHandler { t, e ->
+    Thread.setDefaultUncaughtExceptionHandler { _, e ->
         e.printStackTrace()
     }
 
@@ -22,7 +22,7 @@ fun main() {
             onCloseRequest = {
                 exitApplication()
             },
-            title = "Raccoon 🦝",
+            title = "🦝 Raccoon",
             state = windowState,
         ) {
             App()
