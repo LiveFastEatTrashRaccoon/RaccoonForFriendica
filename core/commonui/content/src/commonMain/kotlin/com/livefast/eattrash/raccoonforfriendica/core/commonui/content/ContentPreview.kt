@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoP
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 
@@ -55,12 +57,14 @@ fun ContentPreview(
     val hasTextualInfo = title.isNotBlank() || description.isNotBlank()
     val cornerSize = CornerSize.xl
     val contentPadding = 12.dp
+    val isDesktop = isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         if (hasMediaInfo || hasTextualInfo) {
             Column(
                 modifier =
                 Modifier
+                    .fillMaxWidth(if (isDesktop) 0.9f else 1f)
                     .border(
                         width = Dp.Hairline,
                         color = ancillaryColor,
@@ -83,7 +87,7 @@ fun ContentPreview(
                         modifier =
                         Modifier.heightIn(
                             min = 50.dp,
-                            max = 200.dp,
+                            max = if (isDesktop) 400.dp else 200.dp,
                         ),
                     ) {
                         CustomImage(
@@ -101,7 +105,7 @@ fun ContentPreview(
                             url = image,
                             contentDescription = LocalStrings.current.previewImage,
                             quality = FilterQuality.Low,
-                            contentScale = ContentScale.FillWidth,
+                            contentScale = if (isDesktop) ContentScale.Crop else ContentScale.FillWidth,
                         )
                     }
                 } else if (type == PreviewType.Video && url.isNotBlank() && autoloadImages) {
