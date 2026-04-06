@@ -608,4 +608,68 @@ class DefaultTimelineRepositoryTest {
         }
     }
     // endregion
+
+    // region getCircle
+    @Test
+    fun `given results when getCircle then result and interactions are as expected`() = runTest {
+        val circleId = "42"
+        everySuspend {
+            timelineService.getList(
+                id = any(),
+                maxId = any(),
+                limit = any(),
+            )
+        } returns (19 downTo 0).map { Status(id = "$it") }
+
+        val res =
+            sut.getCircle(
+                id = circleId,
+                pageCursor = null,
+            )
+
+        assertNotNull(res)
+        assertEquals(20, res.size)
+        assertEquals("0", res.last().id)
+        verifySuspend {
+            timelineService.getList(
+                id = circleId,
+                maxId = null,
+                limit = 20,
+            )
+        }
+        verify {
+            provider.timeline
+        }
+        verify(VerifyMode.not) {
+            otherProvider.timeline
+        }
+    }
+
+    @Test
+    fun `given error when getCircle then result is null`() = runTest {
+        val circleId = "42"
+        everySuspend {
+            timelineService.getList(
+                id = any(),
+                maxId = any(),
+                limit = any(),
+            )
+        } throws IOException("Network error")
+
+        val res =
+            sut.getCircle(
+                id = circleId,
+                pageCursor = null,
+            )
+
+        assertNull(res)
+        verifySuspend {
+            timelineService.getList(
+                id = circleId,
+                maxId = null,
+                limit = 20,
+            )
+        }
+    }
+    // endregion
 }
