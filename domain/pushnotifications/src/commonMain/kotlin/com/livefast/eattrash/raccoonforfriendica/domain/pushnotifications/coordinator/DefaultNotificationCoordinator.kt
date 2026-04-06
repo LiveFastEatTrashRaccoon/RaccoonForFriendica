@@ -73,18 +73,19 @@ internal class DefaultNotificationCoordinator(
                     it?.notificationMode
                 }.distinctUntilChanged()
                 .onEach { mode ->
-                    when (mode) {
-                        NotificationMode.Pull -> {
-                            startMonitoringPullNotificationCheckInterval()
+                    if (mode != NotificationMode.Push) {
+                        if (pushNotificationManager.state.value == PushNotificationManagerState.Enabled) {
+                            pushNotificationManager.disable()
                         }
-
-                        NotificationMode.Push -> {
-                            stopMonitoringPullNotificationCheckInterval()
-                            pushNotificationManager.refreshState()
-                            pushNotificationManager.startup()
-                        }
-
-                        else -> Unit
+                    } else {
+                        pushNotificationManager.refreshState()
+                        pushNotificationManager.startup()
+                    }
+                    if (mode != NotificationMode.Pull) {
+                        stopMonitoringPullNotificationCheckInterval()
+                        pullNotificationManager.stop()
+                    } else {
+                        startMonitoringPullNotificationCheckInterval()
                     }
                 }.launchIn(scope)
     }
