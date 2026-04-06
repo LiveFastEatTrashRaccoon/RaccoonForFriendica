@@ -190,7 +190,7 @@ class ExploreViewModel(
                     ExplorePaginationSpecification.Hashtags(refresh = !initial)
 
                 ExploreSection.Links ->
-                    ExplorePaginationSpecification.Links
+                    ExplorePaginationSpecification.Links()
 
                 ExploreSection.Posts ->
                     ExplorePaginationSpecification.Posts(

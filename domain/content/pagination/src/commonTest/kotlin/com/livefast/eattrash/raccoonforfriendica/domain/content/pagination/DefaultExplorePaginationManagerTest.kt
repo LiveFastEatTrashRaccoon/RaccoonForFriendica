@@ -212,6 +212,28 @@ class DefaultExplorePaginationManagerTest {
                 trendingRepository.getEntries(offset = 1)
             }
         }
+
+    @Test
+    fun `given results on other instance when loadNextPage with Posts specification then result is as expected`() =
+        runTest {
+            val otherInstance = "example.com"
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                )
+            everySuspend {
+                trendingRepository.getEntries(offset = any(), otherInstance = any())
+            } returns list
+
+            sut.reset(ExplorePaginationSpecification.Posts(otherInstance = otherInstance))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                trendingRepository.getEntries(offset = 0, otherInstance = otherInstance)
+            }
+        }
     // endregion
 
     // region Hashtags
@@ -273,6 +295,28 @@ class DefaultExplorePaginationManagerTest {
                 trendingRepository.getHashtags(offset = 1, refresh = false)
             }
         }
+
+    @Test
+    fun `given results on other instance when loadNextPage with Hashtags specification then result is as expected`() =
+        runTest {
+            val otherInstance = "example.com"
+            val list =
+                listOf(
+                    TagModel(name = "", url = ""),
+                )
+            everySuspend {
+                trendingRepository.getHashtags(offset = any(), refresh = any(), otherInstance = any())
+            } returns list
+
+            sut.reset(ExplorePaginationSpecification.Hashtags(otherInstance = otherInstance))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.HashTag(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                trendingRepository.getHashtags(offset = 0, refresh = false, otherInstance = otherInstance)
+            }
+        }
     // endregion
 
     // region Links
@@ -282,7 +326,7 @@ class DefaultExplorePaginationManagerTest {
             trendingRepository.getLinks(offset = any())
         } returns emptyList()
 
-        sut.reset(ExplorePaginationSpecification.Links)
+        sut.reset(ExplorePaginationSpecification.Links())
         val res = sut.loadNextPage()
 
         assertTrue(res.isEmpty())
@@ -299,7 +343,7 @@ class DefaultExplorePaginationManagerTest {
             trendingRepository.getLinks(offset = any())
         } returns list
 
-        sut.reset(ExplorePaginationSpecification.Links)
+        sut.reset(ExplorePaginationSpecification.Links())
         val res = sut.loadNextPage()
 
         assertEquals(list.map { ExploreItemModel.Link(it) }, res)
@@ -317,7 +361,7 @@ class DefaultExplorePaginationManagerTest {
                 trendingRepository.getLinks(offset = any())
             } sequentiallyReturns listOf(list, emptyList())
 
-            sut.reset(ExplorePaginationSpecification.Links)
+            sut.reset(ExplorePaginationSpecification.Links())
             sut.loadNextPage()
             val res = sut.loadNextPage()
 
@@ -326,6 +370,25 @@ class DefaultExplorePaginationManagerTest {
             verifySuspend {
                 trendingRepository.getLinks(offset = 0)
                 trendingRepository.getLinks(offset = 1)
+            }
+        }
+
+    @Test
+    fun `given results on other instance when loadNextPage with Links specification then result is as expected`() =
+        runTest {
+            val otherInstance = "example.com"
+            val list = listOf(LinkModel(url = "fake-url"))
+            everySuspend {
+                trendingRepository.getLinks(offset = any(), otherInstance = any())
+            } returns list
+
+            sut.reset(ExplorePaginationSpecification.Links(otherInstance = otherInstance))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.Link(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                trendingRepository.getLinks(offset = 0, otherInstance = otherInstance)
             }
         }
     // endregion

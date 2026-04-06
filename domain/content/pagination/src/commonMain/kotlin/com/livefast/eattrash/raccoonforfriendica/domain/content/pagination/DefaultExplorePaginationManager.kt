@@ -111,12 +111,16 @@ internal class DefaultExplorePaginationManager(
                         .getHashtags(
                             offset = offset,
                             refresh = specification.refresh,
+                            otherInstance = specification.otherInstance,
                         )?.map {
                             ExploreItemModel.HashTag(it)
                         }
 
-                ExplorePaginationSpecification.Links ->
-                    trendingRepository.getLinks(offset)?.mapNotNull {
+                is ExplorePaginationSpecification.Links ->
+                    trendingRepository.getLinks(
+                        offset = offset,
+                        otherInstance = specification.otherInstance,
+                    )?.mapNotNull {
                         if (it.url.isBlank()) {
                             null
                         } else {
@@ -126,7 +130,10 @@ internal class DefaultExplorePaginationManager(
 
                 is ExplorePaginationSpecification.Posts ->
                     trendingRepository
-                        .getEntries(offset)
+                        .getEntries(
+                            offset = offset,
+                            otherInstance = specification.otherInstance,
+                        )
                         ?.map {
                             ExploreItemModel.Entry(it)
                         }?.filterNsfw(specification.includeNsfw)
