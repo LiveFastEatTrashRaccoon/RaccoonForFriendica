@@ -132,7 +132,7 @@ internal class DefaultTimelinePaginationManager(
                         is TimelineType.Foreign ->
                             timelineRepository.getLocal(
                                 pageCursor = pageCursor,
-                                otherInstance = specification.timelineType.node,
+                                otherInstance = specification.timelineType.otherInstance,
                             )
                     }?.toListWithPageCursor()
                 }
@@ -142,6 +142,7 @@ internal class DefaultTimelinePaginationManager(
                         .getHashtag(
                             hashtag = specification.hashtag,
                             pageCursor = pageCursor,
+                            otherInstance = specification.otherInstance,
                         )
                 }
 
@@ -156,6 +157,7 @@ internal class DefaultTimelinePaginationManager(
                             pinned = specification.pinned,
                             enableCache = specification.enableCache,
                             refresh = specification.refresh,
+                            otherInstance = specification.otherInstance,
                         )?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Forum ->
@@ -164,6 +166,7 @@ internal class DefaultTimelinePaginationManager(
                             userId = specification.userId,
                             pageCursor = pageCursor,
                             excludeReplies = true,
+                            otherInstance = specification.otherInstance,
                         )?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Bookmarks ->

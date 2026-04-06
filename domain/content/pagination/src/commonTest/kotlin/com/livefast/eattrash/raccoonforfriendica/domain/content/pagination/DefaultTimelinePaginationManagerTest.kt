@@ -371,7 +371,6 @@ class DefaultTimelinePaginationManagerTest {
         everySuspend {
             timelineRepository.getLocal(
                 pageCursor = any(),
-                refresh = any(),
                 otherInstance = any(),
             )
         } returns list
@@ -391,7 +390,6 @@ class DefaultTimelinePaginationManagerTest {
         verifySuspend {
             timelineRepository.getLocal(
                 pageCursor = null,
-                refresh = false,
                 otherInstance = foreignNode,
             )
         }
@@ -654,6 +652,38 @@ class DefaultTimelinePaginationManagerTest {
             stopWordRepository.get(accountId)
         }
     }
+
+    @Test
+    fun `given results on other instance when loadNextPage with Hashtag then result is as expected`() = runTest {
+        val otherInstance = "example.com"
+        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        everySuspend {
+            timelineRepository.getHashtag(
+                hashtag = any(),
+                pageCursor = any(),
+                otherInstance = any(),
+            )
+        } returns ListWithPageCursor(list = list, cursor = "1")
+
+        sut.reset(
+            TimelinePaginationSpecification.Hashtag(
+                hashtag = "tag",
+                includeNsfw = false,
+                otherInstance = otherInstance,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            timelineRepository.getHashtag(
+                hashtag = "tag",
+                pageCursor = null,
+                otherInstance = otherInstance,
+            )
+        }
+    }
     // endregion
 
     // region User
@@ -832,6 +862,49 @@ class DefaultTimelinePaginationManagerTest {
                 )
             }
         }
+
+    @Test
+    fun `given results on other instance when loadNextPage with User then result is as expected`() = runTest {
+        val otherInstance = "example.com"
+        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        everySuspend {
+            timelineEntryRepository.getByUser(
+                userId = any(),
+                excludeReplies = any(),
+                pageCursor = any(),
+                excludeReblogs = any(),
+                pinned = any(),
+                onlyMedia = any(),
+                enableCache = any(),
+                refresh = any(),
+                otherInstance = any(),
+            )
+        } returns list
+
+        sut.reset(
+            TimelinePaginationSpecification.User(
+                userId = "1",
+                includeNsfw = false,
+                otherInstance = otherInstance,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            timelineEntryRepository.getByUser(
+                userId = "1",
+                excludeReplies = true,
+                pageCursor = null,
+                excludeReblogs = false,
+                pinned = false,
+                onlyMedia = false,
+                refresh = false,
+                otherInstance = otherInstance,
+            )
+        }
+    }
     // endregion
 
     // region Forum
@@ -943,6 +1016,90 @@ class DefaultTimelinePaginationManagerTest {
                 pinned = false,
                 onlyMedia = false,
                 refresh = false,
+            )
+        }
+    }
+
+    @Test
+    fun `given results when loadNextPage with Forum then result is as expected`() = runTest {
+        val list =
+            listOf(TimelineEntryModel(id = "1", content = "", reblog = TimelineEntryModel(id = "2", content = "")))
+        everySuspend {
+            timelineEntryRepository.getByUser(
+                userId = any(),
+                excludeReplies = any(),
+                pageCursor = any(),
+                excludeReblogs = any(),
+                pinned = any(),
+                onlyMedia = any(),
+                enableCache = any(),
+                refresh = any(),
+            )
+        } returns list
+
+        sut.reset(
+            TimelinePaginationSpecification.Forum(
+                userId = "1",
+                includeNsfw = false,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            timelineEntryRepository.getByUser(
+                userId = "1",
+                excludeReplies = true,
+                pageCursor = null,
+                excludeReblogs = false,
+                pinned = false,
+                onlyMedia = false,
+                refresh = false,
+            )
+        }
+    }
+
+    @Test
+    fun `given results on other instance when loadNextPage with Forum then result is as expected`() = runTest {
+        val otherInstance = "example.com"
+        val list =
+            listOf(TimelineEntryModel(id = "1", content = "", reblog = TimelineEntryModel(id = "2", content = "")))
+        everySuspend {
+            timelineEntryRepository.getByUser(
+                userId = any(),
+                excludeReplies = any(),
+                pageCursor = any(),
+                excludeReblogs = any(),
+                pinned = any(),
+                onlyMedia = any(),
+                enableCache = any(),
+                refresh = any(),
+                otherInstance = any(),
+            )
+        } returns list
+
+        sut.reset(
+            TimelinePaginationSpecification.Forum(
+                userId = "1",
+                includeNsfw = false,
+                otherInstance = otherInstance,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            timelineEntryRepository.getByUser(
+                userId = "1",
+                excludeReplies = true,
+                pageCursor = null,
+                excludeReblogs = false,
+                pinned = false,
+                onlyMedia = false,
+                refresh = false,
+                otherInstance = otherInstance,
             )
         }
     }
