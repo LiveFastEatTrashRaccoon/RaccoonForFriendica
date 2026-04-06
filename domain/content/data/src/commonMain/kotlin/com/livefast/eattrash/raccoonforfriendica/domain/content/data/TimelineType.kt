@@ -14,7 +14,7 @@ sealed interface TimelineType {
 
     data class Circle(val circle: CircleModel? = null) : TimelineType
 
-    data class Foreign(val node: String) : TimelineType
+    data class Foreign(val otherInstance: String) : TimelineType
 }
 
 @Composable
@@ -23,7 +23,7 @@ fun TimelineType.toReadableName(): String = when (this) {
     TimelineType.Subscriptions -> LocalStrings.current.timelineSubscriptions
     TimelineType.Local -> LocalStrings.current.timelineLocal
     is TimelineType.Circle -> circle?.name.orEmpty()
-    is TimelineType.Foreign -> node
+    is TimelineType.Foreign -> otherInstance
 }
 
 fun TimelineType.toInt(): Int = when (this) {

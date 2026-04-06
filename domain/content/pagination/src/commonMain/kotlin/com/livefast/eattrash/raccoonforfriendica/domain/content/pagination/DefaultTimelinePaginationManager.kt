@@ -132,7 +132,7 @@ internal class DefaultTimelinePaginationManager(
                         is TimelineType.Foreign ->
                             timelineRepository.getLocal(
                                 pageCursor = pageCursor,
-                                otherInstance = specification.timelineType.node,
+                                otherInstance = specification.timelineType.otherInstance,
                             )
                     }?.toListWithPageCursor()
                 }

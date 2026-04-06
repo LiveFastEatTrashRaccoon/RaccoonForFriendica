@@ -371,7 +371,6 @@ class DefaultTimelinePaginationManagerTest {
         everySuspend {
             timelineRepository.getLocal(
                 pageCursor = any(),
-                refresh = any(),
                 otherInstance = any(),
             )
         } returns list
@@ -391,7 +390,6 @@ class DefaultTimelinePaginationManagerTest {
         verifySuspend {
             timelineRepository.getLocal(
                 pageCursor = null,
-                refresh = false,
                 otherInstance = foreignNode,
             )
         }
