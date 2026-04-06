@@ -106,9 +106,26 @@ class DefaultNotificationCoordinatorTest {
             )
         }
 
-        verify {
+        verifySuspend {
             pullNotificationManager.setPeriod(minutes = 10)
             pullNotificationManager.start()
+        }
+    }
+
+    @Test
+    fun `push notifications enabled when mode changes to Pull then push notifications are disabled`() = runTest {
+        every { pushNotificationManager.state } returns MutableStateFlow(PushNotificationManagerState.Enabled)
+        sut.setupLoggedUser()
+
+        settingsState.update {
+            SettingsModel(
+                notificationMode = NotificationMode.Pull,
+                pullNotificationCheckInterval = 10.minutes,
+            )
+        }
+
+        verifySuspend {
+            pushNotificationManager.disable()
         }
     }
 
@@ -121,6 +138,7 @@ class DefaultNotificationCoordinatorTest {
         verifySuspend {
             pushNotificationManager.refreshState()
             pushNotificationManager.startup()
+            pullNotificationManager.stop()
         }
     }
 }
