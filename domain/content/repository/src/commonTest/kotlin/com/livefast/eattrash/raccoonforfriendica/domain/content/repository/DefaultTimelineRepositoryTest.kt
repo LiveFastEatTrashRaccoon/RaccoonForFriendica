@@ -162,6 +162,23 @@ class DefaultTimelineRepositoryTest {
             otherProvider.timeline
         }
     }
+
+    @Test
+    fun `given cached results when getPublic and not refresh then return cached`() = runTest {
+        everySuspend {
+            timelineService.getPublic(any(), any(), any(), any())
+        } returns listOf(Status(id = "1"))
+        sut.getPublic(null, refresh = true)
+
+        val res = sut.getPublic(null, refresh = false)
+
+        assertNotNull(res)
+        assertEquals(1, res.size)
+        assertEquals("1", res[0].id)
+        verifySuspend(VerifyMode.exactly(1)) {
+            timelineService.getPublic(any(), any(), any(), any())
+        }
+    }
     // endregion
 
     // region Home
