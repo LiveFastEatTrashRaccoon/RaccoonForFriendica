@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.aspectRatio
@@ -38,6 +41,13 @@ fun ContentVisualAttachments(
     cornerSize: Dp = CornerSize.xl,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
 ) {
+    val isDesktop = isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)
+    val pagerState =
+        rememberPagerState(
+            initialPage = 0,
+            pageCount = { attachments.size },
+        )
+
     fun handleClick(index: Int) {
         val urls = attachments.map { it.url }
         val videoIndices =
@@ -51,40 +61,43 @@ fun ContentVisualAttachments(
         onOpenImage?.invoke(urls, index, videoIndices)
     }
 
-    val pagerState =
-        rememberPagerState(
-            initialPage = 0,
-            pageCount = { attachments.size },
-        )
     val referenceAspectRatio =
-        attachments
-            .minBy { it.originalHeight ?: 0 }
-            .aspectRatio
-            .takeIf { it > 0 } ?: (16 / 9f)
+        if (isDesktop) {
+            2.35f
+        } else {
+            attachments
+                .minBy { it.originalHeight ?: 0 }
+                .aspectRatio
+                .takeIf { it > 0 } ?: (16 / 9f)
+        }
+    val contentScale = if (isDesktop) {
+        ContentScale.Crop
+    } else {
+        ContentScale.FillWidth
+    }
     val hasMultipleElements = attachments.size > 1
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HorizontalPager(
-            modifier =
-            Modifier
-                .fillMaxWidth()
+            modifier = Modifier
+                .then(if (isDesktop) Modifier.widthIn(max = 600.dp) else Modifier.fillMaxWidth())
                 .aspectRatio(referenceAspectRatio),
             state = pagerState,
             beyondViewportPageCount = 1,
         ) { index ->
-
             Box {
                 AttachmentElement(
                     modifier = Modifier.fillMaxSize(),
                     attachment = attachments[index],
                     sensitive = blurNsfw && sensitive,
                     autoload = autoloadImages,
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = contentScale,
                     cornerSize = cornerSize,
                     onClick = {
-                        handleClick(0)
+                        handleClick(index)
                     },
                 )
 
@@ -164,7 +177,7 @@ private fun AttachmentElement(
 
         MediaType.Video -> {
             ContentVideo(
-                modifier = modifier.fillMaxWidth(),
+                modifier = modifier,
                 url = attachment.url,
                 autoload = autoload,
                 sensitive = blurNsfw && sensitive,
