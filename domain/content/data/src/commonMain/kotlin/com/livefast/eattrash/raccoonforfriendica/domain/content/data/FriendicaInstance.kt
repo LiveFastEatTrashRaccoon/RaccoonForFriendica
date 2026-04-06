@@ -5,68 +5,74 @@ data class FriendicaInstance(val lang: String = "", val mau: Int = 0, val value:
 /**
  * List of predefined Friendica instances in the drop-down menu.
  *
- * Source for MAU: https://the-federation.info/platform/11
+ * Source for MAU: https://fedidb.com/servers
  */
 val DefaultFriendicaInstances =
     buildList {
         this +=
             FriendicaInstance(
-                lang = "🇩🇪",
-                mau = 21,
-                value = "friendica.me",
-            )
-        this +=
-            FriendicaInstance(
                 lang = "🇬🇧",
-                mau = 11,
-                value = "friendica.myportal.social",
-            )
-        this +=
-            FriendicaInstance(
-                lang = "🇬🇧",
-                mau = 1176,
+                mau = 559,
                 value = "friendica.world",
             )
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
-                mau = 154,
-                value = "libranet.de",
+                mau = 270,
+                value = "friendica.eskimo.com",
             )
         this +=
             FriendicaInstance(
-                lang = "🇬🇧",
-                mau = 206,
-                value = "anonsys.net",
+                lang = "🇮🇹",
+                mau = 247,
+                value = "poliverso.org",
             )
         this +=
             FriendicaInstance(
                 lang = "🇩🇪",
-                mau = 165,
+                mau = 158,
                 value = "loma.ml",
             )
         this +=
             FriendicaInstance(
                 lang = "🇩🇪",
-                mau = 101,
+                mau = 117,
                 value = "friendica.opensocial.space",
             )
         this +=
             FriendicaInstance(
-                lang = "🇮🇹",
-                mau = 270,
-                value = "poliverso.org",
+                lang = "🇬🇧",
+                mau = 89,
+                value = "anonsys.net",
             )
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
-                mau = 78,
+                mau = 54,
                 value = "social.trom.tf",
             )
         this +=
             FriendicaInstance(
+                lang = "🇩🇪",
+                mau = 44,
+                value = "joinfriendica.de",
+            )
+        this +=
+            FriendicaInstance(
+                lang = "🇩🇪",
+                mau = 41,
+                value = "inne.city",
+            )
+        this +=
+            FriendicaInstance(
+                lang = "🇩🇪",
+                mau = 12,
+                value = "friendica.me",
+            )
+        this +=
+            FriendicaInstance(
                 lang = "🇬🇧",
-                mau = 120,
-                value = "venera.social",
+                mau = 10,
+                value = "friendica.myportal.social",
             )
     }.sortedByDescending { it.mau }
