@@ -6,7 +6,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 
 internal class DefaultTrendService(private val baseUrl: String, private val client: HttpClient) : TrendsService {
     override suspend fun getHashtags(offset: Int, limit: Int): List<Tag> = client.get("$baseUrl/v1/trends/tags") {
@@ -20,8 +20,8 @@ internal class DefaultTrendService(private val baseUrl: String, private val clie
             parameter("limit", limit)
         }.body()
 
-    override suspend fun getLinks(offset: Int, limit: Int): HttpResponse = client.get("$baseUrl/v1/trends/links") {
+    override suspend fun getLinks(offset: Int, limit: Int): String = client.get("$baseUrl/v1/trends/links") {
         parameter("offset", offset)
         parameter("limit", limit)
-    }
+    }.bodyAsText()
 }

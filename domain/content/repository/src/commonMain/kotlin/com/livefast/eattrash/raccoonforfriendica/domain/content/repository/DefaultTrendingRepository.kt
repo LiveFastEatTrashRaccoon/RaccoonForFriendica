@@ -7,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
-import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
@@ -72,7 +71,7 @@ internal class DefaultTrendingRepository(
                     )
             // workaround for a server bug which inserts empty arrays "[]," among valid results
             // (at least on some Friendica versions)
-            val body = response.bodyAsText().replace("[],", "")
+            val body = response.replace("[],", "")
             json.decodeFromString<List<TrendsLink>>(body).map { it.toModel() }
         }
     }.getOrNull()
