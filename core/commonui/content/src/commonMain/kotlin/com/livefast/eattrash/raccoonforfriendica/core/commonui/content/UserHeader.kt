@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +30,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -52,164 +56,170 @@ fun UserHeader(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val relationshipStatus = user?.relationshipStatus
     val notificationStatus = user?.notificationStatus
+    val isDesktop = isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)
 
     Column(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box {
-            CustomImage(
-                modifier =
-                Modifier
-                    .padding(bottom = avatarSize * 0.8f)
-                    .aspectRatio(16 / 9f)
-                    .clickable {
-                        if (banner.isNotBlank()) {
-                            onOpenImage?.invoke(banner)
-                        }
-                    },
-                url = banner,
-                autoload = autoloadImages,
-                contentScale = ContentScale.FillBounds,
-            )
+        Column(
+            modifier = Modifier.widthIn(max = 1000.dp),
+        ) {
+            Box {
+                CustomImage(
+                    modifier =
+                    Modifier
+                        .padding(bottom = avatarSize * 0.8f)
+                        .aspectRatio(if (isDesktop) 4f else 16 / 9f)
+                        .clickable {
+                            if (banner.isNotBlank()) {
+                                onOpenImage?.invoke(banner)
+                            }
+                        },
+                    url = banner,
+                    autoload = autoloadImages,
+                    contentScale = ContentScale.Crop,
+                )
 
-            Row(
-                modifier =
-                Modifier
-                    .align(Alignment.BottomStart)
-                    .offset(
-                        y = -avatarSize * 0.1f,
-                    ).padding(horizontal = Spacing.m),
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                if (avatar.isNotEmpty() && autoloadImages) {
-                    CustomImage(
-                        modifier =
-                        Modifier
-                            .size(avatarSize)
-                            .clip(RoundedCornerShape(avatarSize / 2))
-                            .clickable {
-                                onOpenImage?.invoke(avatar)
-                            },
-                        url = avatar,
-                        quality = FilterQuality.Low,
-                        contentScale = ContentScale.FillBounds,
-                    )
-                } else {
-                    PlaceholderImage(
-                        size = avatarSize,
-                        title = user?.displayName ?: user?.handle ?: "?",
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                    horizontalAlignment = Alignment.End,
+                Row(
+                    modifier =
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .offset(
+                            y = -avatarSize * 0.1f,
+                        ).padding(horizontal = Spacing.m),
+                    verticalAlignment = Alignment.Bottom,
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        val followers = user?.followers ?: 0
-                        val following = user?.following ?: 0
-                        Text(
+                    if (avatar.isNotEmpty() && autoloadImages) {
+                        CustomImage(
                             modifier =
                             Modifier
-                                .clip(RoundedCornerShape(CornerSize.xl))
+                                .size(avatarSize)
+                                .clip(RoundedCornerShape(avatarSize / 2))
                                 .clickable {
-                                    if (followers > 0) {
-                                        onOpenFollowers?.invoke()
-                                    }
-                                }.padding(horizontal = Spacing.s),
-                            text = LocalStrings.current.accountFollower(followers),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = ancillaryColor,
+                                    onOpenImage?.invoke(avatar)
+                                },
+                            url = avatar,
+                            quality = FilterQuality.Low,
+                            contentScale = ContentScale.FillBounds,
                         )
-                        Text(
-                            text = "•",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = ancillaryColor,
-                        )
-                        Text(
-                            modifier =
-                            Modifier
-                                .clip(RoundedCornerShape(CornerSize.xl))
-                                .clickable {
-                                    if (following > 0) {
-                                        onOpenFollowing?.invoke()
-                                    }
-                                }.padding(horizontal = Spacing.s),
-                            text = LocalStrings.current.accountFollowing(following),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = ancillaryColor,
+                    } else {
+                        PlaceholderImage(
+                            size = avatarSize,
+                            title = user?.displayName ?: user?.handle ?: "?",
                         )
                     }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.m),
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                        horizontalAlignment = Alignment.End,
                     ) {
-                        if (notificationStatus != null) {
-                            UserNotificationButton(
-                                status = notificationStatus,
-                                pending = user.notificationStatusPending,
-                                onClick = onNotificationsClick,
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            val followers = user?.followers ?: 0
+                            val following = user?.following ?: 0
+                            Text(
+                                modifier =
+                                Modifier
+                                    .clip(RoundedCornerShape(CornerSize.xl))
+                                    .clickable {
+                                        if (followers > 0) {
+                                            onOpenFollowers?.invoke()
+                                        }
+                                    }.padding(horizontal = Spacing.s),
+                                text = LocalStrings.current.accountFollower(followers),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = ancillaryColor,
+                            )
+                            Text(
+                                text = "•",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = ancillaryColor,
+                            )
+                            Text(
+                                modifier =
+                                Modifier
+                                    .clip(RoundedCornerShape(CornerSize.xl))
+                                    .clickable {
+                                        if (following > 0) {
+                                            onOpenFollowing?.invoke()
+                                        }
+                                    }.padding(horizontal = Spacing.s),
+                                text = LocalStrings.current.accountFollowing(following),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = ancillaryColor,
                             )
                         }
-                        if (relationshipStatus != null) {
-                            UserRelationshipButton(
-                                status = relationshipStatus,
-                                locked = user.locked,
-                                pending = user.relationshipStatusPending,
-                                onClick = onRelationshipClick,
-                            )
-                        }
-                        if (editButtonEnabled) {
-                            OutlinedButton(
-                                onClick = {
-                                    onEditClick?.invoke()
-                                },
-                            ) {
-                                Text(text = LocalStrings.current.editProfileTitle)
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.m),
+                        ) {
+                            if (notificationStatus != null) {
+                                UserNotificationButton(
+                                    status = notificationStatus,
+                                    pending = user.notificationStatusPending,
+                                    onClick = onNotificationsClick,
+                                )
+                            }
+                            if (relationshipStatus != null) {
+                                UserRelationshipButton(
+                                    status = relationshipStatus,
+                                    locked = user.locked,
+                                    pending = user.relationshipStatusPending,
+                                    onClick = onRelationshipClick,
+                                )
+                            }
+                            if (editButtonEnabled) {
+                                OutlinedButton(
+                                    onClick = {
+                                        onEditClick?.invoke()
+                                    },
+                                ) {
+                                    Text(text = LocalStrings.current.editProfileTitle)
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        Column(
-            modifier = Modifier.padding(horizontal = Spacing.s),
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
+                modifier = Modifier.padding(horizontal = Spacing.s),
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextWithCustomEmojis(
-                        text = user?.displayName ?: user?.username ?: "",
-                        emojis = user?.emojis.orEmpty(),
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                        autoloadImages = autoloadImages,
-                        color = fullColor,
-                    )
-                    Text(
-                        text = user?.handle ?: user?.username ?: "",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = ancillaryColor,
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                    ) {
+                        TextWithCustomEmojis(
+                            text = user?.displayName ?: user?.username ?: "",
+                            emojis = user?.emojis.orEmpty(),
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            autoloadImages = autoloadImages,
+                            color = fullColor,
+                        )
+                        Text(
+                            text = user?.handle ?: user?.username ?: "",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = ancillaryColor,
+                        )
+                    }
+                }
+                user?.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
+                    ContentBody(
+                        content = bio,
+                        emojis = user.emojis,
+                        onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                     )
                 }
-            }
-            user?.bio?.takeIf { it.isNotEmpty() }?.let { bio ->
-                ContentBody(
-                    content = bio,
-                    emojis = user.emojis,
-                    onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
-                )
             }
         }
     }
