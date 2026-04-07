@@ -75,6 +75,7 @@ fun UserListScreen(
     entryId: String? = null,
     infoCount: Int? = null,
     enableExport: Boolean = false,
+    otherInstance: String? = null,
 ) {
     val model: UserListMviModel =
         getViewModel<UserListViewModel>(
@@ -99,6 +100,7 @@ fun UserListScreen(
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var listContent by remember { mutableStateOf<String?>(null) }
+    val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
         runCatching {
@@ -324,9 +326,9 @@ fun UserListScreen(
                         user = user,
                         autoloadImages = uiState.autoloadImages,
                         onClick = {
-                            mainRouter.openUserDetail(user)
+                            mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
                         },
-                        onRelationshipClick = { nextAction ->
+                        onRelationshipClick = { nextAction: RelationshipStatusNextAction ->
                             when (nextAction) {
                                 RelationshipStatusNextAction.AcceptRequest -> {
                                     mainRouter.openFollowRequests()
@@ -348,7 +350,7 @@ fun UserListScreen(
                                     model.reduce(UserListMviModel.Intent.Unfollow(user.id))
                                 }
                             }
-                        },
+                        }.takeIf { isHomeInstance },
                     )
                     Spacer(modifier = Modifier.height(Spacing.interItem))
 

@@ -103,6 +103,7 @@ fun EntryDetailScreen(
     id: String,
     swipeNavigationEnabled: Boolean,
     modifier: Modifier = Modifier,
+    otherInstance: String? = null,
     customBackAction: (() -> Unit)? = null,
 ) {
     val model: EntryDetailMviModel = getViewModel<EntryDetailViewModel>(
@@ -131,6 +132,7 @@ fun EntryDetailScreen(
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var lazyListState = rememberLazyListState()
+    val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
         runCatching {
@@ -420,11 +422,7 @@ fun EntryDetailScreen(
                                     OptionId.Mute -> confirmMuteEntry = entry
                                     OptionId.Block -> confirmBlockEntry = entry
                                     OptionId.Pin, OptionId.Unpin ->
-                                        model.reduce(
-                                            EntryDetailMviModel.Intent.TogglePin(
-                                                entry,
-                                            ),
-                                        )
+                                        model.reduce(EntryDetailMviModel.Intent.TogglePin(entry))
 
                                     OptionId.ReportUser ->
                                         entry.original.creator?.also { userToReport ->
@@ -515,6 +513,7 @@ fun EntryDetailScreen(
                                         layout = TimelineLayout.Full,
                                         blurNsfw = uiState.blurNsfw,
                                         autoloadImages = uiState.autoloadImages,
+                                        pollEnabled = isHomeInstance,
                                         onOpenUrl = { url, allowOpenInternal ->
                                             if (allowOpenInternal) {
                                                 uriHandler.openUri(url)
@@ -527,11 +526,12 @@ fun EntryDetailScreen(
                                                 mainRouter.openEntryDetail(
                                                     entry = e,
                                                     replaceTop = true,
+                                                    otherInstance = otherInstance,
                                                 )
                                             }
                                         },
-                                        onOpenUser = {
-                                            mainRouter.openUserDetail(it)
+                                        onOpenUser = { user ->
+                                            mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
                                         },
                                         onOpenImage = { urls, imageIdx, videoIndices ->
                                             mainRouter.openImageDetail(
@@ -557,7 +557,7 @@ fun EntryDetailScreen(
                                                         ),
                                                     )
                                             }
-                                        }.takeIf { actionRepository.canReblog(entry.original) },
+                                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                                         onBookmark =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
@@ -565,7 +565,7 @@ fun EntryDetailScreen(
                                                     e,
                                                 ),
                                             )
-                                        }.takeIf { actionRepository.canBookmark(entry.original) },
+                                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                                         onFavorite =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
@@ -573,7 +573,7 @@ fun EntryDetailScreen(
                                                     e,
                                                 ),
                                             )
-                                        }.takeIf { actionRepository.canFavorite(entry.original) },
+                                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                                         onDislike =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
@@ -581,17 +581,19 @@ fun EntryDetailScreen(
                                                     e,
                                                 ),
                                             )
-                                        }.takeIf { actionRepository.canDislike(entry.original) },
+                                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                                         onOpenUsersFavorite = { e ->
                                             mainRouter.openEntryUsersFavorite(
                                                 entryId = e.id,
                                                 count = e.favoriteCount,
+                                                otherInstance = otherInstance,
                                             )
                                         },
                                         onOpenUsersReblog = { e ->
                                             mainRouter.openEntryUsersReblog(
                                                 entryId = e.id,
                                                 count = e.reblogCount,
+                                                otherInstance = otherInstance,
                                             )
                                         },
                                         onReply =
@@ -655,11 +657,12 @@ fun EntryDetailScreen(
                                             mainRouter.openEntryDetail(
                                                 entry = entry,
                                                 replaceTop = true,
+                                                otherInstance = otherInstance,
                                             )
                                         }
                                     },
-                                    onOpenUser = {
-                                        mainRouter.openUserDetail(it)
+                                    onOpenUser = { user ->
+                                        mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
                                     },
                                     onOpenImage = { urls, imageIdx, videoIndices ->
                                         mainRouter.openImageDetail(
@@ -700,12 +703,14 @@ fun EntryDetailScreen(
                                         mainRouter.openEntryUsersFavorite(
                                             entryId = e.id,
                                             count = e.favoriteCount,
+                                            otherInstance = otherInstance,
                                         )
                                     },
                                     onOpenUsersReblog = { e ->
                                         mainRouter.openEntryUsersReblog(
                                             entryId = e.id,
                                             count = e.reblogCount,
+                                            otherInstance = otherInstance,
                                         )
                                     },
                                     onReply =

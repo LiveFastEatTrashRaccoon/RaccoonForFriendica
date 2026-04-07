@@ -99,7 +99,12 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Modifier = Modifier) {
+fun ThreadScreen(
+    entryId: String,
+    swipeNavigationEnabled: Boolean,
+    modifier: Modifier = Modifier,
+    otherInstance: String? = null,
+) {
     val model: ThreadMviModel =
         getViewModel<ThreadViewModel>(
             arg =
@@ -130,6 +135,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var lazyListState = rememberLazyListState()
+    val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
         runCatching {
@@ -328,6 +334,7 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                 extendedSocialInfoEnabled = true,
                                 blurNsfw = uiState.blurNsfw,
                                 autoloadImages = uiState.autoloadImages,
+                                pollEnabled = isHomeInstance,
                                 onOpenUrl = { url, allowOpenInternal ->
                                     if (allowOpenInternal) {
                                         uriHandler.openUri(url)
@@ -335,8 +342,8 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                         uriHandler.openExternally(url)
                                     }
                                 },
-                                onOpenUser = {
-                                    mainRouter.openUserDetail(it)
+                                onOpenUser = { user ->
+                                    mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
                                 },
                                 onOpenImage = { urls, imageIdx, videoIndices ->
                                     mainRouter.openImageDetail(
@@ -366,31 +373,27 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                 onBookmark =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
-                                }.takeIf {
-                                    actionRepository.canBookmark(entry)
-                                },
+                                }.takeIf { actionRepository.canBookmark(entry) && isHomeInstance },
                                 onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf {
-                                    actionRepository.canFavorite(entry)
-                                },
+                                }.takeIf { actionRepository.canFavorite(entry) && isHomeInstance },
                                 onDislike =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
-                                }.takeIf {
-                                    actionRepository.canDislike(entry)
-                                },
+                                }.takeIf { actionRepository.canDislike(entry) && isHomeInstance },
                                 onOpenUsersFavorite = { e ->
                                     mainRouter.openEntryUsersFavorite(
                                         entryId = e.id,
                                         count = e.favoriteCount,
+                                        otherInstance = otherInstance,
                                     )
                                 },
                                 onOpenUsersReblog = { e ->
                                     mainRouter.openEntryUsersReblog(
                                         entryId = e.id,
                                         count = e.reblogCount,
+                                        otherInstance = otherInstance,
                                     )
                                 },
                                 onReply =
@@ -480,28 +483,18 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
 
                                         OptionId.Quote -> {
                                             entry.original.also { entryToShare ->
-                                                mainRouter.openComposer(
-                                                    urlToShare = entryToShare.url,
-                                                )
+                                                mainRouter.openComposer(urlToShare = entryToShare.url)
                                             }
                                         }
 
                                         OptionId.CopyToClipboard ->
                                             entry.original.also { entry ->
-                                                model.reduce(
-                                                    ThreadMviModel.Intent.CopyToClipboard(
-                                                        entry,
-                                                    ),
-                                                )
+                                                model.reduce(ThreadMviModel.Intent.CopyToClipboard(entry))
                                             }
 
                                         OptionId.Translate ->
                                             entry.original.also { entry ->
-                                                model.reduce(
-                                                    ThreadMviModel.Intent.ToggleTranslation(
-                                                        entry,
-                                                    ),
-                                                )
+                                                model.reduce(ThreadMviModel.Intent.ToggleTranslation(entry))
                                             }
 
                                         OptionId.AddShortcut ->
@@ -549,8 +542,8 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                     uriHandler.openExternally(url)
                                 }
                             },
-                            onOpenUser = {
-                                mainRouter.openUserDetail(it)
+                            onOpenUser = { user ->
+                                mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
                             },
                             onOpenImage = { urls, imageIdx, videoIndices ->
                                 mainRouter.openImageDetail(
@@ -574,26 +567,26 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                                             ThreadMviModel.Intent.ToggleReblog(e),
                                         )
                                 }
-                            }.takeIf { actionRepository.canReblog(entry.original) },
+                            }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                             onBookmark =
                             { e: TimelineEntryModel ->
                                 model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
-                            }.takeIf { actionRepository.canBookmark(entry.original) },
+                            }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                             onFavorite =
                             { e: TimelineEntryModel ->
                                 model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
-                            }.takeIf { actionRepository.canFavorite(entry.original) },
+                            }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                             onDislike =
                             { e: TimelineEntryModel ->
                                 model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
-                            }.takeIf { actionRepository.canDislike(entry.original) },
+                            }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                             onReply =
                             { e: TimelineEntryModel ->
                                 mainRouter.openComposer(
                                     inReplyTo = e,
                                     inReplyToUser = e.creator,
                                 )
-                            }.takeIf { actionRepository.canReply(entry.original) },
+                            }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
                             onShowOriginal = {
                                 model.reduce(
                                     ThreadMviModel.Intent.ToggleTranslation(entry.original),
@@ -601,27 +594,27 @@ fun ThreadScreen(entryId: String, swipeNavigationEnabled: Boolean, modifier: Mod
                             },
                             options =
                             buildList {
-                                if (actionRepository.canShare(entry.original)) {
+                                if (actionRepository.canShare(entry.original) && isHomeInstance) {
                                     this += OptionId.Share.toOption()
                                     this += OptionId.CopyUrl.toOption()
                                 }
-                                if (actionRepository.canEdit(entry.original)) {
+                                if (actionRepository.canEdit(entry.original) && isHomeInstance) {
                                     this += OptionId.Edit.toOption()
                                 }
-                                if (actionRepository.canDelete(entry.original)) {
+                                if (actionRepository.canDelete(entry.original) && isHomeInstance) {
                                     this += OptionId.Delete.toOption()
                                 }
-                                if (actionRepository.canMute(entry)) {
+                                if (actionRepository.canMute(entry) && isHomeInstance) {
                                     this += OptionId.Mute.toOption()
                                 }
-                                if (actionRepository.canBlock(entry)) {
+                                if (actionRepository.canBlock(entry) && isHomeInstance) {
                                     this += OptionId.Block.toOption()
                                 }
-                                if (actionRepository.canReport(entry.original)) {
+                                if (actionRepository.canReport(entry.original) && isHomeInstance) {
                                     this += OptionId.ReportUser.toOption()
                                     this += OptionId.ReportEntry.toOption()
                                 }
-                                if (actionRepository.canQuote(entry.original)) {
+                                if (actionRepository.canQuote(entry.original) && isHomeInstance) {
                                     this += OptionId.Quote.toOption()
                                 }
                                 this += OptionId.ViewDetails.toOption()

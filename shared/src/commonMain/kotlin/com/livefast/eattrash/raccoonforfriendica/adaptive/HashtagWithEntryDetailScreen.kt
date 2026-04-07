@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 fun HashtagWithEntryDetailScreen(
     tag: String,
     modifier: Modifier = Modifier,
+    otherInstance: String? = null,
 ) {
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Destination>()
     val scope = rememberCoroutineScope()
@@ -32,12 +33,17 @@ fun HashtagWithEntryDetailScreen(
             AnimatedPane {
                 HashtagScreen(
                     tag = tag,
+                    otherInstance = otherInstance,
                     customOnSelectAction = { entry ->
                         scope.launch {
                             val entryCache = getEntryCache()
                             entryCache.put(entry.id, entry)
 
-                            val target = Destination.EntryDetail(entryId = entry.id, swipeNavigationEnabled = false)
+                            val target = Destination.EntryDetail(
+                                entryId = entry.id,
+                                swipeNavigationEnabled = false,
+                                otherInstance = otherInstance,
+                            )
                             scaffoldNavigator.navigateTo(ThreePaneScaffoldRole.Primary, target)
                         }
                     },
@@ -51,6 +57,7 @@ fun HashtagWithEntryDetailScreen(
                     EntryDetailScreen(
                         id = destination.entryId,
                         swipeNavigationEnabled = destination.swipeNavigationEnabled,
+                        otherInstance = destination.otherInstance,
                         customBackAction = {
                             scope.launch {
                                 scaffoldNavigator.navigateBack()
