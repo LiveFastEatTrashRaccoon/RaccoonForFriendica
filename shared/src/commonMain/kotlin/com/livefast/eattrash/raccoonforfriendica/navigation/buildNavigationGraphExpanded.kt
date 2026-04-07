@@ -8,6 +8,7 @@ import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.CircleTimelineWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.CirclesWithCircleMembersScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.FavoritesWithEntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.adaptive.HashtagWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.SearchWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.UserDetailWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
@@ -38,7 +39,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
@@ -104,22 +104,23 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
         EntryDetailScreen(
             id = route.entryId,
             swipeNavigationEnabled = route.swipeNavigationEnabled,
+            otherInstance = route.otherInstance,
         )
     }
     composable<Destination.ForumList> {
         val route: Destination.ForumList = it.toRoute()
-        ForumListScreen(id = route.userId)
+        ForumListScreen(id = route.userId, otherInstance = route.otherInstance)
     }
     composable<Destination.UserDetail> {
         val route: Destination.UserDetail = it.toRoute()
-        UserDetailWithEntryDetailScreen(id = route.userId)
+        UserDetailWithEntryDetailScreen(id = route.userId, otherInstance = route.otherInstance)
     }
     composable<Destination.Settings> {
         SettingsScreen()
     }
     composable<Destination.HashTag> {
         val route: Destination.HashTag = it.toRoute()
-        HashtagScreen(route.tag)
+        HashtagWithEntryDetailScreen(tag = route.tag, otherInstance = route.otherInstance)
     }
     composable<Destination.UserList> {
         val route: Destination.UserList = it.toRoute()
@@ -129,6 +130,7 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
             entryId = route.entryId,
             infoCount = route.infoCount,
             enableExport = route.enableExport,
+            otherInstance = route.otherInstance,
         )
     }
     composable<Destination.Favorites> {
@@ -161,10 +163,11 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
         SearchWithEntryDetailScreen()
     }
     composable<Destination.Thread> {
-        val destination: Destination.Thread = it.toRoute()
+        val route: Destination.Thread = it.toRoute()
         ThreadScreen(
-            entryId = destination.entryId,
-            swipeNavigationEnabled = destination.swipeNavigationEnabled,
+            entryId = route.entryId,
+            swipeNavigationEnabled = route.swipeNavigationEnabled,
+            otherInstance = route.otherInstance,
         )
     }
     composable<Destination.ImageDetail> {
