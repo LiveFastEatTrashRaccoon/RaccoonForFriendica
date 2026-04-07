@@ -120,6 +120,7 @@ fun ExploreScreen(
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
+    val isHomeInstance = uiState.otherInstance.isNullOrEmpty()
 
     suspend fun goBackToTop() {
         runCatching {
@@ -183,7 +184,7 @@ fun ExploreScreen(
                     }
                 },
                 actions = {
-                    if (uiState.currentUserId != null) {
+                    if (uiState.currentUserId != null && isHomeInstance) {
                         // only logged users can call the v2/search API
                         IconButton(
                             onClick = {
@@ -316,11 +317,12 @@ fun ExploreScreen(
                                 blurNsfw = uiState.blurNsfw,
                                 autoloadImages = uiState.autoloadImages,
                                 maxBodyLines = uiState.maxBodyLines,
+                                pollEnabled = isHomeInstance,
                                 onClick = { entry ->
                                     if (customOnSelectCallback != null) {
                                         customOnSelectCallback?.invoke(entry)
                                     } else {
-                                        mainRouter.openEntryDetail(entry)
+                                        mainRouter.openEntryDetail(entry = entry, otherInstance = uiState.otherInstance)
                                     }
                                 },
                                 onOpenUrl = { url, allowOpenInternal ->
@@ -330,8 +332,8 @@ fun ExploreScreen(
                                         uriHandler.openExternally(url)
                                     }
                                 },
-                                onOpenUser = {
-                                    mainRouter.openUserDetail(it)
+                                onOpenUser = { user ->
+                                    mainRouter.openUserDetail(user = user, otherInstance = uiState.otherInstance)
                                 },
                                 onOpenImage = { urls, imageIdx, videoIndices ->
                                     mainRouter.openImageDetail(
@@ -355,26 +357,26 @@ fun ExploreScreen(
                                                 ExploreMviModel.Intent.ToggleReblog(e),
                                             )
                                     }
-                                }.takeIf { actionRepository.canReblog(item.entry.original) },
+                                }.takeIf { actionRepository.canReblog(item.entry.original) && isHomeInstance },
                                 onBookmark =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ExploreMviModel.Intent.ToggleBookmark(e))
-                                }.takeIf { actionRepository.canBookmark(item.entry.original) },
+                                }.takeIf { actionRepository.canBookmark(item.entry.original) && isHomeInstance },
                                 onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ExploreMviModel.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canFavorite(item.entry.original) },
+                                }.takeIf { actionRepository.canFavorite(item.entry.original) && isHomeInstance },
                                 onDislike =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ExploreMviModel.Intent.ToggleDislike(e))
-                                }.takeIf { actionRepository.canDislike(item.entry.original) },
+                                }.takeIf { actionRepository.canDislike(item.entry.original) && isHomeInstance },
                                 onReply =
                                 { e: TimelineEntryModel ->
                                     mainRouter.openComposer(
                                         inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
-                                }.takeIf { actionRepository.canReply(item.entry.original) },
+                                }.takeIf { actionRepository.canReply(item.entry.original) && isHomeInstance },
                                 onPollVote =
                                 uiState.currentUserId?.let {
                                     { e, choices ->
@@ -400,26 +402,26 @@ fun ExploreScreen(
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (actionRepository.canEdit(entry.original)) {
+                                    if (actionRepository.canEdit(entry.original) && isHomeInstance) {
                                         this += OptionId.Edit.toOption()
                                     }
-                                    if (actionRepository.canDelete(entry.original)) {
+                                    if (actionRepository.canDelete(entry.original) && isHomeInstance) {
                                         this += OptionId.Delete.toOption()
                                     }
-                                    if (actionRepository.canTogglePin(entry)) {
+                                    if (actionRepository.canTogglePin(entry) && isHomeInstance) {
                                         if (entry.pinned) {
                                             this += OptionId.Unpin.toOption()
                                         } else {
                                             this += OptionId.Pin.toOption()
                                         }
                                     }
-                                    if (actionRepository.canMute(entry)) {
+                                    if (actionRepository.canMute(entry) && isHomeInstance) {
                                         this += OptionId.Mute.toOption()
                                     }
-                                    if (actionRepository.canBlock(entry)) {
+                                    if (actionRepository.canBlock(entry) && isHomeInstance) {
                                         this += OptionId.Block.toOption()
                                     }
-                                    if (actionRepository.canReport(entry.original)) {
+                                    if (actionRepository.canReport(entry.original) && isHomeInstance) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
@@ -553,8 +555,8 @@ fun ExploreScreen(
                         is ExploreItemModel.HashTag -> {
                             HashtagItem(
                                 hashtag = item.hashtag,
-                                onOpen = {
-                                    mainRouter.openHashtag(it)
+                                onOpen = { tag ->
+                                    mainRouter.openHashtag(tag = tag, otherInstance = uiState.otherInstance)
                                 },
                             )
                             Spacer(modifier = Modifier.height(Spacing.interItem))
@@ -576,9 +578,9 @@ fun ExploreScreen(
                                 user = item.user,
                                 autoloadImages = uiState.autoloadImages,
                                 onClick = {
-                                    mainRouter.openUserDetail(item.user)
+                                    mainRouter.openUserDetail(user = item.user, otherInstance = uiState.otherInstance)
                                 },
-                                onRelationshipClick = { nextAction ->
+                                onRelationshipClick = { nextAction: RelationshipStatusNextAction ->
                                     when (nextAction) {
                                         RelationshipStatusNextAction.AcceptRequest -> {
                                             mainRouter.openFollowRequests()
@@ -601,7 +603,7 @@ fun ExploreScreen(
                                             model.reduce(ExploreMviModel.Intent.Unfollow(item.user.id))
                                         }
                                     }
-                                },
+                                }.takeIf { isHomeInstance },
                             )
                             Spacer(modifier = Modifier.height(Spacing.interItem))
                         }

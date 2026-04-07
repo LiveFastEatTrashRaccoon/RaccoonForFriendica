@@ -572,7 +572,7 @@ fun SearchScreen(modifier: Modifier = Modifier, customOnSelectAction: ((Timeline
                                 onClick = {
                                     mainRouter.openUserDetail(item.user)
                                 },
-                                onRelationshipClick = { nextAction ->
+                                onRelationshipClick = { nextAction: RelationshipStatusNextAction ->
                                     when (nextAction) {
                                         RelationshipStatusNextAction.AcceptRequest -> {
                                             mainRouter.openFollowRequests()

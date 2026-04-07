@@ -9,25 +9,26 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Stable
 interface MainRouter {
-    fun openUserDetail(user: UserModel)
+    fun openUserDetail(user: UserModel, otherInstance: String? = null)
 
-    fun switchUserDetailToClassicMode(user: UserModel)
+    fun switchUserDetailToClassicMode(user: UserModel, otherInstance: String? = null)
 
-    fun switchUserDetailToForumMode(user: UserModel)
+    fun switchUserDetailToForumMode(user: UserModel, otherInstance: String? = null)
 
     fun openEntryDetail(
         entry: TimelineEntryModel,
         replaceTop: Boolean = false,
         swipeNavigationEnabled: Boolean = false,
+        otherInstance: String? = null,
     )
 
     fun openSettings()
 
-    fun openHashtag(tag: String)
+    fun openHashtag(tag: String, otherInstance: String? = null)
 
-    fun openFollowers(user: UserModel, enableExport: Boolean = false)
+    fun openFollowers(user: UserModel, enableExport: Boolean = false, otherInstance: String? = null)
 
-    fun openFollowing(user: UserModel, enableExport: Boolean = false)
+    fun openFollowing(user: UserModel, enableExport: Boolean = false, otherInstance: String? = null)
 
     fun openFavorites()
 
@@ -35,9 +36,9 @@ interface MainRouter {
 
     fun openFollowedHashtags()
 
-    fun openEntryUsersFavorite(entryId: String, count: Int)
+    fun openEntryUsersFavorite(entryId: String, count: Int, otherInstance: String? = null)
 
-    fun openEntryUsersReblog(entryId: String, count: Int)
+    fun openEntryUsersReblog(entryId: String, count: Int, otherInstance: String? = null)
 
     fun openComposer(
         inReplyTo: TimelineEntryModel? = null,
@@ -53,7 +54,7 @@ interface MainRouter {
 
     fun openSearch()
 
-    fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean = false)
+    fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean = false, otherInstance: String? = null)
 
     fun openImageDetail(url: String)
 

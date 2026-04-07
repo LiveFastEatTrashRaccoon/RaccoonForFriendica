@@ -69,6 +69,7 @@ interface ExploreMviModel : MviModel<ExploreMviModel.Intent, ExploreMviModel.Sta
         val layout: TimelineLayout = TimelineLayout.Full,
         val lang: String? = null,
         val currentNode: String? = null,
+        val otherInstance: String? = null,
     )
 
     sealed interface Effect {

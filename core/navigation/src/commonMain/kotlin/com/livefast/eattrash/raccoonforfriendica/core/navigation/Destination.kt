@@ -7,19 +7,23 @@ sealed interface Destination {
     data object Main : Destination
 
     @Serializable
-    data class EntryDetail(val entryId: String, val swipeNavigationEnabled: Boolean) : Destination
+    data class EntryDetail(
+        val entryId: String,
+        val swipeNavigationEnabled: Boolean,
+        val otherInstance: String? = null,
+    ) : Destination
 
     @Serializable
-    data class ForumList(val userId: String) : Destination
+    data class ForumList(val userId: String, val otherInstance: String? = null) : Destination
 
     @Serializable
-    data class UserDetail(val userId: String) : Destination
+    data class UserDetail(val userId: String, val otherInstance: String? = null) : Destination
 
     @Serializable
     data object Settings : Destination
 
     @Serializable
-    data class HashTag(val tag: String) : Destination
+    data class HashTag(val tag: String, val otherInstance: String? = null) : Destination
 
     @Serializable
     data class UserList(
@@ -28,6 +32,7 @@ sealed interface Destination {
         val entryId: String? = null,
         val enableExport: Boolean = false,
         val infoCount: Int? = null,
+        val otherInstance: String? = null,
     ) : Destination
 
     @Serializable
@@ -54,7 +59,8 @@ sealed interface Destination {
     data object Search : Destination
 
     @Serializable
-    data class Thread(val entryId: String, val swipeNavigationEnabled: Boolean) : Destination
+    data class Thread(val entryId: String, val swipeNavigationEnabled: Boolean, val otherInstance: String? = null) :
+        Destination
 
     @Serializable
     data class ImageDetail(

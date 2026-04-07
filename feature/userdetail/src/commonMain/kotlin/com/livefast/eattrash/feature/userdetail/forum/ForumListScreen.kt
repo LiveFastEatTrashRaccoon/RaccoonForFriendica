@@ -94,7 +94,7 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
+fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: ForumListMviModel = getViewModel<ForumListViewModel>(arg = ForumListViewModelArgs(id))
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
@@ -118,6 +118,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
         runCatching {
@@ -143,6 +144,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                         mainRouter.openThread(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
+                            otherInstance = otherInstance,
                         )
                     }
 
@@ -246,7 +248,8 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                                             CustomOptions.SwitchToClassicMode -> {
                                                 uiState.user?.also { user ->
                                                     mainRouter.switchUserDetailToClassicMode(
-                                                        user,
+                                                        user = user,
+                                                        otherInstance = otherInstance,
                                                     )
                                                 }
                                             }
@@ -268,7 +271,10 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                         }
                     }
 
-                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded) && uiState.currentUserId != null) {
+                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded) &&
+                        uiState.currentUserId != null &&
+                        isHomeInstance
+                    ) {
                         IconButton(
                             shape = MaterialTheme.shapes.small,
                             colors = IconButtonDefaults.filledTonalIconButtonColors(),
@@ -289,7 +295,10 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
             )
         },
         floatingActionButton = {
-            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded) && uiState.currentUserId != null) {
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded) &&
+                uiState.currentUserId != null &&
+                isHomeInstance
+            ) {
                 AnimatedVisibility(
                     visible = isFabVisible,
                     enter =
@@ -371,6 +380,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
+                        pollEnabled = isHomeInstance,
                         onClick = {
                             model.reduce(ForumListMviModel.Intent.WillOpenDetail(entry))
                         },
@@ -381,8 +391,8 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                                 uriHandler.openExternally(url)
                             }
                         },
-                        onOpenUser = {
-                            mainRouter.openUserDetail(it)
+                        onOpenUser = { user ->
+                            mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
                         },
                         onOpenImage = { urls, imageIdx, videoIndices ->
                             mainRouter.openImageDetail(
@@ -406,26 +416,26 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                                         ForumListMviModel.Intent.ToggleReblog(e),
                                     )
                             }
-                        }.takeIf { actionRepository.canReblog(entry.original) },
+                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
                             model.reduce(ForumListMviModel.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) },
+                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
                             model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) },
+                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
                             model.reduce(ForumListMviModel.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) },
+                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
                             mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
-                        }.takeIf { actionRepository.canReply(entry.original) },
+                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
                             { e, choices ->
@@ -444,27 +454,27 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier) {
                         },
                         options =
                         buildList {
-                            if (actionRepository.canShare(entry.original)) {
+                            if (actionRepository.canShare(entry.original) && isHomeInstance) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canEdit(entry.original)) {
+                            if (actionRepository.canEdit(entry.original) && isHomeInstance) {
                                 this += OptionId.Edit.toOption()
                             }
-                            if (actionRepository.canDelete(entry.original)) {
+                            if (actionRepository.canDelete(entry.original) && isHomeInstance) {
                                 this += OptionId.Delete.toOption()
                             }
-                            if (actionRepository.canMute(entry)) {
+                            if (actionRepository.canMute(entry) && isHomeInstance) {
                                 this += OptionId.Mute.toOption()
                             }
-                            if (actionRepository.canBlock(entry)) {
+                            if (actionRepository.canBlock(entry) && isHomeInstance) {
                                 this += OptionId.Block.toOption()
                             }
-                            if (actionRepository.canReport(entry.original)) {
+                            if (actionRepository.canReport(entry.original) && isHomeInstance) {
                                 this += OptionId.ReportUser.toOption()
                                 this += OptionId.ReportEntry.toOption()
                             }
-                            if (actionRepository.canQuote(entry.original)) {
+                            if (actionRepository.canQuote(entry.original) && isHomeInstance) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()

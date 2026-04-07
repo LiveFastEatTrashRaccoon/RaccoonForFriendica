@@ -119,6 +119,7 @@ import kotlin.time.Duration
 fun UserDetailScreen(
     id: String,
     modifier: Modifier = Modifier,
+    otherInstance: String? = null,
     customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val model: UserDetailMviModel = getViewModel<UserDetailViewModel>(
@@ -159,6 +160,7 @@ fun UserDetailScreen(
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var changeRateLimitBottomSheetOpen by remember { mutableStateOf(false) }
     val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
+    val isHomeInstance = otherInstance.isNullOrEmpty()
 
     suspend fun goBackToTop() {
         runCatching {
@@ -197,6 +199,7 @@ fun UserDetailScreen(
                             mainRouter.openEntryDetail(
                                 entry = event.entry,
                                 swipeNavigationEnabled = true,
+                                otherInstance = otherInstance,
                             )
                         }
                     }
@@ -243,7 +246,7 @@ fun UserDetailScreen(
                                 if (!user.url.isNullOrEmpty()) {
                                     this += OptionId.Share.toOption()
                                 }
-                                if (uiState.currentUserId != null) {
+                                if (uiState.currentUserId != null && isHomeInstance) {
                                     if (user.muted) {
                                         this += OptionId.Unmute.toOption()
                                     } else {
@@ -371,7 +374,10 @@ fun UserDetailScreen(
 
                                                 CustomOptions.SwitchToForumMode -> {
                                                     uiState.user?.also { user ->
-                                                        mainRouter.switchUserDetailToForumMode(user)
+                                                        mainRouter.switchUserDetailToForumMode(
+                                                            user = user,
+                                                            otherInstance = otherInstance,
+                                                        )
                                                     }
                                                 }
 
@@ -492,7 +498,7 @@ fun UserDetailScreen(
                             onOpenImage = { url ->
                                 mainRouter.openImageDetail(url)
                             },
-                            onRelationshipClick = { nextAction ->
+                            onRelationshipClick = { nextAction: RelationshipStatusNextAction ->
                                 when (nextAction) {
                                     RelationshipStatusNextAction.AcceptRequest -> {
                                         mainRouter.openFollowRequests()
@@ -514,7 +520,7 @@ fun UserDetailScreen(
                                         model.reduce(UserDetailMviModel.Intent.Unfollow)
                                     }
                                 }
-                            },
+                            }.takeIf { isHomeInstance },
                             onNotificationsClick = { nextAction ->
                                 when (nextAction) {
                                     NotificationStatusNextAction.Disable -> {
@@ -528,12 +534,12 @@ fun UserDetailScreen(
                             },
                             onOpenFollowers = {
                                 uiState.user?.also { user ->
-                                    mainRouter.openFollowers(user)
+                                    mainRouter.openFollowers(user = user, otherInstance = otherInstance)
                                 }
                             },
                             onOpenFollowing = {
                                 uiState.user?.also { user ->
-                                    mainRouter.openFollowing(user)
+                                    mainRouter.openFollowing(user = user, otherInstance = otherInstance)
                                 }
                             },
                         )
@@ -647,6 +653,7 @@ fun UserDetailScreen(
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
+                        pollEnabled = isHomeInstance,
                         onClick = { e ->
                             model.reduce(UserDetailMviModel.Intent.WillOpenDetail(e))
                         },
@@ -684,26 +691,26 @@ fun UserDetailScreen(
                                         UserDetailMviModel.Intent.ToggleReblog(e),
                                     )
                             }
-                        }.takeIf { actionRepository.canReblog(entry.original) },
+                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
                             model.reduce(UserDetailMviModel.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) },
+                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
                             model.reduce(UserDetailMviModel.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) },
+                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
                             model.reduce(UserDetailMviModel.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) },
+                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
                             mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
-                        }.takeIf { actionRepository.canReply(entry.original) },
+                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
                             { e, choices ->
@@ -722,14 +729,14 @@ fun UserDetailScreen(
                         },
                         options =
                         buildList {
-                            if (actionRepository.canShare(entry.original)) {
+                            if (actionRepository.canShare(entry.original) && isHomeInstance) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canReport(entry.original)) {
+                            if (actionRepository.canReport(entry.original) && isHomeInstance) {
                                 this += OptionId.ReportEntry.toOption()
                             }
-                            if (actionRepository.canQuote(entry.original)) {
+                            if (actionRepository.canQuote(entry.original) && isHomeInstance) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()
