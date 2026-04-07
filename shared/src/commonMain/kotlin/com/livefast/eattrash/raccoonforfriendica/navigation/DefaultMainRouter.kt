@@ -37,7 +37,7 @@ class DefaultMainRouter(
     private val isLogged: Boolean get() = currentUserId != null
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
-    override fun openUserDetail(user: UserModel) {
+    override fun openUserDetail(user: UserModel, otherInstance: String?) {
         check(user.id != currentUserId) { return }
         val openGroupsInForumModeByDefault =
             settingsRepository.current.value?.openGroupsInForumModeByDefault == true
@@ -46,22 +46,22 @@ class DefaultMainRouter(
         }
         val destination =
             if (user.group && openGroupsInForumModeByDefault) {
-                Destination.ForumList(user.id)
+                Destination.ForumList(userId = user.id, otherInstance = otherInstance)
             } else {
-                Destination.UserDetail(user.id)
+                Destination.UserDetail(userId = user.id, otherInstance = otherInstance)
             }
         navigationCoordinator.push(destination)
     }
 
-    override fun switchUserDetailToClassicMode(user: UserModel) {
-        navigationCoordinator.replace(Destination.UserDetail(user.id))
+    override fun switchUserDetailToClassicMode(user: UserModel, otherInstance: String?) {
+        navigationCoordinator.replace(Destination.UserDetail(userId = user.id, otherInstance = otherInstance))
     }
 
-    override fun switchUserDetailToForumMode(user: UserModel) {
-        navigationCoordinator.replace(Destination.ForumList(user.id))
+    override fun switchUserDetailToForumMode(user: UserModel, otherInstance: String?) {
+        navigationCoordinator.replace(Destination.ForumList(userId = user.id, otherInstance = otherInstance))
     }
 
-    override fun openEntryDetail(entry: TimelineEntryModel, replaceTop: Boolean, swipeNavigationEnabled: Boolean) {
+    override fun openEntryDetail(entry: TimelineEntryModel, replaceTop: Boolean, swipeNavigationEnabled: Boolean, otherInstance: String?) {
         scope.launch {
             entryCache.put(entry.id, entry)
         }
@@ -69,6 +69,7 @@ class DefaultMainRouter(
             Destination.EntryDetail(
                 entryId = entry.id,
                 swipeNavigationEnabled = swipeNavigationEnabled,
+                otherInstance = otherInstance,
             )
         if (replaceTop) {
             navigationCoordinator.replace(destination)
@@ -81,11 +82,11 @@ class DefaultMainRouter(
         navigationCoordinator.push(Destination.Settings)
     }
 
-    override fun openHashtag(tag: String) {
-        navigationCoordinator.push(Destination.HashTag(tag))
+    override fun openHashtag(tag: String, otherInstance: String?) {
+        navigationCoordinator.push(Destination.HashTag(tag = tag, otherInstance = otherInstance))
     }
 
-    override fun openFollowers(user: UserModel, enableExport: Boolean) {
+    override fun openFollowers(user: UserModel, enableExport: Boolean, otherInstance: String?) {
         scope.launch {
             userCache.put(user.id, user)
         }
@@ -94,11 +95,12 @@ class DefaultMainRouter(
                 type = UserListType.Follower.toInt(),
                 userId = user.id,
                 enableExport = enableExport,
+                otherInstance = otherInstance,
             ),
         )
     }
 
-    override fun openFollowing(user: UserModel, enableExport: Boolean) {
+    override fun openFollowing(user: UserModel, enableExport: Boolean, otherInstance: String?) {
         scope.launch {
             userCache.put(user.id, user)
         }
@@ -107,6 +109,7 @@ class DefaultMainRouter(
                 type = UserListType.Following.toInt(),
                 userId = user.id,
                 enableExport = enableExport,
+                otherInstance = otherInstance,
             ),
         )
     }
@@ -126,22 +129,24 @@ class DefaultMainRouter(
         navigationCoordinator.push(Destination.FollowedHashtags)
     }
 
-    override fun openEntryUsersFavorite(entryId: String, count: Int) {
+    override fun openEntryUsersFavorite(entryId: String, count: Int, otherInstance: String?) {
         navigationCoordinator.push(
             Destination.UserList(
                 type = UserListType.UsersFavorite.toInt(),
                 entryId = entryId,
                 infoCount = count,
+                otherInstance = otherInstance,
             ),
         )
     }
 
-    override fun openEntryUsersReblog(entryId: String, count: Int) {
+    override fun openEntryUsersReblog(entryId: String, count: Int, otherInstance: String?) {
         navigationCoordinator.push(
             Destination.UserList(
                 type = UserListType.UsersReblog.toInt(),
                 entryId = entryId,
                 infoCount = count,
+                otherInstance = otherInstance,
             ),
         )
     }
@@ -198,7 +203,7 @@ class DefaultMainRouter(
         navigationCoordinator.push(Destination.Search)
     }
 
-    override fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean) {
+    override fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean, otherInstance: String?) {
         scope.launch {
             entryCache.put(entry.id, entry)
         }
@@ -206,6 +211,7 @@ class DefaultMainRouter(
             Destination.Thread(
                 entryId = entry.id,
                 swipeNavigationEnabled = swipeNavigationEnabled,
+                otherInstance = otherInstance,
             ),
         )
     }
