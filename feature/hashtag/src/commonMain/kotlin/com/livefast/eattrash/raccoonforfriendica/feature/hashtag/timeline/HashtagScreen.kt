@@ -160,21 +160,23 @@ fun HashtagScreen(
                     )
                 },
                 actions = {
-                    uiState.following?.also { following ->
-                        TwoStateButton(
-                            modifier = Modifier.padding(horizontal = Spacing.xs),
-                            isProminent = !following,
-                            label = LocalStrings.current.actionUnfollow,
-                            prominentLabel = LocalStrings.current.actionFollow,
-                            pending = uiState.followingPending,
-                            onValueChange = { notFollowing ->
-                                if (notFollowing) {
-                                    confirmUnfollowHashtagDialogOpen = true
-                                } else {
-                                    model.reduce(HashtagMviModel.Intent.ToggleTagFollow(true))
-                                }
-                            },
-                        )
+                    if (isHomeInstance) {
+                        uiState.following?.also { following ->
+                            TwoStateButton(
+                                modifier = Modifier.padding(horizontal = Spacing.xs),
+                                isProminent = !following,
+                                label = LocalStrings.current.actionUnfollow,
+                                prominentLabel = LocalStrings.current.actionFollow,
+                                pending = uiState.followingPending,
+                                onValueChange = { notFollowing ->
+                                    if (notFollowing) {
+                                        confirmUnfollowHashtagDialogOpen = true
+                                    } else {
+                                        model.reduce(HashtagMviModel.Intent.ToggleTagFollow(true))
+                                    }
+                                },
+                            )
+                        }
                     }
                 },
                 navigationIcon = {
