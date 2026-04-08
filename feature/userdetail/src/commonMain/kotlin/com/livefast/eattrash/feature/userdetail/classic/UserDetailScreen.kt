@@ -486,7 +486,9 @@ fun UserDetailScreen(
                 if (uiState.user != null) {
                     item {
                         UserHeader(
-                            user = uiState.user,
+                            user = uiState.user?.let { u ->
+                                u.copy(relationshipStatus = u.relationshipStatus.takeIf { isHomeInstance })
+                            },
                             autoloadImages = uiState.autoloadImages,
                             onOpenUrl = { url, allowOpenInternal ->
                                 if (allowOpenInternal) {
