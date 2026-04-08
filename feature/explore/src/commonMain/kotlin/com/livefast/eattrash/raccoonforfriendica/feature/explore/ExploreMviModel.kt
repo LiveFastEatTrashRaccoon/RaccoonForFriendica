@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.explore
 import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
+import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
@@ -51,6 +52,12 @@ interface ExploreMviModel : MviModel<ExploreMviModel.Intent, ExploreMviModel.Sta
         data class AddInstanceShortcut(val node: String) : Intent
 
         data class OpenInBrowser(val entry: TimelineEntryModel) : Intent
+
+        data object ResetOtherInstance : Intent
+
+        data class SetSelectForeignInstanceName(val name: String) : Intent
+
+        data object SubmitSelectForeignInstanceName : Intent
     }
 
     data class State(
@@ -69,6 +76,9 @@ interface ExploreMviModel : MviModel<ExploreMviModel.Intent, ExploreMviModel.Sta
         val layout: TimelineLayout = TimelineLayout.Full,
         val lang: String? = null,
         val currentNode: String? = null,
+        val selectForeignInstanceName: String = "",
+        val selectForeignInstanceValidationInProgress: Boolean = false,
+        val selectForeignInstanceNameError: ValidationError? = null,
         val otherInstance: String? = null,
     )
 
@@ -80,5 +90,6 @@ interface ExploreMviModel : MviModel<ExploreMviModel.Intent, ExploreMviModel.Sta
         data class TriggerCopy(val text: String) : Effect
 
         data class OpenUrl(val url: String) : Effect
+        data object SelectForeignInstanceSuccess : Effect
     }
 }
