@@ -40,6 +40,7 @@ fun ChangeInstanceDialog(
     modifier: Modifier = Modifier,
     validationInProgress: Boolean = false,
     validationError: ValidationError? = null,
+    exclusions: List<String> = emptyList(),
     onClose: (() -> Unit)? = null,
     onNodeChange: ((String) -> Unit)? = null,
     onSubmit: (() -> Unit)? = null,
@@ -84,7 +85,7 @@ fun ChangeInstanceDialog(
                 },
                 values =
                 buildList {
-                    for (instance in DefaultFriendicaInstances) {
+                    for (instance in DefaultFriendicaInstances.filter { it.value !in exclusions }) {
                         this += buildString {
                             append(instance.value)
                             append("  ")
