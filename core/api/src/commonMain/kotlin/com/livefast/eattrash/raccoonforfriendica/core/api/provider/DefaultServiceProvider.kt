@@ -7,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.InnerTranslationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.MarkerService
@@ -80,7 +79,6 @@ internal class DefaultServiceProvider(
     override lateinit var status: StatusService
     override lateinit var tag: TagsService
     override lateinit var timeline: TimelineService
-    override lateinit var translation: InnerTranslationService
     override lateinit var trend: TrendsService
     override lateinit var user: UserService
 
@@ -190,7 +188,6 @@ internal class DefaultServiceProvider(
         status = getService(creationArgs)
         tag = getService(creationArgs)
         timeline = getService(creationArgs)
-        translation = getService(creationArgs)
         trend = getService(creationArgs)
         user = getService(creationArgs)
     }
