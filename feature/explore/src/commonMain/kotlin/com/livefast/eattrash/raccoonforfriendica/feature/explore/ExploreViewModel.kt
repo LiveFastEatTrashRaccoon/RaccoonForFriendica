@@ -6,12 +6,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLa
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -31,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEn
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
@@ -58,7 +59,8 @@ class ExploreViewModel(
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
-    private val notificationCenter: NotificationCenter = getNotificationCenter(),
+    private val credentialsRepository: CredentialsRepository,
+    private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
     ExploreMviModel,
     MviModelDelegate<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect> by DefaultMviModelDelegate(
@@ -92,19 +94,9 @@ class ExploreViewModel(
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState {
-                        it.copy(
-                            availableSections =
-                            buildList {
-                                this += ExploreSection.Hashtags
-                                this += ExploreSection.Posts
-                                this += ExploreSection.Links
-                                if (currentUser != null) {
-                                    this += ExploreSection.Suggestions
-                                }
-                            },
-                            currentUserId = currentUser?.id,
-                        )
+                        it.copy(currentUserId = currentUser?.id)
                     }
+                    refreshAvailableSections()
 
                     if (uiState.value.initial) {
                         refresh(initial = true)
@@ -177,6 +169,15 @@ class ExploreViewModel(
             is ExploreMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
             is ExploreMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
             is ExploreMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            ExploreMviModel.Intent.ResetOtherInstance -> viewModelScope.launch {
+                updateState { it.copy(otherInstance = null, refreshing = true) }
+                refreshAvailableSections()
+                refresh()
+            }
+            is ExploreMviModel.Intent.SetSelectForeignInstanceName -> viewModelScope.launch {
+                updateState { it.copy(selectForeignInstanceName = intent.name) }
+            }
+            ExploreMviModel.Intent.SubmitSelectForeignInstanceName -> submitSelectForeignInstanceName()
         }
     }
 
@@ -187,14 +188,18 @@ class ExploreViewModel(
         paginationManager.reset(
             when (uiState.value.section) {
                 ExploreSection.Hashtags ->
-                    ExplorePaginationSpecification.Hashtags(refresh = !initial)
+                    ExplorePaginationSpecification.Hashtags(
+                        refresh = !initial,
+                        otherInstance = uiState.value.otherInstance,
+                    )
 
                 ExploreSection.Links ->
-                    ExplorePaginationSpecification.Links()
+                    ExplorePaginationSpecification.Links(otherInstance = uiState.value.otherInstance)
 
                 ExploreSection.Posts ->
                     ExplorePaginationSpecification.Posts(
                         includeNsfw = settingsRepository.current.value?.includeNsfw == true,
+                        otherInstance = uiState.value.otherInstance,
                     )
 
                 ExploreSection.Suggestions -> ExplorePaginationSpecification.Suggestions
@@ -612,6 +617,56 @@ class ExploreViewModel(
             if (url != null) {
                 emitEffect(ExploreMviModel.Effect.OpenUrl(url))
             }
+        }
+    }
+
+    private suspend fun refreshAvailableSections() {
+        updateState { oldState ->
+            oldState.copy(
+                availableSections = buildList {
+                    this += ExploreSection.Hashtags
+                    this += ExploreSection.Posts
+                    this += ExploreSection.Links
+                    if (oldState.currentUserId != null && oldState.otherInstance.isNullOrEmpty()) {
+                        this += ExploreSection.Suggestions
+                    }
+                },
+            )
+        }
+    }
+
+    private fun submitSelectForeignInstanceName() {
+        viewModelScope.launch {
+            val newNode = uiState.value.selectForeignInstanceName
+            check(apiConfigurationRepository.node.value != newNode) { return@launch }
+
+            // validate fields
+            val nodeNameError =
+                if (newNode.isBlank()) {
+                    ValidationError.MissingField
+                } else {
+                    updateState { it.copy(selectForeignInstanceValidationInProgress = true) }
+                    val isNodeValid = credentialsRepository.validateNode(newNode)
+                    if (!isNodeValid) {
+                        ValidationError.InvalidField
+                    } else {
+                        null
+                    }
+                }
+            updateState {
+                it.copy(
+                    selectForeignInstanceNameError = nodeNameError,
+                    selectForeignInstanceValidationInProgress = false,
+                )
+            }
+
+            val isValid = nodeNameError == null
+            check(isValid) { return@launch }
+            updateState { it.copy(otherInstance = newNode, selectForeignInstanceName = "", refreshing = true) }
+            refreshAvailableSections()
+            emitEffect(ExploreMviModel.Effect.SelectForeignInstanceSuccess)
+            emitEffect(ExploreMviModel.Effect.BackToTop)
+            refresh()
         }
     }
 }

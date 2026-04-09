@@ -323,7 +323,9 @@ fun UserListScreen(
                     key = { _, e -> "user-list-${e.id}" },
                 ) { idx, user ->
                     UserItem(
-                        user = user,
+                        user = user.let { u ->
+                            u.copy(relationshipStatus = u.relationshipStatus.takeIf { isHomeInstance })
+                        },
                         autoloadImages = uiState.autoloadImages,
                         onClick = {
                             mainRouter.openUserDetail(user = user, otherInstance = otherInstance)

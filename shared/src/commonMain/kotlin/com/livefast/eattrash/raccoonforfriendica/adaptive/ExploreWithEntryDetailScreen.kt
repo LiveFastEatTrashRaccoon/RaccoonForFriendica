@@ -57,6 +57,7 @@ fun ExploreWithEntryDetailScreen(
                     EntryDetailScreen(
                         id = destination.entryId,
                         swipeNavigationEnabled = destination.swipeNavigationEnabled,
+                        otherInstance = destination.otherInstance,
                         customBackAction = {
                             scope.launch {
                                 scaffoldNavigator.navigateBack()

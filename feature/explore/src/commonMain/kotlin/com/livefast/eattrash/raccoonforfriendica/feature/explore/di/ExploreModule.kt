@@ -25,6 +25,7 @@ val exploreModule =
                 toggleEntryDislike = instance(),
                 getTranslation = instance(),
                 getInnerUrl = instance(),
+                credentialsRepository = instance(),
                 notificationCenter = instance(),
             )
         }

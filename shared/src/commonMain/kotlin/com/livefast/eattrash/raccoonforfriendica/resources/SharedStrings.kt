@@ -25,6 +25,7 @@ import raccoonforfriendica.shared.generated.resources.action_add_spoiler
 import raccoonforfriendica.shared.generated.resources.action_add_title
 import raccoonforfriendica.shared.generated.resources.action_add_to_bookmarks
 import raccoonforfriendica.shared.generated.resources.action_add_to_favorites
+import raccoonforfriendica.shared.generated.resources.action_back_to_home_instance
 import raccoonforfriendica.shared.generated.resources.action_block
 import raccoonforfriendica.shared.generated.resources.action_cancel_edit_personal_note
 import raccoonforfriendica.shared.generated.resources.action_change_markup_mode
@@ -88,6 +89,7 @@ import raccoonforfriendica.shared.generated.resources.action_save_draft
 import raccoonforfriendica.shared.generated.resources.action_save_to_calendar
 import raccoonforfriendica.shared.generated.resources.action_search
 import raccoonforfriendica.shared.generated.resources.action_select
+import raccoonforfriendica.shared.generated.resources.action_select_foreign_instance
 import raccoonforfriendica.shared.generated.resources.action_send_follow_request
 import raccoonforfriendica.shared.generated.resources.action_set_schedule_date
 import raccoonforfriendica.shared.generated.resources.action_share
@@ -506,6 +508,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_add_to_bookmarks)
     override val actionAddToFavorites: String
         @Composable get() = stringResource(Res.string.action_add_to_favorites)
+    override val actionBackToHomeInstance: String
+        @Composable get() = stringResource(Res.string.action_back_to_home_instance)
     override val actionBlock: String
         @Composable get() = stringResource(Res.string.action_block)
     override val actionCancelEditPersonalNote: String
@@ -564,7 +568,6 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_insert_list)
     override val actionLogout: String
         @Composable get() = stringResource(Res.string.action_logout)
-
     override val actionManageCircles: String
         @Composable get() = stringResource(Res.string.action_manage_circles)
     override val actionMove: String
@@ -633,6 +636,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.action_search)
     override val actionSelect: String
         @Composable get() = stringResource(Res.string.action_select)
+    override val actionSelectForeignInstance: String
+        @Composable get() = stringResource(Res.string.action_select_foreign_instance)
     override val actionSendFollowRequest: String
         @Composable get() = stringResource(Res.string.action_send_follow_request)
     override val actionSetScheduleDate: String

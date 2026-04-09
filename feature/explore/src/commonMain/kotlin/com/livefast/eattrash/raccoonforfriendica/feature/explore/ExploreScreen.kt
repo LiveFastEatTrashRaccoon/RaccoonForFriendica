@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,15 +37,22 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ChangeInstanceDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
@@ -121,6 +129,7 @@ fun ExploreScreen(
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
     val isHomeInstance = uiState.otherInstance.isNullOrEmpty()
+    var selectForeignInstanceOpened by remember { mutableStateOf(false) }
 
     suspend fun goBackToTop() {
         runCatching {
@@ -142,6 +151,9 @@ fun ExploreScreen(
                     }
 
                     is ExploreMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    ExploreMviModel.Effect.SelectForeignInstanceSuccess -> {
+                        selectForeignInstanceOpened = false
+                    }
                 }
             }.launchIn(this)
     }
@@ -163,7 +175,14 @@ fun ExploreScreen(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
-                        text = LocalStrings.current.sectionTitleExplore,
+                        text = buildString {
+                            append(LocalStrings.current.sectionTitleExplore)
+                            if (!uiState.otherInstance.isNullOrEmpty()) {
+                                append(" (")
+                                append(uiState.otherInstance)
+                                append(")")
+                            }
+                        },
                         style = MaterialTheme.typography.titleMedium,
                     )
                 },
@@ -195,6 +214,76 @@ fun ExploreScreen(
                                 imageVector = LocalResources.current.search,
                                 contentDescription = LocalStrings.current.actionSearch,
                             )
+                        }
+                    }
+                    val options =
+                        buildList {
+                            if (!uiState.otherInstance.isNullOrEmpty()) {
+                                this +=
+                                    CustomOptions.BackToHomeInstance.toOption(
+                                        label = LocalStrings.current.actionBackToHomeInstance,
+                                    )
+                            } else {
+                                this +=
+                                    CustomOptions.SelectForeignInstance.toOption(
+                                        label = LocalStrings.current.actionSelectForeignInstance,
+                                    )
+                            }
+                        }
+                    if (options.isNotEmpty()) {
+                        Box {
+                            var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                            var optionsMenuOpen by remember { mutableStateOf(false) }
+                            IconButton(
+                                modifier =
+                                Modifier.onGloballyPositioned {
+                                    optionsOffset = it.positionInParent()
+                                },
+                                onClick = {
+                                    optionsMenuOpen = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = LocalResources.current.moreVert,
+                                    contentDescription = LocalStrings.current.actionOpenOptions,
+                                )
+                            }
+
+                            CustomDropDown(
+                                expanded = optionsMenuOpen,
+                                onDismiss = {
+                                    optionsMenuOpen = false
+                                },
+                                offset =
+                                with(LocalDensity.current) {
+                                    DpOffset(
+                                        x = optionsOffset.x.toDp(),
+                                        y = optionsOffset.y.toDp(),
+                                    )
+                                },
+                            ) {
+                                for (option in options) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(option.label)
+                                        },
+                                        onClick = {
+                                            optionsMenuOpen = false
+                                            when (option.id) {
+                                                CustomOptions.BackToHomeInstance -> {
+                                                    model.reduce(ExploreMviModel.Intent.ResetOtherInstance)
+                                                }
+
+                                                CustomOptions.SelectForeignInstance -> {
+                                                    selectForeignInstanceOpened = true
+                                                }
+
+                                                else -> Unit
+                                            }
+                                        },
+                                    )
+                                }
+                            }
                         }
                     }
                 },
@@ -575,7 +664,9 @@ fun ExploreScreen(
 
                         is ExploreItemModel.User -> {
                             UserItem(
-                                user = item.user,
+                                user = item.user.let { u ->
+                                    u.copy(relationshipStatus = u.relationshipStatus.takeIf { isHomeInstance })
+                                },
                                 autoloadImages = uiState.autoloadImages,
                                 onClick = {
                                     mainRouter.openUserDetail(user = item.user, otherInstance = uiState.otherInstance)
@@ -755,4 +846,27 @@ fun ExploreScreen(
             },
         )
     }
+
+    if (selectForeignInstanceOpened) {
+        ChangeInstanceDialog(
+            nodeName = uiState.selectForeignInstanceName,
+            validationInProgress = uiState.selectForeignInstanceValidationInProgress,
+            validationError = uiState.selectForeignInstanceNameError,
+            exclusions = uiState.currentNode?.let { listOf(it) }.orEmpty(),
+            onClose = {
+                selectForeignInstanceOpened = false
+            },
+            onNodeChange = { value ->
+                model.reduce(ExploreMviModel.Intent.SetSelectForeignInstanceName(value))
+            },
+            onSubmit = {
+                model.reduce(ExploreMviModel.Intent.SubmitSelectForeignInstanceName)
+            },
+        )
+    }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object SelectForeignInstance : CustomOptions
+    data object BackToHomeInstance : CustomOptions
 }

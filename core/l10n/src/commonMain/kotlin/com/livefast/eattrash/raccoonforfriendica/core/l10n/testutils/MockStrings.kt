@@ -42,6 +42,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionAddToBookmarks")
     override val actionAddToFavorites: String
         @Composable get() = retrieve("actionAddToFavorites")
+    override val actionBackToHomeInstance: String
+        @Composable get() = retrieve("actionBackToHomeInstance")
     override val actionBlock: String
         @Composable get() = retrieve("actionBlock")
     override val actionCancelEditPersonalNote: String
@@ -169,6 +171,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionSearch")
     override val actionSelect: String
         @Composable get() = retrieve("actionSelect")
+    override val actionSelectForeignInstance: String
+        @Composable get() = retrieve("actionSelectForeignInstance")
     override val actionSendFollowRequest: String
         @Composable get() = retrieve("actionSendFollowRequest")
     override val actionSetScheduleDate: String

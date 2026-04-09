@@ -19,6 +19,7 @@ interface Strings {
     val actionAddTitle: String @Composable get
     val actionAddToBookmarks: String @Composable get
     val actionAddToFavorites: String @Composable get
+    val actionBackToHomeInstance: String @Composable get
     val actionBlock: String @Composable get
     val actionCancelEditPersonalNote: String @Composable get
     val actionChangeMarkupMode: String @Composable get
@@ -82,6 +83,7 @@ interface Strings {
     val actionSaveToCalendar: String @Composable get
     val actionSearch: String @Composable get
     val actionSelect: String @Composable get
+    val actionSelectForeignInstance: String @Composable get
     val actionSendFollowRequest: String @Composable get
     val actionSetScheduleDate: String @Composable get
     val actionShare: String @Composable get
