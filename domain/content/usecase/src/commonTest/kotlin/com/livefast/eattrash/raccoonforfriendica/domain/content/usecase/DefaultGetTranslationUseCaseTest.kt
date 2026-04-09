@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FallbackTranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
@@ -22,7 +23,7 @@ import kotlin.test.assertEquals
 class DefaultGetTranslationUseCaseTest {
     private val supportedFeatureRepository = mock<SupportedFeatureRepository>()
     private val defaultRepository = mock<TranslationRepository>()
-    private val fallbackRepository = mock<TranslationRepository>()
+    private val fallbackRepository = mock<FallbackTranslationRepository>()
     private val stripMarkupUseCase =
         mock<StripMarkupUseCase> {
             every { invoke(any(), any()) } returnsArgAt 0
@@ -74,7 +75,7 @@ class DefaultGetTranslationUseCaseTest {
             }
             verifySuspend(VerifyMode.not) {
                 stripMarkupUseCase(any(), any())
-                fallbackRepository.getTranslation(any(), any())
+                fallbackRepository.getTranslation(any(), any(), any())
             }
         }
 
@@ -103,7 +104,7 @@ class DefaultGetTranslationUseCaseTest {
             } returns MutableStateFlow(NodeFeatures(supportsTranslation = true))
             everySuspend { defaultRepository.getTranslation(any(), any()) } returns null
             everySuspend {
-                fallbackRepository.getTranslation(any(), any())
+                fallbackRepository.getTranslation(any(), any(), any())
             } returns expected
 
             val res =
@@ -116,7 +117,7 @@ class DefaultGetTranslationUseCaseTest {
             verifySuspend {
                 stripMarkupUseCase("source text", MarkupMode.HTML)
                 defaultRepository.getTranslation(any(), any())
-                fallbackRepository.getTranslation(entry, targetLang)
+                fallbackRepository.getTranslation(entry, targetLang, any())
             }
         }
 
@@ -142,7 +143,7 @@ class DefaultGetTranslationUseCaseTest {
                 )
             every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
             everySuspend {
-                fallbackRepository.getTranslation(any(), any())
+                fallbackRepository.getTranslation(any(), any(), any())
             } returns expected
 
             val res =
@@ -157,7 +158,7 @@ class DefaultGetTranslationUseCaseTest {
             }
             verifySuspend {
                 stripMarkupUseCase("source text", MarkupMode.HTML)
-                fallbackRepository.getTranslation(entry, targetLang)
+                fallbackRepository.getTranslation(entry, targetLang, any())
             }
         }
 }

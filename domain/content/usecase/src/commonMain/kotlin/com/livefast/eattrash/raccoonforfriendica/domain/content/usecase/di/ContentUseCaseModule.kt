@@ -64,8 +64,8 @@ val contentUseCaseModule =
             singleton {
                 DefaultGetTranslationUseCase(
                     supportedFeatureRepository = instance(),
-                    defaultRepository = instance(tag = "default"),
-                    fallbackRepository = instance(tag = "fallback"),
+                    defaultRepository = instance(),
+                    fallbackRepository = instance(),
                     stripMarkup = instance(),
                 )
             }
