@@ -9,7 +9,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultAppServ
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultDirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultEventService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultFollowRequestService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultInnerTranslationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultInstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultMarkerService
@@ -29,7 +28,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.DefaultUserSer
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
-import com.livefast.eattrash.raccoonforfriendica.core.api.service.InnerTranslationService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.InstanceService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.MarkerService
@@ -105,11 +103,6 @@ val apiModule =
         bind<FollowRequestService> {
             factory { arg: ServiceCreationArgs ->
                 DefaultFollowRequestService(baseUrl = arg.baseUrl, client = arg.client)
-            }
-        }
-        bind<InnerTranslationService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultInnerTranslationService(baseUrl = arg.baseUrl, client = arg.client, json = instance())
             }
         }
         bind<InstanceService> {

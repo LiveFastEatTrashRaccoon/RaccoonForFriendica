@@ -9,28 +9,35 @@ import utils.PACKAGE_PREFIX
 import java.io.File
 import java.util.Properties
 
+private const val OUTPUT_CLASS_NAME = "InnerTranslationApiConfigurationValues"
+
 open class GenerateInnerTranslationApiConfigTask : DefaultTask() {
     private val inputDirectory: File = project.projectDir.absoluteFile
 
-    private val outputDirectory: File =
-        project.file("${project.layout.buildDirectory.asFile.get().path}/generated/custom")
+    private val outputDirectory: File = project.file("build/generated/custom")
 
     @TaskAction
     fun generateSentryConfig() {
         val props = loadProperties()
-        val url = props.getProperty("inner_translation_api_url")
         val file =
             FileSpec
-                .builder(packageName = PACKAGE_PREFIX, fileName = "InnerTranslationApiConfigurationValues")
+                .builder(packageName = PACKAGE_PREFIX, fileName = OUTPUT_CLASS_NAME)
                 .addType(
                     TypeSpec
-                        .objectBuilder(name = "InnerTranslationApiConfigurationValues")
+                        .objectBuilder(name = OUTPUT_CLASS_NAME)
                         .addProperty(
                             PropertySpec
-                                .builder(name = "URL", type = String::class)
-                                .initializer(format = "%S", url)
+                                .builder(name = "TRANSLATION_API_URL", type = String::class)
+                                .initializer(format = "%S", props.getProperty("translation.api.url"))
                                 .build(),
-                        ).build(),
+                        )
+                        .addProperty(
+                            PropertySpec
+                                .builder(name = "TRANSLATION_API_KEY", type = String::class)
+                                .initializer(format = "%S", props.getProperty("translation.api.key"))
+                                .build(),
+                        )
+                        .build(),
                 ).build()
         file.writeTo(outputDirectory)
     }

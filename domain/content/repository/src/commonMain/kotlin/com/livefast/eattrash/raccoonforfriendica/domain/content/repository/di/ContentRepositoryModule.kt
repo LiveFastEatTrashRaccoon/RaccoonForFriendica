@@ -17,6 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Defau
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultEventRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultFallbackTranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultFollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultInboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DefaultLocalItemCache
@@ -283,18 +284,16 @@ val contentRepositoryModule =
                 )
             }
         }
-        bind<TranslationRepository>(tag = "default") {
+        bind<TranslationRepository> {
             singleton {
                 DefaultTranslationRepository(
                     provider = instance(tag = "default"),
                 )
             }
         }
-        bind<TranslationRepository>(tag = "fallback") {
+        bind<FallbackTranslationRepository> {
             singleton {
-                FallbackTranslationRepository(
-                    provider = instance(tag = "default"),
-                )
+                DefaultFallbackTranslationRepository()
             }
         }
         bind<FollowedHashtagCache> {
