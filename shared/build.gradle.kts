@@ -38,6 +38,7 @@ kotlin {
                 implementation(projects.core.persistence)
                 implementation(projects.core.preferences)
                 implementation(projects.core.resources)
+                implementation(projects.core.translation)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)

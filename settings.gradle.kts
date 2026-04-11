@@ -51,6 +51,7 @@ include(":core:persistence")
 include(":core:preferences")
 include(":core:resources")
 include(":core:testutils")
+include(":core:translation")
 include(":core:utils")
 
 include(":domain:content:data")

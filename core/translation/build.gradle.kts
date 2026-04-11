@@ -1,25 +1,27 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
+    id("com.livefast.eattrash.serialization")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
-    id("com.livefast.eattrash.serialization")
 }
-
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.kodein)
-                implementation(libs.kotlinx.coroutines)
                 implementation(libs.ktor.client.core)
+                implementation(libs.ktor.contentnegotiation)
+                implementation(libs.ktor.json)
+                implementation(libs.ktor.serialization)
 
-                implementation(projects.core.api)
                 implementation(projects.core.di)
-                implementation(projects.core.translation)
+                implementation(projects.core.preferences)
                 implementation(projects.core.utils)
-
-                implementation(projects.core.persistence)
-                implementation(projects.domain.content.data)
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(libs.ktor.mock)
             }
         }
     }
