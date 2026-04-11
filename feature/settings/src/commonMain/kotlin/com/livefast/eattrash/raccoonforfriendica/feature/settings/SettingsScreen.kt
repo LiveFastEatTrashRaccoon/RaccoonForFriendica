@@ -12,10 +12,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -35,7 +37,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
@@ -55,16 +64,21 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypogra
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomColorPickerDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.EditTwoTextualInfosDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.MultiColorPreview
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AboutDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsMultiColorRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
@@ -72,6 +86,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
@@ -141,6 +156,9 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     var timelineLayoutBottomSheetOpened by remember { mutableStateOf(false) }
     var replyDepthBottomSheepOpened by remember { mutableStateOf(false) }
     var aboutDialogOpened by remember { mutableStateOf(false) }
+    var manageTranslationProvidersOpened by remember { mutableStateOf(false) }
+    var translationProviderConfigToDelete by remember { mutableStateOf<TranslationProviderConfig?>(null) }
+    var addTranslationProviderConfigDialogOpened by remember { mutableStateOf(false) }
 
     PermissionControllerWrapperBindEffect(controller = controller)
     LaunchedEffect(model) {
@@ -370,6 +388,16 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         value = uiState.replyDepth.toString(),
                         onTap = {
                             replyDepthBottomSheepOpened = true
+                        },
+                    )
+                    SettingsRow(
+                        title = LocalStrings.current.settingsItemTranslationProvider,
+                        value = uiState.translationProviderConfigs
+                            .firstOrNull { it.default }?.url
+                            ?.replace("http://", "")
+                            ?.replace("https://", "") ?: LocalStrings.current.shortUnavailable,
+                        onTap = {
+                            manageTranslationProvidersOpened = true
                         },
                     )
 
@@ -1150,6 +1178,151 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         AboutDialog(
             onClose = {
                 aboutDialogOpened = false
+            },
+        )
+    }
+
+    if (manageTranslationProvidersOpened) {
+        var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+        var optionsMenuOpen by remember { mutableStateOf(false) }
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val items = uiState.translationProviderConfigs.map { config ->
+            CustomModalBottomSheetItem(
+                label = config.url,
+                subtitle = config.name,
+                leadingContent = {
+                    RadioButton(
+                        selected = config.default,
+                        onClick = {},
+                    )
+                },
+                trailingContent = {
+                    val options =
+                        buildList {
+                            if (!config.default) {
+                                this += OptionId.Delete.toOption()
+                            }
+                        }
+
+                    Box {
+                        if (options.isNotEmpty()) {
+                            IconButton(
+                                modifier = Modifier.onGloballyPositioned {
+                                    optionsOffset = it.positionInParent()
+                                }.clearAndSetSemantics { },
+                                onClick = {
+                                    optionsMenuOpen = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = LocalResources.current.moreVert,
+                                    contentDescription = LocalStrings.current.moreInfo,
+                                )
+                            }
+                        }
+
+                        CustomDropDown(
+                            expanded = optionsMenuOpen,
+                            onDismiss = {
+                                optionsMenuOpen = false
+                            },
+                            offset =
+                            with(LocalDensity.current) {
+                                DpOffset(
+                                    x = optionsOffset.x.toDp(),
+                                    y = optionsOffset.y.toDp(),
+                                )
+                            },
+                        ) {
+                            for (option in options) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(option.label)
+                                    },
+                                    onClick = {
+                                        optionsMenuOpen = false
+                                        when (option.id) {
+                                            OptionId.Delete -> {
+                                                translationProviderConfigToDelete = config
+                                            }
+
+                                            else -> Unit
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
+                },
+            )
+        } + CustomModalBottomSheetItem(
+            label = LocalStrings.current.actionAddNew,
+            leadingContent = {
+                IconButton(
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = LocalResources.current.addCircle,
+                        contentDescription = LocalStrings.current.actionAddNew,
+                    )
+                }
+            },
+        )
+        CustomModalBottomSheet(
+            title = LocalStrings.current.settingsItemTranslationProvider,
+            sheetState = sheetState,
+            items = items,
+            shouldHideOnSelect = { index ->
+                // do not hide the bottom sheet when selection the last "add" action
+                index in uiState.translationProviderConfigs.indices
+            },
+            onSelect = { index ->
+                if (index != null) {
+                    val configs = uiState.translationProviderConfigs
+                    if (index in configs.indices) {
+                        manageTranslationProvidersOpened = false
+                        val selectedConfig = configs[index]
+                        model.reduce(SettingsMviModel.Intent.SwitchDefaultTranslationProvider(selectedConfig))
+                    } else {
+                        addTranslationProviderConfigDialogOpened = true
+                    }
+                } else {
+                    manageTranslationProvidersOpened = false
+                }
+            },
+        )
+    }
+
+    if (addTranslationProviderConfigDialogOpened) {
+        EditTwoTextualInfosDialog(
+            title = LocalStrings.current.translationProviderConfigDialogTitle,
+            label1 = LocalStrings.current.translationProviderConfigFieldServerUrl,
+            placeHolder1 = buildString {
+                append(LocalStrings.current.exempliGratia)
+                append(" ")
+                append("https://libretranslate.com")
+            },
+            label2 = LocalStrings.current.translationProviderConfigFieldApiKey,
+            keyboardType1 = KeyboardType.Uri,
+            keyboardType2 = KeyboardType.Text,
+            onClose = { url, key ->
+                addTranslationProviderConfigDialogOpened = false
+                if (url != null && key != null) {
+                    model.reduce(SettingsMviModel.Intent.AddTranslationProviderConfig(url = url, apiKey = key))
+                }
+            },
+        )
+    }
+
+    if (translationProviderConfigToDelete != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDelete,
+            onClose = { confirm ->
+                val config = translationProviderConfigToDelete
+                translationProviderConfigToDelete = null
+                if (confirm && config != null) {
+                    model.reduce(SettingsMviModel.Intent.DeleteTranslationProviderConfig(config))
+                }
             },
         )
     }

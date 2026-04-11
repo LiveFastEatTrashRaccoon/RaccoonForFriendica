@@ -17,6 +17,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSche
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
+import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderTypes
+import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
@@ -71,6 +74,7 @@ class SettingsViewModel(
     private val permissionController: PermissionControllerWrapper,
     private val barColorProvider: BarColorProvider,
     private val customTabsHelper: CustomTabsHelper,
+    private val translationProviderConfigStore: TranslationProviderConfigStore,
 ) : ViewModel(),
     MviModelDelegate<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>
     by DefaultMviModelDelegate(initialState = SettingsMviModel.State()),
@@ -263,6 +267,10 @@ class SettingsViewModel(
                 .onEach { state ->
                     updateState { it.copy(pushNotificationState = state) }
                 }.launchIn(this)
+
+            translationProviderConfigStore.observe().onEach { configs ->
+                updateState { it.copy(translationProviderConfigs = configs) }
+            }.launchIn(this)
         }
     }
 
@@ -406,6 +414,21 @@ class SettingsViewModel(
                 viewModelScope.launch {
                     changeReplyDepth(intent.depth)
                 }
+
+            is SettingsMviModel.Intent.SwitchDefaultTranslationProvider -> viewModelScope.launch {
+                translationProviderConfigStore.setDefaultId(intent.config.id)
+            }
+            is SettingsMviModel.Intent.AddTranslationProviderConfig -> viewModelScope.launch {
+                val config = TranslationProviderConfig(
+                    name = TranslationProviderTypes.LibreTranslate.name,
+                    url = intent.url,
+                    apiKey = intent.apiKey,
+                )
+                translationProviderConfigStore.create(config)
+            }
+            is SettingsMviModel.Intent.DeleteTranslationProviderConfig -> viewModelScope.launch {
+                translationProviderConfigStore.delete(intent.config.id)
+            }
         }
     }
 

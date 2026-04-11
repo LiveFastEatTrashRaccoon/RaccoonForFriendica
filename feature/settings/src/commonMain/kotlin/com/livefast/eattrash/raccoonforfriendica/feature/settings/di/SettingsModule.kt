@@ -33,6 +33,7 @@ val settingsModule =
                 exportSettings = instance(),
                 barColorProvider = instance(),
                 customTabsHelper = instance(),
+                translationProviderConfigStore = instance(),
             )
         }
         bindViewModel {
