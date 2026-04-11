@@ -67,6 +67,7 @@ val contentUseCaseModule =
                     defaultRepository = instance(),
                     fallbackRepository = instance(),
                     stripMarkup = instance(),
+                    translationProviderConfigStore = instance(),
                 )
             }
         }
