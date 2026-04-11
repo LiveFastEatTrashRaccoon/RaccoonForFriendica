@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.navigationMo
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.notificationsModule
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.di.persistenceModule
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.preferencesModule
+import com.livefast.eattrash.raccoonforfriendica.core.translation.di.translationModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.utilsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.contentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.contentRepositoryModule
@@ -67,6 +68,7 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 notificationsModule,
                 persistenceModule,
                 preferencesModule,
+                translationModule,
                 utilsModule,
             )
 
