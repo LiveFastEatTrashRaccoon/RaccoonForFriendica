@@ -457,22 +457,17 @@ class FavoritesViewModel(
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val isBeingTranslated = !entry.isShowingTranslation
-
             val (translation, provider) =
                 when {
-                    isBeingTranslated && entry.translation == null -> {
+                    !entry.isShowingTranslation && entry.translation == null -> {
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
-
-                    isBeingTranslated -> entry.translation to entry.translationProvider
-
-                    else -> entry to entry.translationProvider
+                    else -> entry.translation to entry.translationProvider
                 }
             val newEntry =
                 entry.copy(
-                    isShowingTranslation = isBeingTranslated,
+                    isShowingTranslation = !entry.isShowingTranslation,
                     translation = translation,
                     translationProvider = provider,
                     translationLoading = false,

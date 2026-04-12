@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
+import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
@@ -24,16 +26,19 @@ class DefaultGetTranslationUseCaseTest {
     private val supportedFeatureRepository = mock<SupportedFeatureRepository>()
     private val defaultRepository = mock<TranslationRepository>()
     private val fallbackRepository = mock<FallbackTranslationRepository>()
-    private val stripMarkupUseCase =
-        mock<StripMarkupUseCase> {
-            every { invoke(any(), any()) } returnsArgAt 0
-        }
+    private val stripMarkupUseCase = mock<StripMarkupUseCase> {
+        every { invoke(any(), any()) } returnsArgAt 0
+    }
+
+    private val translationProviderConfigStore = mock<TranslationProviderConfigStore>()
+
     private val sut =
         DefaultGetTranslationUseCase(
             supportedFeatureRepository = supportedFeatureRepository,
             defaultRepository = defaultRepository,
             fallbackRepository = fallbackRepository,
             stripMarkup = stripMarkupUseCase,
+            translationProviderConfigStore = translationProviderConfigStore,
         )
 
     @Test
@@ -75,6 +80,8 @@ class DefaultGetTranslationUseCaseTest {
             }
             verifySuspend(VerifyMode.not) {
                 stripMarkupUseCase(any(), any())
+                translationProviderConfigStore.getDefaultId()
+                translationProviderConfigStore.setDefaultId(any())
                 fallbackRepository.getTranslation(any(), any(), any())
             }
         }
@@ -103,6 +110,10 @@ class DefaultGetTranslationUseCaseTest {
                 supportedFeatureRepository.features
             } returns MutableStateFlow(NodeFeatures(supportsTranslation = true))
             everySuspend { defaultRepository.getTranslation(any(), any()) } returns null
+            val defaultConfigId = "default-config-id"
+            val defaultConfig = TranslationProviderConfig(name = "DUMMY", url = "")
+            everySuspend { translationProviderConfigStore.getDefaultId() } returns defaultConfigId
+            everySuspend { translationProviderConfigStore.getById(defaultConfigId) } returns defaultConfig
             everySuspend {
                 fallbackRepository.getTranslation(any(), any(), any())
             } returns expected
@@ -117,7 +128,9 @@ class DefaultGetTranslationUseCaseTest {
             verifySuspend {
                 stripMarkupUseCase("source text", MarkupMode.HTML)
                 defaultRepository.getTranslation(any(), any())
-                fallbackRepository.getTranslation(entry, targetLang, any())
+                translationProviderConfigStore.getDefaultId()
+                translationProviderConfigStore.getById(defaultConfigId)
+                fallbackRepository.getTranslation(entry, targetLang, defaultConfig)
             }
         }
 
@@ -142,6 +155,10 @@ class DefaultGetTranslationUseCaseTest {
                     target = targetEntry,
                 )
             every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
+            val defaultConfigId = "default-config-id"
+            val defaultConfig = TranslationProviderConfig(name = "DUMMY", url = "")
+            everySuspend { translationProviderConfigStore.getDefaultId() } returns defaultConfigId
+            everySuspend { translationProviderConfigStore.getById(defaultConfigId) } returns defaultConfig
             everySuspend {
                 fallbackRepository.getTranslation(any(), any(), any())
             } returns expected
@@ -158,7 +175,9 @@ class DefaultGetTranslationUseCaseTest {
             }
             verifySuspend {
                 stripMarkupUseCase("source text", MarkupMode.HTML)
-                fallbackRepository.getTranslation(entry, targetLang, any())
+                translationProviderConfigStore.getDefaultId()
+                translationProviderConfigStore.getById(defaultConfigId)
+                fallbackRepository.getTranslation(entry, targetLang, defaultConfig)
             }
         }
 }

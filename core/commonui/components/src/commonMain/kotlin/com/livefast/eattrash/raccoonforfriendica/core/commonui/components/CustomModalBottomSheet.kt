@@ -51,6 +51,7 @@ fun CustomModalBottomSheet(
     items: List<CustomModalBottomSheetItem> = emptyList(),
     onSelect: ((Int?) -> Unit)? = null,
     onLongPress: ((Int) -> Unit)? = null,
+    shouldHideOnSelect: ((Int) -> Boolean) = { true },
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
@@ -85,7 +86,9 @@ fun CustomModalBottomSheet(
                                     onClick = {
                                         sheetScope
                                             .launch {
-                                                sheetState.hide()
+                                                if (shouldHideOnSelect(idx)) {
+                                                    sheetState.hide()
+                                                }
                                             }.invokeOnCompletion {
                                                 onSelect?.invoke(idx)
                                             }
@@ -95,7 +98,9 @@ fun CustomModalBottomSheet(
                                         {
                                             sheetScope
                                                 .launch {
-                                                    sheetState.hide()
+                                                    if (shouldHideOnSelect(idx)) {
+                                                        sheetState.hide()
+                                                    }
                                                 }.invokeOnCompletion {
                                                     onLongPress(idx)
                                                 }

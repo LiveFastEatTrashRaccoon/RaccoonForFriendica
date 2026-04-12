@@ -293,7 +293,9 @@ val contentRepositoryModule =
         }
         bind<FallbackTranslationRepository> {
             singleton {
-                DefaultFallbackTranslationRepository()
+                DefaultFallbackTranslationRepository(
+                    translationProviderFactory = instance(),
+                )
             }
         }
         bind<FollowedHashtagCache> {

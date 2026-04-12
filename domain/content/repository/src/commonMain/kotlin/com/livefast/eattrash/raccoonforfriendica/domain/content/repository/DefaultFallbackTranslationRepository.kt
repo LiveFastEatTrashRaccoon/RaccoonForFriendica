@@ -1,13 +1,17 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
+import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
 
-internal class DefaultFallbackTranslationRepository : FallbackTranslationRepository {
+internal class DefaultFallbackTranslationRepository(
+    private val translationProviderFactory: TranslationProviderFactory,
+) : FallbackTranslationRepository {
     override suspend fun getTranslation(
         entry: TimelineEntryModel,
         targetLang: String,
-        config: FallbackTranslationProviderConfig?,
+        config: TranslationProviderConfig?,
     ): TranslatedTimelineEntryModel? = runCatching {
         TranslatedTimelineEntryModel(
             source = entry,
@@ -17,16 +21,19 @@ internal class DefaultFallbackTranslationRepository : FallbackTranslationReposit
                 entry.content.translate(
                     sourceLang = entry.lang,
                     targetLang = targetLang,
+                    config = config,
                 ),
                 title =
                 entry.title?.translate(
                     sourceLang = entry.lang,
                     targetLang = targetLang,
+                    config = config,
                 ) ?: entry.title,
                 spoiler =
                 entry.spoiler?.translate(
                     sourceLang = entry.lang,
                     targetLang = targetLang,
+                    config = config,
                 ) ?: entry.spoiler,
                 card =
                 entry.card?.let { card ->
@@ -35,11 +42,13 @@ internal class DefaultFallbackTranslationRepository : FallbackTranslationReposit
                         card.title.translate(
                             sourceLang = entry.lang,
                             targetLang = targetLang,
+                            config = config,
                         ),
                         description =
                         card.description.translate(
                             sourceLang = entry.lang,
                             targetLang = targetLang,
+                            config = config,
                         ),
                     )
                 },
@@ -49,6 +58,7 @@ internal class DefaultFallbackTranslationRepository : FallbackTranslationReposit
                         att.description?.translate(
                             sourceLang = entry.lang,
                             targetLang = targetLang,
+                            config = config,
                         )
                     att.copy(
                         description = translatedDescription ?: att.description,
@@ -64,6 +74,7 @@ internal class DefaultFallbackTranslationRepository : FallbackTranslationReposit
                                 opt.title.translate(
                                     sourceLang = entry.lang,
                                     targetLang = targetLang,
+                                    config = config,
                                 )
                             opt.copy(title = translatedTitle)
                         }.orEmpty(),
@@ -73,7 +84,15 @@ internal class DefaultFallbackTranslationRepository : FallbackTranslationReposit
         )
     }.getOrNull()
 
-    private suspend fun String.translate(sourceLang: String?, targetLang: String): String =
-        // TODO: implement translation
-        this
+    private suspend fun String.translate(
+        sourceLang: String?,
+        targetLang: String,
+        config: TranslationProviderConfig?,
+    ): String {
+        if (sourceLang == null || config == null) {
+            return this
+        }
+        val translationProvider = translationProviderFactory.create(config)
+        return translationProvider.translate(this, sourceLang, targetLang)
+    }
 }

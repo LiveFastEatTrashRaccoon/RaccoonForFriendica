@@ -14,6 +14,7 @@ kotlin {
                 implementation(libs.ksoup.html)
 
                 implementation(projects.core.htmlparse)
+                implementation(projects.core.translation)
                 implementation(projects.core.utils)
 
                 implementation(projects.domain.content.data)

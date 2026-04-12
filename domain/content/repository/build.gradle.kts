@@ -15,6 +15,7 @@ kotlin {
 
                 implementation(projects.core.api)
                 implementation(projects.core.di)
+                implementation(projects.core.translation)
                 implementation(projects.core.utils)
 
                 implementation(projects.core.persistence)
