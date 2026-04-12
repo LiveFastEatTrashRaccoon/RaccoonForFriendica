@@ -399,51 +399,39 @@
     <string name="visibility_unlisted">Bez listy</string>
     <plurals name="account_follower">
         <item quantity="one">%1$d zwolennik</item>
-        <item quantity="other">%1$d zwolennicy</item>
     </plurals>
     <plurals name="account_following">
         <item quantity="one">%1$d śledzący</item>
-        <item quantity="other">%1$d śledzący</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d wybrana reguła</item>
-        <item quantity="other">%1$d wybrane reguły</item>
     </plurals>
     <plurals name="dislikes_count">
         <item quantity="one">%1$d głos negatywny</item>
-        <item quantity="other">%1$d głosów negatywnych</item>
     </plurals>
     <plurals name="extended_social_info_favorites">
         <item quantity="one">%1$d ulubiony</item>
-        <item quantity="other">%1$d ulubione</item>
     </plurals>
     <plurals name="extended_social_info_reblogs">
         <item quantity="one">%1$d udostępnianie</item>
-        <item quantity="other">%1$d udostępnienia</item>
     </plurals>
     <plurals name="hashtag_people_using">
         <item quantity="one">%1$d osoba o tym mówi</item>
-        <item quantity="other">%1$d osoby o tym mówią</item>
     </plurals>
     <plurals name="items">
         <item quantity="one">%1$d sztuka</item>
-        <item quantity="other">%1$d sztuki</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d wiadomość</item>
-        <item quantity="other">%1$d wiadomości</item>
     </plurals>
     <plurals name="poll_vote">
         <item quantity="one">%1$d głos</item>
-        <item quantity="other">%1$d głosy</item>
     </plurals>
     <plurals name="unread_messages">
         <item quantity="one">%1$d nieprzeczytany</item>
-        <item quantity="other">%1$d nieprzeczytane</item>
     </plurals>
     <plurals name="unread_notification_body">
         <item quantity="one">W koszu na 🗑️ znajduje się %1$d przedmiot</item>
-        <item quantity="other">W koszu na 🗑️ znajdują się %1$d przedmioty</item>
     </plurals>
     <string name="preview_image">Obraz podglądowy</string>
     <string name="settings_push_notification_permission_denied_permanently">Uprawnienie do powiadomień push zostało trwale zablokowane</string>
@@ -481,4 +469,31 @@
     <string name="message_no_public_timeline">Być może ta instancja nie ujawnia swojej publicznej osi czasu.</string>
     <string name="action_shortcut">Skrót do %1$s</string>
     <string name="action_insert_inline_image">Wstawianie osadzonego obrazu</string>
+    <string name="action_select_foreign_instance"></string>
+    <string name="comment_bar_theme_red"></string>
+    <string name="language_ru" translatable="false"></string>
+    <string name="language_it" translatable="false"></string>
+    <string name="language_pl" translatable="false"></string>
+    <string name="language_pt_br" translatable="false"></string>
+    <string name="language_pt" translatable="false"></string>
+    <string name="language_uk" translatable="false"></string>
+    <string name="translation_provider_config_field_api_key"></string>
+    <string name="comment_bar_theme_green"></string>
+    <string name="translation_provider_config_field_server_url"></string>
+    <string name="action_manage_circles"></string>
+    <string name="settings_item_translation_provider"></string>
+    <string name="language_es" translatable="false"></string>
+    <string name="language_ro" translatable="false"></string>
+    <string name="language_ta" translatable="false"></string>
+    <string name="comment_bar_theme_blue"></string>
+    <string name="action_remove"></string>
+    <string name="language_de" translatable="false"></string>
+    <string name="language_en" translatable="false"></string>
+    <string name="settings_item_comment_bar_theme"></string>
+    <string name="action_back_to_home_instance"></string>
+    <string name="translation_provider_config_dialog_title"></string>
+    <string name="comment_bar_theme_rainbow"></string>
+    <string name="language_fi" translatable="false"></string>
+    <string name="language_fr" translatable="false"></string>
+    <string name="action_add"></string>
 </resources>
