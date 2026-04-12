@@ -503,4 +503,17 @@
     <string name="settings_item_comment_bar_theme">Tema barra delle risposte</string>
     <string name="action_back_to_home_instance">Torna all\'istanza originale</string>
     <string name="comment_bar_theme_rainbow">Aspide arcobaleno</string>
+    <string name="language_ru" translatable="false"></string>
+    <string name="language_it" translatable="false"></string>
+    <string name="language_pl" translatable="false"></string>
+    <string name="language_pt_br" translatable="false"></string>
+    <string name="language_pt" translatable="false"></string>
+    <string name="language_uk" translatable="false"></string>
+    <string name="language_es" translatable="false"></string>
+    <string name="language_ro" translatable="false"></string>
+    <string name="language_ta" translatable="false"></string>
+    <string name="language_de" translatable="false"></string>
+    <string name="language_en" translatable="false"></string>
+    <string name="language_fi" translatable="false"></string>
+    <string name="language_fr" translatable="false"></string>
 </resources>
