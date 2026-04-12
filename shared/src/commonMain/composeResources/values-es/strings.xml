@@ -201,7 +201,7 @@
     <string name="login_method_basic">legado</string>
     <string name="login_more_info_bottom_sheet_content">El flujo de inicio de sesión comenzará en la aplicación seleccionando la instancia, tras lo cual continuarás el flujo OAuth2 en un navegador web.\n\nSi no tienes una cuenta, elige una instancia y regístrate primero en tu navegador.</string>
     <string name="login_subtitle">Conéctate a una instancia para empezar a seguir a otras personas, crear nuevas publicaciones o respuestas y gestionar tus favoritos o marcadores.</string>
-    <string name="login_title"> ¡Bienvenido/a! 🦝</string>
+    <string name="login_title">¡Bienvenido/a! 🦝</string>
     <string name="manage_blocks_section_blocked">Bloqueado</string>
     <string name="manage_blocks_section_muted">Silenciado</string>
     <string name="manage_circles_title">Círculos</string>
@@ -222,7 +222,7 @@
     <string name="message_confirm_exit">Pulsar de nuevo 🔙 para salir</string>
     <string name="message_empty_album">Parece que este álbum está vacío… ✨</string>
     <string name="message_empty_conversation">Este es el comienzo de tu épica conversación con</string>
-    <string name="message_empty_inbox"> ¡Ya estás al día! 🎉\n\nVerás las nuevas notificaciones en esta página en cuanto lleguen</string>
+    <string name="message_empty_inbox">¡Ya estás al día! 🎉\n\nVerás las nuevas notificaciones en esta página en cuanto lleguen</string>
     <string name="message_empty_list">No hay nada que mostrar aquí 🗑️️</string>
     <string name="message_generic_error">Se ha producido un error inesperado</string>
     <string name="message_invalid_field">Campo no válido</string>
@@ -347,7 +347,7 @@
     <string name="settings_push_notification_state_no_distributors">Seleccionar distribuidor</string>
     <string name="settings_push_notification_state_unsupported">No soportadas</string>
     <string name="settings_section_debug">Debug</string>
-    <string name="settings_subtitle_background_notification_not_restricted">Sin restricción del sistema para la actividad en segundo plano </string>
+    <string name="settings_subtitle_background_notification_not_restricted">Sin restricción del sistema para la actividad en segundo plano</string>
     <string name="settings_subtitle_background_notification_restricted">Activar actividad en segundo plano para la app en los ajustes de sistema</string>
     <string name="settings_theme_black">Oscuro (AMOLED)</string>
     <string name="settings_theme_dark">Oscuro</string>

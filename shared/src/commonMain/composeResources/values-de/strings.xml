@@ -347,7 +347,7 @@
     <string name="settings_push_notification_state_no_distributors">Keine Verteiler verfügbar</string>
     <string name="settings_push_notification_state_unsupported">Nicht unterstützt</string>
     <string name="settings_section_debug">Debuggen</string>
-    <string name="settings_subtitle_background_notification_not_restricted">Keine Systembeschränkung für Hintergrundaktivitäten </string>
+    <string name="settings_subtitle_background_notification_not_restricted">Keine Systembeschränkung für Hintergrundaktivitäten</string>
     <string name="settings_subtitle_background_notification_restricted">Aktivieren die Hintergrundaktivität für die Anwendung in den Systemeinstellungen</string>
     <string name="settings_theme_black">Schwarz (AMOLED)</string>
     <string name="settings_theme_dark">Dunkel</string>

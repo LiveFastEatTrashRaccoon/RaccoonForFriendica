@@ -199,7 +199,7 @@
     <string name="login_friendica_header">Olen Friendicassa</string>
     <string name="login_mastodon_header">Olen Mastodonissa</string>
     <string name="login_method_basic">perintö</string>
-    <string name="login_more_info_bottom_sheet_content">Kirjautumisvirta alkaa sovelluksessa valitsemalla instanssi, minkä jälkeen jatkat OAuth2-virtaa verkkoselaimessa.\n\n" + "Jos sinulla ei ole tiliä, valitse ensin instanssi ja rekisteröidy selaimessasi.</string>
+    <string name="login_more_info_bottom_sheet_content">Kirjautumisvirta alkaa sovelluksessa valitsemalla instanssi, minkä jälkeen jatkat OAuth2-virtaa verkkoselaimessa.\n\n + Jos sinulla ei ole tiliä, valitse ensin instanssi ja rekisteröidy selaimessasi.</string>
     <string name="login_subtitle">Kirjaudu sisään instanssiin aloittaaksesi muiden ihmisten seuraamisen, luodaksesi uusia viestejä tai vastauksia ja hallinnoidaksesi suosikkejasi tai kirjanmerkkejäsi.</string>
     <string name="login_title">🦝 Tervetuloa! 🦝</string>
     <string name="manage_blocks_section_blocked">Estetty</string>
@@ -356,7 +356,7 @@
     <string name="share_as_file">Jaa tiedostona</string>
     <string name="share_as_url">Jaa URL-osoitteena</string>
     <string name="short_unavailable">N/A</string>
-    <string name="sidebar_anonymous_message">   "Tervetuloa Raccoon!\n\nVoit kirjautua instanssiin milloin tahansa profiilinäytöstä.\n\nNauti Friendicasta!</string>
+    <string name="sidebar_anonymous_message">\"Tervetuloa Raccoon!\n\nVoit kirjautua instanssiin milloin tahansa profiilinäytöstä.\n\nNauti Friendicasta!</string>
     <string name="sidebar_anonymous_title">Anonyymi</string>
     <string name="system_default">Järjestelmä</string>
     <string name="theme_color_blue">Kummallinen valas</string>

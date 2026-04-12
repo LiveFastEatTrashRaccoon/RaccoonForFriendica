@@ -399,51 +399,39 @@
     <string name="visibility_unlisted">Bez listy</string>
     <plurals name="account_follower">
         <item quantity="one">%1$d zwolennik</item>
-        <item quantity="other">%1$d zwolennicy</item>
     </plurals>
     <plurals name="account_following">
         <item quantity="one">%1$d śledzący</item>
-        <item quantity="other">%1$d śledzący</item>
     </plurals>
     <plurals name="create_report_selected_rules">
         <item quantity="one">%1$d wybrana reguła</item>
-        <item quantity="other">%1$d wybrane reguły</item>
     </plurals>
     <plurals name="dislikes_count">
         <item quantity="one">%1$d głos negatywny</item>
-        <item quantity="other">%1$d głosów negatywnych</item>
     </plurals>
     <plurals name="extended_social_info_favorites">
         <item quantity="one">%1$d ulubiony</item>
-        <item quantity="other">%1$d ulubione</item>
     </plurals>
     <plurals name="extended_social_info_reblogs">
         <item quantity="one">%1$d udostępnianie</item>
-        <item quantity="other">%1$d udostępnienia</item>
     </plurals>
     <plurals name="hashtag_people_using">
         <item quantity="one">%1$d osoba o tym mówi</item>
-        <item quantity="other">%1$d osoby o tym mówią</item>
     </plurals>
     <plurals name="items">
         <item quantity="one">%1$d sztuka</item>
-        <item quantity="other">%1$d sztuki</item>
     </plurals>
     <plurals name="messages">
         <item quantity="one">%1$d wiadomość</item>
-        <item quantity="other">%1$d wiadomości</item>
     </plurals>
     <plurals name="poll_vote">
         <item quantity="one">%1$d głos</item>
-        <item quantity="other">%1$d głosy</item>
     </plurals>
     <plurals name="unread_messages">
         <item quantity="one">%1$d nieprzeczytany</item>
-        <item quantity="other">%1$d nieprzeczytane</item>
     </plurals>
     <plurals name="unread_notification_body">
         <item quantity="one">W koszu na 🗑️ znajduje się %1$d przedmiot</item>
-        <item quantity="other">W koszu na 🗑️ znajdują się %1$d przedmioty</item>
     </plurals>
     <string name="preview_image">Obraz podglądowy</string>
     <string name="settings_push_notification_permission_denied_permanently">Uprawnienie do powiadomień push zostało trwale zablokowane</string>
