@@ -199,7 +199,7 @@
     <string name="login_friendica_header">Olen Friendicassa</string>
     <string name="login_mastodon_header">Olen Mastodonissa</string>
     <string name="login_method_basic">perintö</string>
-    <string name="login_more_info_bottom_sheet_content">Kirjautumisvirta alkaa sovelluksessa valitsemalla instanssi, minkä jälkeen jatkat OAuth2-virtaa verkkoselaimessa.\n\n" + "Jos sinulla ei ole tiliä, valitse ensin instanssi ja rekisteröidy selaimessasi.</string>
+    <string name="login_more_info_bottom_sheet_content">Kirjautumisvirta alkaa sovelluksessa valitsemalla instanssi, minkä jälkeen jatkat OAuth2-virtaa verkkoselaimessa.\n\n + Jos sinulla ei ole tiliä, valitse ensin instanssi ja rekisteröidy selaimessasi.</string>
     <string name="login_subtitle">Kirjaudu sisään instanssiin aloittaaksesi muiden ihmisten seuraamisen, luodaksesi uusia viestejä tai vastauksia ja hallinnoidaksesi suosikkejasi tai kirjanmerkkejäsi.</string>
     <string name="login_title">🦝 Tervetuloa! 🦝</string>
     <string name="manage_blocks_section_blocked">Estetty</string>
@@ -356,7 +356,7 @@
     <string name="share_as_file">Jaa tiedostona</string>
     <string name="share_as_url">Jaa URL-osoitteena</string>
     <string name="short_unavailable">N/A</string>
-    <string name="sidebar_anonymous_message">   "Tervetuloa Raccoon!\n\nVoit kirjautua instanssiin milloin tahansa profiilinäytöstä.\n\nNauti Friendicasta!</string>
+    <string name="sidebar_anonymous_message">\"Tervetuloa Raccoon!\n\nVoit kirjautua instanssiin milloin tahansa profiilinäytöstä.\n\nNauti Friendicasta!</string>
     <string name="sidebar_anonymous_title">Anonyymi</string>
     <string name="system_default">Järjestelmä</string>
     <string name="theme_color_blue">Kummallinen valas</string>
@@ -482,4 +482,31 @@
     <string name="action_shortcut">Pikakuvake %1$s</string>
     <string name="shortcuts_title">Pikanäppäimet</string>
     <string name="settings_item_conversation_reply_depth">Keskustelun vastauksen syvyys</string>
+    <string name="action_select_foreign_instance"></string>
+    <string name="comment_bar_theme_red"></string>
+    <string name="language_ru" translatable="false"></string>
+    <string name="language_it" translatable="false"></string>
+    <string name="language_pl" translatable="false"></string>
+    <string name="language_pt_br" translatable="false"></string>
+    <string name="language_pt" translatable="false"></string>
+    <string name="language_uk" translatable="false"></string>
+    <string name="translation_provider_config_field_api_key"></string>
+    <string name="comment_bar_theme_green"></string>
+    <string name="translation_provider_config_field_server_url"></string>
+    <string name="action_manage_circles"></string>
+    <string name="settings_item_translation_provider"></string>
+    <string name="language_es" translatable="false"></string>
+    <string name="language_ro" translatable="false"></string>
+    <string name="language_ta" translatable="false"></string>
+    <string name="comment_bar_theme_blue"></string>
+    <string name="action_remove"></string>
+    <string name="language_de" translatable="false"></string>
+    <string name="language_en" translatable="false"></string>
+    <string name="settings_item_comment_bar_theme"></string>
+    <string name="action_back_to_home_instance"></string>
+    <string name="translation_provider_config_dialog_title"></string>
+    <string name="comment_bar_theme_rainbow"></string>
+    <string name="language_fi" translatable="false"></string>
+    <string name="language_fr" translatable="false"></string>
+    <string name="action_add"></string>
 </resources>
