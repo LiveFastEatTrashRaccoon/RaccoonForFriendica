@@ -138,7 +138,6 @@ class MockStrings : Strings {
         @Composable get() = retrieve("actionReblog")
     override val actionReject: String
         @Composable get() = retrieve("actionReject")
-
     override val actionRemove: String
         @Composable get() = retrieve("actionRemove")
     override val actionRemoveDislike: String
@@ -765,6 +764,8 @@ class MockStrings : Strings {
         @Composable get() = retrieve("settingsItemThemeColor")
     override val settingsItemThemeColorSubtitle: String
         @Composable get() = retrieve("settingsItemThemeColorSubtitle")
+    override val settingsItemTranslationProvider: String
+        @Composable get() = retrieve("settingsItemTranslationProvider")
     override val settingsItemTimelineLayout: String
         @Composable get() = retrieve("settingsItemTimelineLayout")
     override val settingsItemUrlOpeningMode: String
@@ -875,6 +876,12 @@ class MockStrings : Strings {
         @Composable get() = retrieve("timelineSubscriptions")
     override val topicTitle: String
         @Composable get() = retrieve("topicTitle")
+    override val translationProviderConfigDialogTitle: String
+        @Composable get() = retrieve("translationProviderConfigDialogTitle")
+    override val translationProviderConfigFieldApiKey: String
+        @Composable get() = retrieve("translationProviderConfigFieldApiKey")
+    override val translationProviderConfigFieldServerUrl: String
+        @Composable get() = retrieve("translationProviderConfigFieldServerUrl")
     override val unpublishedSectionDrafts: String
         @Composable get() = retrieve("unpublishedSectionDrafts")
     override val unpublishedSectionScheduled: String

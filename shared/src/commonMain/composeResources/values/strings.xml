@@ -358,6 +358,7 @@
     <string name="settings_item_theme">UI theme</string>
     <string name="settings_item_theme_color">Theme color</string>
     <string name="settings_item_theme_color_subtitle">only applied if "Material You" is disabled</string>
+    <string name="settings_item_translation_provider">Translation provider</string>
     <string name="settings_item_timeline_layout">Post layout</string>
     <string name="settings_item_url_opening_mode">URL opening mode</string>
     <string name="settings_notification_mode_disabled">Disabled</string>
@@ -412,6 +413,9 @@
     <string name="timeline_layout_full">Full</string>
     <string name="timeline_subscriptions">Subscriptions</string>
     <string name="topic_title">Topic</string>
+    <string name="translation_provider_config_dialog_title">Add LibreTranslate configuration</string>
+    <string name="translation_provider_config_field_api_key">API key</string>
+    <string name="translation_provider_config_field_server_url">Server URL</string>
     <string name="unpublished_section_drafts">Drafts</string>
     <string name="unpublished_section_scheduled">Scheduled</string>
     <string name="unpublished_title">Unpublished items</string>

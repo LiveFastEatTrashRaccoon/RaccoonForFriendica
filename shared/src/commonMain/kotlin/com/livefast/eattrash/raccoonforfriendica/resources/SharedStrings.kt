@@ -396,6 +396,7 @@ import raccoonforfriendica.shared.generated.resources.settings_item_theme
 import raccoonforfriendica.shared.generated.resources.settings_item_theme_color
 import raccoonforfriendica.shared.generated.resources.settings_item_theme_color_subtitle
 import raccoonforfriendica.shared.generated.resources.settings_item_timeline_layout
+import raccoonforfriendica.shared.generated.resources.settings_item_translation_provider
 import raccoonforfriendica.shared.generated.resources.settings_item_url_opening_mode
 import raccoonforfriendica.shared.generated.resources.settings_notification_mode_disabled
 import raccoonforfriendica.shared.generated.resources.settings_notification_mode_pull
@@ -452,6 +453,9 @@ import raccoonforfriendica.shared.generated.resources.timeline_subscriptions
 import raccoonforfriendica.shared.generated.resources.topic_title
 import raccoonforfriendica.shared.generated.resources.translated_from
 import raccoonforfriendica.shared.generated.resources.translated_using
+import raccoonforfriendica.shared.generated.resources.translation_provider_config_dialog_title
+import raccoonforfriendica.shared.generated.resources.translation_provider_config_field_api_key
+import raccoonforfriendica.shared.generated.resources.translation_provider_config_field_server_url
 import raccoonforfriendica.shared.generated.resources.unpublished_section_drafts
 import raccoonforfriendica.shared.generated.resources.unpublished_section_scheduled
 import raccoonforfriendica.shared.generated.resources.unpublished_title
@@ -1230,6 +1234,8 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.settings_item_theme_color)
     override val settingsItemThemeColorSubtitle: String
         @Composable get() = stringResource(Res.string.settings_item_theme_color_subtitle)
+    override val settingsItemTranslationProvider: String
+        @Composable get() = stringResource(Res.string.settings_item_translation_provider)
     override val settingsItemTimelineLayout: String
         @Composable get() = stringResource(Res.string.settings_item_timeline_layout)
     override val settingsItemUrlOpeningMode: String
@@ -1340,6 +1346,12 @@ class SharedStrings : Strings {
         @Composable get() = stringResource(Res.string.timeline_subscriptions)
     override val topicTitle: String
         @Composable get() = stringResource(Res.string.topic_title)
+    override val translationProviderConfigDialogTitle: String
+        @Composable get() = stringResource(Res.string.translation_provider_config_dialog_title)
+    override val translationProviderConfigFieldApiKey: String
+        @Composable get() = stringResource(Res.string.translation_provider_config_field_api_key)
+    override val translationProviderConfigFieldServerUrl: String
+        @Composable get() = stringResource(Res.string.translation_provider_config_field_server_url)
     override val unpublishedSectionDrafts: String
         @Composable get() = stringResource(Res.string.unpublished_section_drafts)
     override val unpublishedSectionScheduled: String

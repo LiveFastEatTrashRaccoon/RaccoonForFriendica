@@ -380,6 +380,7 @@ interface Strings {
     val settingsItemTheme: String @Composable get
     val settingsItemThemeColor: String @Composable get
     val settingsItemThemeColorSubtitle: String @Composable get
+    val settingsItemTranslationProvider: String @Composable get
     val settingsItemTimelineLayout: String @Composable get
     val settingsItemUrlOpeningMode: String @Composable get
     val settingsNotificationModeDisabled: String @Composable get
@@ -435,6 +436,9 @@ interface Strings {
     val timelineLocal: String @Composable get
     val timelineSubscriptions: String @Composable get
     val topicTitle: String @Composable get
+    val translationProviderConfigDialogTitle: String @Composable get
+    val translationProviderConfigFieldApiKey: String @Composable get
+    val translationProviderConfigFieldServerUrl: String @Composable get
     val unpublishedSectionDrafts: String @Composable get
     val unpublishedSectionScheduled: String @Composable get
     val unpublishedTitle: String @Composable get
