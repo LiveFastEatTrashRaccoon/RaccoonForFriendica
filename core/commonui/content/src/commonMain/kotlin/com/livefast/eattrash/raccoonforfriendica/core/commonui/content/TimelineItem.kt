@@ -48,6 +48,7 @@ fun TimelineItem(
     onSelectOption: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
+    onOpenQuote: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val isReblog = entry.reblog != null
     val isReply = entry.inReplyTo != null
@@ -284,6 +285,7 @@ fun TimelineItem(
                     onReblog = onReblog,
                     onReply = onReply,
                     onShowOriginal = onShowOriginal,
+                    onOpenQuote = onOpenQuote,
                 )
 
             TimelineLayout.DistractionFree ->
@@ -312,6 +314,7 @@ fun TimelineItem(
                     onReblog = onReblog,
                     onReply = onReply,
                     onShowOriginal = onShowOriginal,
+                    onOpenQuote = onOpenQuote,
                 )
 
             TimelineLayout.Compact ->
@@ -347,6 +350,7 @@ fun TimelineItem(
                     onReblog = onReblog,
                     onReply = onReply,
                     onShowOriginal = onShowOriginal,
+                    onOpenQuote = onOpenQuote,
                 )
 
             TimelineLayout.Card ->
@@ -382,6 +386,7 @@ fun TimelineItem(
                     onReblog = onReblog,
                     onReply = onReply,
                     onShowOriginal = onShowOriginal,
+                    onOpenQuote = onOpenQuote,
                 )
         }
     }
