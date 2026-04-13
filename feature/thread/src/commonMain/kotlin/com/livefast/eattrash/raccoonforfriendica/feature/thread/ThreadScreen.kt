@@ -421,6 +421,7 @@ fun ThreadScreen(
                                         ThreadMviModel.Intent.ToggleTranslation(entry.original),
                                     )
                                 },
+
                                 options =
                                 buildList {
                                     if (actionRepository.canShare(entry.original)) {
@@ -591,6 +592,9 @@ fun ThreadScreen(
                                 model.reduce(
                                     ThreadMviModel.Intent.ToggleTranslation(entry.original),
                                 )
+                            },
+                            onOpenQuote = { e ->
+                                mainRouter.openEntryDetail(e)
                             },
                             options =
                             buildList {

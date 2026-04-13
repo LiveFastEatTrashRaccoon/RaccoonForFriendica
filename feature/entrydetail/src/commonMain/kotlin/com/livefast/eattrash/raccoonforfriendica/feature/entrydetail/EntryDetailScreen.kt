@@ -621,6 +621,9 @@ fun EntryDetailScreen(
                                                 ),
                                             )
                                         },
+                                        onOpenQuote = { e ->
+                                            mainRouter.openEntryDetail(e)
+                                        },
                                         options = options,
                                         onSelectOption = ::onOptionSelected,
                                     )
@@ -735,6 +738,9 @@ fun EntryDetailScreen(
                                         model.reduce(
                                             EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
                                         )
+                                    },
+                                    onOpenQuote = { e ->
+                                        mainRouter.openEntryDetail(e)
                                     },
                                     options = options,
                                     onSelectOption = ::onOptionSelected,

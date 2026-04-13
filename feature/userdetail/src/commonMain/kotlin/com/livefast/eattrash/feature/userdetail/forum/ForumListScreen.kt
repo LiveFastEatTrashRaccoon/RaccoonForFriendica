@@ -452,6 +452,9 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                 ForumListMviModel.Intent.ToggleTranslation(entry.original),
                             )
                         },
+                        onOpenQuote = { e ->
+                            mainRouter.openEntryDetail(e)
+                        },
                         options =
                         buildList {
                             if (actionRepository.canShare(entry.original) && isHomeInstance) {

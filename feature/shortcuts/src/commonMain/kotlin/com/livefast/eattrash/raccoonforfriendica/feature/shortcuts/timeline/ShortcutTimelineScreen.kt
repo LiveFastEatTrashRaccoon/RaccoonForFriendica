@@ -316,6 +316,9 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                                 ShortcutTimelineMviModel.Intent.ToggleTranslation(entry.original),
                             )
                         },
+                        onOpenQuote = { e ->
+                            mainRouter.openEntryDetail(e)
+                        },
                         options =
                         buildList {
                             if (actionRepository.canShare(entry.original)) {
