@@ -484,6 +484,13 @@ fun ExploreScreen(
                                         ),
                                     )
                                 },
+                                onOpenQuote = { e ->
+                                    if (customOnSelectCallback != null) {
+                                        customOnSelectCallback?.invoke(e)
+                                    } else {
+                                        mainRouter.openEntryDetail(e)
+                                    }
+                                },
                                 options =
                                 buildList {
                                     val entry = item.entry

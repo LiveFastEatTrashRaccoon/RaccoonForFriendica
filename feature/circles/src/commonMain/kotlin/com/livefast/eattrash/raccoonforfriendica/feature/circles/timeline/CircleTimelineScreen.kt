@@ -323,6 +323,13 @@ fun CircleTimelineScreen(
                                 CircleTimelineMviModel.Intent.ToggleTranslation(entry.original),
                             )
                         },
+                        onOpenQuote = { e ->
+                            if (customOnSelectCallback != null) {
+                                customOnSelectCallback?.invoke(e)
+                            } else {
+                                mainRouter.openEntryDetail(e)
+                            }
+                        },
                         options =
                         buildList {
                             if (actionRepository.canShare(entry.original)) {

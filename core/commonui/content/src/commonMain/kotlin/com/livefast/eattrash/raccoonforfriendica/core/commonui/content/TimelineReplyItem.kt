@@ -56,6 +56,7 @@ fun TimelineReplyItem(
     onSelectOption: ((OptionId) -> Unit)? = null,
     onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
+    onOpenQuote: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val entryToDisplay = entry.original
     val depthZeroBased = (entry.depth - 1).coerceAtLeast(0)
@@ -276,6 +277,7 @@ fun TimelineReplyItem(
                         onReblog = onReblog,
                         onReply = onReply,
                         onShowOriginal = onShowOriginal,
+                        onOpenQuote = onOpenQuote,
                     )
 
                 TimelineLayout.DistractionFree ->
@@ -303,6 +305,7 @@ fun TimelineReplyItem(
                         onReblog = onReblog,
                         onReply = onReply,
                         onShowOriginal = onShowOriginal,
+                        onOpenQuote = onOpenQuote,
                     )
 
                 TimelineLayout.Compact ->
@@ -332,6 +335,7 @@ fun TimelineReplyItem(
                         onReblog = onReblog,
                         onReply = onReply,
                         onShowOriginal = onShowOriginal,
+                        onOpenQuote = onOpenQuote,
                     )
             }
         }

@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,9 +32,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
@@ -75,9 +81,11 @@ internal fun FullTimelineItem(
     onReblog: ((TimelineEntryModel) -> Unit)? = null,
     onReply: ((TimelineEntryModel) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
+    onOpenQuote: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val contentHorizontalPadding = Spacing.s
     val spoiler = entry.spoilerToDisplay.orEmpty()
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Column(
         modifier = modifier,
@@ -310,6 +318,23 @@ internal fun FullTimelineItem(
                         onOpenImage = { url ->
                             onOpenImage?.invoke(listOf(url), 0, emptyList())
                         },
+                    )
+                }
+
+                // quoted entry
+                entry.quoted?.also { entry ->
+                    CompactTimelineItem(
+                        modifier = Modifier
+                            .padding(top = Spacing.xs)
+                            .fillMaxWidth()
+                            .border(
+                                width = Dp.Hairline,
+                                color = ancillaryColor,
+                                shape = RoundedCornerShape(CornerSize.xl),
+                            ).clickable {
+                                onOpenQuote?.invoke(entry)
+                            },
+                        entry = entry,
                     )
                 }
             }
