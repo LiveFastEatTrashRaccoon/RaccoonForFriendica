@@ -27,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Poll
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PollOption
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCard
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCardType
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Quote
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
@@ -65,6 +66,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuoteStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReactionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
@@ -100,6 +102,7 @@ internal fun Status.toModelWithReply() = toModel().copy(
             },
         )
     },
+    quoted = quote?.toModel(),
 )
 
 internal fun Status.toModel() = TimelineEntryModel(
@@ -145,16 +148,29 @@ internal fun Status.toModel() = TimelineEntryModel(
     url = url,
     visibility =
     visibility.toVisibility().let { visibility ->
-        when {
-            visibility == Visibility.Unlisted && localOnly -> Visibility.LocalUnlisted
-            visibility == Visibility.Public && localOnly -> Visibility.LocalPublic
-
-            else -> {
-                visibility
-            }
+        when (visibility) {
+            Visibility.Unlisted if localOnly -> Visibility.LocalUnlisted
+            Visibility.Public if localOnly -> Visibility.LocalPublic
+            else -> visibility
         }
     },
 )
+
+internal fun Quote.toModel(): TimelineEntryModel? = quotedStatus?.toModel()?.copy(quoteStatus = state?.toQuotedStatus())
+    ?: quotedStatusId?.let { id ->
+        TimelineEntryModel(id = id, content = "", quoteStatus = state?.toQuotedStatus())
+    }
+
+internal fun String.toQuotedStatus(): QuoteStatus = when (this) {
+    "pending" -> QuoteStatus.Pending
+    "accepted" -> QuoteStatus.Accepted
+    "rejected" -> QuoteStatus.Rejected
+    "deleted" -> QuoteStatus.Deleted
+    "blocked_account" -> QuoteStatus.BlockedAccount
+    "blocked_domain" -> QuoteStatus.BlockedDomain
+    "muted_account" -> QuoteStatus.MutedAccount
+    else -> QuoteStatus.Unauthorized
+}
 
 private fun StatusMention.toModel() = UserModel(
     id = id,

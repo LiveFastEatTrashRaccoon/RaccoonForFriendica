@@ -31,6 +31,8 @@ data class TimelineEntryModel(
     val parentId: String? = null,
     val pinned: Boolean = false,
     val poll: PollModel? = null,
+    val quoted: TimelineEntryModel? = null,
+    val quoteStatus: QuoteStatus? = null,
     val reblog: TimelineEntryModel? = null,
     val reblogCount: Int = 0,
     @Transient val reblogLoading: Boolean = false,
