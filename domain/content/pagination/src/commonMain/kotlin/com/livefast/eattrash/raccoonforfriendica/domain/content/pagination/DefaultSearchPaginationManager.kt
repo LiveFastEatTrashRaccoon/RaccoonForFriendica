@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
@@ -34,7 +33,7 @@ internal class DefaultSearchPaginationManager(
     private val replyHelper: ReplyHelper,
     private val accountRepository: AccountRepository,
     private val stopWordRepository: StopWordRepository,
-    notificationCenter: NotificationCenter = getNotificationCenter(),
+    notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : SearchPaginationManager {
     private var specification: SearchPaginationSpecification? = null

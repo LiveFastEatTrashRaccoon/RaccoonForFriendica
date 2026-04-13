@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
@@ -23,7 +22,7 @@ class FollowedHashtagsViewModel(
     private val tagRepository: TagRepository,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
-    private val notificationCenter: NotificationCenter = getNotificationCenter(),
+    private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
     MviModelDelegate<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>
     by DefaultMviModelDelegate(initialState = FollowedHashtagsMviModel.State()),

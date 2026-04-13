@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
@@ -17,7 +16,7 @@ import kotlinx.coroutines.launch
 class GalleryViewModel(
     private val albumRepository: PhotoAlbumRepository,
     private val settingsRepository: SettingsRepository,
-    private val notificationCenter: NotificationCenter = getNotificationCenter(),
+    private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
     MviModelDelegate<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>
     by DefaultMviModelDelegate(initialState = GalleryMviModel.State()),

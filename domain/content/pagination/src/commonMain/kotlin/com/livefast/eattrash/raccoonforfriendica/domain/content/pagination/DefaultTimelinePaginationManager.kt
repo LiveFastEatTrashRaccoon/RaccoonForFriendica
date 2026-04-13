@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -36,7 +35,7 @@ internal class DefaultTimelinePaginationManager(
     private val replyHelper: ReplyHelper,
     private val stopWordRepository: StopWordRepository,
     private val followedHashtagCache: FollowedHashtagCache,
-    notificationCenter: NotificationCenter = getNotificationCenter(),
+    notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TimelinePaginationManager {
     private var specification: TimelinePaginationSpecification? = null

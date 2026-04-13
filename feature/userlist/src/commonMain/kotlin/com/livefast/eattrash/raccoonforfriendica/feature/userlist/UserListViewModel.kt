@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
@@ -39,7 +38,7 @@ internal class UserListViewModel(
     private val userCache: LocalItemCache<UserModel>,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val exportUserList: ExportUserListUseCase,
-    private val notificationCenter: NotificationCenter = getNotificationCenter(),
+    private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
     MviModelDelegate<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>
     by DefaultMviModelDelegate(initialState = UserListMviModel.State()),

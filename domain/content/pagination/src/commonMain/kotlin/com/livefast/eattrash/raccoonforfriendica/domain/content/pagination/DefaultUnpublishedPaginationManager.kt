@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.getNotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -20,7 +19,7 @@ import kotlinx.coroutines.sync.withLock
 internal class DefaultUnpublishedPaginationManager(
     private val scheduledEntryRepository: ScheduledEntryRepository,
     private val draftRepository: DraftRepository,
-    notificationCenter: NotificationCenter = getNotificationCenter(),
+    notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UnpublishedPaginationManager {
     private var specification: UnpublishedPaginationSpecification? = null
