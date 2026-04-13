@@ -57,7 +57,7 @@ jobs:
             shared/build/compose/binaries/main/deb/*.deb
 
       - name: Create Github release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body_path: distribution/changelog.txt
           generate_release_notes: false
