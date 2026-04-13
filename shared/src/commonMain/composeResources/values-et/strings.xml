@@ -166,7 +166,7 @@
     <string name="circle_type_group">Grupid</string>
     <string name="circle_type_predefined">Kanalid</string>
     <string name="circle_type_user_defined">Sinu loendid</string>
-    <string name="color_picker_dialog_insert_hex">Sisesta värvikood hex\'ina</string>
+    <string name="color_picker_dialog_insert_hex">Sisesta värvikood hex'ina</string>
     <string name="color_picker_dialog_title">Vali värv</string>
     <string name="confirm_change_markup_mode">Kui muudad märgenduse tüüpi, siis kogu vormindus kaob. Kas soovida jätkata?</string>
     <string name="content_scale_fill_height">Täitmise kõrgus</string>
