@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Translation
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -102,4 +103,14 @@ internal class DefaultStatusService(private val baseUrl: String, private val cli
 
     override suspend fun translate(id: String, data: FormDataContent): Translation =
         client.post("$baseUrl/v1/statuses/$id/translate").body()
+
+    override suspend fun getQuotes(id: String, maxId: String?, limit: Int): Pair<List<Status>, String?> {
+        val response = client.get("$baseUrl/v1/statuses/$id/quotes") {
+            parameter("max_id", maxId)
+            parameter("limit", limit)
+        }
+        val data: List<Status> = response.body()
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        return data to cursor
+    }
 }

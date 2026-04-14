@@ -55,4 +55,5 @@ interface StatusService {
     suspend fun undislike(data: FormDataContent): Boolean
 
     suspend fun translate(id: String, data: FormDataContent): Translation
+    suspend fun getQuotes(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Status>, String?>
 }
