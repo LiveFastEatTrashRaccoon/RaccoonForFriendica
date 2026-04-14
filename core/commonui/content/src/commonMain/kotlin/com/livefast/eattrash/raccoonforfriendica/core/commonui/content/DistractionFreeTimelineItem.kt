@@ -283,6 +283,11 @@ internal fun DistractionFreeTimelineItem(
                                 onOpenQuote?.invoke(entry)
                             },
                         entry = entry,
+                        actionsEnabled = false,
+                        autoloadImages = autoloadImages,
+                        reshareAndReplyVisible = false,
+                        followedHashtagsVisible = false,
+                        pollEnabled = false,
                     )
                 }
             }

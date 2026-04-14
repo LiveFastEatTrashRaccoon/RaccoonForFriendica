@@ -322,6 +322,12 @@ internal fun CompactTimelineItem(
                                 onOpenQuote?.invoke(entry)
                             },
                         entry = entry,
+                        actionsEnabled = false,
+                        autoloadImages = autoloadImages,
+                        blurNsfw = blurNsfw,
+                        reshareAndReplyVisible = false,
+                        followedHashtagsVisible = false,
+                        pollEnabled = false,
                     )
                 }
             }
