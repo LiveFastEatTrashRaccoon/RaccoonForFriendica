@@ -310,7 +310,7 @@ internal fun CompactTimelineItem(
 
                 // quoted entry
                 entry.quoted?.takeIf { it.quoteStatus == QuoteStatus.Accepted }?.also { entry ->
-                    CompactTimelineItem(
+                    FullTimelineItem(
                         modifier = Modifier
                             .padding(top = Spacing.xs)
                             .fillMaxWidth()
