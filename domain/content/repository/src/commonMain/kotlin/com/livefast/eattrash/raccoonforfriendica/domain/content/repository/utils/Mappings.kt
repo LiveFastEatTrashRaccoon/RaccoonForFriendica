@@ -125,6 +125,7 @@ internal fun Status.toModel() = TimelineEntryModel(
     parentId = inReplyToId,
     pinned = pinned,
     poll = poll?.toModel(),
+    quoteCount = quotesCount,
     reblogCount = reblogsCount,
     reblogged = reblogged,
     replyCount = repliesCount,

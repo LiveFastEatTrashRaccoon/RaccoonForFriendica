@@ -31,6 +31,7 @@ data class TimelineEntryModel(
     val parentId: String? = null,
     val pinned: Boolean = false,
     val poll: PollModel? = null,
+    val quoteCount: Int = 0,
     val quoted: TimelineEntryModel? = null,
     val quoteStatus: QuoteStatus? = null,
     val reblog: TimelineEntryModel? = null,

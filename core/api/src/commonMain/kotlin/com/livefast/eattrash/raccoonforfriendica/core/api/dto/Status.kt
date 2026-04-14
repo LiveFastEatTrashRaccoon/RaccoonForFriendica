@@ -26,6 +26,7 @@ data class Status(
     @SerialName("pinned") val pinned: Boolean = false,
     @SerialName("poll") val poll: Poll? = null,
     @SerialName("quote") val quote: Quote? = null,
+    @SerialName("quotes_count") val quotesCount: Int = 0,
     @SerialName("reblog") val reblog: Status? = null,
     @SerialName("reblogged") val reblogged: Boolean = false,
     @SerialName("reblogs_count") val reblogsCount: Int = 0,
