@@ -74,6 +74,7 @@ internal fun FullTimelineItem(
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
+    onOpenPostsQuoting: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
     onSelectOption: ((OptionId) -> Unit)? = null,
@@ -358,6 +359,10 @@ internal fun FullTimelineItem(
                 ),
                 reblogCount = entry.reblogCount,
                 favoriteCount = entry.favoriteCount,
+                quoteCount = entry.quoteCount,
+                onOpenPostsQuoting = {
+                    onOpenPostsQuoting?.invoke(entry)
+                },
                 onOpenUsersReblog = {
                     onOpenUsersReblog?.invoke(entry)
                 },

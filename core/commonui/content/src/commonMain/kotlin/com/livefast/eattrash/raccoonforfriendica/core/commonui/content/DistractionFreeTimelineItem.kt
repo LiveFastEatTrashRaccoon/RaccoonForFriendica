@@ -70,6 +70,7 @@ internal fun DistractionFreeTimelineItem(
     onDislike: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
+    onOpenPostsQuoting: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
     onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
     onSelectOption: ((OptionId) -> Unit)? = null,
@@ -304,6 +305,10 @@ internal fun DistractionFreeTimelineItem(
                 ),
                 reblogCount = entry.reblogCount,
                 favoriteCount = entry.favoriteCount,
+                quoteCount = entry.quoteCount,
+                onOpenPostsQuoting = {
+                    onOpenPostsQuoting?.invoke(entry)
+                },
                 onOpenUsersReblog = {
                     onOpenUsersReblog?.invoke(entry)
                 },
