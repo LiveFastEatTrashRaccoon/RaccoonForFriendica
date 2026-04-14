@@ -332,7 +332,8 @@ internal fun FullTimelineItem(
                                 width = Dp.Hairline,
                                 color = ancillaryColor,
                                 shape = RoundedCornerShape(CornerSize.xl),
-                            ).clickable {
+                            ).padding(vertical = Spacing.xxs)
+                            .clickable {
                                 onOpenQuote?.invoke(entry)
                             },
                         entry = entry,
