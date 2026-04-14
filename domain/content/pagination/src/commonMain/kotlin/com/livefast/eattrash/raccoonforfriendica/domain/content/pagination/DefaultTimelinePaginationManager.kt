@@ -177,6 +177,14 @@ internal class DefaultTimelinePaginationManager(
                     timelineEntryRepository
                         .getFavorites(pageCursor = pageCursor)
                         ?.toListWithPageCursor()
+
+                is TimelinePaginationSpecification.Quotes ->
+                    timelineEntryRepository
+                        .getQuotes(
+                            id = specification.id,
+                            pageCursor = pageCursor,
+                            otherInstance = specification.otherInstance,
+                        )
             }
         return mutex.withLock {
             when (specification) {
@@ -237,6 +245,11 @@ internal class DefaultTimelinePaginationManager(
                         ?.filterByStopWords()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
+
+                is TimelinePaginationSpecification.Quotes ->
+                    results
+                        ?.deduplicate()
+                        ?.updatePaginationData()
             }.orEmpty().also { history.addAll(it) }
             history.map { it }
         }
