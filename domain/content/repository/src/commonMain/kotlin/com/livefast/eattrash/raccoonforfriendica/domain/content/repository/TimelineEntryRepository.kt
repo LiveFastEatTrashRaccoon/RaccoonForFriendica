@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineCon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 
 interface TimelineEntryRepository {
     fun getCachedByUser(): List<TimelineEntryModel>
@@ -97,4 +98,10 @@ interface TimelineEntryRepository {
     suspend fun dislike(id: String): Boolean
 
     suspend fun undislike(id: String): Boolean
+
+    suspend fun getQuotes(
+        id: String,
+        pageCursor: String? = null,
+        otherInstance: String? = null,
+    ): ListWithPageCursor<TimelineEntryModel>?
 }

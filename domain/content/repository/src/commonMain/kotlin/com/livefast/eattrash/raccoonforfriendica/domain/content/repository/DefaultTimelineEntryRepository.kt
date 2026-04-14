@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineCon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
@@ -318,6 +319,20 @@ internal class DefaultTimelineEntryRepository(
             )
         return provider.status.undislike(data)
     }
+
+    override suspend fun getQuotes(
+        id: String,
+        pageCursor: String?,
+        otherInstance: String?,
+    ): ListWithPageCursor<TimelineEntryModel>? = runCatching {
+        val (list, cursor) = withProvider(otherInstance) { provider ->
+            provider.status.getQuotes(
+                id = id,
+                maxId = pageCursor,
+            )
+        }
+        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+    }.getOrNull()
 
     private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
         if (otherInstance.isNullOrEmpty()) {
