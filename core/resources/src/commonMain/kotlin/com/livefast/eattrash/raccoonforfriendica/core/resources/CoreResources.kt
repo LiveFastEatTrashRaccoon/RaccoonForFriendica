@@ -93,6 +93,7 @@ interface CoreResources {
     val filterList: ImageVector @Composable get
     val formatBold: ImageVector @Composable get
     val formatItalic: ImageVector @Composable get
+    val formatQuoteFill: ImageVector @Composable get
     val formatUnderlined: ImageVector @Composable get
     val flaky: ImageVector @Composable get
     val gavel: ImageVector @Composable get
