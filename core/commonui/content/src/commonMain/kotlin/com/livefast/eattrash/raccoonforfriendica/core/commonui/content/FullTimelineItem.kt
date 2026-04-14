@@ -41,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuoteStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.cardToDisplay
@@ -322,7 +323,7 @@ internal fun FullTimelineItem(
                 }
 
                 // quoted entry
-                entry.quoted?.also { entry ->
+                entry.quoted?.takeIf { it.quoteStatus == QuoteStatus.Accepted }?.also { entry ->
                     CompactTimelineItem(
                         modifier = Modifier
                             .padding(top = Spacing.xs)
