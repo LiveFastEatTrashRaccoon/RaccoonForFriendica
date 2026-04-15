@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.favorites
+package com.livefast.eattrash.raccoonforfriendica.feature.entrylist
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -67,8 +67,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toFavoritesType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberEntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import kotlinx.coroutines.flow.launchIn
@@ -78,9 +76,9 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesScreen(
-    type: Int,
-    model: FavoritesMviModel,
+fun EntryListScreen(
+    title: String,
+    model: EntryListMviModel,
     modifier: Modifier = Modifier,
     customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
@@ -120,14 +118,14 @@ fun FavoritesScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    FavoritesMviModel.Effect.BackToTop -> goBackToTop()
-                    FavoritesMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
-                    is FavoritesMviModel.Effect.TriggerCopy -> {
+                    EntryListMviModel.Effect.BackToTop -> goBackToTop()
+                    EntryListMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    is EntryListMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is FavoritesMviModel.Effect.OpenDetail -> {
+                    is EntryListMviModel.Effect.OpenDetail -> {
                         if (customOnSelectCallback != null) {
                             customOnSelectCallback?.invoke(event.entry)
                         } else {
@@ -138,7 +136,7 @@ fun FavoritesScreen(
                         }
                     }
 
-                    is FavoritesMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is EntryListMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -153,7 +151,7 @@ fun FavoritesScreen(
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
-                        text = type.toFavoritesType().toReadableName(),
+                        text = title,
                         style = MaterialTheme.typography.titleMedium,
                     )
                 },
@@ -199,7 +197,7 @@ fun FavoritesScreen(
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(FavoritesMviModel.Intent.Refresh)
+                model.reduce(EntryListMviModel.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -237,7 +235,7 @@ fun FavoritesScreen(
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         onClick = { e ->
-                            model.reduce(FavoritesMviModel.Intent.WillOpenDetail(e))
+                            model.reduce(EntryListMviModel.Intent.WillOpenDetail(e))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -268,21 +266,21 @@ fun FavoritesScreen(
 
                                 else ->
                                     model.reduce(
-                                        FavoritesMviModel.Intent.ToggleReblog(e),
+                                        EntryListMviModel.Intent.ToggleReblog(e),
                                     )
                             }
                         }.takeIf { actionRepository.canReblog(entry.original) },
                         onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(FavoritesMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(EntryListMviModel.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) },
                         onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(FavoritesMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(EntryListMviModel.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) },
                         onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(FavoritesMviModel.Intent.ToggleDislike(e))
+                            model.reduce(EntryListMviModel.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
@@ -295,7 +293,7 @@ fun FavoritesScreen(
                         uiState.currentUserId?.let {
                             { e, choices ->
                                 model.reduce(
-                                    FavoritesMviModel.Intent.SubmitPollVote(
+                                    EntryListMviModel.Intent.SubmitPollVote(
                                         entry = e,
                                         choices = choices,
                                     ),
@@ -304,7 +302,7 @@ fun FavoritesScreen(
                         },
                         onShowOriginal = {
                             model.reduce(
-                                FavoritesMviModel.Intent.ToggleTranslation(entry.original),
+                                EntryListMviModel.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -407,7 +405,7 @@ fun FavoritesScreen(
                                 OptionId.Mute -> confirmMuteEntry = entry
                                 OptionId.Block -> confirmBlockEntry = entry
                                 OptionId.Pin, OptionId.Unpin ->
-                                    model.reduce(FavoritesMviModel.Intent.TogglePin(entry))
+                                    model.reduce(EntryListMviModel.Intent.TogglePin(entry))
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
@@ -435,24 +433,24 @@ fun FavoritesScreen(
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
-                                        FavoritesMviModel.Intent.CopyToClipboard(entry.original),
+                                        EntryListMviModel.Intent.CopyToClipboard(entry.original),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        FavoritesMviModel.Intent.ToggleTranslation(
+                                        EntryListMviModel.Intent.ToggleTranslation(
                                             entry.original,
                                         ),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        FavoritesMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        EntryListMviModel.Intent.AddInstanceShortcut(entry.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        FavoritesMviModel.Intent.OpenInBrowser(entry),
+                                        EntryListMviModel.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -467,7 +465,7 @@ fun FavoritesScreen(
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(FavoritesMviModel.Intent.LoadNextPage)
+                        model.reduce(EntryListMviModel.Intent.LoadNextPage)
                     }
                 }
 
@@ -496,7 +494,7 @@ fun FavoritesScreen(
                 val entryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && entryId != null) {
-                    model.reduce(FavoritesMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(EntryListMviModel.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -513,7 +511,7 @@ fun FavoritesScreen(
                         val (duration, disableNotifications) = pair
                         if (entryId != null) {
                             model.reduce(
-                                FavoritesMviModel.Intent.MuteUser(
+                                EntryListMviModel.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -544,7 +542,7 @@ fun FavoritesScreen(
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        FavoritesMviModel.Intent.BlockUser(
+                        EntryListMviModel.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -570,7 +568,7 @@ fun FavoritesScreen(
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(FavoritesMviModel.Intent.ToggleReblog(e))
+                    model.reduce(EntryListMviModel.Intent.ToggleReblog(e))
                 }
             },
         )

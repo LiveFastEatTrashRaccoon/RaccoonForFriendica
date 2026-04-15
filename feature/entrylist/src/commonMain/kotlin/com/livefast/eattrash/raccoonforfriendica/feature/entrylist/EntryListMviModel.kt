@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.favorites
+package com.livefast.eattrash.raccoonforfriendica.feature.entrylist
 
 import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
@@ -7,8 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import kotlin.time.Duration
 
 @Stable
-interface FavoritesMviModel :
-    MviModel<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect> {
+interface EntryListMviModel :
+    MviModel<EntryListMviModel.Intent, EntryListMviModel.State, EntryListMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent
 

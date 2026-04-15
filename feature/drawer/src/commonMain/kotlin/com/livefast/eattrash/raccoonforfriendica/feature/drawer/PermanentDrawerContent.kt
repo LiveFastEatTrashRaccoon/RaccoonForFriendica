@@ -27,7 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 
 @Composable
@@ -44,8 +44,8 @@ fun PermanentDrawerContent(
         add(Destination.Inbox)
         add(Destination.Profile)
         if (uiState.isLogged) {
-            add(Destination.Favorites(type = FavoritesType.Favorites.toInt()))
-            add(Destination.Favorites(type = FavoritesType.Bookmarks.toInt()))
+            add(Destination.Favorites)
+            add(Destination.Bookmarks)
             add(Destination.FollowedHashtags)
             add(Destination.FollowRequests)
             add(Destination.Circles)
@@ -148,11 +148,8 @@ private fun Destination.toIcon(coreResources: CoreResources): ImageVector = when
     Destination.Main -> coreResources.homeFill
     Destination.Explore -> coreResources.exploreFill
     Destination.Inbox -> coreResources.inboxFill
-    is Destination.Favorites -> when (type) {
-        FavoritesType.Favorites.toInt() -> coreResources.favoriteFill
-        else -> coreResources.bookmarksFill
-    }
-
+    Destination.Favorites -> coreResources.favoriteFill
+    Destination.Bookmarks -> coreResources.bookmarksFill
     Destination.FollowedHashtags -> coreResources.tag
     Destination.FollowRequests -> coreResources.flaky
     Destination.Circles -> coreResources.workspacesFill
@@ -173,11 +170,8 @@ private fun Destination.toReadableName(): String = when (this) {
     Destination.Main -> LocalStrings.current.sectionTitleHome
     Destination.Explore -> LocalStrings.current.sectionTitleExplore
     Destination.Inbox -> LocalStrings.current.sectionTitleInbox
-    is Destination.Favorites -> when (type) {
-        FavoritesType.Favorites.toInt() -> LocalStrings.current.favoritesTitle
-        else -> LocalStrings.current.bookmarksTitle
-    }
-
+    Destination.Favorites -> LocalStrings.current.favoritesTitle
+    Destination.Bookmarks -> LocalStrings.current.bookmarksTitle
     Destination.FollowedHashtags -> LocalStrings.current.followedHashtagsTitle
     Destination.FollowRequests -> LocalStrings.current.followRequestsTitle
     Destination.Circles -> LocalStrings.current.manageCirclesTitle

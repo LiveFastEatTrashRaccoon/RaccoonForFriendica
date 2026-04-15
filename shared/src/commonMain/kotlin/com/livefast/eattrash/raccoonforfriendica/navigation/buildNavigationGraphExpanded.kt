@@ -7,15 +7,14 @@ import androidx.navigation.toRoute
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.CircleTimelineWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.CirclesWithCircleMembersScreen
-import com.livefast.eattrash.raccoonforfriendica.adaptive.FavoritesWithEntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.adaptive.EntryListWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.HashtagWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.SearchWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.UserDetailWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toFavoritesType
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.main.AcknowledgementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.LicencesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
@@ -30,8 +29,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.C
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailScreen
@@ -73,8 +72,8 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
     profileViewModel: ProfileMviModel,
     myAccountViewModel: MyAccountMviModel,
     myAccountLazyListState: LazyListState,
-    favoritesViewModel: FavoritesMviModel,
-    bookmarksViewModel: FavoritesMviModel,
+    favoritesViewModel: EntryListMviModel,
+    bookmarksViewModel: EntryListMviModel,
     followedHashtagsViewModel: FollowedHashtagsMviModel,
     followRequestsViewModel: FollowRequestsMviModel,
     circlesViewModel: CirclesMviModel,
@@ -134,12 +133,10 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
         )
     }
     composable<Destination.Favorites> {
-        val route: Destination.Favorites = it.toRoute()
-        val model = when (route.type.toFavoritesType()) {
-            FavoritesType.Bookmarks -> favoritesViewModel
-            FavoritesType.Favorites -> bookmarksViewModel
-        }
-        FavoritesWithEntryDetailScreen(model = model, type = route.type)
+        EntryListWithEntryDetailScreen(model = favoritesViewModel, listTitle = LocalStrings.current.favoritesTitle)
+    }
+    composable<Destination.Bookmarks> {
+        EntryListWithEntryDetailScreen(model = bookmarksViewModel, listTitle = LocalStrings.current.bookmarksTitle)
     }
     composable<Destination.FollowedHashtags> {
         FollowedHashtagsScreen(followedHashtagsViewModel)

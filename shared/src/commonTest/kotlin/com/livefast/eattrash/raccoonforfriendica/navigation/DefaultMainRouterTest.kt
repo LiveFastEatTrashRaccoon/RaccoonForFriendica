@@ -1,13 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.navigation
 
-import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
-import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
@@ -18,41 +15,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.main.AcknowledgementsScreen
-import com.livefast.eattrash.raccoonforfriendica.feat.licences.LicencesScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline.ShortcutTimelineScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
-import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
-import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
@@ -215,7 +180,7 @@ class DefaultMainRouterTest {
         sut.openFavorites()
 
         verify {
-            navigationCoordinator.push(Destination.Favorites(FavoritesType.Favorites.toInt()))
+            navigationCoordinator.push(Destination.Favorites)
         }
     }
 
@@ -224,7 +189,7 @@ class DefaultMainRouterTest {
         sut.openBookmarks()
 
         verify {
-            navigationCoordinator.push(Destination.Favorites(FavoritesType.Bookmarks.toInt()))
+            navigationCoordinator.push(Destination.Bookmarks)
         }
     }
 

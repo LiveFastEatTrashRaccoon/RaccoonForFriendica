@@ -1,18 +1,18 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.favorites.di
+package com.livefast.eattrash.raccoonforfriendica.feature.entrylist.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.ViewModelCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModelWithArgs
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesViewModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
 import org.kodein.di.DI
 import org.kodein.di.instance
 
-data class FavoritesViewModelArgs(val type: FavoritesType) : ViewModelCreationArgs
+data class EntryListViewModelArgs(val type: EntryListType) : ViewModelCreationArgs
 
-val favoritesModule =
+val entryListModule =
     DI.Module("FavoritesModule") {
-        bindViewModelWithArgs { args: FavoritesViewModelArgs ->
-            FavoritesViewModel(
+        bindViewModelWithArgs { args: EntryListViewModelArgs ->
+            EntryListViewModel(
                 type = args.type,
                 paginationManager = instance(),
                 timelineEntryRepository = instance(),

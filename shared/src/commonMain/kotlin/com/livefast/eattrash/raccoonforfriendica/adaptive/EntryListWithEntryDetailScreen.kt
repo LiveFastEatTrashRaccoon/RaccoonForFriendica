@@ -1,7 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.adaptive
 
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -13,19 +11,15 @@ import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.getEntryCache
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun FavoritesWithEntryDetailScreen(
-    type: Int,
-    model: FavoritesMviModel,
+fun EntryListWithEntryDetailScreen(
+    listTitle: String,
+    model: EntryListMviModel,
     modifier: Modifier = Modifier,
 ) {
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Destination>()
@@ -37,8 +31,8 @@ fun FavoritesWithEntryDetailScreen(
         scaffoldState = scaffoldNavigator.scaffoldState,
         listPane = {
             AnimatedPane {
-                FavoritesScreen(
-                    type = type,
+                EntryListScreen(
+                    title = listTitle,
                     model = model,
                     customOnSelectAction = { entry ->
                         scope.launch {

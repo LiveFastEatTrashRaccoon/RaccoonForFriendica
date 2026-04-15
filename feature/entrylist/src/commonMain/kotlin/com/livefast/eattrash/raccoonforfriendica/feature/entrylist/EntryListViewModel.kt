@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.favorites
+package com.livefast.eattrash.raccoonforfriendica.feature.entrylist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
@@ -36,8 +36,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-class FavoritesViewModel(
-    private val type: FavoritesType,
+class EntryListViewModel(
+    private val type: EntryListType,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
@@ -57,9 +57,9 @@ class FavoritesViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<FavoritesMviModel.Intent, FavoritesMviModel.State, FavoritesMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = FavoritesMviModel.State()),
-    FavoritesMviModel {
+    MviModelDelegate<EntryListMviModel.Intent, EntryListMviModel.State, EntryListMviModel.Effect>
+    by DefaultMviModelDelegate(initialState = EntryListMviModel.State()),
+    EntryListMviModel {
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -107,47 +107,47 @@ class FavoritesViewModel(
         }
     }
 
-    override fun reduce(intent: FavoritesMviModel.Intent) {
+    override fun reduce(intent: EntryListMviModel.Intent) {
         when (intent) {
-            FavoritesMviModel.Intent.Refresh ->
+            EntryListMviModel.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            FavoritesMviModel.Intent.LoadNextPage ->
+            EntryListMviModel.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is FavoritesMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
-            is FavoritesMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
-            is FavoritesMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
-            is FavoritesMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
-            is FavoritesMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
-            is FavoritesMviModel.Intent.MuteUser ->
+            is EntryListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is EntryListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is EntryListMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is EntryListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is EntryListMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is EntryListMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
-            is FavoritesMviModel.Intent.BlockUser ->
+            is EntryListMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
-            is FavoritesMviModel.Intent.TogglePin -> togglePin(intent.entry)
-            is FavoritesMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
-            is FavoritesMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
-            is FavoritesMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
-            is FavoritesMviModel.Intent.WillOpenDetail ->
+            is EntryListMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is EntryListMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is EntryListMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is EntryListMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is EntryListMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(FavoritesMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(EntryListMviModel.Effect.OpenDetail(intent.entry))
                 }
-            is FavoritesMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
-            is FavoritesMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is EntryListMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is EntryListMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -157,14 +157,15 @@ class FavoritesViewModel(
         }
         paginationManager.reset(
             when (type) {
-                FavoritesType.Bookmarks ->
+                EntryListType.Bookmarks ->
                     TimelinePaginationSpecification.Bookmarks(
                         includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
-                FavoritesType.Favorites ->
+                EntryListType.Favorites ->
                     TimelinePaginationSpecification.Favorites(
                         includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
+                else -> TODO("EntryListType.Quotes not yet supported")
             },
         )
         loadNextPage()
@@ -187,7 +188,7 @@ class FavoritesViewModel(
             )
         }
         if (wasRefreshing) {
-            emitEffect(FavoritesMviModel.Effect.BackToTop)
+            emitEffect(EntryListMviModel.Effect.BackToTop)
         }
     }
 
@@ -337,7 +338,7 @@ class FavoritesViewModel(
                     timelineEntryRepository.bookmark(entry.id)
                 }
             if (newEntry != null) {
-                if (!newEntry.bookmarked && type == FavoritesType.Bookmarks) {
+                if (!newEntry.bookmarked && type == EntryListType.Bookmarks) {
                     removeEntryFromState(entry.id)
                 } else {
                     updateEntryInState(entry.id) {
@@ -428,7 +429,7 @@ class FavoritesViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(FavoritesMviModel.Effect.PollVoteFailure)
+                emitEffect(EntryListMviModel.Effect.PollVoteFailure)
             }
         }
     }
@@ -445,7 +446,7 @@ class FavoritesViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(FavoritesMviModel.Effect.TriggerCopy(text))
+                emitEffect(EntryListMviModel.Effect.TriggerCopy(text))
             }
         }
     }
@@ -490,7 +491,7 @@ class FavoritesViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(FavoritesMviModel.Effect.OpenUrl(url))
+                emitEffect(EntryListMviModel.Effect.OpenUrl(url))
             }
         }
     }

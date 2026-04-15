@@ -36,7 +36,10 @@ sealed interface Destination {
     ) : Destination
 
     @Serializable
-    data class Favorites(val type: Int) : Destination
+    data object Favorites : Destination
+
+    @Serializable
+    data object Bookmarks : Destination
 
     @Serializable
     data object FollowedHashtags : Destination
