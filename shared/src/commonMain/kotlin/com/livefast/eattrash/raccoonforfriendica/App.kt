@@ -47,7 +47,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberNetworkStateObserver
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FavoritesType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.rememberSettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberActiveAccountMonitor
@@ -65,9 +65,9 @@ import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.PermanentDrawerContent
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.FavoritesViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.di.FavoritesViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.di.EntryListViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMviModel
@@ -297,10 +297,10 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                         val inboxViewModel: InboxMviModel = getViewModel<InboxViewModel>()
                                         val profileViewModel: ProfileMviModel = getViewModel<ProfileViewModel>()
                                         val myAccountViewModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
-                                        val favoritesViewModel: FavoritesMviModel =
-                                            getViewModel<FavoritesViewModel>(arg = FavoritesViewModelArgs(type = FavoritesType.Favorites))
-                                        val bookmarksViewModel: FavoritesMviModel =
-                                            getViewModel<FavoritesViewModel>(arg = FavoritesViewModelArgs(type = FavoritesType.Bookmarks))
+                                        val favoritesViewModel: EntryListMviModel =
+                                            getViewModel<EntryListViewModel>(arg = EntryListViewModelArgs(type = EntryListType.Favorites))
+                                        val bookmarksViewModel: EntryListMviModel =
+                                            getViewModel<EntryListViewModel>(arg = EntryListViewModelArgs(type = EntryListType.Bookmarks))
                                         val followedHashtagsViewModel: FollowedHashtagsMviModel =
                                             getViewModel<FollowedHashtagsViewModel>()
                                         val followRequestsViewModel: FollowRequestsMviModel =

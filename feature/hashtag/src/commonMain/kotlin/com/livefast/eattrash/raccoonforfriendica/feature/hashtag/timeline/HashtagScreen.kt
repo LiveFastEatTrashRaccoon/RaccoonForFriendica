@@ -255,6 +255,7 @@ fun HashtagScreen(
                     TimelineItem(
                         entry = entry,
                         followedHashtagsVisible = false,
+                        pollEnabled = isHomeInstance,
                         layout = uiState.layout,
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,

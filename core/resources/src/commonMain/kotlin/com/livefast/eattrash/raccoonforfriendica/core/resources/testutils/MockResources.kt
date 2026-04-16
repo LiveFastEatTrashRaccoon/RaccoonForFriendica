@@ -97,6 +97,7 @@ object MockResources : CoreResources {
     override val filterList: ImageVector @Composable get() = mockImageVector
     override val formatBold: ImageVector @Composable get() = mockImageVector
     override val formatItalic: ImageVector @Composable get() = mockImageVector
+    override val formatQuoteFill: ImageVector @Composable get() = mockImageVector
     override val formatUnderlined: ImageVector @Composable get() = mockImageVector
     override val flaky: ImageVector @Composable get() = mockImageVector
     override val gavel: ImageVector @Composable get() = mockImageVector

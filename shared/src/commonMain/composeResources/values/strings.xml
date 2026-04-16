@@ -468,6 +468,10 @@
         <item quantity="one">%1$d favorite</item>
         <item quantity="other">%1$d favorites</item>
     </plurals>
+    <plurals name="extended_social_info_quotes">
+        <item quantity="one">%1$d quotation</item>
+        <item quantity="other">%1$d quotations</item>
+    </plurals>
     <plurals name="extended_social_info_reblogs">
         <item quantity="one">%1$d re-share</item>
         <item quantity="other">%1$d re-shares</item>

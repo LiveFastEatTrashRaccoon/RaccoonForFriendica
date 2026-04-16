@@ -943,6 +943,9 @@ class MockStrings : Strings {
     override fun extendedSocialInfoFavorites(count: Int): String = retrieve("extendedSocialInfoFavorites")
 
     @Composable
+    override fun extendedSocialInfoQuotes(count: Int): String = retrieve("extendedSocialInfoQuotes")
+
+    @Composable
     override fun extendedSocialInfoReblogs(count: Int): String = retrieve("extendedSocialInfoReblogs")
 
     @Composable

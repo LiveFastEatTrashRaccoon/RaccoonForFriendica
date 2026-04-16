@@ -31,4 +31,6 @@ sealed interface TimelinePaginationSpecification {
     data class Favorites(val includeNsfw: Boolean = true) : TimelinePaginationSpecification
 
     data class Bookmarks(val includeNsfw: Boolean = true) : TimelinePaginationSpecification
+
+    data class Quotes(val id: String, val otherInstance: String? = null) : TimelinePaginationSpecification
 }

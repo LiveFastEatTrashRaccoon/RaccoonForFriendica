@@ -195,6 +195,7 @@ import raccoonforfriendica.shared.generated.resources.explore_section_hashtags
 import raccoonforfriendica.shared.generated.resources.explore_section_links
 import raccoonforfriendica.shared.generated.resources.explore_section_suggestions
 import raccoonforfriendica.shared.generated.resources.extended_social_info_favorites
+import raccoonforfriendica.shared.generated.resources.extended_social_info_quotes
 import raccoonforfriendica.shared.generated.resources.extended_social_info_reblogs
 import raccoonforfriendica.shared.generated.resources.favorites_title
 import raccoonforfriendica.shared.generated.resources.feed_type_title
@@ -1418,6 +1419,10 @@ class SharedStrings : Strings {
     @Composable
     override fun extendedSocialInfoFavorites(count: Int): String =
         pluralStringResource(Res.plurals.extended_social_info_favorites, count, count)
+
+    @Composable
+    override fun extendedSocialInfoQuotes(count: Int): String =
+        pluralStringResource(Res.plurals.extended_social_info_quotes, count, count)
 
     @Composable
     override fun extendedSocialInfoReblogs(count: Int): String =

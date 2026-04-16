@@ -472,6 +472,7 @@ interface Strings {
     @Composable fun dislikesCount(count: Int): String
 
     @Composable fun extendedSocialInfoFavorites(count: Int): String
+    @Composable fun extendedSocialInfoQuotes(count: Int): String
 
     @Composable fun extendedSocialInfoReblogs(count: Int): String
 

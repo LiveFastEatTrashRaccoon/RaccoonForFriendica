@@ -33,7 +33,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.direc
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.di.drawerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.entryDetailModule
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.di.exploreModule
-import com.livefast.eattrash.raccoonforfriendica.feature.favorites.di.favoritesModule
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.di.entryListModule
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.di.followRequestsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.di.galleryModule
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di.hashtagModule
@@ -95,7 +95,7 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 drawerModule,
                 entryDetailModule,
                 exploreModule,
-                favoritesModule,
+                entryListModule,
                 followRequestsModule,
                 galleryModule,
                 hashtagModule,

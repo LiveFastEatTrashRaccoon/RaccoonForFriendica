@@ -1281,6 +1281,117 @@ class DefaultTimelinePaginationManagerTest {
         }
     // endregion
 
+    // region quotes
+    @Test
+    fun `given no results when loadNextPage with Quotes specification then result is as expected`() = runTest {
+        everySuspend {
+            timelineEntryRepository.getQuotes(
+                id = any(),
+                pageCursor = any(),
+            )
+        } returns ListWithPageCursor(list = emptyList(), cursor = null)
+
+        sut.reset(TimelinePaginationSpecification.Quotes(id = "1"))
+        val res = sut.loadNextPage()
+
+        assertTrue(res.isEmpty())
+        assertFalse(sut.canFetchMore)
+        verifySuspend {
+            timelineEntryRepository.getQuotes(
+                id = "1",
+                pageCursor = null,
+            )
+        }
+    }
+
+    @Test
+    fun `given results when loadNextPage with Quotes specification then result is as expected`() = runTest {
+        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        everySuspend {
+            timelineEntryRepository.getQuotes(
+                id = any(),
+                pageCursor = any(),
+            )
+        } returns ListWithPageCursor(list = list, cursor = "1")
+
+        sut.reset(TimelinePaginationSpecification.Quotes(id = "1"))
+        val res = sut.loadNextPage()
+
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            timelineEntryRepository.getQuotes(
+                id = "1",
+                pageCursor = null,
+            )
+        }
+    }
+
+    @Test
+    fun `given no more results when loadNextPage twice with Quotes specification then result is as expected`() =
+        runTest {
+            val list = listOf(TimelineEntryModel(id = "1", content = ""))
+            everySuspend {
+                timelineEntryRepository.getQuotes(
+                    id = any(),
+                    pageCursor = any(),
+                )
+            } sequentiallyReturns
+                listOf(
+                    ListWithPageCursor(list = list, cursor = "1"),
+                    ListWithPageCursor(list = emptyList(), cursor = null),
+                )
+
+            sut.reset(TimelinePaginationSpecification.Quotes(id = "1"))
+            sut.loadNextPage()
+            val res = sut.loadNextPage()
+
+            assertEquals(list, res)
+            assertFalse(sut.canFetchMore)
+            verifySuspend {
+                timelineEntryRepository.getQuotes(
+                    id = "1",
+                    pageCursor = null,
+                )
+                timelineEntryRepository.getQuotes(
+                    id = "1",
+                    pageCursor = "1",
+                )
+            }
+        }
+
+    @Test
+    fun `given results on other instance when loadNextPage with Quotes then result is as expected`() = runTest {
+        val otherInstance = "example.com"
+        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        everySuspend {
+            timelineEntryRepository.getQuotes(
+                id = any(),
+                pageCursor = any(),
+                otherInstance = any(),
+            )
+        } returns ListWithPageCursor(list = list, cursor = "1")
+
+        sut.reset(
+            TimelinePaginationSpecification.Quotes(
+                id = "1",
+                otherInstance = otherInstance,
+            ),
+        )
+        val res = sut.loadNextPage()
+
+        assertEquals(list, res)
+        assertTrue(sut.canFetchMore)
+        verifySuspend {
+            timelineEntryRepository.getQuotes(
+                id = "1",
+                pageCursor = null,
+                otherInstance = otherInstance,
+            )
+        }
+    }
+    // endregion
+
     // region history restoration
     @Test
     fun `given results when restore history with public Feed then result is as expected`() = runTest {

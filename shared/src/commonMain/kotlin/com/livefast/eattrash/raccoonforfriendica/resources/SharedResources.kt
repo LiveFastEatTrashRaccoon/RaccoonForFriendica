@@ -74,6 +74,7 @@ import raccoonforfriendica.shared.generated.resources.flaky
 import raccoonforfriendica.shared.generated.resources.flipboard_small
 import raccoonforfriendica.shared.generated.resources.format_bold
 import raccoonforfriendica.shared.generated.resources.format_italic
+import raccoonforfriendica.shared.generated.resources.format_quote_fill
 import raccoonforfriendica.shared.generated.resources.format_underlined
 import raccoonforfriendica.shared.generated.resources.friendica_logo
 import raccoonforfriendica.shared.generated.resources.friendica_small
@@ -392,6 +393,9 @@ internal class SharedResources : CoreResources {
 
     override val formatItalic: ImageVector
         @Composable get() = vectorResource(Res.drawable.format_italic)
+
+    override val formatQuoteFill: ImageVector
+        @Composable get() = vectorResource(Res.drawable.format_quote_fill)
 
     override val formatUnderlined: ImageVector
         @Composable get() = vectorResource(Res.drawable.format_underlined)

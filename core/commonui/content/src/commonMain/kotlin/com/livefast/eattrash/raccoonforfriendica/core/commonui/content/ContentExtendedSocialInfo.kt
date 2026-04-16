@@ -25,8 +25,10 @@ fun ContentExtendedSocialInfo(
     modifier: Modifier = Modifier,
     favoriteCount: Int = 0,
     reblogCount: Int = 0,
+    quoteCount: Int = 0,
     onOpenUsersFavorite: (() -> Unit)? = null,
     onOpenUsersReblog: (() -> Unit)? = null,
+    onOpenPostsQuoting: (() -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
@@ -87,6 +89,37 @@ fun ContentExtendedSocialInfo(
                 style = MaterialTheme.typography.labelMedium,
                 color = ancillaryColor,
             )
+        }
+        if (quoteCount > 0) {
+            Text(
+                text = "•",
+                style = MaterialTheme.typography.labelMedium,
+                color = ancillaryColor,
+            )
+            Row(
+                modifier =
+                Modifier
+                    .clip(RoundedCornerShape(CornerSize.xl))
+                    .clickable {
+                        if (quoteCount > 0) {
+                            onOpenPostsQuoting?.invoke()
+                        }
+                    }.padding(horizontal = Spacing.s),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    modifier = Modifier.size(IconSize.s),
+                    imageVector = LocalResources.current.formatQuoteFill,
+                    contentDescription = null,
+                    tint = ancillaryColor,
+                )
+                Text(
+                    text = LocalStrings.current.extendedSocialInfoQuotes(quoteCount),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = ancillaryColor,
+                )
+            }
         }
     }
 }
