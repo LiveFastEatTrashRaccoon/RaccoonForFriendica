@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -81,29 +82,57 @@ fun HashtagItem(hashtag: TagModel, modifier: Modifier = Modifier, onOpen: ((Stri
 @Composable
 private fun HashtagChart(modifier: Modifier = Modifier, dataset: List<HashtagHistoryItem> = emptyList()) {
     val lineColor = MaterialTheme.colorScheme.secondary
-    val belowLineColor = lineColor.copy(0.5f)
-    val lineWidth = with(LocalDensity.current) { 1.5.dp.toPx() }
+    val lineWidth = with(LocalDensity.current) { 0.75.dp.toPx() }
 
     Canvas(modifier = modifier) {
-        val width = drawContext.size.width
-        val height = drawContext.size.height
+        val width = size.width
+        val height = size.height
 
-        val trimmedDataSet = dataset.takeLast(10)
-        val maxValue = trimmedDataSet.maxOf { it.uses }
+        val trimmedDataSet = dataset.take(10).reversed()
+        if (trimmedDataSet.isEmpty()) return@Canvas
+
+        val maxValue = trimmedDataSet.maxOf { it.uses }.coerceAtLeast(1L).toFloat()
         val heightUnit = height / maxValue
-        val widthUnit = width / trimmedDataSet.size
+        val xStep = if (trimmedDataSet.size > 1) width / (trimmedDataSet.size - 1) else width
 
-        val path = Path()
-        path.moveTo(0f, height)
-        for (i in trimmedDataSet.indices) {
-            val x = (i + 1) * widthUnit
-            val y = height - trimmedDataSet[i].uses * heightUnit
-            path.lineTo(x, y)
+        val fillPath = Path()
+        val strokePath = Path()
+
+        fillPath.moveTo(0f, height)
+
+        trimmedDataSet.forEachIndexed { i, item ->
+            val x = if (trimmedDataSet.size > 1) i * xStep else width
+            val y = height - item.uses * heightUnit
+
+            if (i == 0) {
+                if (trimmedDataSet.size == 1) {
+                    fillPath.lineTo(x, y)
+                    strokePath.moveTo(0f, height)
+                    strokePath.lineTo(x, y)
+                } else {
+                    fillPath.lineTo(x, y)
+                    strokePath.moveTo(x, y)
+                }
+            } else {
+                val prevX = (i - 1) * xStep
+                val prevY = height - trimmedDataSet[i - 1].uses * heightUnit
+                val cp1x = prevX + (x - prevX) / 2f
+
+                fillPath.cubicTo(cp1x, prevY, cp1x, y, x, y)
+                strokePath.cubicTo(cp1x, prevY, cp1x, y, x, y)
+            }
         }
-        path.lineTo(width, height)
-        path.close()
 
-        drawPath(path = path, color = belowLineColor, style = Fill)
-        drawPath(path = path, color = lineColor, style = Stroke(lineWidth))
+        fillPath.lineTo(width, height)
+        fillPath.close()
+
+        val fillBrush = Brush.verticalGradient(
+            colors = listOf(lineColor.copy(alpha = 0.9f), lineColor.copy(alpha = 0.5f)),
+            startY = 0f,
+            endY = height,
+        )
+
+        drawPath(path = fillPath, brush = fillBrush, style = Fill)
+        drawPath(path = strokePath, color = lineColor, style = Stroke(lineWidth))
     }
 }
