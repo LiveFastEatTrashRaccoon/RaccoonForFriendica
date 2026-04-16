@@ -27,8 +27,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toInt
 
 @Composable
 fun PermanentDrawerContent(

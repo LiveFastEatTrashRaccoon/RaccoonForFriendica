@@ -11,10 +11,12 @@ import com.livefast.eattrash.raccoonforfriendica.adaptive.EntryListWithEntryDeta
 import com.livefast.eattrash.raccoonforfriendica.adaptive.HashtagWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.SearchWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.adaptive.UserDetailWithEntryDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.main.AcknowledgementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feat.licences.LicencesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
@@ -30,6 +32,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.Con
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.di.EntryListViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
@@ -137,6 +141,19 @@ internal fun NavGraphBuilder.buildNavigationGraphExpanded(
     }
     composable<Destination.Bookmarks> {
         EntryListWithEntryDetailScreen(model = bookmarksViewModel, listTitle = LocalStrings.current.bookmarksTitle)
+    }
+    composable<Destination.QuotingEntries> {
+        val route: Destination.QuotingEntries = it.toRoute()
+        val model: EntryListMviModel = getViewModel<EntryListViewModel>(
+            arg = EntryListViewModelArgs(
+                type = EntryListType.Quoting(entryId = route.entryId, otherInstance = route.otherInstance)
+            )
+        )
+        EntryListWithEntryDetailScreen(
+            model = model,
+            listTitle = LocalStrings.current.extendedSocialInfoQuotes(route.count),
+            otherInstance = route.otherInstance,
+        )
     }
     composable<Destination.FollowedHashtags> {
         FollowedHashtagsScreen(followedHashtagsViewModel)

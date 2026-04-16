@@ -18,7 +18,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification.Bookmarks
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification.Favorites
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification.Quotes
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
@@ -158,14 +160,11 @@ class EntryListViewModel(
         paginationManager.reset(
             when (type) {
                 EntryListType.Bookmarks ->
-                    TimelinePaginationSpecification.Bookmarks(
-                        includeNsfw = settingsRepository.current.value?.includeNsfw == true,
-                    )
+                    Bookmarks(includeNsfw = settingsRepository.current.value?.includeNsfw == true)
                 EntryListType.Favorites ->
-                    TimelinePaginationSpecification.Favorites(
-                        includeNsfw = settingsRepository.current.value?.includeNsfw == true,
-                    )
-                else -> TODO("EntryListType.Quotes not yet supported")
+                    Favorites(includeNsfw = settingsRepository.current.value?.includeNsfw == true)
+                is EntryListType.Quoting ->
+                    Quotes(id = type.entryId, otherInstance = type.otherInstance)
             },
         )
         loadNextPage()

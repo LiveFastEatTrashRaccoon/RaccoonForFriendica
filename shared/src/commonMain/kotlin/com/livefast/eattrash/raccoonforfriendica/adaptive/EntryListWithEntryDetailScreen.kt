@@ -21,6 +21,7 @@ fun EntryListWithEntryDetailScreen(
     listTitle: String,
     model: EntryListMviModel,
     modifier: Modifier = Modifier,
+    otherInstance: String? = null,
 ) {
     val scaffoldNavigator = rememberListDetailPaneScaffoldNavigator<Destination>()
     val scope = rememberCoroutineScope()
@@ -34,6 +35,7 @@ fun EntryListWithEntryDetailScreen(
                 EntryListScreen(
                     title = listTitle,
                     model = model,
+                    otherInstance = otherInstance,
                     customOnSelectAction = { entry ->
                         scope.launch {
                             val entryCache = getEntryCache()

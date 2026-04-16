@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.livefast.eattrash.feature.userdetail.classic.UserDetailScreen
 import com.livefast.eattrash.feature.userdetail.forum.ForumListScreen
+import com.livefast.eattrash.raccoonforfriendica.adaptive.EntryListWithEntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -141,6 +142,19 @@ internal fun NavGraphBuilder.buildNavigationGraph(
         val model: EntryListMviModel =
             getViewModel<EntryListViewModel>(arg = EntryListViewModelArgs(EntryListType.Bookmarks))
         EntryListScreen(model = model, title = LocalStrings.current.bookmarksTitle)
+    }
+    composable<Destination.QuotingEntries> {
+        val route: Destination.QuotingEntries = it.toRoute()
+        val model: EntryListMviModel = getViewModel<EntryListViewModel>(
+            arg = EntryListViewModelArgs(
+                type = EntryListType.Quoting(entryId = route.entryId, otherInstance = route.otherInstance)
+            )
+        )
+        EntryListScreen(
+            model = model,
+            title = LocalStrings.current.extendedSocialInfoQuotes(route.count),
+            otherInstance = route.otherInstance,
+        )
     }
     composable<Destination.FollowedHashtags> {
         val model: FollowedHashtagsMviModel = getViewModel<FollowedHashtagsViewModel>()

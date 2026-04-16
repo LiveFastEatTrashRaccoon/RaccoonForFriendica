@@ -42,6 +42,9 @@ sealed interface Destination {
     data object Bookmarks : Destination
 
     @Serializable
+    data class QuotingEntries(val entryId: String, val count: Int, val otherInstance: String? = null) : Destination
+
+    @Serializable
     data object FollowedHashtags : Destination
 
     @Serializable

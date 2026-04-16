@@ -80,6 +80,7 @@ fun EntryListScreen(
     title: String,
     model: EntryListMviModel,
     modifier: Modifier = Modifier,
+    otherInstance: String? = null,
     customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val uiState by model.uiState.collectAsState()
@@ -103,6 +104,7 @@ fun EntryListScreen(
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
+    val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
         runCatching {
@@ -234,6 +236,7 @@ fun EntryListScreen(
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
+                        pollEnabled = isHomeInstance,
                         onClick = { e ->
                             model.reduce(EntryListMviModel.Intent.WillOpenDetail(e))
                         },
@@ -269,26 +272,26 @@ fun EntryListScreen(
                                         EntryListMviModel.Intent.ToggleReblog(e),
                                     )
                             }
-                        }.takeIf { actionRepository.canReblog(entry.original) },
+                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
                             model.reduce(EntryListMviModel.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) },
+                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
                             model.reduce(EntryListMviModel.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) },
+                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
                             model.reduce(EntryListMviModel.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) },
+                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
                             mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
-                        }.takeIf { actionRepository.canReply(entry.original) },
+                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
                             { e, choices ->
@@ -318,26 +321,26 @@ fun EntryListScreen(
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canEdit(entry.original)) {
+                            if (actionRepository.canEdit(entry.original) && isHomeInstance) {
                                 this += OptionId.Edit.toOption()
                             }
-                            if (actionRepository.canDelete(entry.original)) {
+                            if (actionRepository.canDelete(entry.original) && isHomeInstance) {
                                 this += OptionId.Delete.toOption()
                             }
-                            if (actionRepository.canTogglePin(entry)) {
+                            if (actionRepository.canTogglePin(entry) && isHomeInstance) {
                                 if (entry.pinned) {
                                     this += OptionId.Unpin.toOption()
                                 } else {
                                     this += OptionId.Pin.toOption()
                                 }
                             }
-                            if (actionRepository.canMute(entry)) {
+                            if (actionRepository.canMute(entry) && isHomeInstance) {
                                 this += OptionId.Mute.toOption()
                             }
-                            if (actionRepository.canBlock(entry)) {
+                            if (actionRepository.canBlock(entry) && isHomeInstance) {
                                 this += OptionId.Block.toOption()
                             }
-                            if (actionRepository.canReport(entry.original)) {
+                            if (actionRepository.canReport(entry.original) && isHomeInstance) {
                                 this += OptionId.ReportUser.toOption()
                                 this += OptionId.ReportEntry.toOption()
                             }
