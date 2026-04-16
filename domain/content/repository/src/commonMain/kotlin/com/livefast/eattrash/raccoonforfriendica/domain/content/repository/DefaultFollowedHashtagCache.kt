@@ -19,7 +19,7 @@ internal class DefaultFollowedHashtagCache(private val tagRepository: TagReposit
                 if (res != null) {
                     cache += res.list
                     cursor = res.cursor
-                    canFetchMore = res.list.isNotEmpty()
+                    canFetchMore = res.list.isNotEmpty() && cursor != null
                 } else {
                     canFetchMore = false
                 }

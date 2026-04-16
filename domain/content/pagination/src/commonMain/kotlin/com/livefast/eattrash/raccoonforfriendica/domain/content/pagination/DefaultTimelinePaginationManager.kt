@@ -198,7 +198,7 @@ internal class DefaultTimelinePaginationManager(
                         ?.filterByStopWords()
                         ?.fixupCreatorEmojis()
                         ?.fixupInReplyTo()
-                        ?.fixumFollowedHashtags()
+                        ?.fixupFollowedHashtags()
 
                 is TimelinePaginationSpecification.Hashtag ->
                     results
@@ -250,7 +250,8 @@ internal class DefaultTimelinePaginationManager(
                     results
                         ?.deduplicate()
                         ?.updatePaginationData()
-            }.orEmpty().also { history.addAll(it) }
+            }?.also { history.addAll(it) }
+            // return a copy
             history.map { it }
         }
     }
@@ -316,8 +317,7 @@ internal class DefaultTimelinePaginationManager(
     }
 
     private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter {
-        included ||
-            !it.isNsfw
+        included || !it.isNsfw
     }
 
     private suspend fun List<TimelineEntryModel>.fixupCreatorEmojis(): List<TimelineEntryModel> = with(emojiHelper) {
@@ -347,11 +347,10 @@ internal class DefaultTimelinePaginationManager(
         } ?: true
     }
 
-    private suspend fun List<TimelineEntryModel>.fixumFollowedHashtags(): List<TimelineEntryModel> = this.map { entry ->
-        val tags =
-            entry.tags.map { tag ->
-                tag.copy(following = followedHashtagCache.isFollowed(tag))
-            }
+    private suspend fun List<TimelineEntryModel>.fixupFollowedHashtags(): List<TimelineEntryModel> = map { entry ->
+        val tags = entry.tags.map { tag ->
+            tag.copy(following = followedHashtagCache.isFollowed(tag))
+        }
         entry.copy(tags = tags)
     }
 }

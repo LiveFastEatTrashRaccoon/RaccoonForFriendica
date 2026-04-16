@@ -35,9 +35,7 @@ internal class DefaultEventPaginationManager(private val eventRepository: EventR
             results
                 ?.deduplicate()
                 ?.updatePaginationData()
-                ?.also {
-                    history.addAll(it)
-                }
+                ?.also { history.addAll(it) }
             // return a copy
             history.map { it }
         }
