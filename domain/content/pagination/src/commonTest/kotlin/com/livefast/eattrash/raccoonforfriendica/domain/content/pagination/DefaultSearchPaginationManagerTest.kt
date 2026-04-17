@@ -277,6 +277,70 @@ class DefaultSearchPaginationManagerTest {
                 stopWordRepository.get(accountId)
             }
         }
+
+    @Test
+    fun `given query is a Mastodon post URL when loadNextPage with Entries specification then resolve is true`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                )
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } returns list.map { ExploreItemModel.Entry(it) }
+            val query = "https://instance.example/@username/01234567890123456789"
+
+            sut.reset(SearchPaginationSpecification.Entries(query = query, includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = query,
+                    type = SearchResultType.Entries,
+                    pageCursor = null,
+                    resolve = true,
+                )
+            }
+        }
+
+    @Test
+    fun `given query is a Friendica post URL when loadNextPage with Entries specification then resolve is true`() =
+        runTest {
+            val list =
+                listOf(
+                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                )
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } returns list.map { ExploreItemModel.Entry(it) }
+            val query = "https://instance.example/display/f80d4c95-1cea4d450d7dc6c7-1b4d36da"
+
+            sut.reset(SearchPaginationSpecification.Entries(query = query, includeNsfw = false))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = query,
+                    type = SearchResultType.Entries,
+                    pageCursor = null,
+                    resolve = true,
+                )
+            }
+        }
     // endregion
 
     // region Hashtags
@@ -454,6 +518,64 @@ class DefaultSearchPaginationManagerTest {
                     type = SearchResultType.Users,
                     pageCursor = "1",
                     resolve = false,
+                )
+            }
+        }
+
+    @Test
+    fun `given query is a Mastodon profile URL when loadNextPage with Users specification then resolve is true`() =
+        runTest {
+            val list = listOf(UserModel(id = "1"))
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } returns list.map { ExploreItemModel.User(it) }
+            val query = "https://instance.example/@username"
+
+            sut.reset(SearchPaginationSpecification.Users(query = query))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.User(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = query,
+                    type = SearchResultType.Users,
+                    pageCursor = null,
+                    resolve = true,
+                )
+            }
+        }
+
+    @Test
+    fun `given query is a Friendica profile URL when loadNextPage with Users specification then resole is true`() =
+        runTest {
+            val list = listOf(UserModel(id = "1"))
+            everySuspend {
+                searchRepository.search(
+                    query = any(),
+                    type = any(),
+                    pageCursor = any(),
+                    resolve = any(),
+                )
+            } returns list.map { ExploreItemModel.User(it) }
+            val query = "https://instance.example/contact/12345678/conversations"
+
+            sut.reset(SearchPaginationSpecification.Users(query = query))
+            val res = sut.loadNextPage()
+
+            assertEquals(list.map { ExploreItemModel.User(it) }, res)
+            assertTrue(sut.canFetchMore)
+            verifySuspend {
+                searchRepository.search(
+                    query = query,
+                    type = SearchResultType.Users,
+                    pageCursor = null,
+                    resolve = true,
                 )
             }
         }

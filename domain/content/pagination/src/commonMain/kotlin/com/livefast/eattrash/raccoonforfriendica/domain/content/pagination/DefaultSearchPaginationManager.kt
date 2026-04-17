@@ -111,6 +111,7 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Entries,
+                            resolve = guessResolveEntry(specification.query),
                         )
 
                 is SearchPaginationSpecification.Hashtags ->
@@ -127,6 +128,7 @@ internal class DefaultSearchPaginationManager(
                             query = specification.query,
                             pageCursor = pageCursor,
                             type = SearchResultType.Users,
+                            resolve = guessResolveUser(specification.query),
                         )?.determineUserRelationshipStatus()
 
                 is SearchPaginationSpecification.Groups ->
@@ -134,6 +136,7 @@ internal class DefaultSearchPaginationManager(
                         query = specification.query,
                         pageCursor = pageCursor,
                         type = SearchResultType.Users,
+                        resolve = guessResolveUser(specification.query),
                     )
             }
                 ?.deduplicate()
@@ -238,5 +241,22 @@ internal class DefaultSearchPaginationManager(
         } else {
             false
         }
+    }
+
+    private fun guessResolveEntry(query: String): Boolean = MASTODON_POST_REGEX.matches(query.trim()) ||
+        FRIENDICA_POST_REGEX.matches(query.trim())
+
+    private fun guessResolveUser(query: String): Boolean = MASTODON_USER_REGEX.matches(query.trim()) ||
+        FRIENDICA_USER_REGEX.matches(query.trim())
+
+    private companion object {
+        private val MASTODON_POST_REGEX =
+            Regex("^https?://[^/]+/@([\\w.\\-]+)/(\\d+)/?$", RegexOption.IGNORE_CASE)
+        private val MASTODON_USER_REGEX =
+            Regex("^https?://[^/]+/@([\\w.\\-]+)/?$", RegexOption.IGNORE_CASE)
+        private val FRIENDICA_POST_REGEX =
+            Regex("^https?://[^/]+/display/([\\w.\\-]+)/?$", RegexOption.IGNORE_CASE)
+        private val FRIENDICA_USER_REGEX =
+            Regex("^https?://[^/]+/contact/(\\d+)(/.*)?$", RegexOption.IGNORE_CASE)
     }
 }
