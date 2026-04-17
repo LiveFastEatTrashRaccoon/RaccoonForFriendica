@@ -32,7 +32,6 @@ room {
 dependencies {
     add("kspAndroid", libs.room.ksp)
     add("kspJvm", libs.room.ksp)
-    add("kspIosX64", libs.room.ksp)
     add("kspIosArm64", libs.room.ksp)
     add("kspIosSimulatorArm64", libs.room.ksp)
 }
