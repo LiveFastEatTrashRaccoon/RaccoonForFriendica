@@ -1,13 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
-import androidx.navigation.NavController
+import kotlinx.coroutines.flow.StateFlow
 
 interface BottomNavigationAdapter {
+    val currentSection: StateFlow<BottomNavigationSection?>
     fun navigate(section: BottomNavigationSection)
-}
-
-class DefaultBottomNavigationAdapter(private val navController: NavController) : BottomNavigationAdapter {
-    override fun navigate(section: BottomNavigationSection) {
-        navController.navigate(section)
-    }
 }

@@ -52,22 +52,32 @@ class DefaultNavigationCoordinatorTest {
 
     @Test
     fun `when setCurrentSection then result is as expected`() {
+        val navigator =
+            mock<BottomNavigationAdapter>(MockMode.autoUnit) {
+                every { currentSection } returns MutableStateFlow(BottomNavigationSection.Home)
+            }
+        sut.setBottomNavigator(navigator)
         val section = BottomNavigationSection.Explore
 
         sut.setCurrentSection(section)
 
-        val res = sut.currentBottomNavSection.value
-        assertEquals(section, res)
+        verify { navigator.navigate(section) }
     }
 
     @Test
     fun `when setCurrentSection twice then onDoubleTabSelection is triggered`() = runTest {
         val section = BottomNavigationSection.Explore
-        sut.setCurrentSection(section)
+        val navigator =
+            mock<BottomNavigationAdapter>(MockMode.autoUnit) {
+                every { currentSection } returns MutableStateFlow(section)
+            }
+        sut.setBottomNavigator(navigator)
+
         launch {
             delay(DELAY)
             sut.setCurrentSection(section)
         }
+
         sut.onDoubleTabSelection.test {
             val res = awaitItem()
             assertEquals(section, res)
