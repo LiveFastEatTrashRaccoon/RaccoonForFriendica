@@ -4,11 +4,14 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
@@ -26,6 +29,7 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
     private var bottomNavController: BottomNavigationAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
+    private var updateCanPopJob: Job? = null
 
     override fun setBottomNavigator(adapter: BottomNavigationAdapter) {
         bottomNavController = adapter
@@ -46,12 +50,14 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
 
     override fun setRootNavigator(adapter: NavigationAdapter) {
         rootNavController = adapter
-        refreshCanPop()
+        updateCanPopJob?.cancel()
+        updateCanPopJob = adapter.canPop.onEach { newValue ->
+            canPop.update { newValue }
+        }.launchIn(scope)
     }
 
     override fun popUntilRoot() {
         rootNavController?.popUntilRoot()
-        refreshCanPop()
     }
 
     override fun setExitMessageVisible(value: Boolean) {
@@ -66,7 +72,6 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
 
     override fun push(destination: Destination) {
         rootNavController?.navigate(destination)
-        refreshCanPop()
     }
 
     override fun replace(destination: Destination) {
@@ -75,7 +80,6 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
 
     override fun pop() {
         rootNavController?.pop()
-        refreshCanPop()
     }
 
     override suspend fun submitDeeplink(url: String) {
@@ -87,12 +91,6 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
         scope.launch {
             delay(delay)
             globalMessage.emit(message)
-        }
-    }
-
-    private fun refreshCanPop() {
-        canPop.update {
-            rootNavController?.canPop ?: false
         }
     }
 }

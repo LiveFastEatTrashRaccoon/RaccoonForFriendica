@@ -10,6 +10,7 @@ import dev.mokkery.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
@@ -79,7 +80,7 @@ class DefaultNavigationCoordinatorTest {
         assertFalse(initial)
         val navigator =
             mock<NavigationAdapter>(MockMode.autoUnit) {
-                every { canPop } returns true
+                every { canPop } returns MutableStateFlow(true)
             }
 
         sut.setRootNavigator(navigator)
@@ -117,7 +118,7 @@ class DefaultNavigationCoordinatorTest {
         val destination = Destination.Settings
         val navigator =
             mock<NavigationAdapter>(MockMode.autoUnit) {
-                every { canPop } returns true
+                every { canPop } returns MutableStateFlow(true)
             }
         sut.setRootNavigator(navigator)
 
@@ -138,7 +139,7 @@ class DefaultNavigationCoordinatorTest {
         val destination = Destination.Settings
         val navigator =
             mock<NavigationAdapter>(MockMode.autoUnit) {
-                every { canPop } returns true
+                every { canPop } returns MutableStateFlow(true)
             }
         sut.setRootNavigator(navigator)
 
@@ -158,7 +159,7 @@ class DefaultNavigationCoordinatorTest {
     fun `when pop then interactions are as expected`() = runTest {
         val navigator =
             mock<NavigationAdapter>(MockMode.autoUnit) {
-                every { canPop } returns false
+                every { canPop } returns MutableStateFlow(false)
             }
         sut.setRootNavigator(navigator)
 
@@ -178,7 +179,7 @@ class DefaultNavigationCoordinatorTest {
     fun `when popUntilRoot then interactions are as expected`() = runTest {
         val navigator =
             mock<NavigationAdapter>(MockMode.autoUnit) {
-                every { canPop } returns false
+                every { canPop } returns MutableStateFlow(false)
             }
         sut.setRootNavigator(navigator)
 
