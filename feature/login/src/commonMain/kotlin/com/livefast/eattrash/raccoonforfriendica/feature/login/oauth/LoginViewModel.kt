@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
@@ -37,10 +38,11 @@ class LoginViewModel(
                 }.launchIn(this)
             val currentNode = apiConfigurationRepository.node.value
             val shouldUseDropDown = type == LoginType.Friendica
+            val isCurrentNodeInDropDown = DefaultFriendicaInstances.any { it.value == currentNode }
             updateState {
                 it.copy(
                     useDropDown = shouldUseDropDown,
-                    nodeName = currentNode.takeIf { shouldUseDropDown }.orEmpty(),
+                    nodeName = currentNode.takeIf { shouldUseDropDown && isCurrentNodeInDropDown }.orEmpty(),
                 )
             }
         }
