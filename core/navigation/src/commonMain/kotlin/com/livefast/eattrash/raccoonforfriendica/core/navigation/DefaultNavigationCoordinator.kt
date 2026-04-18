@@ -9,7 +9,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -29,22 +28,25 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
     private var bottomNavController: BottomNavigationAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
+    private var updateBottomNavigationSection: Job? = null
     private var updateCanPopJob: Job? = null
 
     override fun setBottomNavigator(adapter: BottomNavigationAdapter) {
         bottomNavController = adapter
+        updateBottomNavigationSection?.cancel()
+        updateBottomNavigationSection = adapter.currentSection.onEach { newValue ->
+            currentBottomNavSection.update { newValue }
+        }.launchIn(scope)
     }
 
     override fun setCurrentSection(section: BottomNavigationSection) {
-        currentBottomNavSection.getAndUpdate { old ->
-            if (old == section) {
-                scope.launch {
-                    onDoubleTabSelection.emit(section)
-                }
-            } else {
-                bottomNavController?.navigate(section)
+        val old = currentBottomNavSection.value
+        if (old == section) {
+            scope.launch {
+                onDoubleTabSelection.emit(section)
             }
-            section
+        } else {
+            bottomNavController?.navigate(section)
         }
     }
 
