@@ -94,6 +94,7 @@ fun SearchScreen(modifier: Modifier = Modifier, customOnSelectAction: ((Timeline
     val model: SearchMviModel = getViewModel<SearchViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
@@ -166,7 +167,7 @@ fun SearchScreen(modifier: Modifier = Modifier, customOnSelectAction: ((Timeline
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

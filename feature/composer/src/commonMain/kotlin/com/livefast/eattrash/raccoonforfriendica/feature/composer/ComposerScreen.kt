@@ -124,6 +124,7 @@ fun ComposerScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val galleryHelper = rememberGalleryHelper()
     val attachmentCache = remember { getAttachmentCache() }
     val focusManager = LocalFocusManager.current
@@ -285,7 +286,7 @@ fun ComposerScreen(
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 if (uiState.hasUnsavedChanges) {

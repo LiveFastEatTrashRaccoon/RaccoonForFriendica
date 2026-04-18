@@ -100,6 +100,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
     val lazyListState = rememberLazyListState()
@@ -178,7 +179,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

@@ -91,6 +91,7 @@ fun UserListScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val mainRouter = rememberMainRouter()
     val fileSystemManager = rememberFileSystemManager()
     val lazyListState = rememberLazyListState()
@@ -190,7 +191,7 @@ fun UserListScreen(
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

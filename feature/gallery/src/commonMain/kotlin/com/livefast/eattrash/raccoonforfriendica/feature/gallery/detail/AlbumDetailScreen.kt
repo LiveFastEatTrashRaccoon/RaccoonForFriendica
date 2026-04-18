@@ -81,6 +81,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val model: AlbumDetailMviModel = getViewModel<AlbumDetailViewModel>(arg = AlbumDetailViewModelArgs(name))
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -140,7 +141,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

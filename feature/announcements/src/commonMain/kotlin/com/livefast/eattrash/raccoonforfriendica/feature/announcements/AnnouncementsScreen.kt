@@ -59,6 +59,7 @@ fun AnnouncementsScreen(modifier: Modifier = Modifier) {
     val model: AnnouncementsMviModel = getViewModel<AnnouncementsViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
@@ -100,7 +101,7 @@ fun AnnouncementsScreen(modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    if (canPopState && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

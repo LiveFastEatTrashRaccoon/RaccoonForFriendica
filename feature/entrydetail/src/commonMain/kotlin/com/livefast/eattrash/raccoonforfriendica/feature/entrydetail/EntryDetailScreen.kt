@@ -114,6 +114,7 @@ fun EntryDetailScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
     val fabNestedScrollConnection = rememberFabNestedScrollConnection()
@@ -188,7 +189,7 @@ fun EntryDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value || customBackAction != null) {
+                    if (canPopState || customBackAction != null) {
                         IconButton(
                             onClick = {
                                 if (customBackAction != null) {

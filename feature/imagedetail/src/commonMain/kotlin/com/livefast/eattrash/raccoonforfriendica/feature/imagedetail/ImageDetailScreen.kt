@@ -64,6 +64,7 @@ fun ImageDetailScreen(
     val uiState by model.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val drawerCoordinator = rememberDrawerCoordinator()
     val pagerState =
         rememberPagerState(
@@ -123,7 +124,7 @@ fun ImageDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

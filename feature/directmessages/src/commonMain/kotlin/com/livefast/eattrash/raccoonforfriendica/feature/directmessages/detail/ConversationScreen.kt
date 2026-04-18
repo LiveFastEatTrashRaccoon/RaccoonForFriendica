@@ -81,6 +81,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
         )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -160,7 +161,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                     }
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

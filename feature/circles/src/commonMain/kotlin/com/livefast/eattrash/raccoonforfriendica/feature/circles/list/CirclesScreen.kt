@@ -77,6 +77,7 @@ fun CirclesScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val lazyListState = rememberLazyListState()
     val fabNestedScrollConnection = rememberFabNestedScrollConnection()
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
@@ -129,7 +130,7 @@ fun CirclesScreen(
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    if (canPopState && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

@@ -58,6 +58,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     var confirmAddItemId by remember { mutableStateOf<String?>(null) }
@@ -101,7 +102,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

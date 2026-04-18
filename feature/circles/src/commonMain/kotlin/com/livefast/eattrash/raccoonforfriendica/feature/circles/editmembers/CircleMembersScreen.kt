@@ -74,6 +74,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val lazyListState = rememberLazyListState()
     val fabNestedScrollConnection = rememberFabNestedScrollConnection()
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
@@ -119,7 +120,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 if (customBackCallback != null) {

@@ -64,6 +64,7 @@ import kotlinx.coroutines.launch
 fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val mainRouter = rememberMainRouter()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -107,7 +108,7 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    if (canPopState && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

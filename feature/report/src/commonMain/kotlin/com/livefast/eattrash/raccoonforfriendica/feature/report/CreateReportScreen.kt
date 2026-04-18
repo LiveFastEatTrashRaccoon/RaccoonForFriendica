@@ -72,6 +72,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     var categoryBottomSheetOpened by remember { mutableStateOf(false) }
     var ruleSelectionOpened by remember { mutableStateOf(false) }
     val genericError = LocalStrings.current.messageGenericError
@@ -122,7 +123,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

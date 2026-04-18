@@ -86,6 +86,7 @@ fun HashtagScreen(
     val model: HashtagMviModel = getViewModel<HashtagViewModel>(arg = HashtagViewModelArgs(tag))
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
@@ -180,7 +181,7 @@ fun HashtagScreen(
                     }
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()
