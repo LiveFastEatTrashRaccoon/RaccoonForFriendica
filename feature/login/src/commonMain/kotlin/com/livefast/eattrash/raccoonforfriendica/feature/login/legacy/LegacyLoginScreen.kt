@@ -74,6 +74,7 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val genericError = LocalStrings.current.messageGenericError
     val successMessage = LocalStrings.current.messageSuccess
     val focusManager = LocalFocusManager.current
@@ -114,7 +115,7 @@ fun LegacyLoginScreen(modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

@@ -49,6 +49,7 @@ import kotlinx.coroutines.launch
 fun FollowRequestsScreen(model: FollowRequestsMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val mainRouter = rememberMainRouter()
@@ -80,7 +81,7 @@ fun FollowRequestsScreen(model: FollowRequestsMviModel, modifier: Modifier = Mod
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    if (canPopState && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

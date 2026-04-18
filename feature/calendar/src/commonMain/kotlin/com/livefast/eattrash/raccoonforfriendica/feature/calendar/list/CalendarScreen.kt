@@ -65,6 +65,7 @@ fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -95,7 +96,7 @@ fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    if (canPopState && isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

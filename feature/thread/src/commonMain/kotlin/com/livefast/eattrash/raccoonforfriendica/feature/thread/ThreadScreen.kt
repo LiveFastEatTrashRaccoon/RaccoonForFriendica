@@ -117,6 +117,7 @@ fun ThreadScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
     val scope = rememberCoroutineScope()
@@ -177,7 +178,7 @@ fun ThreadScreen(
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()

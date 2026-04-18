@@ -79,6 +79,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
         getViewModel<ShortcutTimelineViewModel>(arg = ShortcutTimelineViewModelArgs(node))
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
@@ -156,7 +157,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                     )
                 },
                 navigationIcon = {
-                    if (navigationCoordinator.canPop.value) {
+                    if (canPopState) {
                         IconButton(
                             onClick = {
                                 navigationCoordinator.pop()
