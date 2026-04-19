@@ -16,7 +16,7 @@ import dev.mokkery.answering.throws
 import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
-import dev.mokkery.matcher.matching
+import dev.mokkery.matcher.matches
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
@@ -71,8 +71,8 @@ class DefaultTranslationRepositoryTest {
             statusService.translate(
                 id = entryId,
                 data =
-                matching { arg ->
-                    arg.formData["lang"] == targetLang
+                matches {
+                    it.formData["lang"] == targetLang
                 },
             )
         }
@@ -137,8 +137,8 @@ class DefaultTranslationRepositoryTest {
             statusService.translate(
                 id = entryId,
                 data =
-                matching { arg ->
-                    arg.formData["lang"] == targetLang
+                matches {
+                    it.formData["lang"] == targetLang
                 },
             )
         }
@@ -201,8 +201,8 @@ class DefaultTranslationRepositoryTest {
             statusService.translate(
                 id = entryId,
                 data =
-                matching { arg ->
-                    arg.formData["lang"] == targetLang
+                matches {
+                    it.formData["lang"] == targetLang
                 },
             )
         }
@@ -234,8 +234,8 @@ class DefaultTranslationRepositoryTest {
             statusService.translate(
                 id = entryId,
                 data =
-                matching { arg ->
-                    arg.formData["lang"] == targetLang
+                matches {
+                    it.formData["lang"] == targetLang
                 },
             )
         }
