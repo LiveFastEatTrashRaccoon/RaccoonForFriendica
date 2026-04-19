@@ -18,7 +18,6 @@ val reportModule =
                 supportedFeatureRepository = instance(),
                 reportRepository = instance(),
                 userCache = instance(),
-                entryCache = instance(),
             )
         }
     }

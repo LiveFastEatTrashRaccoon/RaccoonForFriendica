@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
@@ -22,7 +21,6 @@ class CreateReportViewModel(
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
     private val userCache: LocalItemCache<UserModel>,
-    private val entryCache: LocalItemCache<TimelineEntryModel>,
 ) : ViewModel(),
     MviModelDelegate<CreateReportMviModel.Intent, CreateReportMviModel.State, CreateReportMviModel.Effect>
     by DefaultMviModelDelegate(initialState = CreateReportMviModel.State()),
@@ -46,12 +44,10 @@ class CreateReportViewModel(
                     }
                 }.launchIn(this)
             val user = userCache.get(userId)
-            val entry = entryId.takeIf { it.isNotEmpty() }?.let { entryCache.get(it) }
             val rules = nodeInfoRepository.getRules().orEmpty()
             updateState {
                 it.copy(
                     user = user,
-                    entry = entry,
                     availableRules = rules,
                 )
             }

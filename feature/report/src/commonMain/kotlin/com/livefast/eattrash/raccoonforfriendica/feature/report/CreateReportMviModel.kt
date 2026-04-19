@@ -4,7 +4,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface CreateReportMviModel :
@@ -23,7 +22,6 @@ interface CreateReportMviModel :
 
     data class State(
         val user: UserModel? = null,
-        val entry: TimelineEntryModel? = null,
         val loading: Boolean = false,
         val commentValue: TextFieldValue = TextFieldValue(),
         val forward: Boolean = false,
