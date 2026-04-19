@@ -10,7 +10,7 @@ import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
-import dev.mokkery.matcher.matching
+import dev.mokkery.matcher.matches
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
@@ -48,7 +48,7 @@ class DefaultPhotoAlbumRepositoryTest {
         assertTrue(res)
         verifySuspend {
             photoAlbumService.update(
-                matching {
+                matches {
                     it.formData["album"] == "fake-album" && it.formData["album_new"] == "fake-album-new"
                 },
             )
@@ -75,7 +75,7 @@ class DefaultPhotoAlbumRepositoryTest {
         assertTrue(res)
         verifySuspend {
             photoAlbumService.delete(
-                matching {
+                matches {
                     it.formData["album"] == "fake-album"
                 },
             )

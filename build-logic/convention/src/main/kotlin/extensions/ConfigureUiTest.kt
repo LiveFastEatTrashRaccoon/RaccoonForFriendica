@@ -1,6 +1,6 @@
 package extensions
 
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import utils.dependency
@@ -32,10 +32,11 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
                 }
             }
         }
+    }
 
-        targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
-            withDeviceTest {
-                instrumentationRunner = "org.robolectric.RobolectricTestRunner"
-            }
+internal fun Project.configureUiTestAndroidLibrary(extension: KotlinMultiplatformAndroidLibraryExtension) =
+    extension.apply {
+        withDeviceTest {
+            instrumentationRunner = "org.robolectric.RobolectricTestRunner"
         }
     }

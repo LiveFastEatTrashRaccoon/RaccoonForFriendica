@@ -8,6 +8,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(kotlin("test-junit"))
+                implementation(libs.androidx.test.core)
                 implementation(libs.kodein)
                 implementation(projects.core.di)
             }
