@@ -10,7 +10,7 @@ import dev.mokkery.answering.throws
 import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
-import dev.mokkery.matcher.matching
+import dev.mokkery.matcher.matches
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
@@ -50,7 +50,7 @@ class DefaultPushNotificationRepositoryTest {
         assertEquals(SERVER_KEY, res)
         verifySuspend {
             pushService.create(
-                matching {
+                matches {
                     val data = it.formData
                     listOf(
                         data["subscription[endpoint]"] == ENDPOINT,
@@ -87,7 +87,7 @@ class DefaultPushNotificationRepositoryTest {
         assertNull(res)
         verifySuspend {
             pushService.create(
-                matching {
+                matches {
                     val data = it.formData
                     listOf(
                         data["subscription[endpoint]"] == ENDPOINT,
@@ -126,7 +126,7 @@ class DefaultPushNotificationRepositoryTest {
         assertEquals(SERVER_KEY, res)
         verifySuspend {
             pushService.update(
-                matching {
+                matches {
                     val data = it.formData
                     listOf(
                         data.names().none { k -> k.startsWith("subscription") },
@@ -157,7 +157,7 @@ class DefaultPushNotificationRepositoryTest {
         assertNull(res)
         verifySuspend {
             pushService.update(
-                matching {
+                matches {
                     val data = it.formData
                     listOf(
                         data.names().none { k -> k.startsWith("subscription") },

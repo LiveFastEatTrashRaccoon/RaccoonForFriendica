@@ -10,7 +10,7 @@ import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
-import dev.mokkery.matcher.matching
+import dev.mokkery.matcher.matches
 import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
@@ -79,7 +79,7 @@ class DefaultMarkerRepositoryTest {
         assertEquals(expected = MarkerModel(type = MarkerType.Notifications, "2"), actual = res)
         verifySuspend {
             markerService.update(
-                matching {
+                matches {
                     it.formData["notifications[last_read_id]"] == "2"
                 },
             )
