@@ -23,8 +23,8 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = (rootProject.properties["buildNumber"] as? String)?.toInt()
-        versionName = rootProject.properties["versionName"] as? String
+        versionCode = (project.findProperty("buildNumber") as? String)?.toInt() ?: 1
+        versionName = project.findProperty("versionName") as? String ?: "1.0.0"
     }
     base.archivesName = "RaccoonForFriendica"
     packaging {
