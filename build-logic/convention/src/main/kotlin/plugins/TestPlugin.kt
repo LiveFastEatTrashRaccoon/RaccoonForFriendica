@@ -1,6 +1,9 @@
 package plugins
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import extensions.configureTest
+import extensions.configureTestAndroidLibrary
+import extensions.configureUiTestAndroidLibrary
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -15,9 +18,12 @@ class TestPlugin : Plugin<Project> {
                 apply(libs.findPlugin("ksp").pluginId)
                 apply(libs.findPlugin("mokkery").pluginId)
             }
-            extensions.configure(
-                KotlinMultiplatformExtension::class.java,
-                ::configureTest,
-            )
+            extensions.configure(KotlinMultiplatformExtension::class.java) {
+                configureTest(this)
+
+                targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
+                    configureTestAndroidLibrary(this)
+                }
+            }
         }
 }
