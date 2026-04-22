@@ -18,9 +18,11 @@ internal fun Project.configureTest(extension: KotlinMultiplatformExtension) =
             }
 
             configureEach {
-                if (name == "androidHostTest") {
-                    dependencies {
-                        implementation(project(":core:testutils"))
+                when (name) {
+                    "androidHostTest", "androidDeviceTest" -> {
+                        dependencies {
+                            implementation(project(":core:testutils"))
+                        }
                     }
                 }
             }
