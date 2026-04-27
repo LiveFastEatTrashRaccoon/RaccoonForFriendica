@@ -1,0 +1,13 @@
+- feat: new JVM platform (Linux)
+- feat: reply bar themes
+- feat: explore foreign instances in guest mode
+- feat: configure translations with LibreTranslate
+- feat: display quoted posts
+- fix: list/circle retrieval
+- fix: instance change
+- fix: reset notifications when switching mode
+- fix: timeline loading (Mastodon)
+- fix: search by post URL (Mastodon)
+- enh: support large screens with adaptive layouts
+- enh: improved hashtag charts appearance
+- chore: new languages (et) and update others

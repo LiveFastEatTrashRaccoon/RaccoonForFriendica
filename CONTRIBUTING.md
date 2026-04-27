@@ -55,7 +55,7 @@ Symbols used in version numbers:
 In order to create version `α.β.γ-betaδ`
 
 - [ ] checkout the `master` branch
-- [ ] increment `versionName` (ε) and `buildNumber` (α.β.γ-betaδ) in `gradle.properties`
+- [ ] increment `buildNumber` (ε) and `versionName` (α.β.γ-betaδ) in `gradle.properties`
 - [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
   changes you want to display on the stores (remember: 500-character limit)
 - [ ] add everything to stage and create a commit with the message "version α.β.γ-betaδ"
@@ -70,7 +70,7 @@ In order to create version `α.β.γ-betaδ`
 In order to create version `α.β.γ`
 
 - [ ] checkout the `master` branch
-- [ ] increment `versionName` (ε) and `buildNumber` (α.β.γ-betaδ) in `gradle.properties`
+- [ ] increment `buildNumber` (ε) and `versionName` (α.β.γ-betaδ) in `gradle.properties`
 - [ ] update `distribution/changelog.txt` with a detailed change list, remembering:
     - to include PR (with author) and issue references (if possible)
     - to update the version comparison for GitHub diff view
