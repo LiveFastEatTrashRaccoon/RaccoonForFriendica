@@ -17,6 +17,7 @@ interface CoreResources {
     // region App icons
     val appIconDefault: Painter @Composable get
     val appIconAlt: Painter @Composable get
+    val loadingIcon: ImageVector @Composable get
     // endregion
 
     // region Media player config

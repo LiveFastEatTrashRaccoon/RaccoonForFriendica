@@ -86,6 +86,7 @@ import raccoonforfriendica.shared.generated.resources.handyman_fill
 import raccoonforfriendica.shared.generated.resources.home_fill
 import raccoonforfriendica.shared.generated.resources.ic_alt
 import raccoonforfriendica.shared.generated.resources.ic_default
+import raccoonforfriendica.shared.generated.resources.ic_loading
 import raccoonforfriendica.shared.generated.resources.image
 import raccoonforfriendica.shared.generated.resources.inbox_fill
 import raccoonforfriendica.shared.generated.resources.info
@@ -185,6 +186,10 @@ internal class SharedResources : CoreResources {
 
     override val appIconAlt: Painter
         @Composable get() = painterResource(Res.drawable.ic_alt)
+
+
+    override val loadingIcon: ImageVector
+        @Composable get() = vectorResource(Res.drawable.ic_loading)
     // endregion
 
     // region Media player config

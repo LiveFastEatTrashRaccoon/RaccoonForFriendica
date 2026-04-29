@@ -27,6 +27,7 @@ object MockResources : CoreResources {
 
     override val appIconDefault: Painter @Composable get() = mockPainter
     override val appIconAlt: Painter @Composable get() = mockPainter
+    override val loadingIcon: ImageVector @Composable get() = mockImageVector
 
     override val videoPlayerConfig: VideoPlayerConfig = VideoPlayerConfig()
     override val audioPlayerConfig: AudioPlayerConfig = AudioPlayerConfig()
