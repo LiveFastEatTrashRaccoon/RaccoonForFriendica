@@ -6,22 +6,19 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerViewMo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.DefaultPrepareForPreviewUseCase
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.PrepareForPreviewUseCase
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 data class ComposerViewModelArgs(val inReplyToId: String) : ViewModelCreationArgs
 
 val composerModule =
     DI.Module("ComposerModule") {
-        bind<PrepareForPreviewUseCase> {
-            singleton {
-                DefaultPrepareForPreviewUseCase(
-                    apiConfigurationRepository = instance(),
-                    bbCodeConverter = instance(),
-                    markdownConverter = instance(),
-                )
-            }
+        bindSingleton<PrepareForPreviewUseCase> {
+            DefaultPrepareForPreviewUseCase(
+                apiConfigurationRepository = instance(),
+                bbCodeConverter = instance(),
+                markdownConverter = instance(),
+            )
         }
         bindViewModelWithArgs { args: ComposerViewModelArgs ->
             ComposerViewModel(

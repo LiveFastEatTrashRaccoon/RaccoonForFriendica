@@ -14,62 +14,49 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.Fet
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
 import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.factory
+import org.kodein.di.bindFactory
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 val urlHandlerModule =
     DI.Module("UrlHandlerModule") {
-        bind<FetchUserUseCase> {
-            singleton {
-                DefaultFetchUserUseCase(
-                    searchRepository = instance(),
-                )
-            }
+        bindSingleton<FetchUserUseCase> {
+            DefaultFetchUserUseCase(
+                searchRepository = instance(),
+            )
         }
-        bind<FetchEntryUseCase> {
-            singleton {
-                DefaultFetchEntryUseCase(
-                    searchRepository = instance(),
-                )
-            }
+        bindSingleton<FetchEntryUseCase> {
+            DefaultFetchEntryUseCase(
+                searchRepository = instance(),
+            )
         }
-        bind<HashtagProcessor> {
-            singleton {
-                DefaultHashtagProcessor(
-                    mainRouter = instance(),
-                )
-            }
+        bindSingleton<HashtagProcessor> {
+            DefaultHashtagProcessor(
+                mainRouter = instance(),
+            )
         }
-        bind<UserProcessor> {
-            singleton {
-                DefaultUserProcessor(
-                    mainRouter = instance(),
-                    fetchUser = instance(),
-                )
-            }
+        bindSingleton<UserProcessor> {
+            DefaultUserProcessor(
+                mainRouter = instance(),
+                fetchUser = instance(),
+            )
         }
-        bind<EntryProcessor> {
-            singleton {
-                DefaultEntryProcessor(
-                    mainRouter = instance(),
-                    fetchEntry = instance(),
-                )
-            }
+        bindSingleton<EntryProcessor> {
+            DefaultEntryProcessor(
+                mainRouter = instance(),
+                fetchEntry = instance(),
+            )
         }
 
-        bind<CustomUriHandler> {
-            factory { fallback: UriHandler ->
-                DefaultCustomUriHandler(
-                    defaultHandler = fallback,
-                    customTabsHelper = instance(),
-                    settingsRepository = instance(),
-                    mainRouter = instance(),
-                    hashtagProcessor = instance(),
-                    userProcessor = instance(),
-                    entryProcessor = instance(),
-                )
-            }
+        bindFactory<UriHandler, CustomUriHandler> { fallback ->
+            DefaultCustomUriHandler(
+                defaultHandler = fallback,
+                customTabsHelper = instance(),
+                settingsRepository = instance(),
+                mainRouter = instance(),
+                hashtagProcessor = instance(),
+                userProcessor = instance(),
+                entryProcessor = instance(),
+            )
         }
     }

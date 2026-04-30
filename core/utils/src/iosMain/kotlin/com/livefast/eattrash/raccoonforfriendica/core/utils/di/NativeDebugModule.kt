@@ -4,16 +4,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportMan
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultCrashReportManager
 import org.kodein.di.DI
 import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import org.kodein.di.singleton
 
 internal actual val nativeDebugModule =
     DI.Module("NativeDebugModule") {
-        bind<CrashReportManager> {
-            singleton {
-                DefaultCrashReportManager(
-                    keyStore = instance(),
-                )
-            }
+        bindSingleton<CrashReportManager> {
+            DefaultCrashReportManager(
+                keyStore = instance(),
+            )
         }
     }

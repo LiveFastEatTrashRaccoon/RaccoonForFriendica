@@ -2,11 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.architecture.di
 
 import androidx.lifecycle.ViewModel
 import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindings.BindingDI
-import org.kodein.di.bindings.NoArgBindingDI
-import org.kodein.di.factory
-import org.kodein.di.provider
+import org.kodein.di.DirectDI
+import org.kodein.di.bindFactory
+import org.kodein.di.bindProvider
 import kotlin.reflect.cast
 
 /**
@@ -18,15 +16,13 @@ import kotlin.reflect.cast
  */
 inline fun <reified T : ViewModel> DI.Builder.bindViewModel(
     overrides: Boolean? = null,
-    noinline block: NoArgBindingDI<*>.() -> T,
+    noinline block: DirectDI.() -> T,
 ) {
-    bind<T>(
+    bindProvider(
         tag = T::class.diKey,
         overrides = overrides,
     ) {
-        provider<Any, T> {
-            block()
-        }
+        block()
     }
 }
 
@@ -40,14 +36,12 @@ inline fun <reified T : ViewModel> DI.Builder.bindViewModel(
  */
 inline fun <reified A : ViewModelCreationArgs, reified T : ViewModel> DI.Builder.bindViewModelWithArgs(
     overrides: Boolean? = null,
-    noinline block: BindingDI<*>.(A) -> T,
+    noinline block: DirectDI.(A) -> T,
 ) {
-    bind<T>(
+    bindFactory<ViewModelCreationArgs, T>(
         tag = T::class.diKey,
         overrides = overrides,
-    ) {
-        factory<Any, ViewModelCreationArgs, T> { args: ViewModelCreationArgs ->
-            block(A::class.cast(args))
-        }
+    ) { args: ViewModelCreationArgs ->
+        block(A::class.cast(args))
     }
 }

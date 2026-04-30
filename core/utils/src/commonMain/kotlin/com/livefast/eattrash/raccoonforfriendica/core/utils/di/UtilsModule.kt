@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.network.DefaultNetwo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import org.kodein.di.DI
 import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import org.kodein.di.singleton
 
@@ -33,39 +34,28 @@ val utilsModule =
             nativeVibrateModule,
         )
 
-        bind<BlurHashDecoder> {
-            singleton {
-                DefaultBlurHashDecoder()
-            }
+        bindSingleton<BlurHashDecoder> {
+            DefaultBlurHashDecoder()
         }
-        bind<BlurHashRepository> {
-            singleton {
-                DefaultBlurHashRepository(
-                    decoder = instance(),
-                )
-            }
+        bindSingleton<BlurHashRepository> {
+            DefaultBlurHashRepository(
+                decoder = instance(),
+            )
         }
-        bind<ImagePreloadManager> {
-            singleton {
-                DefaultImagePreloadManager(
-                    context = instance(),
-                    imageLoaderProvider = instance(),
-                )
-            }
+        bindSingleton<ImagePreloadManager> {
+            DefaultImagePreloadManager(
+                context = instance(),
+                imageLoaderProvider = instance(),
+            )
         }
-        bind<ImageLoaderProvider> {
-            singleton {
-                DefaultImageLoaderProvider(
-                    context = instance(),
-                    fileSystemManager = instance(),
-                )
-            }
+        bindSingleton<ImageLoaderProvider> {
+            DefaultImageLoaderProvider(
+                context = instance(),
+                fileSystemManager = instance(),
+            )
         }
-
-        bind<NetworkStateObserver> {
-            singleton {
-                val connectivityProvider = instance<ConnectivityProvider>()
-                DefaultNetworkStateObserver(connectivityProvider.provide())
-            }
+        bindSingleton<NetworkStateObserver> {
+            val connectivityProvider = instance<ConnectivityProvider>()
+            DefaultNetworkStateObserver(connectivityProvider.provide())
         }
     }

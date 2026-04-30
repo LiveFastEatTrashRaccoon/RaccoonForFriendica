@@ -49,141 +49,95 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.serialization.json.Json
 import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.factory
+import org.kodein.di.bindFactory
+import org.kodein.di.bindInstance
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 internal data class ServiceCreationArgs(val baseUrl: String, val client: HttpClient)
 
 val apiModule =
     DI.Module("ApiModule") {
-        bind<HttpClientEngine> {
-            instance(provideHttpClientEngine())
+        bindInstance<HttpClientEngine> {
+            provideHttpClientEngine()
         }
-        bind<Json> {
-            singleton { JsonSerializer }
+        bindSingleton<Json> {
+            JsonSerializer
         }
-        bind<ServiceProvider>(tag = "default") {
-            singleton {
-                DefaultServiceProvider(
-                    factory = instance(),
-                    appInfoRepository = instance(),
-                )
-            }
+        bindSingleton<ServiceProvider>(tag = "default") {
+            DefaultServiceProvider(
+                factory = instance(),
+                appInfoRepository = instance(),
+            )
         }
-        bind<ServiceProvider>(tag = "other") {
-            singleton {
-                DefaultServiceProvider(
-                    factory = instance(),
-                    appInfoRepository = instance(),
-                )
-            }
+        bindSingleton<ServiceProvider>(tag = "other") {
+            DefaultServiceProvider(
+                factory = instance(),
+                appInfoRepository = instance(),
+            )
         }
-        bind<AnnouncementService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultAnnouncementService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, AnnouncementService> { arg ->
+            DefaultAnnouncementService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<AppService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultAppService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, AppService> { arg ->
+            DefaultAppService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<DirectMessageService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultDirectMessageService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, DirectMessageService> { arg ->
+            DefaultDirectMessageService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<EventService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultEventService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, EventService> { arg ->
+            DefaultEventService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<FollowRequestService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultFollowRequestService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, FollowRequestService> { arg ->
+            DefaultFollowRequestService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<InstanceService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultInstanceService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, InstanceService> { arg ->
+            DefaultInstanceService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<ListService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultListService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, ListService> { arg ->
+            DefaultListService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<MarkerService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultMarkerService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, MarkerService> { arg ->
+            DefaultMarkerService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<MediaService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultMediaService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, MediaService> { arg ->
+            DefaultMediaService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<NotificationService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultNotificationService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, NotificationService> { arg ->
+            DefaultNotificationService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<PhotoAlbumService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultPhotoAlbumService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, PhotoAlbumService> { arg ->
+            DefaultPhotoAlbumService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<PhotoService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultPhotoService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, PhotoService> { arg ->
+            DefaultPhotoService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<PollService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultPollService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, PollService> { arg ->
+            DefaultPollService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<PushService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultPushService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, PushService> { arg ->
+            DefaultPushService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<ReportService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultReportService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, ReportService> { arg ->
+            DefaultReportService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<SearchService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultSearchService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, SearchService> { arg ->
+            DefaultSearchService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<StatusService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultStatusService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, StatusService> { arg ->
+            DefaultStatusService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<TagsService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultTagsService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, TagsService> { arg ->
+            DefaultTagsService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<TimelineService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultTimelineService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, TimelineService> { arg ->
+            DefaultTimelineService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<TrendsService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultTrendService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, TrendsService> { arg ->
+            DefaultTrendService(baseUrl = arg.baseUrl, client = arg.client)
         }
-        bind<UserService> {
-            factory { arg: ServiceCreationArgs ->
-                DefaultUserService(baseUrl = arg.baseUrl, client = arg.client)
-            }
+        bindFactory<ServiceCreationArgs, UserService> { arg ->
+            DefaultUserService(baseUrl = arg.baseUrl, client = arg.client)
         }
     }
 

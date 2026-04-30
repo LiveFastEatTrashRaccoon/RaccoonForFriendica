@@ -5,17 +5,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.resources.SharedResources
 import com.livefast.eattrash.raccoonforfriendica.resources.SharedStrings
 import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.factory
-import org.kodein.di.singleton
+import org.kodein.di.bindFactory
+import org.kodein.di.bindSingleton
 
 internal val resourcesModule =
     DI.Module("SharedResourcesModule") {
-        bind<CoreResources> { singleton { SharedResources() } }
-        bind<Strings> {
-            factory { _: String ->
-                // the locale parameter is currently ignored
-                SharedStrings()
-            }
+        bindSingleton<CoreResources> { SharedResources() }
+        bindFactory<String, Strings> { _ ->
+            // the locale parameter is currently ignored
+            SharedStrings()
         }
     }

@@ -19,71 +19,56 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converte
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.DefaultMarkdownConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.MarkdownConverter
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 val contentUseCaseModule =
     DI.Module("ContentUseCaseModule") {
-        bind<ExportUserListUseCase> {
-            singleton {
-                DefaultExportUserListUseCase(
-                    userRepository = instance(),
-                )
-            }
+        bindSingleton<ExportUserListUseCase> {
+            DefaultExportUserListUseCase(
+                userRepository = instance(),
+            )
         }
-        bind<ToggleEntryFavoriteUseCase> {
-            singleton {
-                DefaultToggleEntryFavoriteUseCase(
-                    entryRepository = instance(),
-                )
-            }
+        bindSingleton<ToggleEntryFavoriteUseCase> {
+            DefaultToggleEntryFavoriteUseCase(
+                entryRepository = instance(),
+            )
         }
-        bind<ToggleEntryDislikeUseCase> {
-            singleton {
-                DefaultToggleEntryDislikeUseCase(
-                    entryRepository = instance(),
-                )
-            }
+        bindSingleton<ToggleEntryDislikeUseCase> {
+            DefaultToggleEntryDislikeUseCase(
+                entryRepository = instance(),
+            )
         }
-        bind<BBCodeConverter> {
-            singleton { DefaultBBCodeConverter() }
+        bindSingleton<BBCodeConverter> {
+            DefaultBBCodeConverter()
         }
-        bind<MarkdownConverter> {
-            singleton { DefaultMarkdownConverter() }
+        bindSingleton<MarkdownConverter> {
+            DefaultMarkdownConverter()
         }
-        bind<StripMarkupUseCase> {
-            singleton {
-                DefaultStripMarkupUseCase(
-                    bbCodeConverter = instance(),
-                    markdownConverter = instance(),
-                )
-            }
+        bindSingleton<StripMarkupUseCase> {
+            DefaultStripMarkupUseCase(
+                bbCodeConverter = instance(),
+                markdownConverter = instance(),
+            )
         }
-        bind<GetTranslationUseCase> {
-            singleton {
-                DefaultGetTranslationUseCase(
-                    supportedFeatureRepository = instance(),
-                    defaultRepository = instance(),
-                    fallbackRepository = instance(),
-                    stripMarkup = instance(),
-                    translationProviderConfigStore = instance(),
-                )
-            }
+        bindSingleton<GetTranslationUseCase> {
+            DefaultGetTranslationUseCase(
+                supportedFeatureRepository = instance(),
+                defaultRepository = instance(),
+                fallbackRepository = instance(),
+                stripMarkup = instance(),
+                translationProviderConfigStore = instance(),
+            )
         }
-        bind<PopulateThreadUseCase> {
-            singleton {
-                DefaultPopulateThreadUseCase(
-                    timelineEntryRepository = instance(),
-                    emojiHelper = instance(),
-                )
-            }
+        bindSingleton<PopulateThreadUseCase> {
+            DefaultPopulateThreadUseCase(
+                timelineEntryRepository = instance(),
+                emojiHelper = instance(),
+            )
         }
-        bind<GetInnerUrlUseCase> {
-            singleton {
-                DefaultGetInnerUrlUseCase(
-                    apiConfigurationRepository = instance(),
-                )
-            }
+        bindSingleton<GetInnerUrlUseCase> {
+            DefaultGetInnerUrlUseCase(
+                apiConfigurationRepository = instance(),
+            )
         }
     }

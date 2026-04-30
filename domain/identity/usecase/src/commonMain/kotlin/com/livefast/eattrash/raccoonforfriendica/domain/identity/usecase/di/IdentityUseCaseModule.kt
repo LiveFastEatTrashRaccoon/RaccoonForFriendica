@@ -21,104 +21,83 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutU
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 val identityUseCaseModule =
     DI.Module("IdentityUseCaseModule") {
-        bind<ActiveAccountMonitor> {
-            singleton {
-                DefaultActiveAccountMonitor(
-                    accountRepository = instance(),
-                    apiConfigurationRepository = instance(),
-                    identityRepository = instance(),
-                    accountCredentialsCache = instance(),
-                    settingsRepository = instance(),
-                    supportedFeatureRepository = instance(),
-                    contentPreloadManager = instance(),
-                    markerRepository = instance(),
-                    notificationCoordinator = instance(),
-                    announcementsManager = instance(),
-                    followedHashtagCache = instance(),
-                    serviceProvider = instance(tag = "default"),
-                    logout = instance(),
-                )
-            }
+        bindSingleton<ActiveAccountMonitor> {
+            DefaultActiveAccountMonitor(
+                accountRepository = instance(),
+                apiConfigurationRepository = instance(),
+                identityRepository = instance(),
+                accountCredentialsCache = instance(),
+                settingsRepository = instance(),
+                supportedFeatureRepository = instance(),
+                contentPreloadManager = instance(),
+                markerRepository = instance(),
+                notificationCoordinator = instance(),
+                announcementsManager = instance(),
+                followedHashtagCache = instance(),
+                serviceProvider = instance(tag = "default"),
+                logout = instance(),
+            )
         }
-        bind<ContentPreloadManager> {
-            singleton {
-                DefaultContentPreloadManager(
-                    timelineEntryRepository = instance(),
-                    trendingRepository = instance(),
-                    notificationRepository = instance(),
-                )
-            }
+        bindSingleton<ContentPreloadManager> {
+            DefaultContentPreloadManager(
+                timelineEntryRepository = instance(),
+                trendingRepository = instance(),
+                notificationRepository = instance(),
+            )
         }
-        bind<DeleteAccountUseCase> {
-            singleton {
-                DefaultDeleteAccountUseCase(
-                    accountRepository = instance(),
-                    settingsRepository = instance(),
-                    accountCredentialsCache = instance(),
-                )
-            }
+        bindSingleton<DeleteAccountUseCase> {
+            DefaultDeleteAccountUseCase(
+                accountRepository = instance(),
+                settingsRepository = instance(),
+                accountCredentialsCache = instance(),
+            )
         }
-        bind<EntryActionRepository> {
-            singleton {
-                DefaultEntryActionRepository(
-                    identityRepository = instance(),
-                    supportedFeatureRepository = instance(),
-                )
-            }
+        bindSingleton<EntryActionRepository> {
+            DefaultEntryActionRepository(
+                identityRepository = instance(),
+                supportedFeatureRepository = instance(),
+            )
         }
-        bind<ExportSettingsUseCase> {
-            singleton {
-                DefaultExportSettingsUseCase(
-                    settingsRepository = instance(),
-                )
-            }
+        bindSingleton<ExportSettingsUseCase> {
+            DefaultExportSettingsUseCase(
+                settingsRepository = instance(),
+            )
         }
-        bind<ImportSettingsUseCase> {
-            singleton {
-                DefaultImportSettingsUseCase(
-                    settingsRepository = instance(),
-                )
-            }
+        bindSingleton<ImportSettingsUseCase> {
+            DefaultImportSettingsUseCase(
+                settingsRepository = instance(),
+            )
         }
-        bind<LoginUseCase> {
-            singleton {
-                DefaultLoginUseCase(
-                    apiConfigurationRepository = instance(),
-                    credentialsRepository = instance(),
-                    accountRepository = instance(),
-                    settingsRepository = instance(),
-                    accountCredentialsCache = instance(),
-                    supportedFeatureRepository = instance(),
-                )
-            }
+        bindSingleton<LoginUseCase> {
+            DefaultLoginUseCase(
+                apiConfigurationRepository = instance(),
+                credentialsRepository = instance(),
+                accountRepository = instance(),
+                settingsRepository = instance(),
+                accountCredentialsCache = instance(),
+                supportedFeatureRepository = instance(),
+            )
         }
-        bind<LogoutUseCase> {
-            singleton {
-                DefaultLogoutUseCase(
-                    apiConfigurationRepository = instance(),
-                    accountRepository = instance(),
-                )
-            }
+        bindSingleton<LogoutUseCase> {
+            DefaultLogoutUseCase(
+                apiConfigurationRepository = instance(),
+                accountRepository = instance(),
+            )
         }
-        bind<SetupAccountUseCase> {
-            singleton {
-                DefaultSetupAccountUseCase(
-                    accountRepository = instance(),
-                    settingsRepository = instance(),
-                )
-            }
+        bindSingleton<SetupAccountUseCase> {
+            DefaultSetupAccountUseCase(
+                accountRepository = instance(),
+                settingsRepository = instance(),
+            )
         }
-        bind<SwitchAccountUseCase> {
-            singleton {
-                DefaultSwitchAccountUseCase(
-                    accountRepository = instance(),
-                )
-            }
+        bindSingleton<SwitchAccountUseCase> {
+            DefaultSwitchAccountUseCase(
+                accountRepository = instance(),
+            )
         }
     }
