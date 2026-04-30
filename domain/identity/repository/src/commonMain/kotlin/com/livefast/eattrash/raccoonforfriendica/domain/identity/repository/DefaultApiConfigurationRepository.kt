@@ -45,6 +45,10 @@ internal class DefaultApiConfigurationRepository(
     override suspend fun refresh() = runCatching {
         val oldCredentials = retrieveFromKeyStore()
         check(oldCredentials is ApiCredentials.OAuth2)
+        check(oldCredentials.refreshToken.isNotEmpty()) {
+            // prevent refresh attempt with long-lived tokens, so continue without failing
+            return@runCatching
+        }
 
         val newCredentials = authManager.performRefresh(refreshToken = oldCredentials.refreshToken)
         checkNotNull(newCredentials)

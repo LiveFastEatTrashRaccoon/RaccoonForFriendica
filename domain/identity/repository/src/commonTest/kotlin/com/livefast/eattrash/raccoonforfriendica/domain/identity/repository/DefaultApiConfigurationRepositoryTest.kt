@@ -200,6 +200,8 @@ class DefaultApiConfigurationRepositoryTest {
 
     @Test
     fun `given no previous OAuth2 credentials when refresh then result is failure`() = runTest {
+        everySuspend { keyStore.get("lastCred1", "") } returns ""
+        everySuspend { keyStore.get("lastCred2", "") } returns ""
         val credentials =
             ApiCredentials.OAuth2(accessToken = "fake-access-token-1", refreshToken = "fake-refresh-token")
         sut.setAuth(credentials)
