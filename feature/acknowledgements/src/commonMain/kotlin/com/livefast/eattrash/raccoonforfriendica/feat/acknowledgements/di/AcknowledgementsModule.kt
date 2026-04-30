@@ -7,21 +7,16 @@ import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.main.Ackn
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.repository.AcknowledgementsRepository
 import com.livefast.eattrash.raccoonforfriendica.feat.acknowledgements.repository.DefaultAcknowledgementsRepository
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 val acknowledgementsModule =
     DI.Module("AcknowledgementsModule") {
-        bind<AcknowledgementsRemoteDataSource> {
-            singleton {
-                DefaultAcknowledgementsRemoteDataSource()
-            }
+        bindSingleton<AcknowledgementsRemoteDataSource> {
+            DefaultAcknowledgementsRemoteDataSource()
         }
-        bind<AcknowledgementsRepository> {
-            singleton {
-                DefaultAcknowledgementsRepository(dataSource = instance())
-            }
+        bindSingleton<AcknowledgementsRepository> {
+            DefaultAcknowledgementsRepository(dataSource = instance())
         }
         bindViewModel {
             AcknowledgementsViewModel(

@@ -69,245 +69,192 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Trend
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 internal val cacheModule =
     DI.Module("ContentRepositoryCacheModule") {
-        bind<LocalItemCache<UserModel>> { singleton { DefaultLocalItemCache() } }
-        bind<LocalItemCache<TimelineEntryModel>> { singleton { DefaultLocalItemCache() } }
-        bind<LocalItemCache<EventModel>> { singleton { DefaultLocalItemCache() } }
-        bind<LocalItemCache<CircleModel>> { singleton { DefaultLocalItemCache() } }
-        bind<LocalItemCache<ScheduledEntryRepository>> { singleton { DefaultLocalItemCache() } }
+        bindSingleton<LocalItemCache<UserModel>> {
+            DefaultLocalItemCache()
+        }
+        bindSingleton<LocalItemCache<TimelineEntryModel>> {
+            DefaultLocalItemCache()
+        }
+        bindSingleton<LocalItemCache<EventModel>> {
+            DefaultLocalItemCache()
+        }
+        bindSingleton<LocalItemCache<CircleModel>> {
+            DefaultLocalItemCache()
+        }
+        bindSingleton<LocalItemCache<ScheduledEntryRepository>> {
+            DefaultLocalItemCache()
+        }
     }
 
 val contentRepositoryModule =
     DI.Module("ContentRepositoryModule") {
         import(cacheModule)
 
-        bind<AnnouncementRepository> {
-            singleton {
-                DefaultAnnouncementRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<AnnouncementRepository> {
+            DefaultAnnouncementRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<AnnouncementsManager> {
-            singleton {
-                DefaultAnnouncementsManager(
-                    announcementRepository = instance(),
-                )
-            }
+        bindSingleton<AnnouncementsManager> {
+            DefaultAnnouncementsManager(
+                announcementRepository = instance(),
+            )
         }
-        bind<CirclesRepository> {
-            singleton {
-                DefaultCirclesRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<CirclesRepository> {
+            DefaultCirclesRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<DirectMessageRepository> {
-            singleton {
-                DefaultDirectMessageRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<DirectMessageRepository> {
+            DefaultDirectMessageRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<DraftRepository> {
-            singleton {
-                DefaultDraftRepository(
-                    draftDao = instance(),
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<DraftRepository> {
+            DefaultDraftRepository(
+                draftDao = instance(),
+                provider = instance(tag = "default"),
+            )
         }
-        bind<EmojiHelper> {
-            singleton {
-                DefaultEmojiHelper(
-                    repository = instance(),
-                )
-            }
+        bindSingleton<EmojiHelper> {
+            DefaultEmojiHelper(
+                repository = instance(),
+            )
         }
-        bind<EmojiRepository> {
-            singleton {
-                DefaultEmojiRepository(
-                    provider = instance(tag = "default"),
-                    otherProvider = instance(tag = "other"),
-                )
-            }
+        bindSingleton<EmojiRepository> {
+            DefaultEmojiRepository(
+                provider = instance(tag = "default"),
+                otherProvider = instance(tag = "other"),
+            )
         }
-        bind<EventRepository> {
-            singleton {
-                DefaultEventRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<EventRepository> {
+            DefaultEventRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<InboxManager> {
-            singleton {
-                DefaultInboxManager(
-                    notificationRepository = instance(),
-                    markerRepository = instance(),
-                )
-            }
+        bindSingleton<InboxManager> {
+            DefaultInboxManager(
+                notificationRepository = instance(),
+                markerRepository = instance(),
+            )
         }
-        bind<MarkerRepository> {
-            singleton {
-                DefaultMarkerRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<MarkerRepository> {
+            DefaultMarkerRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<MediaRepository> {
-            singleton {
-                DefaultMediaRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<MediaRepository> {
+            DefaultMediaRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<NodeInfoRepository> {
-            singleton {
-                DefaultNodeInfoRepository(
-                    provider = instance(tag = "default"),
-                    json = instance(),
-                )
-            }
+        bindSingleton<NodeInfoRepository> {
+            DefaultNodeInfoRepository(
+                provider = instance(tag = "default"),
+                json = instance(),
+            )
         }
-        bind<NotificationRepository> {
-            singleton {
-                DefaultNotificationRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<NotificationRepository> {
+            DefaultNotificationRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<PhotoAlbumRepository> {
-            singleton {
-                DefaultPhotoAlbumRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<PhotoAlbumRepository> {
+            DefaultPhotoAlbumRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<PhotoRepository> {
-            singleton {
-                DefaultPhotoRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<PhotoRepository> {
+            DefaultPhotoRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<PushNotificationRepository> {
-            singleton {
-                DefaultPushNotificationRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<PushNotificationRepository> {
+            DefaultPushNotificationRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<ReplyHelper> {
-            singleton {
-                DefaultReplyHelper(
-                    entryRepository = instance(),
-                )
-            }
+        bindSingleton<ReplyHelper> {
+            DefaultReplyHelper(
+                entryRepository = instance(),
+            )
         }
-        bind<ReportRepository> {
-            singleton {
-                DefaultReportRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<ReportRepository> {
+            DefaultReportRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<ScheduledEntryRepository> {
-            singleton {
-                DefaultScheduledEntryRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<ScheduledEntryRepository> {
+            DefaultScheduledEntryRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<SearchRepository> {
-            singleton {
-                DefaultSearchRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<SearchRepository> {
+            DefaultSearchRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<SupportedFeatureRepository> {
-            singleton {
-                DefaultSupportedFeatureRepository(
-                    nodeInfoRepository = instance(),
-                )
-            }
+        bindSingleton<SupportedFeatureRepository> {
+            DefaultSupportedFeatureRepository(
+                nodeInfoRepository = instance(),
+            )
         }
-        bind<TagRepository> {
-            singleton {
-                DefaultTagRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<TagRepository> {
+            DefaultTagRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<TimelineEntryRepository> {
-            singleton {
-                DefaultTimelineEntryRepository(
-                    provider = instance(tag = "default"),
-                    otherProvider = instance(tag = "other"),
-                )
-            }
+        bindSingleton<TimelineEntryRepository> {
+            DefaultTimelineEntryRepository(
+                provider = instance(tag = "default"),
+                otherProvider = instance(tag = "other"),
+            )
         }
-        bind<TimelineRepository> {
-            singleton {
-                DefaultTimelineRepository(
-                    provider = instance(tag = "default"),
-                    otherProvider = instance(tag = "other"),
-                )
-            }
+        bindSingleton<TimelineRepository> {
+            DefaultTimelineRepository(
+                provider = instance(tag = "default"),
+                otherProvider = instance(tag = "other"),
+            )
         }
-        bind<TrendingRepository> {
-            singleton {
-                DefaultTrendingRepository(
-                    provider = instance(tag = "default"),
-                    otherProvider = instance(tag = "other"),
-                    json = instance(),
-                )
-            }
+        bindSingleton<TrendingRepository> {
+            DefaultTrendingRepository(
+                provider = instance(tag = "default"),
+                otherProvider = instance(tag = "other"),
+                json = instance(),
+            )
         }
-        bind<UserRepository> {
-            singleton {
-                DefaultUserRepository(
-                    provider = instance(tag = "default"),
-                    otherProvider = instance(tag = "other"),
-                )
-            }
+        bindSingleton<UserRepository> {
+            DefaultUserRepository(
+                provider = instance(tag = "default"),
+                otherProvider = instance(tag = "other"),
+            )
         }
-        bind<UserRateLimitRepository> {
-            singleton {
-                DefaultUserRateLimitRepository(
-                    userRateLimitDao = instance(),
-                )
-            }
+        bindSingleton<UserRateLimitRepository> {
+            DefaultUserRateLimitRepository(
+                userRateLimitDao = instance(),
+            )
         }
-        bind<TranslationRepository> {
-            singleton {
-                DefaultTranslationRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<TranslationRepository> {
+            DefaultTranslationRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<FallbackTranslationRepository> {
-            singleton {
-                DefaultFallbackTranslationRepository(
-                    translationProviderFactory = instance(),
-                )
-            }
+        bindSingleton<FallbackTranslationRepository> {
+            DefaultFallbackTranslationRepository(
+                translationProviderFactory = instance(),
+            )
         }
-        bind<FollowedHashtagCache> {
-            singleton {
-                DefaultFollowedHashtagCache(
-                    tagRepository = instance(),
-                )
-            }
+        bindSingleton<FollowedHashtagCache> {
+            DefaultFollowedHashtagCache(
+                tagRepository = instance(),
+            )
         }
-        bind<AttachmentCache> {
-            singleton {
-                DefaultAttachmentCache()
-            }
+        bindSingleton<AttachmentCache> {
+            DefaultAttachmentCache()
         }
     }

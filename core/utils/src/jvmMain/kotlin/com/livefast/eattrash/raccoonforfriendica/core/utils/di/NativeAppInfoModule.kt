@@ -4,13 +4,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepos
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.DefaultAppInfoRepository
 import org.kodein.di.DI
 import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.singleton
 
 internal actual val nativeAppInfoModule =
     DI.Module("NativeAppInfoModule") {
-        bind<AppInfoRepository> {
-            singleton {
-                DefaultAppInfoRepository()
-            }
+        bindSingleton<AppInfoRepository> {
+            DefaultAppInfoRepository()
         }
     }

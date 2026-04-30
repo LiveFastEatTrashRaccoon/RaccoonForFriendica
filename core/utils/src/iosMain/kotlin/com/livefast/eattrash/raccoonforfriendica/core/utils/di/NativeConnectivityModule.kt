@@ -4,12 +4,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.network.Connectivity
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.DefaultConnectivityProvider
 import org.kodein.di.DI
 import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.singleton
 
-internal actual val nativeConnectivityModule =  DI.Module("NativeConnectivityModule") {
-    bind<ConnectivityProvider> {
-        singleton {
-            DefaultConnectivityProvider()
-        }
+internal actual val nativeConnectivityModule = DI.Module("NativeConnectivityModule") {
+    bindSingleton<ConnectivityProvider> {
+        DefaultConnectivityProvider()
     }
 }

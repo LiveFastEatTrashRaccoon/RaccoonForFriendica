@@ -5,11 +5,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultNavigati
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.singleton
+import org.kodein.di.bindSingleton
 
 val navigationModule =
     DI.Module("NavigationModule") {
-        bind<NavigationCoordinator> { singleton { DefaultNavigationCoordinator() } }
-        bind<DrawerCoordinator> { singleton { DefaultDrawerCoordinator() } }
+        bindSingleton<NavigationCoordinator> {
+            DefaultNavigationCoordinator()
+        }
+        bindSingleton<DrawerCoordinator> {
+            DefaultDrawerCoordinator()
+        }
     }

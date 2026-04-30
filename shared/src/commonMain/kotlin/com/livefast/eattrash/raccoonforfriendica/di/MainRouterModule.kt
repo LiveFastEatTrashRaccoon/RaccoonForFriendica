@@ -3,24 +3,21 @@ package com.livefast.eattrash.raccoonforfriendica.di
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.navigation.DefaultMainRouter
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 internal val mainRouterModule =
     DI.Module("MainRouterModule") {
-        bind<MainRouter> {
-            singleton {
-                DefaultMainRouter(
-                    navigationCoordinator = instance(),
-                    identityRepository = instance(),
-                    settingsRepository = instance(),
-                    userCache = instance(),
-                    entryCache = instance(),
-                    eventCache = instance(),
-                    circleCache = instance(),
-                    attachmentCache = instance(),
-                )
-            }
+        bindSingleton<MainRouter> {
+            DefaultMainRouter(
+                navigationCoordinator = instance(),
+                identityRepository = instance(),
+                settingsRepository = instance(),
+                userCache = instance(),
+                entryCache = instance(),
+                eventCache = instance(),
+                circleCache = instance(),
+                attachmentCache = instance(),
+            )
         }
     }

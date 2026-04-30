@@ -3,10 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.persistence.di
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.builder.DatabaseBuilderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.builder.DefaultDatabaseBuilderProvider
 import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.singleton
+import org.kodein.di.bindSingleton
 
 internal actual val nativePersistenceModule =
     DI.Module("NativePersistenceModule") {
-        bind<DatabaseBuilderProvider> { singleton { DefaultDatabaseBuilderProvider() } }
+        bindSingleton<DatabaseBuilderProvider> {
+            DefaultDatabaseBuilderProvider()
+        }
     }

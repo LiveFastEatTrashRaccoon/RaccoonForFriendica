@@ -25,128 +25,103 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindProvider
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.provider
-import org.kodein.di.singleton
 
 val contentPaginationModule =
     DI.Module("ContentPaginationModule") {
-        bind<AlbumPhotoPaginationManager> {
-            provider {
-                DefaultAlbumPhotoPaginationManager(
-                    albumRepository = instance(),
-                )
-            }
+        bindProvider<AlbumPhotoPaginationManager> {
+            DefaultAlbumPhotoPaginationManager(
+                albumRepository = instance(),
+            )
         }
-        bind<DirectMessagesPaginationManager> {
-            provider {
-                DefaultDirectMessagesPaginationManager(
-                    directMessageRepository = instance(),
-                    emojiHelper = instance(),
-                )
-            }
+        bindProvider<DirectMessagesPaginationManager> {
+            DefaultDirectMessagesPaginationManager(
+                directMessageRepository = instance(),
+                emojiHelper = instance(),
+            )
         }
-        bind<EventPaginationManager> {
-            provider {
-                DefaultEventPaginationManager(
-                    eventRepository = instance(),
-                )
-            }
+        bindProvider<EventPaginationManager> {
+            DefaultEventPaginationManager(
+                eventRepository = instance(),
+            )
         }
-        bind<ExplorePaginationManager> {
-            provider {
-                DefaultExplorePaginationManager(
-                    trendingRepository = instance(),
-                    userRepository = instance(),
-                    emojiHelper = instance(),
-                    replyHelper = instance(),
-                    accountRepository = instance(),
-                    stopWordRepository = instance(),
-                    notificationCenter = instance(),
-                )
-            }
+        bindProvider<ExplorePaginationManager> {
+            DefaultExplorePaginationManager(
+                trendingRepository = instance(),
+                userRepository = instance(),
+                emojiHelper = instance(),
+                replyHelper = instance(),
+                accountRepository = instance(),
+                stopWordRepository = instance(),
+                notificationCenter = instance(),
+            )
         }
-        bind<FollowedHashtagsPaginationManager> {
-            provider {
-                DefaultFollowedHashtagsPaginationManager(
-                    tagRepository = instance(),
-                )
-            }
+        bindProvider<FollowedHashtagsPaginationManager> {
+            DefaultFollowedHashtagsPaginationManager(
+                tagRepository = instance(),
+            )
         }
-        bind<FollowRequestPaginationManager> {
-            provider {
-                DefaultFollowRequestPaginationManager(
-                    userRepository = instance(),
-                    emojiHelper = instance(),
-                )
-            }
+        bindProvider<FollowRequestPaginationManager> {
+            DefaultFollowRequestPaginationManager(
+                userRepository = instance(),
+                emojiHelper = instance(),
+            )
         }
-        bind<NotificationsPaginationManager> {
-            provider {
-                DefaultNotificationsPaginationManager(
-                    notificationRepository = instance(),
-                    userRepository = instance(),
-                    emojiHelper = instance(),
-                    replyHelper = instance(),
-                )
-            }
+        bindProvider<NotificationsPaginationManager> {
+            DefaultNotificationsPaginationManager(
+                notificationRepository = instance(),
+                userRepository = instance(),
+                emojiHelper = instance(),
+                replyHelper = instance(),
+            )
         }
-        bind<SearchPaginationManager> {
-            provider {
-                DefaultSearchPaginationManager(
-                    searchRepository = instance(),
-                    userRepository = instance(),
-                    emojiHelper = instance(),
-                    replyHelper = instance(),
-                    accountRepository = instance(),
-                    stopWordRepository = instance(),
-                    notificationCenter = instance(),
-                )
-            }
+        bindProvider<SearchPaginationManager> {
+            DefaultSearchPaginationManager(
+                searchRepository = instance(),
+                userRepository = instance(),
+                emojiHelper = instance(),
+                replyHelper = instance(),
+                accountRepository = instance(),
+                stopWordRepository = instance(),
+                notificationCenter = instance(),
+            )
         }
-        bind<TimelinePaginationManager> {
-            provider {
-                DefaultTimelinePaginationManager(
-                    timelineRepository = instance(),
-                    timelineEntryRepository = instance(),
-                    accountRepository = instance(),
-                    userRateLimitRepository = instance(),
-                    emojiHelper = instance(),
-                    replyHelper = instance(),
-                    stopWordRepository = instance(),
-                    followedHashtagCache = instance(),
-                    notificationCenter = instance(),
-                )
-            }
+        bindProvider<TimelinePaginationManager> {
+            DefaultTimelinePaginationManager(
+                timelineRepository = instance(),
+                timelineEntryRepository = instance(),
+                accountRepository = instance(),
+                userRateLimitRepository = instance(),
+                emojiHelper = instance(),
+                replyHelper = instance(),
+                stopWordRepository = instance(),
+                followedHashtagCache = instance(),
+                notificationCenter = instance(),
+            )
         }
-        bind<UnpublishedPaginationManager> {
-            provider {
-                DefaultUnpublishedPaginationManager(
-                    scheduledEntryRepository = instance(),
-                    draftRepository = instance(),
-                    notificationCenter = instance(),
-                )
-            }
+        bindProvider<UnpublishedPaginationManager> {
+            DefaultUnpublishedPaginationManager(
+                scheduledEntryRepository = instance(),
+                draftRepository = instance(),
+                notificationCenter = instance(),
+            )
         }
-        bind<UserPaginationManager> {
-            provider {
-                DefaultUserPaginationManager(
-                    userRepository = instance(),
-                    timelineEntryRepository = instance(),
-                    circlesRepository = instance(),
-                    accountRepository = instance(),
-                    userRateLimitRepository = instance(),
-                    emojiHelper = instance(),
-                    notificationCenter = instance(),
-                )
-            }
+        bindProvider<UserPaginationManager> {
+            DefaultUserPaginationManager(
+                userRepository = instance(),
+                timelineEntryRepository = instance(),
+                circlesRepository = instance(),
+                accountRepository = instance(),
+                userRateLimitRepository = instance(),
+                emojiHelper = instance(),
+                notificationCenter = instance(),
+            )
         }
-        bind<TimelineNavigationManager> {
-            singleton {
-                DefaultTimelineNavigationManager(
-                    paginationManager = instance(),
-                )
-            }
+        bindSingleton<TimelineNavigationManager> {
+            DefaultTimelineNavigationManager(
+                paginationManager = instance(),
+            )
         }
     }

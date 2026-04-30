@@ -7,43 +7,32 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLi
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DatabaseProvider
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DefaultDatabaseProvider
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 val persistenceModule =
     DI.Module("PersistenceModule") {
         import(nativePersistenceModule)
 
-        bind<DatabaseProvider> {
-            singleton {
-                DefaultDatabaseProvider(
-                    builderProvider = instance(),
-                )
-            }
+        bindSingleton<DatabaseProvider> {
+            DefaultDatabaseProvider(
+                builderProvider = instance(),
+            )
         }
-        bind<AccountDao> {
-            singleton {
-                val provider = instance<DatabaseProvider>()
-                provider.provideDatabase().getAccountDao()
-            }
+        bindSingleton<AccountDao> {
+            val provider = instance<DatabaseProvider>()
+            provider.provideDatabase().getAccountDao()
         }
-        bind<SettingsDao> {
-            singleton {
-                val provider = instance<DatabaseProvider>()
-                provider.provideDatabase().getSettingsDao()
-            }
+        bindSingleton<SettingsDao> {
+            val provider = instance<DatabaseProvider>()
+            provider.provideDatabase().getSettingsDao()
         }
-        bind<DraftDao> {
-            singleton {
-                val provider = instance<DatabaseProvider>()
-                provider.provideDatabase().getDraftDao()
-            }
+        bindSingleton<DraftDao> {
+            val provider = instance<DatabaseProvider>()
+            provider.provideDatabase().getDraftDao()
         }
-        bind<UserRateLimitDao> {
-            singleton {
-                val provider = instance<DatabaseProvider>()
-                provider.provideDatabase().getUserRateLimitDao()
-            }
+        bindSingleton<UserRateLimitDao> {
+            val provider = instance<DatabaseProvider>()
+            provider.provideDatabase().getUserRateLimitDao()
         }
     }

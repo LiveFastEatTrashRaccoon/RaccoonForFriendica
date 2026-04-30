@@ -19,79 +19,60 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Inst
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import org.kodein.di.DI
-import org.kodein.di.bind
+import org.kodein.di.bindSingleton
 import org.kodein.di.instance
-import org.kodein.di.singleton
 
 val identityRepositoryModule =
     DI.Module("IdentityRepositoryModule") {
-        bind<AccountCredentialsCache> {
-            singleton {
-                DefaultAccountCredentialsCache(
-                    keyStore = instance(),
-                )
-            }
+        bindSingleton<AccountCredentialsCache> {
+            DefaultAccountCredentialsCache(
+                keyStore = instance(),
+            )
         }
-        bind<AccountRepository> {
-            singleton {
-                DefaultAccountRepository(
-                    accountDao = instance(),
-                )
-            }
+        bindSingleton<AccountRepository> {
+            DefaultAccountRepository(
+                accountDao = instance(),
+            )
         }
-        bind<ApiConfigurationRepository> {
-            singleton {
-                DefaultApiConfigurationRepository(
-                    provider = instance(tag = "default"),
-                    keyStore = instance(),
-                    credentialsRepository = instance(),
-                    authManager = instance(),
-                )
-            }
+        bindSingleton<ApiConfigurationRepository> {
+            DefaultApiConfigurationRepository(
+                provider = instance(tag = "default"),
+                keyStore = instance(),
+                credentialsRepository = instance(),
+                authManager = instance(),
+            )
         }
-        bind<CredentialsRepository> {
-            singleton {
-                DefaultCredentialsRepository(
-                    provider = instance(tag = "other"),
-                    engine = instance(),
-                    json = instance(),
-                )
-            }
+        bindSingleton<CredentialsRepository> {
+            DefaultCredentialsRepository(
+                provider = instance(tag = "other"),
+                engine = instance(),
+                json = instance(),
+            )
         }
-        bind<IdentityRepository> {
-            singleton {
-                DefaultIdentityRepository(
-                    provider = instance(tag = "default"),
-                )
-            }
+        bindSingleton<IdentityRepository> {
+            DefaultIdentityRepository(
+                provider = instance(tag = "default"),
+            )
         }
-        bind<ImageAutoloadObserver> {
-            singleton {
-                DefaultImageAutoloadObserver(
-                    networkStateObserver = instance(),
-                    settingsRepository = instance(),
-                )
-            }
+        bindSingleton<ImageAutoloadObserver> {
+            DefaultImageAutoloadObserver(
+                networkStateObserver = instance(),
+                settingsRepository = instance(),
+            )
         }
-        bind<SettingsRepository> {
-            singleton {
-                DefaultSettingsRepository(
-                    settingsDao = instance(),
-                )
-            }
+        bindSingleton<SettingsRepository> {
+            DefaultSettingsRepository(
+                settingsDao = instance(),
+            )
         }
-        bind<StopWordRepository> {
-            singleton {
-                DefaultStopWordRepository(
-                    keyStore = instance(),
-                )
-            }
+        bindSingleton<StopWordRepository> {
+            DefaultStopWordRepository(
+                keyStore = instance(),
+            )
         }
-        bind<InstanceShortcutRepository> {
-            singleton {
-                DefaultInstanceShortcutRepository(
-                    keyStore = instance(),
-                )
-            }
+        bindSingleton<InstanceShortcutRepository> {
+            DefaultInstanceShortcutRepository(
+                keyStore = instance(),
+            )
         }
     }
