@@ -225,7 +225,6 @@ val contentRepositoryModule =
             DefaultTrendingRepository(
                 provider = instance(tag = "default"),
                 otherProvider = instance(tag = "other"),
-                json = instance(),
             )
         }
         bindSingleton<UserRepository> {
