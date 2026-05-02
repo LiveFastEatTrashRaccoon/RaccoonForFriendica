@@ -61,7 +61,7 @@ internal class DefaultUserService(private val baseUrl: String, private val clien
             }
         }.body()
 
-    override suspend fun getSuggestions(limit: Int): List<Suggestion> = client.get("$baseUrl/v1/accounts/suggestions") {
+    override suspend fun getSuggestions(limit: Int): List<Suggestion> = client.get("$baseUrl/v2/suggestions") {
         parameter("limit", limit)
     }.body()
 
