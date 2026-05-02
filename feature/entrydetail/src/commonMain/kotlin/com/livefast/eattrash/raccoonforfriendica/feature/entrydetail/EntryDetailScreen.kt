@@ -603,7 +603,7 @@ fun EntryDetailScreen(
                                                 inReplyTo = e,
                                                 inReplyToUser = e.creator,
                                             )
-                                        }.takeIf { actionRepository.canReply(entry.original) },
+                                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
                                         onPollVote =
                                         uiState.currentUserId?.let {
                                             { e, choices ->
@@ -690,19 +690,19 @@ fun EntryDetailScreen(
                                                     EntryDetailMviModel.Intent.ToggleReblog(e),
                                                 )
                                         }
-                                    }.takeIf { actionRepository.canReblog(entry.original) },
+                                    }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                                     onBookmark =
                                     { e: TimelineEntryModel ->
                                         model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
-                                    }.takeIf { actionRepository.canBookmark(entry.original) },
+                                    }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                                     onFavorite =
                                     { e: TimelineEntryModel ->
                                         model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
-                                    }.takeIf { actionRepository.canFavorite(entry.original) },
+                                    }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                                     onDislike =
                                     { e: TimelineEntryModel ->
                                         model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
-                                    }.takeIf { actionRepository.canDislike(entry.original) },
+                                    }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                                     onOpenUsersFavorite = { e ->
                                         mainRouter.openEntryUsersFavorite(
                                             entryId = e.id,
@@ -723,7 +723,7 @@ fun EntryDetailScreen(
                                             inReplyTo = e,
                                             inReplyToUser = e.creator,
                                         )
-                                    }.takeIf { actionRepository.canReply(entry.original) },
+                                    }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
                                     onPollVote =
                                     uiState.currentUserId?.let {
                                         { e, choices ->
