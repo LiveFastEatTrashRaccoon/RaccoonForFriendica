@@ -56,12 +56,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMain
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
-import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberEntryActionRepository
@@ -70,7 +68,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.di.ShortcutTi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,6 +123,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
+                            otherInstance = node,
                         )
                     }
 
@@ -265,52 +263,6 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                                 initialIndex = imageIdx,
                                 videoIndices = videoIndices,
                             )
-                        },
-                        onReblog =
-                        { e: TimelineEntryModel ->
-                            val timeSinceCreation =
-                                e.created?.run {
-                                    getDurationFromDateToNow(this)
-                                } ?: Duration.ZERO
-                            when {
-                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                    confirmReblogEntry = e
-
-                                else ->
-                                    model.reduce(
-                                        ShortcutTimelineMviModel.Intent.ToggleReblog(e),
-                                    )
-                            }
-                        }.takeIf { actionRepository.canReblog(entry.original) },
-                        onBookmark =
-                        { e: TimelineEntryModel ->
-                            model.reduce(ShortcutTimelineMviModel.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) },
-                        onFavorite =
-                        { e: TimelineEntryModel ->
-                            model.reduce(ShortcutTimelineMviModel.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) },
-                        onDislike =
-                        { e: TimelineEntryModel ->
-                            model.reduce(ShortcutTimelineMviModel.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) },
-                        onReply =
-                        { e: TimelineEntryModel ->
-                            mainRouter.openComposer(
-                                inReplyTo = e,
-                                inReplyToUser = e.creator,
-                            )
-                        }.takeIf { actionRepository.canReply(entry.original) },
-                        onPollVote =
-                        uiState.currentUserId?.let {
-                            { e, choices ->
-                                model.reduce(
-                                    ShortcutTimelineMviModel.Intent.SubmitPollVote(
-                                        entry = e,
-                                        choices = choices,
-                                    ),
-                                )
-                            }
                         },
                         onShowOriginal = {
                             model.reduce(
