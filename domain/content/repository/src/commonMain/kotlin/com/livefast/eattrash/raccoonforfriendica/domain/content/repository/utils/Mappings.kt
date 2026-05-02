@@ -120,7 +120,7 @@ internal fun Status.toModel() = TimelineEntryModel(
     favoriteCount = favoritesCount,
     id = id,
     lang = lang,
-    localOnly = localOnly,
+    localOnly = localOnly ?: false,
     mentions = mentions.map { it.toModel() },
     parentId = inReplyToId,
     pinned = pinned,
@@ -150,8 +150,8 @@ internal fun Status.toModel() = TimelineEntryModel(
     visibility =
     visibility.toVisibility().let { visibility ->
         when (visibility) {
-            Visibility.Unlisted if localOnly -> Visibility.LocalUnlisted
-            Visibility.Public if localOnly -> Visibility.LocalPublic
+            Visibility.Unlisted if localOnly == true -> Visibility.LocalUnlisted
+            Visibility.Public if localOnly == true -> Visibility.LocalPublic
             else -> visibility
         }
     },
