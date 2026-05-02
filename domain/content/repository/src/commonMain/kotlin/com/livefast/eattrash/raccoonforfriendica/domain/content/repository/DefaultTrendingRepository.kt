@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
@@ -9,12 +8,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.json.Json
 
 internal class DefaultTrendingRepository(
     private val provider: ServiceProvider,
     private val otherProvider: ServiceProvider,
-    private val json: Json,
 ) : TrendingRepository {
     private val mutex = Mutex()
     private val cachedTags: MutableList<TagModel> = mutableListOf()
@@ -69,10 +66,7 @@ internal class DefaultTrendingRepository(
                         offset = offset,
                         limit = DEFAULT_PAGE_SIZE,
                     )
-            // workaround for a server bug which inserts empty arrays "[]," among valid results
-            // (at least on some Friendica versions)
-            val body = response.replace("[],", "")
-            json.decodeFromString<List<TrendsLink>>(body).map { it.toModel() }
+            response.map { it.toModel() }
         }
     }.getOrNull()
 

@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import dev.mokkery.MockMode
@@ -16,7 +17,6 @@ import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
-import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -24,7 +24,6 @@ import kotlin.test.assertNull
 
 class DefaultTrendingRepositoryTest {
     private val trendsService = mock<TrendsService>()
-    private val json = Json { ignoreUnknownKeys = true }
 
     private val provider =
         mock<ServiceProvider> {
@@ -40,7 +39,6 @@ class DefaultTrendingRepositoryTest {
         DefaultTrendingRepository(
             provider = provider,
             otherProvider = otherProvider,
-            json = json,
         )
 
     // region getEntries
@@ -163,16 +161,16 @@ class DefaultTrendingRepositoryTest {
     // region getLinks
     @Test
     fun `given results when getLinks then result and interactions are as expected`() = runTest {
-        val mockResponse = """[{"title":"link","url":"https://example.com"}]"""
+        val link = TrendsLink(url = "https://example.com", title = "link")
         everySuspend {
             trendsService.getLinks(any(), any())
-        } returns mockResponse
+        } returns listOf(link)
 
         val res = sut.getLinks(offset = 0)
 
         assertNotNull(res)
         assertEquals(1, res.size)
-        assertEquals("link", res.first().title)
+        assertEquals(link.title, res.first().title)
         verifySuspend {
             trendsService.getLinks(offset = 0, limit = 20)
         }
@@ -187,16 +185,16 @@ class DefaultTrendingRepositoryTest {
     @Test
     fun `given results when getLinks on other instance then result and interactions are as expected`() = runTest {
         val otherInstance = "node"
-        val mockResponse = """[{"title":"link","url":"https://example.com"}]"""
+        val link = TrendsLink(url = "https://example.com", title = "link")
         everySuspend {
             trendsService.getLinks(any(), any())
-        } returns mockResponse
+        } returns listOf(link)
 
         val res = sut.getLinks(offset = 0, otherInstance = otherInstance)
 
         assertNotNull(res)
         assertEquals(1, res.size)
-        assertEquals("link", res.first().title)
+        assertEquals(link.title, res.first().title)
         verifySuspend {
             trendsService.getLinks(offset = 0, limit = 20)
         }
@@ -207,21 +205,6 @@ class DefaultTrendingRepositoryTest {
         verify(VerifyMode.not) {
             provider.trend
         }
-    }
-
-    @Test
-    fun `given results with Friendica bug when getLinks then result is correctly parsed`() = runTest {
-        // Friendica bug inserts "[]," in the JSON string
-        val buggyResponse = """[[],{"title":"link","url":"https://example.com"}]"""
-        everySuspend {
-            trendsService.getLinks(any(), any())
-        } returns buggyResponse
-
-        val res = sut.getLinks(offset = 0)
-
-        assertNotNull(res)
-        assertEquals(1, res.size)
-        assertEquals("link", res.first().title)
     }
 
     @Test
