@@ -274,7 +274,9 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                 contentWindowInsets = WindowInsets(0, 0, 0, 0),
                             ) { paddingValues ->
                                 val startDestination: Destination = Destination.Main
-                                var selectedDestination by rememberSaveable { mutableStateOf(startDestination) }
+                                var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
+                                    mutableStateOf(startDestination)
+                                }
                                 Row(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -356,4 +358,3 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
         }
     }
 }
-
