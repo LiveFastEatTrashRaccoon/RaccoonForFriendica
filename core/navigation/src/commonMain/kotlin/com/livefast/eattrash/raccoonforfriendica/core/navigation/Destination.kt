@@ -1,7 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
+import androidx.compose.runtime.saveable.Saver
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
+@Serializable
 sealed interface Destination {
     @Serializable
     data object Main : Destination
@@ -161,4 +164,12 @@ sealed interface Destination {
 
     @Serializable
     data object Profile : Destination
+
+    companion object {
+
+        val Saver = Saver<Destination, String>(
+            save = { Json.encodeToString(it) },
+            restore = { Json.decodeFromString<Destination>(it) },
+        )
+    }
 }
