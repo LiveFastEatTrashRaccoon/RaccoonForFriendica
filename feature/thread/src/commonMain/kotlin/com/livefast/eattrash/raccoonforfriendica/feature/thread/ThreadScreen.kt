@@ -353,24 +353,6 @@ fun ThreadScreen(
                                         videoIndices = videoIndices,
                                     )
                                 },
-                                onReblog =
-                                { e: TimelineEntryModel ->
-                                    val timeSinceCreation =
-                                        e.created?.run {
-                                            getDurationFromDateToNow(this)
-                                        } ?: Duration.ZERO
-                                    when {
-                                        !e.reblogged && timeSinceCreation.isOldEntry ->
-                                            confirmReblogEntry = e
-
-                                        else ->
-                                            model.reduce(
-                                                ThreadMviModel.Intent.ToggleReblog(e),
-                                            )
-                                    }
-                                }.takeIf {
-                                    actionRepository.canFavorite(entry)
-                                },
                                 onBookmark =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
@@ -396,15 +378,6 @@ fun ThreadScreen(
                                         count = e.reblogCount,
                                         otherInstance = otherInstance,
                                     )
-                                },
-                                onReply =
-                                uiState.currentUserId?.let {
-                                    { e ->
-                                        mainRouter.openComposer(
-                                            inReplyTo = e,
-                                            inReplyToUser = e.creator,
-                                        )
-                                    }
                                 },
                                 onPollVote =
                                 uiState.currentUserId?.let {
