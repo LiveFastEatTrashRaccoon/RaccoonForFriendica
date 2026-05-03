@@ -28,13 +28,13 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
     private var bottomNavController: BottomNavigationAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
-    private var updateBottomNavigationSection: Job? = null
+    private var updateBottomNavigationSectionJob: Job? = null
     private var updateCanPopJob: Job? = null
 
     override fun setBottomNavigator(adapter: BottomNavigationAdapter) {
         bottomNavController = adapter
-        updateBottomNavigationSection?.cancel()
-        updateBottomNavigationSection = adapter.currentSection.onEach { newValue ->
+        updateBottomNavigationSectionJob?.cancel()
+        updateBottomNavigationSectionJob = adapter.currentSection.onEach { newValue ->
             currentBottomNavSection.update { newValue }
         }.launchIn(scope)
     }

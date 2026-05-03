@@ -101,11 +101,8 @@ fun MainScreen(
     val exitMessage = LocalStrings.current.messageConfirmExit
     val bottomNavController = rememberNavController()
 
-    LaunchedEffect(navigationCoordinator) {
-        if (navigationCoordinator.currentBottomNavSection.value == null) {
-            navigationCoordinator.setCurrentSection(BottomNavigationSection.Home)
-        }
-
+    val hasBottomNavigation = isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)
+    LaunchedEffect(navigationCoordinator, hasBottomNavigation) {
         navigationCoordinator.exitMessageVisible
             .onEach { visible ->
                 if (visible) {
@@ -118,13 +115,15 @@ fun MainScreen(
                 snackbarHostState.showSnackbar(message = message)
             }.launchIn(this)
 
-        navigationCoordinator.currentBottomNavSection.onEach {
-            // when the current tab changes, reset the bottom bar offset to the default value
-            model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(0f))
-        }.launchIn(this)
+        if (hasBottomNavigation) {
+            val adapter = DefaultBottomNavigationAdapter(bottomNavController)
+            navigationCoordinator.setBottomNavigator(adapter)
 
-        val adapter = DefaultBottomNavigationAdapter(bottomNavController)
-        navigationCoordinator.setBottomNavigator(adapter)
+            navigationCoordinator.currentBottomNavSection.onEach {
+                // when the current tab changes, reset the bottom bar offset to the default value
+                model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(0f))
+            }.launchIn(this)
+        }
     }
 
     Scaffold(
@@ -149,7 +148,7 @@ fun MainScreen(
             }
         },
         bottomBar = {
-            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+            if (hasBottomNavigation) {
                 NavigationBar(
                     modifier =
                         Modifier
@@ -185,7 +184,7 @@ fun MainScreen(
             }
         },
     ) {
-        if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+        if (hasBottomNavigation) {
             NavHost(
                 navController = bottomNavController,
                 startDestination = BottomNavigationSection.Home,
