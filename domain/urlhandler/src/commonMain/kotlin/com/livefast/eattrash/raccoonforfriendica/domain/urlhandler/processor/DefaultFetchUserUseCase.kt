@@ -15,14 +15,16 @@ internal class DefaultFetchUserUseCase(private val searchRepository: SearchRepos
                     query = url,
                     resolve = true,
                     type = SearchResultType.Users,
-                ).orEmpty()
+                )
+                .orEmpty()
                 .mapNotNull { res ->
                     when (res) {
                         is ExploreItemModel.User -> res.user
                         else -> null
                     }
-                }.firstOrNull {
-                    it.url == url
+                }.let { res ->
+                    // eventual consistency check: prefer the one with the matching URL or fallback on the first one
+                    res.firstOrNull { it.url == url } ?: res.firstOrNull()
                 }
         }
 
