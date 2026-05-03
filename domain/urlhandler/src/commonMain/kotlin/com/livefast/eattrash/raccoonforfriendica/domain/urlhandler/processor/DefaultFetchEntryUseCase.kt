@@ -15,14 +15,16 @@ internal class DefaultFetchEntryUseCase(private val searchRepository: SearchRepo
                     query = url,
                     resolve = true,
                     type = SearchResultType.Entries,
-                ).orEmpty()
+                )
+                .orEmpty()
                 .mapNotNull { res ->
                     when (res) {
                         is ExploreItemModel.Entry -> res.entry
                         else -> null
                     }
-                }.firstOrNull {
-                    it.url == url
+                }.let { res ->
+                    // eventual consistency check: prefer the one with the matching URL or fallback on the first one
+                    res.firstOrNull { it.url == url } ?: res.firstOrNull()
                 }
         }
 
