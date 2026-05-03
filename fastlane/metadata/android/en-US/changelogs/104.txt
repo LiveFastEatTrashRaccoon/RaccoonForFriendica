@@ -1,0 +1,11 @@
+- fix: link loading in Explore
+- fix: suggestions in Explore
+- fix: timeline loading on Mastodon glitch-soc
+- fix: hide actions in shortcut to foreign instances
+- fix: several crashes (on older Android version, on desktop, in landscape, on screen rotation)
+- fix: add loading indicator in user list
+- enh: better profile resolution when opening URLs
+- enh: new loading indicator
+- fix: skip token refresh attempt when unavailable
+- chore: rearrange default instances
+- chore: update deps & cleanup
