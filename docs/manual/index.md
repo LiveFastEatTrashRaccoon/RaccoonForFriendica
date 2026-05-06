@@ -3,7 +3,7 @@ function changeLanguage() {
     const value = document.getElementById("language").value;
     switch (value) {
       case "it":
-        window.location="it/main.html"
+        window.location="it/"
         break;
     }
 }
@@ -487,7 +487,7 @@ The login flow involves two of these steps:
 - the instance and credentials input (only for HTTP Basic) where you have to select your Friendica
   instance (from a drop-down list or entering it manually) and insert your credentials.
 
-If you do not have an account, you will have to first create one from the instance website, then 
+If you do not have an account, you will have to first create one from the instance website, then
 log in from the mobile app.
 
 <div align="center">
@@ -681,7 +681,7 @@ may not be formatted correctly!
 ** in order for UnifiedPush to work, a distributor must be installed on your device, e.g.
 <a href="https://unifiedpush.org/users/distributors/nextpush/">NextPush</a> and configured with the
 corresponding server-side NextPush app where you have, in turn, registered and paired the
-remote account you are currently using on your instance 
+remote account you are currently using on your instance
 </p>
 
 <p id="notifications-background-check">

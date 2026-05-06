@@ -3,7 +3,7 @@ function changeLanguage() {
     const value = document.getElementById("language").value;
     switch (value) {
       case "en":
-        window.location="../main.html"
+        window.location="../"
         break;
     }
 }
@@ -412,7 +412,7 @@ collegamento aprirà il browser esterno o una custom tab a seconda dell'opzione 
 URL" selezionata nelle [impostazioni](#impostazioni-applicazione).
 
 <p id="hashtag-usage-disclaimer">
-* il numero di giorni per cui sono disponibili le statistiche di utilizzo può variare da 1 a 7 a 
+* il numero di giorni per cui sono disponibili le statistiche di utilizzo può variare da 1 a 7 a
 seconda della tipologia di istanza
 </p>
 
@@ -637,7 +637,7 @@ I dati del profilo che possono essere modificati sono:
 - includi i post creati da te nella timeline pubblica (`indexable`).
 
 <p id="user-profile-experimental-disclaimer">
-* a seconda del backend questi campi potrebbero non essere modificabili, ad es. ci sono dei 
+* a seconda del backend questi campi potrebbero non essere modificabili, ad es. ci sono dei
 problemi di compatibilità noti in alcune versioni di Friendica
 </p>
 
@@ -724,7 +724,7 @@ costituita dalle seguenti sezioni:
 
 <p id="markdown-formatting">
 * scegliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.
-glitch-soc), se non sei sicuro/a di quel che stai facendo usa HTML o testo semplice, altrimenti i 
+glitch-soc), se non sei sicuro/a di quel che stai facendo usa HTML o testo semplice, altrimenti i
 tuoi post potrebbero non essere formattati correttamente!
 </p>
 

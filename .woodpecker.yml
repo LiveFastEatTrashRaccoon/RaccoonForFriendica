@@ -1,0 +1,25 @@
+kind: pipeline
+name: deploy-pages
+
+when:
+  event: [push]
+  branch: master
+
+steps:
+  build:
+    image: squidfunk/zensical
+    commands:
+      - zensical build --site-dir public
+
+  deploy:
+    image: bitnami/git
+    commands:
+      - git config --global user.email "woodpecker@noreply.codeberg.org"
+      - git config --global user.name "Woodpecker CI"
+      # Initialize a temporary git repo in the output directory
+      - cd public
+      - git init
+      - git add .
+      - git commit -m "Deploy to Codeberg Pages"
+      # Push to the 'pages' branch of the same repository
+      - git push --force https://${PAGES_TOKEN}@codeberg.org/${CI_REPO}.git master:pages

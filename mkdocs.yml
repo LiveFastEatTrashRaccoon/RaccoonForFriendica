@@ -1,0 +1,46 @@
+site_name: Raccoon for Friendica
+site_description: Raccoon for Friendica 🦝 documentation
+site_url: https://codeberg.org/RocketInSpace/RaccoonForFriendica
+
+theme:
+  name: material
+  language: en
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - User Manual:
+    - English: manual/index.md
+    - Italiano: manual/it/index.md
+
+docs_dir: docs
+site_dir: site
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
