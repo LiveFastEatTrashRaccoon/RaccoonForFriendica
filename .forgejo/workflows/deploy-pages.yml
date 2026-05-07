@@ -1,0 +1,34 @@
+name: deploy-pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build
+        uses: docker://squidfunk/zensical
+        with:
+          args: build --site-dir public
+
+      - name: Deploy
+        env:
+          PAGES_TOKEN: ${{ secrets.PAGES_TOKEN }}
+        run: |
+          git config --global user.email "actions@noreply.codeberg.org"
+          git config --global user.name "Forgejo Actions"
+          # Initialize a temporary git repo in the output directory
+          cd public
+          git init
+          git add .
+          git commit -m "Deploy to Codeberg Pages"
+          # Push to the 'pages' branch of the same repository
+          git push --force https://${PAGES_TOKEN}@codeberg.org/${{ github.repository }}.git master:pages
