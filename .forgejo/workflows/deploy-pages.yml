@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: codeberg-tiny
+    runs-on: codeberg-tiny-lazy
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build
-        uses: docker://squidfunk/zensical
+        uses: docker://zensical/zensical
         with:
           args: build --site-dir public
 
@@ -31,4 +31,4 @@ jobs:
           git add .
           git commit -m "Deploy to Codeberg Pages"
           # Push to the 'pages' branch of the same repository
-          git push --force https://${PAGES_TOKEN}@codeberg.org/${{ github.repository }}.git master:pages
+          git push --force https://${PAGES_TOKEN}@codeberg.org/${{ github.repository }}.git HEAD:pages
