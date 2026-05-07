@@ -17,7 +17,7 @@ jobs:
       - name: Build
         uses: docker://zensical/zensical
         with:
-          args: build --site-dir public
+          args: build
 
       - name: Deploy
         env:
@@ -26,7 +26,7 @@ jobs:
           git config --global user.email "actions@noreply.codeberg.org"
           git config --global user.name "Forgejo Actions"
           # Initialize a temporary git repo in the output directory
-          cd public
+          cd site
           git init
           git add .
           git commit -m "Deploy to Codeberg Pages"
