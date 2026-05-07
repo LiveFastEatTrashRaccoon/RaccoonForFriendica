@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: tiny@actions-tiny.aburayama.m.codeberg.org
+    runs-on: tiny
     steps:
       - name: Checkout
         uses: actions/checkout@v4
