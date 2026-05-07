@@ -34,7 +34,7 @@ nav:
     - Italiano: manual/it/index.md
 
 docs_dir: docs
-site_dir: public
+site_dir: site
 
 markdown_extensions:
   - admonition
