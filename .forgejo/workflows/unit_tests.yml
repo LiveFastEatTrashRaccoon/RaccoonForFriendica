@@ -25,6 +25,9 @@ jobs:
           gradle-version: 9.3.0
           cache-disabled: true
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
       - name: Create Sentry config file
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
