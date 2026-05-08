@@ -1,16 +1,15 @@
-name: deploy-pages
+name: build
 
 on:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
 
 jobs:
   build-and-deploy:
     runs-on: codeberg-tiny-lazy
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
