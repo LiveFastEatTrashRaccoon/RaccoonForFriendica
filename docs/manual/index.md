@@ -22,43 +22,6 @@ Welcome to the User Manual of Raccoon for Friendica! This guide contains an expl
 important features of the app and intends to be an near-exhaustive guide to all what you can (and
 can't) do from the app.
 
-## Table of contents
-
-- [Introduction](#introduction)
-- [General UI structure](#application-ui-general-structure)
-- [Timeline](#timeline)
-- [Post detail](#post-detail)
-- [Image detail](#image-detail)
-- [User profile](#user-profile)
-  - [Classic mode](#classic-mode)
-  - [Forum mode](#forum-mode)
-- [Thread detail](#thread-detail)
-- [Hashtag feed](#hashtag-feed)
-- [Favorites & Bookmarks](#favorites--bookmarks)
-- [Followed hashtags](#followed-hashtags)
-- [Explore](#explore)
-- [Search](#search)
-- [Inbox](#inbox)
-- [Profile](#profile)
-  - [Login](#login)
-  - [One's own user detail](#ones-own-user-detail)
-- [User list](#user-list)
-- [Follow requests](#follow-requests)
-- [Node info](#node-info)
-- [App information](#app-information)
-- [Profile settings](#profile-settings)
-- [Application settings](#application-settings)
-- [Filter management](#filter-management)
-- [Post composer](#post-composer)
-- [Create report](#create-report)
-- [Circles](#circles)
-- [Direct messages](#direct-messages-friendica-only)
-- [Gallery](#gallery-friendica-only)
-- [Unpublished items](#unpublished-items)
-- [Calendar](#calendar-friendica-only)
-- [Announcements](#announcements-mastodon-only)
-- [Shortcuts](#shortcuts)
-
 ## Introduction
 
 **Friendica** is social platform and it has all the features you would expect from a piece of
@@ -131,7 +94,6 @@ beginning the app could not support embedded images withing post bodies, but the
 great job and changed the API response in order to make it possible to any app (not just Raccoon!)
 to display them properly.
 
-[Back to top](#table-of-contents)
 
 ## Application UI general structure
 
@@ -154,7 +116,6 @@ The application UI is divided into three parts:
 The totality of the components used come from the [Material 3](https://m3.material.io/) design
 system.
 
-[Back to top](#table-of-contents)
 
 ## Timeline
 
@@ -224,7 +185,6 @@ Moreover, from each single post it is possible to:
   <img width="310" alt="timeline with mute user dialog" src="images/mute_bottom_sheet.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Post detail
 
@@ -244,7 +204,6 @@ post in the sequence with horizontal swipe gestures.
   <img width="310" alt="post detail screen" src="images/post_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Image detail
 
@@ -258,7 +217,6 @@ as a URL and, for images, adjust the aspect ratio in case if were not displaying
   <img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## User profile
 
@@ -315,7 +273,6 @@ From the top app bar action menu, you can also switch to [classic mode](#classic
   <img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Thread detail
 
@@ -327,7 +284,6 @@ to distinguish parent-child relationship between replies.
   <img width="310" alt="thread detail screen" src="images/thread_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Hashtag feed
 
@@ -340,7 +296,6 @@ From the top app bar, you will be able to follow or unfollow the hashtag.
   <img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Favorites & bookmarks
 
@@ -355,7 +310,6 @@ from the feed.
   <img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Followed hashtags
 
@@ -368,7 +322,6 @@ Each item of this list allows to open the corresponding [feed](#hashtag-feed).
   <img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Explore
 
@@ -396,7 +349,6 @@ option selected in the [app settings](#application-settings).
   <img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Search
 
@@ -412,7 +364,6 @@ its [detail](#post-detail) and opening a user to the corresponding [profile](#us
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Inbox
 
@@ -448,7 +399,6 @@ or [post detail](#post-detail).
   <img width="310" alt="inbox screen" src="images/inbox.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Profile
 
@@ -506,7 +456,6 @@ button to open your [profile preferences](#profile-settings).
   <img width="310" alt="profile screen" src="images/profile.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## User list
 
@@ -522,7 +471,6 @@ account.
   <img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Follow requests
 
@@ -536,7 +484,6 @@ corresponding [user profile](#user-profile).
   <img width="310" alt="follow request screen" src="images/follow_requests.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Node info
 
@@ -553,7 +500,6 @@ This screen contains some information about the current instance you are connect
   <img width="310" alt="node info screen" src="images/node_info.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## App information
 
@@ -576,7 +522,6 @@ Moreover, this dialog is the entry point for two informative screens:
   <img width="310" alt="licenses screen" src="images/licenses.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Profile settings
 
@@ -605,7 +550,6 @@ issues on some versions of Friendica
   <img width="310" alt="edit profile screen" src="images/edit_profile.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Application settings
 
@@ -694,7 +638,6 @@ so please make sure the battery saving restrictions for Raccoon in your system s
   <img width="310" alt="settings screen, part 2" src="images/settings_2.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Filter management
 
@@ -710,7 +653,6 @@ following sections:
   <img width="310" alt="manage bans screen" src="images/manage_bans.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Post composer
 
@@ -757,7 +699,6 @@ formatting toolbar with the following buttons:
   <img width="310" alt="composer screen" src="images/composer.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Create report
 
@@ -789,7 +730,6 @@ any effect
   <img width="310" alt="create report screen" src="images/report.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## User feedback
 
@@ -809,7 +749,6 @@ the [settings](#application-settings) screen.
   <img width="310" alt="submit user feedback screen" src="images/user_feedback.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Circles
 
@@ -847,7 +786,6 @@ By tapping on each item in the circle list, you will open the corresponding post
   <img width="310" alt="circle detail screen" src="images/circle_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Direct messages (Friendica-only)
 
@@ -871,7 +809,6 @@ have to manually refresh the conversation list.
   <img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Gallery (Friendica-only)
 
@@ -889,7 +826,6 @@ For each picture in an album, you will have the possibility to:
   <img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Unpublished items
 
@@ -913,7 +849,6 @@ schedule date, so the preferred way to save a post and edit for later is:
   <img width="310" alt="unpublished items screen" src="images/drafts.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Calendar (Friendica-only)
 
@@ -933,7 +868,6 @@ a detail screen where more details (like a more extended description) are displa
   <img width="310" alt="event detail screen" src="images/calendar_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Announcements (Mastodon-only)
 
@@ -956,7 +890,6 @@ counter will therefore be decremented by 1.
   <img width="310" alt="calendar event list screen" src="images/announcements.png" />
 </div>
 
-[Back to top](#table-of-contents)
 
 ## Shortcuts
 
@@ -973,5 +906,4 @@ takes effect on that (this is why operations may take longer).
   <img width="310" alt="event detail screen" src="images/shortcut_detail.png" />
 </div>
 
-[Back to top](#table-of-contents)
 

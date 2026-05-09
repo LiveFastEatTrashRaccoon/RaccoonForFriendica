@@ -4,14 +4,6 @@ layout: default
 
 Welcome to the homepage of Raccoon for Friendica!
 
-# Table of contents
-
-- [project overview](#overview)
-- [rationale](#rationale)
-- [key app features](#key-app-features)
-- [acknowledgements](#acknowledgements)
-- [further reading](#further-reading)
-
 # Overview
 
 Raccoon is a mobile client for [Friendica](https://friendi.ca), a federated social platform. The
