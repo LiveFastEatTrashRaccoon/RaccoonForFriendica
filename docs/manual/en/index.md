@@ -1,63 +1,8 @@
-<script>
-function changeLanguage() {
-    const value = document.getElementById("language").value;
-    switch (value) {
-      case "it":
-        window.location="it/main.html"
-        break;
-    }
-}
-</script>
-<div align="right">
-  <label for="language"></label>
-  <select id="language" name="language" onchange="changeLanguage()">
-    <option value="en" selected="selected">English 🇬🇧</option>
-    <option value="it">Italiano 🇮🇹</option>
-  </select>
-</div>
-
 # User manual
 
 Welcome to the User Manual of Raccoon for Friendica! This guide contains an explanation of the most
 important features of the app and intends to be an near-exhaustive guide to all what you can (and
 can't) do from the app.
-
-## Table of contents
-
-- [Introduction](#introduction)
-- [General UI structure](#application-ui-general-structure)
-- [Timeline](#timeline)
-- [Post detail](#post-detail)
-- [Image detail](#image-detail)
-- [User profile](#user-profile)
-  - [Classic mode](#classic-mode)
-  - [Forum mode](#forum-mode)
-- [Thread detail](#thread-detail)
-- [Hashtag feed](#hashtag-feed)
-- [Favorites & Bookmarks](#favorites--bookmarks)
-- [Followed hashtags](#followed-hashtags)
-- [Explore](#explore)
-- [Search](#search)
-- [Inbox](#inbox)
-- [Profile](#profile)
-  - [Login](#login)
-  - [One's own user detail](#ones-own-user-detail)
-- [User list](#user-list)
-- [Follow requests](#follow-requests)
-- [Node info](#node-info)
-- [App information](#app-information)
-- [Profile settings](#profile-settings)
-- [Application settings](#application-settings)
-- [Filter management](#filter-management)
-- [Post composer](#post-composer)
-- [Create report](#create-report)
-- [Circles](#circles)
-- [Direct messages](#direct-messages-friendica-only)
-- [Gallery](#gallery-friendica-only)
-- [Unpublished items](#unpublished-items)
-- [Calendar](#calendar-friendica-only)
-- [Announcements](#announcements-mastodon-only)
-- [Shortcuts](#shortcuts)
 
 ## Introduction
 
@@ -109,29 +54,27 @@ devices. Since it uses (mostly) the Mastodon-like APIs exposed by the backend, t
 compatible with Mastodon instances (Friendica-specific features like the calendar or direct messages
 will not be displayed).
 
-### Disclaimer: unimplemented features
+!!! warning "Disclaimer: unimplemented features"
 
-The following features are either not implemented or partially implemented due to some lack of
-support for third-party clients:
+    The following features are either not implemented or partially implemented due to some lack of
+    support for third-party clients:
 
-- creating events in the calendar;
-- voting in polls;
-- create an account / delete your account;
-- delegating users or access a delegated account;
-- re-share posts from imported RSS feeds;
-- automatically re-share posts from followed users;
-- admin moderation tools (access incoming reports, purge contents, ban users, etc.).
+    - creating events in the calendar;
+    - voting in polls;
+    - create an account / delete your account;
+    - delegating users or access a delegated account;
+    - re-share posts from imported RSS feeds;
+    - automatically re-share posts from followed users;
+    - admin moderation tools (access incoming reports, purge contents, ban users, etc.).
 
-If you want to access those features you will have to use the web interface, except for polls which
-are not yet supported (it is a well
-known [issue](https://github.com/friendica/friendica/issues/11093)).
+    If you want to access those features you will have to use the web interface, except for polls which
+    are not yet supported (it is a
+    known [issue](https://github.com/friendica/friendica/issues/11093)).
 
-This disclaimer does not mean at all these features will never be supported. For example, in the
-beginning the app could not support embedded images withing post bodies, but the backend devs made a
-great job and changed the API response in order to make it possible to any app (not just Raccoon!)
-to display them properly.
-
-[Back to top](#table-of-contents)
+    This disclaimer does not mean at all these features will never be supported. For example, in the
+    beginning the app could not support embedded images withing post bodies, but the backend devs made a
+    great job and changed the API response in order to make it possible to any app (not just Raccoon!)
+    to display them properly.
 
 ## Application UI general structure
 
@@ -153,8 +96,6 @@ The application UI is divided into three parts:
 
 The totality of the components used come from the [Material 3](https://m3.material.io/) design
 system.
-
-[Back to top](#table-of-contents)
 
 ## Timeline
 
@@ -220,11 +161,9 @@ Moreover, from each single post it is possible to:
     the current one).
 
 <div align="center">
-  <img width="310" alt="timeline screen" src="images/timeline.png" />
-  <img width="310" alt="timeline with mute user dialog" src="images/mute_bottom_sheet.png" />
+  <img width="310" alt="timeline screen" src="../images/timeline.png" />
+  <img width="310" alt="timeline with mute user dialog" src="../images/mute_bottom_sheet.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Post detail
 
@@ -241,10 +180,8 @@ list content, hashtag timeline, user detail) you will be able to navigate to the
 post in the sequence with horizontal swipe gestures.
 
 <div align="center">
-  <img width="310" alt="post detail screen" src="images/post_detail.png" />
+  <img width="310" alt="post detail screen" src="../images/post_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Image detail
 
@@ -255,10 +192,8 @@ From the top bar action menu, you can download the attachment to your device, sh
 as a URL and, for images, adjust the aspect ratio in case if were not displaying correctly.
 
 <div align="center">
-  <img width="310" alt="zoomable image detail screen" src="images/image_detail.png" />
+  <img width="310" alt="zoomable image detail screen" src="../images/image_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## User profile
 
@@ -300,7 +235,7 @@ From the top app bar action menu, you can also:
 - switch to [forum mode](#forum-mode) (if it is a group).
 
 <div align="center">
-  <img width="310" alt="user detail (classic mode) screen" src="images/user_detail.png" />
+  <img width="310" alt="user detail (classic mode) screen" src="../images/user_detail.png" />
 </div>
 
 ### Forum mode
@@ -312,10 +247,8 @@ item you will enter the [thread detail](#thread-detail).
 From the top app bar action menu, you can also switch to [classic mode](#classic-mode).
 
 <div align="center">
-  <img width="310" alt="user detail (forum mode) screen" src="images/forum_list.png" />
+  <img width="310" alt="user detail (forum mode) screen" src="../images/forum_list.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Thread detail
 
@@ -324,10 +257,8 @@ layout, i.e. indented according to their nesting level and with a coloured bar w
 to distinguish parent-child relationship between replies.
 
 <div align="center">
-  <img width="310" alt="thread detail screen" src="images/thread_detail.png" />
+  <img width="310" alt="thread detail screen" src="../images/thread_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Hashtag feed
 
@@ -337,10 +268,8 @@ given hashtag and it follows the same structure.
 From the top app bar, you will be able to follow or unfollow the hashtag.
 
 <div align="center">
-  <img width="310" alt="hashtag feed screen" src="images/hashtag_feed.png" />
+  <img width="310" alt="hashtag feed screen" src="../images/hashtag_feed.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Favorites & bookmarks
 
@@ -351,11 +280,9 @@ The only difference is that if you un-favorite or un-bookmark a post it will imm
 from the feed.
 
 <div align="center">
-  <img width="310" alt="favorites screen" src="images/favorites.png" />
-  <img width="310" alt="bookmarks screen" src="images/bookmarks.png" />
+  <img width="310" alt="favorites screen" src="../images/favorites.png" />
+  <img width="310" alt="bookmarks screen" src="../images/bookmarks.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Followed hashtags
 
@@ -365,10 +292,8 @@ unfollow each one of them.
 Each item of this list allows to open the corresponding [feed](#hashtag-feed).
 
 <div align="center">
-  <img width="310" alt="followed hashtags screen" src="images/followed_hashtags.png" />
+  <img width="310" alt="followed hashtags screen" src="../images/followed_hashtags.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Explore
 
@@ -392,11 +317,9 @@ option selected in the [app settings](#application-settings).
 </p>
 
 <div align="center">
-  <img width="310" alt="explore screen (hashtags section)" src="images/explore_hashtags.png" />
-  <img width="310" alt="explore screen (links section)" src="images/explore_links.png" />
+  <img width="310" alt="explore screen (hashtags section)" src="../images/explore_hashtags.png" />
+  <img width="310" alt="explore screen (links section)" src="../images/explore_links.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Search
 
@@ -409,10 +332,8 @@ Opening a hashtag will lead you to the [dedicated feed](#hashtag-feed), opening 
 its [detail](#post-detail) and opening a user to the corresponding [profile](#user-profile).
 
 <div align="center">
-  <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="images/search.png" />
+  <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="../images/search.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Inbox
 
@@ -445,10 +366,8 @@ Tapping on each item of the list, it is possible to open the [user profile](#use
 or [post detail](#post-detail).
 
 <div align="center">
-  <img width="310" alt="inbox screen" src="images/inbox.png" />
+  <img width="310" alt="inbox screen" src="../images/inbox.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Profile
 
@@ -487,13 +406,13 @@ The login flow involves two of these steps:
 - the instance and credentials input (only for HTTP Basic) where you have to select your Friendica
   instance (from a drop-down list or entering it manually) and insert your credentials.
 
-If you do not have an account, you will have to first create one from the instance website, then 
+If you do not have an account, you will have to first create one from the instance website, then
 log in from the mobile app.
 
 <div align="center">
-  <img width="310" alt="login intro screen" src="images/login_1.png" />
-  <img width="310" alt="select instance screen" src="images/login_2.png" />
-  <img width="310" alt="select instance screen" src="images/login_3.png" />
+  <img width="310" alt="login intro screen" src="../images/login_1.png" />
+  <img width="310" alt="select instance screen" src="../images/login_2.png" />
+  <img width="310" alt="select instance screen" src="../images/login_3.png" />
 </div>
 
 ### One's own user detail
@@ -503,10 +422,8 @@ In the header, instead of the relationship/notification buttons you will find an
 button to open your [profile preferences](#profile-settings).
 
 <div align="center">
-  <img width="310" alt="profile screen" src="images/profile.png" />
+  <img width="310" alt="profile screen" src="../images/profile.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## User list
 
@@ -519,10 +436,8 @@ You can use the follow/send request/mutuals button to modify your relationship w
 account.
 
 <div align="center">
-  <img width="310" alt="user list screen (profile following)" src="images/user_list.png" />
+  <img width="310" alt="user list screen (profile following)" src="../images/user_list.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Follow requests
 
@@ -533,10 +448,8 @@ For each one of the items you can either accept or reject the request, as well a
 corresponding [user profile](#user-profile).
 
 <div align="center">
-  <img width="310" alt="follow request screen" src="images/follow_requests.png" />
+  <img width="310" alt="follow request screen" src="../images/follow_requests.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Node info
 
@@ -550,10 +463,8 @@ This screen contains some information about the current instance you are connect
 - backend type and software version.
 
 <div align="center">
-  <img width="310" alt="node info screen" src="images/node_info.png" />
+  <img width="310" alt="node info screen" src="../images/node_info.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## App information
 
@@ -572,11 +483,9 @@ Moreover, this dialog is the entry point for two informative screens:
 - an acknowledgements page where all app contributors are listed.
 
 <div align="center">
-  <img width="310" alt="app information dialog" src="images/app_info.png" />
-  <img width="310" alt="licenses screen" src="images/licenses.png" />
+  <img width="310" alt="app information dialog" src="../images/app_info.png" />
+  <img width="310" alt="licenses screen" src="../images/licenses.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Profile settings
 
@@ -602,10 +511,8 @@ issues on some versions of Friendica
 </p>
 
 <div align="center">
-  <img width="310" alt="edit profile screen" src="images/edit_profile.png" />
+  <img width="310" alt="edit profile screen" src="../images/edit_profile.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Application settings
 
@@ -659,13 +566,13 @@ sections:
   - **Status and navigation bar theme** change the theme of the status bar (top) and of the system
     navigation bar (bottom);
 - **NSFW**
-  - **Manage filters** opens the ban and [filter management](#manage-filters) screen;
+  - **Manage filters** opens the ban and [filter management](#filter-management) screen;
   - **Include NSFW contents** enables a client-side filter to exclude sensitive posts;
   - **Blur NSFW media** allows, if sensitive contents are included, to blur images and hide videos
     when they occur in timelines;
 - **Debug**
   - **Enable anonymous crash reports** determines whether anonymous crash reports are enabled for
-    all accounts (changing this option requires the app to be restarted afterwards);
+    all accounts (changing this option requires the app to be restarted afterward);
 - **Other**
   - **Export settings** export the current settings to a JSON file (which can be imported if you
     change account or clear the app data);
@@ -681,7 +588,7 @@ may not be formatted correctly!
 ** in order for UnifiedPush to work, a distributor must be installed on your device, e.g.
 <a href="https://unifiedpush.org/users/distributors/nextpush/">NextPush</a> and configured with the
 corresponding server-side NextPush app where you have, in turn, registered and paired the
-remote account you are currently using on your instance 
+remote account you are currently using on your instance
 </p>
 
 <p id="notifications-background-check">
@@ -690,11 +597,9 @@ so please make sure the battery saving restrictions for Raccoon in your system s
 </p>
 
 <div align="center">
-  <img width="310" alt="settings screen, part 1" src="images/settings_1.png" />
-  <img width="310" alt="settings screen, part 2" src="images/settings_2.png" />
+  <img width="310" alt="settings screen, part 1" src="../images/settings_1.png" />
+  <img width="310" alt="settings screen, part 2" src="../images/settings_2.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Filter management
 
@@ -707,10 +612,8 @@ following sections:
 - **Words** for specific filters based on words you choose to exclude from your timeline.
 
 <div align="center">
-  <img width="310" alt="manage bans screen" src="images/manage_bans.png" />
+  <img width="310" alt="manage bans screen" src="../images/manage_bans.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Post composer
 
@@ -754,10 +657,8 @@ formatting toolbar with the following buttons:
 
 
 <div align="center">
-  <img width="310" alt="composer screen" src="images/composer.png" />
+  <img width="310" alt="composer screen" src="../images/composer.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Create report
 
@@ -786,10 +687,8 @@ any effect
 </p>
 
 <div align="center">
-  <img width="310" alt="create report screen" src="images/report.png" />
+  <img width="310" alt="create report screen" src="../images/report.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## User feedback
 
@@ -806,10 +705,8 @@ Warning: this only works if you have activated the "Enable anonymous crash repor
 the [settings](#application-settings) screen.
 
 <div align="center">
-  <img width="310" alt="submit user feedback screen" src="images/user_feedback.png" />
+  <img width="310" alt="submit user feedback screen" src="../images/user_feedback.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Circles
 
@@ -843,11 +740,9 @@ By tapping on each item in the circle list, you will open the corresponding post
 - a dedicated timeline, for all other circles.
 
 <div align="center">
-  <img width="310" alt="circle list screen" src="images/circles_list.png" />
-  <img width="310" alt="circle detail screen" src="images/circle_detail.png" />
+  <img width="310" alt="circle list screen" src="../images/circles_list.png" />
+  <img width="310" alt="circle detail screen" src="../images/circle_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Direct messages (Friendica-only)
 
@@ -867,11 +762,9 @@ Messages are being downloaded as long as they arrive while you are in this scree
 have to manually refresh the conversation list.
 
 <div align="center">
-  <img width="310" alt="conversation list screen" src="images/dm_list.png" />
-  <img width="310" alt="conversation  detail screen" src="images/dm_detail.png" />
+  <img width="310" alt="conversation list screen" src="../images/dm_list.png" />
+  <img width="310" alt="conversation  detail screen" src="../images/dm_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Gallery (Friendica-only)
 
@@ -885,11 +778,9 @@ For each picture in an album, you will have the possibility to:
 - move it to another album.
 
 <div align="center">
-  <img width="310" alt="gallery list screen" src="images/gallery_list.png" />
-  <img width="310" alt="gallery  detail screen" src="images/gallery_detail.png" />
+  <img width="310" alt="gallery list screen" src="../images/gallery_list.png" />
+  <img width="310" alt="gallery  detail screen" src="../images/gallery_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Unpublished items
 
@@ -910,10 +801,8 @@ schedule date, so the preferred way to save a post and edit for later is:
   application storage of Raccoon.
 
 <div align="center">
-  <img width="310" alt="unpublished items screen" src="images/drafts.png" />
+  <img width="310" alt="unpublished items screen" src="../images/drafts.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Calendar (Friendica-only)
 
@@ -929,11 +818,9 @@ For each event, you can export it to your device calendar and, by tapping on eac
 a detail screen where more details (like a more extended description) are displayed.
 
 <div align="center">
-  <img width="310" alt="calendar event list screen" src="images/calendar_list.png" />
-  <img width="310" alt="event detail screen" src="images/calendar_detail.png" />
+  <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />
+  <img width="310" alt="event detail screen" src="../images/calendar_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Announcements (Mastodon-only)
 
@@ -953,10 +840,8 @@ insert a new reaction. If you tap again on your reaction, you are going to remov
 counter will therefore be decremented by 1.
 
 <div align="center">
-  <img width="310" alt="calendar event list screen" src="images/announcements.png" />
+  <img width="310" alt="calendar event list screen" src="../images/announcements.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
 ## Shortcuts
 
@@ -969,9 +854,7 @@ add to bookmarks) the post is "translated" to a reference on your current instan
 takes effect on that (this is why operations may take longer).
 
 <div align="center">
-  <img width="310" alt="calendar event list screen" src="images/shortcut_list.png" />
-  <img width="310" alt="event detail screen" src="images/shortcut_detail.png" />
+  <img width="310" alt="calendar event list screen" src="../images/shortcut_list.png" />
+  <img width="310" alt="event detail screen" src="../images/shortcut_detail.png" />
 </div>
-
-[Back to top](#table-of-contents)
 
