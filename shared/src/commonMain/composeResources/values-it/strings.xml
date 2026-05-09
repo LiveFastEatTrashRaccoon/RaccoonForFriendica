@@ -168,7 +168,7 @@
     <string name="field_password">Password</string>
     <string name="field_username">Nome utente</string>
     <string name="follow_requests_title">Richieste di seguirti</string>
-    <string name="follow_required_message">È necessario seguire l'altro utente per poter inviare un messaggio diretto!</string>
+    <string name="follow_required_message">È necessario seguire l\'altro utente per poter inviare un messaggio diretto!</string>
     <string name="followed_hashtags_title">Hashtag che segui</string>
     <string name="follower_title">Seguaci</string>
     <string name="following_title">Seguiti</string>
@@ -184,7 +184,7 @@
     <string name="format_underlined">Sottolineato</string>
     <string name="gallery_field_album_name">Nome album</string>
     <string name="gallery_title">Galleria</string>
-    <string name="help_me_choose_an_instance">Aiutami a scegliere un'istanza</string>
+    <string name="help_me_choose_an_instance">Aiutami a scegliere un\'istanza</string>
     <string name="highest_score">punteggio più alto</string>
     <string name="image_loading_mode_always">Sempre</string>
     <string name="image_loading_mode_on_demand">Su richiesta</string>
@@ -200,8 +200,8 @@
     <string name="login_friendica_header">Sono su Friendica</string>
     <string name="login_mastodon_header">Sono su Mastodon</string>
     <string name="login_method_basic">legacy</string>
-    <string name="login_more_info_bottom_sheet_content">Il flusso di login inizierà nell'app selezionando l'istanza, dopodiché si continuerà il flusso OAuth2 in un browser web.\n\nSe non hai ancora un account, scegli un'istanza e registrati prima nel browser.</string>
-    <string name="login_subtitle">Accedi a un'istanza per iniziare a seguire altre persone, creare nuovi post o risposte e gestire i preferiti o i segnalibri.</string>
+    <string name="login_more_info_bottom_sheet_content">Il flusso di login inizierà nell\'app selezionando l\'istanza, dopodiché si continuerà il flusso OAuth2 in un browser web.\n\nSe non hai ancora un account, scegli un\'istanza e registrati prima nel browser.</string>
+    <string name="login_subtitle">Accedi a un\'istanza per iniziare a seguire altre persone, creare nuovi post o risposte e gestire i preferiti o i segnalibri.</string>
     <string name="login_title">🦝 Benvenuto/a! 🦝</string>
     <string name="manage_blocks_section_blocked">Bloccati</string>
     <string name="manage_blocks_section_muted">Silenziati</string>
@@ -210,32 +210,32 @@
     <string name="markup_mode_html">HTML</string>
     <string name="markup_mode_markdown">Markdown</string>
     <string name="markup_mode_plain_text">Testo semplice</string>
-    <string name="message_alt_text_missing_error">Alcuni allegati non hanno il testo alternativo, inserirlo può migliorare l'accessibilità</string>
+    <string name="message_alt_text_missing_error">Alcuni allegati non hanno il testo alternativo, inserirlo può migliorare l\'accessibilità</string>
     <string name="message_are_you_sure">Sei sicuro/a di voler continuare?</string>
     <string name="message_are_you_sure_exit">Sei sicuro/a di voler uscire?</string>
     <string name="message_are_you_sure_reblog">Questo post è più vecchio di un mese. Sei sicuro/a di volerlo ricondividere?</string>
     <string name="message_auth_issue">Si è verificato un errore, forse il token attuale è scaduto.</string>
-    <string name="message_auth_issue_hint_1">forzare l'aggiornamento</string>
-    <string name="message_auth_issue_hint_2">effettuare nuovamente l'accesso</string>
-    <string name="message_auth_issue_hint_3">cancellare i dati dell'applicazione</string>
+    <string name="message_auth_issue_hint_1">forzare l\'aggiornamento</string>
+    <string name="message_auth_issue_hint_2">effettuare nuovamente l\'accesso</string>
+    <string name="message_auth_issue_hint_3">cancellare i dati dell\'applicazione</string>
     <string name="message_auth_issue_hints_title">Si consiglia di intraprendere una delle seguenti azioni:</string>
     <string name="message_character_limit_exceeded">Hai superato il limite massimo consentito di caratteri</string>
     <string name="message_confirm_exit">Premi di nuovo 🔙 per uscire</string>
     <string name="message_empty_album">Sembra che questo album sia ancora vuoto… ✨</string>
-    <string name="message_empty_conversation">Questo è l'inizio della tua epica conversazione con</string>
+    <string name="message_empty_conversation">Questo è l\'inizio della tua epica conversazione con</string>
     <string name="message_empty_inbox">🎉 Sei già al passo! 🎉\n\nVedrai comparire le notifiche in questa pagina non appena ce ne saranno di nuove</string>
-    <string name="message_empty_list">Qui non c'è nulla da visualizzare 🗑️</string>
+    <string name="message_empty_list">Qui non c\'è nulla da visualizzare 🗑️</string>
     <string name="message_generic_error">Si è verificato un errore inaspettato</string>
     <string name="message_invalid_field">Campo non valido</string>
     <string name="message_invalid_poll_error">Sondaggio non valido, controllare le opzioni e la data di fine</string>
     <string name="message_loading_users">Caricamento utenti</string>
     <string name="message_missing_field">Campo obbligatorio</string>
     <string name="message_missing_rules">Seleziona almeno una regola</string>
-    <string name="message_poll_vote_error_body">Purtroppo sono solo uno sviluppatore mobile e non posso aggiungere metodi mancanti al back-end!\nDai un'occhiata alla segnalazione e metti un 👍 in modo che gli sviluppatori sappiano che può valere la pena di implementarlo.</string>
+    <string name="message_poll_vote_error_body">Purtroppo sono solo uno sviluppatore mobile e non posso aggiungere metodi mancanti al back-end!\nDai un\'occhiata alla segnalazione e metti un 👍 in modo che gli sviluppatori sappiano che può valere la pena di implementarlo.</string>
     <string name="message_post_empty_text">Inserire almeno un allegato, del testo o un sondaggio</string>
-    <string name="message_post_invalid_visibility">Selezionare un'opzione di visibilità valida</string>
+    <string name="message_post_invalid_visibility">Selezionare un\'opzione di visibilità valida</string>
     <string name="message_reply_visibility_greater_than_parent_error">Stai pubblicando una risposta con visibilità maggiore a quella del post originale</string>
-    <string name="message_restart_to_apply_changes">Riavviare l'applicazione per applicare le modifiche</string>
+    <string name="message_restart_to_apply_changes">Riavviare l\'applicazione per applicare le modifiche</string>
     <string name="message_schedule_date_in_the_past">Selezionare una data di schedulazione futura</string>
     <string name="message_search_initial_empty">Inizia a digitare qualcosa</string>
     <string name="message_success">Operazione completata con successo!</string>
@@ -348,8 +348,8 @@
     <string name="settings_push_notification_state_no_distributors">Nessun distributore</string>
     <string name="settings_push_notification_state_unsupported">Non supportato</string>
     <string name="settings_section_debug">Debug</string>
-    <string name="settings_subtitle_background_notification_not_restricted">Nessuna restrizione di sistema per l'attività in background</string>
-    <string name="settings_subtitle_background_notification_restricted">Abilita attività in background per l'app nelle impostazioni di sistema</string>
+    <string name="settings_subtitle_background_notification_not_restricted">Nessuna restrizione di sistema per l\'attività in background</string>
+    <string name="settings_subtitle_background_notification_restricted">Abilita attività in background per l\'app nelle impostazioni di sistema</string>
     <string name="settings_theme_black">Nero (AMOLED)</string>
     <string name="settings_theme_dark">Scuro</string>
     <string name="settings_theme_light">Chiaro</string>
@@ -456,8 +456,8 @@
         <item quantity="other">%1$d non letti</item>
     </plurals>
     <plurals name="unread_notification_body">
-        <item quantity="one">C'è %1$d elemento nel 🗑️</item>
-        <item quantity="many">C'è %1$d di elementi nel 🗑️</item>
+        <item quantity="one">C\'è %1$d elemento nel 🗑️</item>
+        <item quantity="many">C\'è %1$d di elementi nel 🗑️</item>
         <item quantity="other">Ci sono %1$d elementi nel 🗑️</item>
     </plurals>
     <string name="settings_about_acknowledgements">Riconoscimenti</string>
@@ -487,7 +487,7 @@
     <string name="message_sign_up_2">Registrati ora!</string>
     <string name="manage_blocks_section_stop_words">Parole</string>
     <string name="action_shortcut">Scorciatoia a %1$s</string>
-    <string name="message_no_public_timeline">Forse l'istanza non espone la timeline pubblica.</string>
+    <string name="message_no_public_timeline">Forse l\'istanza non espone la timeline pubblica.</string>
     <string name="shortcuts_title">Scorciatoie</string>
     <string name="action_insert_inline_image">Inserisci immagine nel testo</string>
     <string name="image_field_alt_text">Testo alternativo</string>
@@ -507,4 +507,19 @@
     <string name="translation_provider_config_field_server_url">URL server</string>
     <string name="settings_item_translation_provider">Servizio di traduzione</string>
     <string name="translation_provider_config_dialog_title">Nuova configurazione LibreTranslate</string>
+    <string name="language_ru" translatable="false"></string>
+    <string name="language_it" translatable="false"></string>
+    <string name="language_pl" translatable="false"></string>
+    <string name="language_pt_br" translatable="false"></string>
+    <string name="language_pt" translatable="false"></string>
+    <string name="language_uk" translatable="false"></string>
+    <string name="language_es" translatable="false"></string>
+    <string name="language_ro" translatable="false"></string>
+    <string name="language_ta" translatable="false"></string>
+    <plurals name="extended_social_info_quotes">
+    </plurals>
+    <string name="language_de" translatable="false"></string>
+    <string name="language_en" translatable="false"></string>
+    <string name="language_fi" translatable="false"></string>
+    <string name="language_fr" translatable="false"></string>
 </resources>
