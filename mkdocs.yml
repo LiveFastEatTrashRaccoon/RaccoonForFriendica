@@ -28,10 +28,90 @@ theme:
     - search.highlight
 
 nav:
-  - Home: index.md
+  - Home:
+    - Introduction: index.md
+    - Overview: index.md#overview
+    - Rationale: index.md#rationale
+    - Key features: index.md#key-app-features
+    - Acknowledgements: index.md#acknowledgements
+    - Further reading: index.md#further-reading
   - User Manual:
-    - English: manual/index.md
-    - Italiano: manual/it/index.md
+    - English:
+      - Introduction: manual/index.md#introduction
+      - General UI structure: manual/index.md#application-ui-general-structure
+      - Timeline: manual/index.md#timeline
+      - Post detail: manual/index.md#post-detail
+      - Image detail: manual/index.md#image-detail
+      - User profile:
+        - Overview: manual/index.md#user-profile
+        - Classic mode: manual/index.md#classic-mode
+        - Forum mode: manual/index.md#forum-mode
+      - Thread detail: manual/index.md#thread-detail
+      - Hashtag feed: manual/index.md#hashtag-feed
+      - Favorites & Bookmarks: manual/index.md#favorites--bookmarks
+      - Followed hashtags: manual/index.md#followed-hashtags
+      - Explore: manual/index.md#explore
+      - Search: manual/index.md#search
+      - Inbox: manual/index.md#inbox
+      - Profile:
+        - Overview: manual/index.md#profile
+        - Login: manual/index.md#login
+        - Your account: manual/index.md#ones-own-user-detail
+      - User list: manual/index.md#user-list
+      - Follow requests: manual/index.md#follow-requests
+      - Node info: manual/index.md#node-info
+      - App information: manual/index.md#app-information
+      - Profile settings: manual/index.md#profile-settings
+      - App settings: manual/index.md#application-settings
+      - Filter management: manual/index.md#filter-management
+      - Post composer: manual/index.md#post-composer
+      - Create report: manual/index.md#create-report
+      - User feedback: manual/index.md#user-feedback
+      - Circles: manual/index.md#circles
+      - Direct messages: manual/index.md#direct-messages-friendica-only
+      - Gallery: manual/index.md#gallery-friendica-only
+      - Unpublished items: manual/index.md#unpublished-items
+      - Calendar: manual/index.md#calendar-friendica-only
+      - Announcements: manual/index.md#announcements-mastodon-only
+      - Shortcuts: manual/index.md#shortcuts
+    - Italiano:
+      - Introduzione: manual/it/index.md#introduzione
+      - Struttura generale UI: manual/it/index.md#struttura-generale-della-ui
+      - Timeline: manual/it/index.md#timeline
+      - Dettaglio post: manual/it/index.md#dettaglio-post
+      - Dettaglio immagine: manual/it/index.md#dettaglio-immagine
+      - Profilo utente:
+        - Panoramica: manual/it/index.md#profilo-utente
+        - Modalità classica: manual/it/index.md#modalità-classica
+        - Modalità forum: manual/it/index.md#modalità-forum
+      - Dettaglio discussione: manual/it/index.md#dettaglio-discussione
+      - Elenco post hashtag: manual/it/index.md#elenco-post-contenenti-un-hashtag
+      - Preferiti & segnalibri: manual/it/index.md#preferiti--segnalibri
+      - Hashtag seguiti: manual/it/index.md#hashtag-seguiti
+      - Esplora: manual/it/index.md#esplora
+      - Ricerca: manual/it/index.md#ricerca
+      - Notifiche: manual/it/index.md#notifiche
+      - Profilo:
+        - Panoramica: manual/it/index.md#profilo
+        - Login: manual/it/index.md#login
+        - Il tuo profilo: manual/it/index.md#il-tuo-profilo
+      - Elenco utenti: manual/it/index.md#elenco-utenti
+      - Richieste di essere seguito: manual/it/index.md#richieste-di-essere-seguito
+      - Informazioni istanza: manual/it/index.md#informazioni-istanza
+      - Informazioni app: manual/it/index.md#informazioni-sullapplicazione
+      - Impostazioni account: manual/it/index.md#impostazioni-account
+      - Impostazioni app: manual/it/index.md#impostazioni-applicazione
+      - Gestione filtri: manual/it/index.md#gestione-filtri
+      - Creazione post: manual/it/index.md#creazione-post
+      - Creazione segnalazione: manual/it/index.md#creazione-segnalazione
+      - Commenti: manual/it/index.md#lascia-un-commento
+      - Cerchie: manual/it/index.md#cerchie
+      - Messaggi diretti: manual/it/index.md#messaggi-diretti-solo-friendica
+      - Galleria: manual/it/index.md#galleria-solo-friendica
+      - Da pubblicare: manual/it/index.md#elementi-non-pubblicati
+      - Calendario: manual/it/index.md#calendario-solo-friendica
+      - Annunci: manual/it/index.md#annunci-solo-mastodon
+      - Scorciatoie: manual/it/index.md#scorciatoie
 
 docs_dir: docs
 site_dir: site
