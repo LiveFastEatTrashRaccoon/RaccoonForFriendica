@@ -105,7 +105,7 @@
     <string name="calendar_title">Календар</string>
     <string name="change_node_dialog_title">Змінити екземпляр</string>
     <string name="circle_add_users_dialog_title">Виберіть користувачів для додавання</string>
-    <string name="circle_edit_field_name">Ім'я</string>
+    <string name="circle_edit_field_name">Ім\'я</string>
     <string name="circle_type_group">Групи</string>
     <string name="circle_type_predefined">Канали</string>
     <string name="circle_type_user_defined">Ваші списки</string>
@@ -124,7 +124,7 @@
     <string name="create_post_poll_section">Опитування</string>
     <string name="create_post_spoiler_placeholder">Текст спойлера</string>
     <string name="create_post_title">Створити пост</string>
-    <string name="create_post_title_placeholder">Назва (необов'язково)</string>
+    <string name="create_post_title_placeholder">Назва (необов\'язково)</string>
     <string name="create_report_comment_placeholder">Будь ласка, опишіть проблему, з якою ви зіткнулися</string>
     <string name="create_report_item_category">Категорія</string>
     <string name="create_report_item_forward">Попередній звіт</string>
@@ -144,7 +144,7 @@
     <string name="edit_profile_item_bio">Біографія</string>
     <string name="edit_profile_item_bot">Я бот</string>
     <string name="edit_profile_item_discoverable">Зробити мене доступним для пошуку</string>
-    <string name="edit_profile_item_display_name">Ім'я для відображення</string>
+    <string name="edit_profile_item_display_name">Ім\'я для відображення</string>
     <string name="edit_profile_item_field_key">Ключ</string>
     <string name="edit_profile_item_field_value">Значення</string>
     <string name="edit_profile_item_header">Банер</string>
@@ -163,9 +163,9 @@
     <string name="explore_section_suggestions">Для вас</string>
     <string name="favorites_title">Вибране</string>
     <string name="feed_type_title">Тип подачі</string>
-    <string name="field_node_name">Ім'я екземпляра</string>
+    <string name="field_node_name">Ім\'я екземпляра</string>
     <string name="field_password">Пароль</string>
-    <string name="field_username">Ім'я користувача</string>
+    <string name="field_username">Ім\'я користувача</string>
     <string name="follow_requests_title">Відстежувати запити</string>
     <string name="follow_required_message">Ви повинні слідувати за іншим користувачем, щоб мати можливість відправити пряме повідомлення!</string>
     <string name="followed_hashtags_title">За якими хештегами слідкували</string>
@@ -292,7 +292,7 @@
     <string name="select_circle_dialog_title">Виберіть коло</string>
     <string name="select_duration_dialog_title">Виберіть тривалість</string>
     <string name="select_user_dialog_title">Виберіть користувача</string>
-    <string name="select_user_search_placeholder">ім'я користувача або хендл</string>
+    <string name="select_user_search_placeholder">ім\'я користувача або хендл</string>
     <string name="settings_about">Інформація про додаток</string>
     <string name="settings_about_app_version">Версія</string>
     <string name="settings_about_changelog">Журнал змін</string>
@@ -343,8 +343,8 @@
     <string name="settings_push_notification_state_enabled">Активний</string>
     <string name="settings_push_notification_state_idle">Неактивний</string>
     <string name="settings_push_notification_state_initializing">Ініціалізація…</string>
-    <string name="settings_push_notification_state_no_distributor_selected">Виберіть дистриб'ютора</string>
-    <string name="settings_push_notification_state_no_distributors">Немає доступних дистриб'юторів</string>
+    <string name="settings_push_notification_state_no_distributor_selected">Виберіть дистриб\'ютора</string>
+    <string name="settings_push_notification_state_no_distributors">Немає доступних дистриб\'юторів</string>
     <string name="settings_push_notification_state_unsupported">Не підтримується</string>
     <string name="settings_section_debug">Налагодження</string>
     <string name="settings_subtitle_background_notification_not_restricted">Немає системних обмежень для фонової активності</string>
@@ -389,8 +389,8 @@
     <string name="url_opening_mode_external">Зовнішній браузер</string>
     <string name="url_opening_mode_internal">Внутрішній веб-перегляд</string>
     <string name="user_feedback_comment_placeholder">Опишіть проблему, з якою ви зіткнулися, або просто залиште відгук 🖋️</string>
-    <string name="user_feedback_field_comment">Зворотній зв'язок</string>
-    <string name="user_feedback_field_email">Email або ім'я користувача (необов'язково)</string>
+    <string name="user_feedback_field_comment">Зворотній зв\'язок</string>
+    <string name="user_feedback_field_email">Email або ім\'я користувача (необов\'язково)</string>
     <string name="user_field_personal_note">Особиста примітка</string>
     <string name="verified_field">перевірений</string>
     <string name="visibility_circle">Коло</string>
@@ -470,4 +470,33 @@
     <string name="shortcuts_title">Ярлики</string>
     <string name="message_no_public_timeline">Можливо, цей екземпляр не показує свою публічну шкалу часу.</string>
     <string name="image_field_alt_text">Альтернативний текст</string>
+    <string name="action_select_foreign_instance"></string>
+    <string name="comment_bar_theme_red"></string>
+    <string name="language_ru" translatable="false"></string>
+    <string name="language_it" translatable="false"></string>
+    <string name="language_pl" translatable="false"></string>
+    <string name="language_pt_br" translatable="false"></string>
+    <string name="language_pt" translatable="false"></string>
+    <string name="language_uk" translatable="false"></string>
+    <string name="translation_provider_config_field_api_key"></string>
+    <string name="comment_bar_theme_green"></string>
+    <string name="translation_provider_config_field_server_url"></string>
+    <string name="action_manage_circles"></string>
+    <string name="settings_item_translation_provider"></string>
+    <string name="language_es" translatable="false"></string>
+    <string name="language_ro" translatable="false"></string>
+    <string name="language_ta" translatable="false"></string>
+    <plurals name="extended_social_info_quotes">
+    </plurals>
+    <string name="comment_bar_theme_blue"></string>
+    <string name="action_remove"></string>
+    <string name="language_de" translatable="false"></string>
+    <string name="language_en" translatable="false"></string>
+    <string name="settings_item_comment_bar_theme"></string>
+    <string name="action_back_to_home_instance"></string>
+    <string name="translation_provider_config_dialog_title"></string>
+    <string name="comment_bar_theme_rainbow"></string>
+    <string name="language_fi" translatable="false"></string>
+    <string name="language_fr" translatable="false"></string>
+    <string name="action_add"></string>
 </resources>
