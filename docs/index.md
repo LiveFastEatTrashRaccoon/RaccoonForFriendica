@@ -1,18 +1,6 @@
----
-layout: default
----
+# Raccoon for Friendica
 
-Welcome to the homepage of Raccoon for Friendica!
-
-# Table of contents
-
-- [project overview](#overview)
-- [rationale](#rationale)
-- [key app features](#key-app-features)
-- [acknowledgements](#acknowledgements)
-- [further reading](#further-reading)
-
-# Overview
+## Overview
 
 Raccoon is a mobile client for [Friendica](https://friendi.ca), a federated social platform. The
 app is powered by Kotlin Multiplatform (KMP) and Compose Multiplatform (CMP), mainly focusing on the
@@ -26,7 +14,7 @@ shared preferences, navigation, resource access e.g. fonts/drawables/localizatio
 quickly grew to a fully functional app that can benefit other users too, this is the reason why it
 is released as an open-source app.
 
-# Rationale
+## Rationale
 
 Friendica is an _extremely powerful_ and _feature-complete_ platform, it has some distinctive
 features that other widely diffused Fediverse platform do not have yet (e.g. **groups**, **direct
@@ -52,7 +40,7 @@ providing a Friendica user with everything they need from their mobile device (m
 such as content moderation for admins will only be possible via the webapp) and presented in a
 familiar way like most social clients.
 
-# Key app features
+## Key features
 
 Here is a list of the most important features of the app:
 
@@ -90,7 +78,7 @@ Here is a list of the most important features of the app:
 - view one's own calendar (only on Friendica) in read-only mode (creating events is not supported by
   the back-end yet).
 
-# Acknowledgements
+## Acknowledgements
 
 A special thanks goes to all those who contributed so far:
 
@@ -117,13 +105,13 @@ other users and made the community a better place, etc.
 
 You are **awesome**… THANKS ❤️🦝️❤️
 
-# Further reading
+## Further reading
 
 If what you have read so far sounds interesting to you and you want to know more, here are some
 useful
 links:
 
-- check out the [User manual](manual/main.md);
+- check out the [User manual](manual/en/index.md);
 - have a look at the
   project's [README](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/README.md)
 - consult

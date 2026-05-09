@@ -1,63 +1,8 @@
-<script>
-function changeLanguage() {
-    const value = document.getElementById("language").value;
-    switch (value) {
-      case "en":
-        window.location="../main.html"
-        break;
-    }
-}
-</script>
-<div align="right">
-  <label for="language"></label>
-  <select id="language" name="language" onchange="changeLanguage()">
-    <option value="en">English 🇬🇧</option>
-    <option value="it" selected="selected">Italiano 🇮🇹</option>
-  </select>
-</div>
-
 # Manuale utente
 
 Benvenuti nel manuale utente di Raccoon for Friendica! Questa pagina contiene una spiegazione
 delle principali funzionalità dell'app e intende essere una guida il più possibile esaustiva a tutto
 ciò che puoi (o non puoi) fare dall'app.
-
-## Indice
-
-- [Introduzione](#introduzione)
-- [Struttura generale della UI](#struttura-generale-della-ui)
-- [Timeline](#timeline)
-- [Dettaglio post](#dettaglio-post)
-- [Dettaglio immagine](#dettaglio-immagine)
-- [Profilo utente](#profilo-utente)
-  - [Modalità classica](#modalità-classica)
-  - [Modalità forum](#modalità-forum)
-- [Dettaglio conversazione](#dettaglio-discussione)
-- [Elenco post contenenti un hashtag](#elenco-post-contenenti-un-hashtag)
-- [Preferiti & segnalibri](#preferiti--segnalibri)
-- [Hashtag seguiti](#hashtag-seguiti)
-- [Esplora](#esplora)
-- [Ricerca](#ricerca)
-- [Notifiche](#notifiche)
-- [Profilo](#profilo)
-  - [Login](#login)
-  - [Il tuo profilo](#il-tuo-profilo)
-- [Elenco utenti](#elenco-utenti)
-- [Richieste di essere seguito](#richieste-di-essere-seguito)
-- [Informazioni istanza](#informazioni-istanza)
-- [Informazioni sull'applicazione](#informazioni-sullapplicazione)
-- [Impostazioni account](#impostazioni-account)
-- [Impostazioni applicazione](#impostazioni-applicazione)
-- [Gestione filtri](#gestione-filtri)
-- [Creazione post](#creazione-post)
-- [Creazione segnalazione](#creazione-segnalazione)
-- [Cerchie](#cerchie)
-- [Messaggi diretti](#messaggi-diretti-solo-friendica)
-- [Galleria](#galleria-solo-friendica)
-- [Elementi da pubblicare](#elementi-non-pubblicati)
-- [Calendario](#calendario-solo-friendica)
-- [Annunci](#annunci-solo-mastodon)
-- [Scorciatoie](#scorciatoie)
 
 ## Introduzione
 
@@ -114,30 +59,28 @@ i dispositivi mobile. Dal momento che utilizza (principalmente) le API Mastodon 
 backend, l'app è compatible anche con le istanze Mastodon (e le funzionalità specifiche di Friendica
 non verranno visualizzate).
 
-### Disclaimer: funzionalità non implementate
+!!! warning "Disclaimer: funzionalità non implementate"
 
-Le seguenti funzionalità sono implementate parzialmente o non sono implementate a causa della
-mancanza di supporto a client di terze parti:
+    Le seguenti funzionalità sono implementate parzialmente o non sono implementate a causa della
+    mancanza di supporto a client di terze parti:
 
-- creazione eventi nel calendario;
-- partecipazione ai sondaggi;
-- creazione account / cancellazione account;
-- delega gestione ad altri utenti o accesso ad account delegati;
-- ricondivisione dei post importati da feed RSS;
-- ricondivisione automatica dei post degli utenti seguiti;
-- strumenti di moderazione per amministratori (accesso a segnalazioni ricevute, eliminazione
-  contenuti, ban utenti, ecc.).
+    - creazione eventi nel calendario;
+    - partecipazione ai sondaggi;
+    - creazione account / cancellazione account;
+    - delega gestione ad altri utenti o accesso ad account delegati;
+    - ricondivisione dei post importati da feed RSS;
+    - ricondivisione automatica dei post degli utenti seguiti;
+    - strumenti di moderazione per amministratori (accesso a segnalazioni ricevute, eliminazione
+      contenuti, ban utenti, ecc.).
 
-Per accedere a tali funzionalità sarà necessario utilizzare l'interfaccia web, ad eccezione dei
-sondaggi che non sono ancora supportati (si tratta di
-un [problema](https://github.com/friendica/friendica/issues/11093) ben noto).
+    Per accedere a tali funzionalità sarà necessario utilizzare l'interfaccia web, ad eccezione dei
+    sondaggi che non sono ancora supportati (si tratta di
+    un [problema](https://github.com/friendica/friendica/issues/11093) noto).
 
-Questo avviso non significa in assoluto che queste funzioni non saranno mai supportate. Ad esempio,
-all'inizio l'app non era in grado di mostrare le immagini inserite all'interno del corpo dei post,
-ma gli sviluppatori del backend hanno fatto un lavoro straordinario e hanno modificato la risposta
-dell'API in modo da permettere a qualsiasi app (non solo Raccoon!) di visualizzarle correttamente.
-
-[Torna su](#indice)
+    Questo avviso non significa in assoluto che queste funzioni non saranno mai supportate. Ad esempio,
+    all'inizio l'app non era in grado di mostrare le immagini inserite all'interno del corpo dei post,
+    ma gli sviluppatori del backend hanno fatto un lavoro straordinario e hanno modificato la risposta
+    dell'API in modo da permettere a qualsiasi app (non solo Raccoon!) di visualizzarle correttamente.
 
 ## Struttura generale della UI
 
@@ -160,8 +103,6 @@ L'interfaccia utente dell'applicazione è divisa in tre parti:
     inserimento testo).
 
 Tutti i componenti utilizzati provengono dal design system [Material 3](https://m3.material.io/).
-
-[Torna su](#indice)
 
 ## Timeline
 
@@ -234,8 +175,6 @@ Infine, a partire da ogni post è possibile:
   <img width="310" alt="timeline with mute user dialog" src="../images/mute_bottom_sheet.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Dettaglio post
 
 Questa schermata permette di visualizzare un post nel suo contesto (ovvero tutti i post
@@ -257,8 +196,6 @@ al successivo con gesti di scorrimento orizzontale.
   <img width="310" alt="post detail screen" src="../images/post_detail.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Dettaglio immagine
 
 A partire da un video o un'immagine allegata è possibile aprire il visualizzatore a schermo intero.
@@ -272,15 +209,13 @@ venissero visualizzate correttamente.
   <img width="310" alt="zoomable image detail screen" src="../images/image_detail.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Profilo utente
 
 Lo scopo del profilo utente è visualizzare informazioni su un utente specifico e accedere
 all'insieme dei contenuti che ha creato. Sono disponibili due versioni di questa schermata:
 la _modalità classica_ (per account individuali) e la _modalità forum_ (per account di gruppo).
 
-### Modalità classica
+### Modalità classica {: modalita-classica }
 
 Questa schermata si compone di due parti:
 
@@ -315,13 +250,13 @@ Dal menu a scomparsa nella barra superiore è inoltre possibile:
 - silenziare (specificando per quanto tempo) e de-silenziare l'utente;
 - segnalare l'utente agli amministratori;
 - aggiungere una nota personale;
-- passare alla [modalità forum](#modalità-forum) (se si tratta di un gruppo).
+- passare alla [modalità forum](#modalita-forum) (se si tratta di un gruppo).
 
 <div align="center">
   <img width="310" alt="user detail (classic mode) screen" src="../images/user_detail.png" />
 </div>
 
-### Modalità forum
+### Modalità forum { :modalita-forum }
 
 In modalità forum vengono presentati tutti i post di primo livello che sono stati
 ricondivisi dal gruppo, che possono essere interpretati come l'elenco degli argomenti del forum.
@@ -329,13 +264,11 @@ Si tratta di un tipo speciale di timeline da cui, facendo tap su ciascuno elemen
 accedere al [dettaglio discussione](#dettaglio-discussione).
 
 Dal menu a scomparsa nella barra superiore, è inoltre possibile passare
-alla [modalità classica](#modalità-classica).
+alla [modalità classica](#modalita-classica).
 
 <div align="center">
   <img width="310" alt="user detail (forum mode) screen" src="../images/forum_list.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Dettaglio discussione
 
@@ -348,8 +281,6 @@ di discendenza tra ogni post e le sue risposte.
   <img width="310" alt="thread detail screen" src="../images/thread_detail.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Elenco post contenenti un hashtag
 
 L'elenco post contenenti un hashtag è un tipo speciale di [timeline](#timeline) che consiste
@@ -361,8 +292,6 @@ Dalla barra superiore è possibile seguire (o smettere di seguire) l'hashtag in 
 <div align="center">
   <img width="310" alt="hashtag feed screen" src="../images/hashtag_feed.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Preferiti & segnalibri
 
@@ -377,8 +306,6 @@ esso scomparirà immediatamente dall'elenco.
   <img width="310" alt="bookmarks screen" src="../images/bookmarks.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Hashtag seguiti
 
 Questa schermata contiene l'elenco di tutti gli hashtag seguiti in ordine alfabetico e permette di
@@ -390,8 +317,6 @@ l'[elenco post](#elenco-post-contenenti-un-hashtag) associato.
 <div align="center">
   <img width="310" alt="followed hashtags screen" src="../images/followed_hashtags.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Esplora
 
@@ -406,13 +331,13 @@ connesso. La schermata è suddivisa nelle seguenti sezioni:
   tuo utente.
 
 L'apertura di un hashtag ti porterà all'[elenco dedicato](#elenco-post-contenenti-un-hashtag),
-facendo tap su un post è possibile accedere al relativo [dettaglio](#post-dettaglio) e facendo tap
+facendo tap su un post è possibile accedere al relativo [dettaglio](#dettaglio-post) e facendo tap
 su un utente si aprirà il relativo [profilo](#profilo-utente). Infine, al tap su un
 collegamento aprirà il browser esterno o una custom tab a seconda dell'opzione "Modalità apertura
 URL" selezionata nelle [impostazioni](#impostazioni-applicazione).
 
 <p id="hashtag-usage-disclaimer">
-* il numero di giorni per cui sono disponibili le statistiche di utilizzo può variare da 1 a 7 a 
+* il numero di giorni per cui sono disponibili le statistiche di utilizzo può variare da 1 a 7 a
 seconda della tipologia di istanza
 </p>
 
@@ -420,8 +345,6 @@ seconda della tipologia di istanza
   <img width="310" alt="explore screen (hashtags section)" src="../images/explore_hashtags.png" />
   <img width="310" alt="explore screen (links section)" src="../images/explore_links.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Ricerca
 
@@ -440,8 +363,6 @@ il [profilo](#profilo-utente) associato.
 <div align="center">
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="../images/search.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Notifiche
 
@@ -478,8 +399,6 @@ relativo [profilo utente](#profilo-utente) o [dettaglio post](#dettaglio-post).
 <div align="center">
   <img width="310" alt="inbox screen" src="../images/inbox.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Profilo
 
@@ -543,8 +462,6 @@ che permette di accedere alle [preferenze del profilo](#impostazioni-account).
   <img width="310" alt="profile screen" src="../images/profile.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Elenco utenti
 
 Questa schermata contiene un elenco generico di utenti; può essere aperto sia
@@ -560,8 +477,6 @@ questo utente.
   <img width="310" alt="user list screen (profile following)" src="../images/user_list.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Richieste di essere seguito
 
 Se nelle tue [impostazioni del profilo](#impostazioni-account) hai abilitato l'approvazione manuale
@@ -574,8 +489,6 @@ visualizzare il [profilo](#profilo-utente) dell'utente.
 <div align="center">
   <img width="310" alt="follow request screen" src="../images/follow_requests.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Informazioni istanza
 
@@ -592,8 +505,6 @@ particolare:
 <div align="center">
   <img width="310" alt="node info screen" src="../images/node_info.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Informazioni sull'applicazione
 
@@ -616,8 +527,6 @@ Inoltre, questa finestra di dialogo contiene il punto accesso a due schermate in
   <img width="310" alt="licenses screen" src="../images/licenses.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Impostazioni account
 
 Questa schermata ti consente di modificare i dati del tuo profilo e configurare (in una certa
@@ -637,15 +546,13 @@ I dati del profilo che possono essere modificati sono:
 - includi i post creati da te nella timeline pubblica (`indexable`).
 
 <p id="user-profile-experimental-disclaimer">
-* a seconda del backend questi campi potrebbero non essere modificabili, ad es. ci sono dei 
+* a seconda del backend questi campi potrebbero non essere modificabili, ad es. ci sono dei
 problemi di compatibilità noti in alcune versioni di Friendica
 </p>
 
 <div align="center">
   <img width="310" alt="edit profile screen" src="../images/edit_profile.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Impostazioni applicazione
 
@@ -724,7 +631,7 @@ costituita dalle seguenti sezioni:
 
 <p id="markdown-formatting">
 * scegliere con cautela: <em>Markdown</em> è supportato solo da alcune versioni di Mastodon (es.
-glitch-soc), se non sei sicuro/a di quel che stai facendo usa HTML o testo semplice, altrimenti i 
+glitch-soc), se non sei sicuro/a di quel che stai facendo usa HTML o testo semplice, altrimenti i
 tuoi post potrebbero non essere formattati correttamente!
 </p>
 
@@ -745,8 +652,6 @@ background, controlla le impostazioni di risparmio energetico di Raccoon nelle i
   <img width="310" alt="settings screen, part 2" src="../images/settings_2.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Gestione filtri
 
 Questa schermata consente di revocare le restrizioni (silenziare o bloccare) attualmente applicate
@@ -760,8 +665,6 @@ ad altri account. È suddivisa in due sezioni:
 <div align="center">
   <img width="310" alt="manage bans screen" src="../images/manage_bans.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Creazione post
 
@@ -815,8 +718,6 @@ pulsanti:
   <img width="310" alt="composer screen" src="../images/composer.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Creazione segnalazione
 
 Questa schermata consente di creare una segnalazione per un utente o per uno specifico post.
@@ -850,8 +751,6 @@ sembra avere alcun effetto
   <img width="310" alt="create report screen" src="../images/report.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Lascia un commento
 
 Questo modulo consente di inviare un commento agli sviluppatori per segnalare un malfunzionamento o
@@ -869,8 +768,6 @@ anonime arresti anomali" è abilitata nella schermata [impostazioni](#impostazio
 <div align="center">
   <img width="310" alt="submit user feedback screen" src="../images/user_feedback.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Cerchie
 
@@ -903,15 +800,13 @@ sono cerchie normalissime che possono essere modificate o eliminate.
 
 Facendo tap su ogni voce della lista cerchie, verrà aperta la lista dei post corrispondenti, ovvero:
 
-- la [modalità forum](#modalità-forum) per i gruppi;
+- la [modalità forum](#modalita-forum) per i gruppi;
 - una timeline dedicata per tutte le altre cerchie.
 
 <div align="center">
   <img width="310" alt="circle list screen" src="../images/circles_list.png" />
   <img width="310" alt="circle detail screen" src="../images/circle_detail.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Messaggi diretti (solo Friendica)
 
@@ -936,8 +831,6 @@ altrimenti sarà necessario fare refresh manualmente sull'elenco delle conversaz
   <img width="310" alt="conversation  detail screen" src="../images/dm_detail.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Galleria (solo Friendica)
 
 Questa schermata contiene l'elenco degli album presenti nella tua galleria multimediale. Per ogni
@@ -954,8 +847,6 @@ Per ogni immagine all'interno di un album è possibile:
   <img width="310" alt="gallery list screen" src="../images/gallery_list.png" />
   <img width="310" alt="gallery  detail screen" src="../images/gallery_detail.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Elementi da pubblicare
 
@@ -981,8 +872,6 @@ modificarlo per in un secondo momento è:
   <img width="310" alt="unpublished items screen" src="../images/drafts.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Calendario (solo Friendica)
 
 In questa schermata viene visualizzato il calendario degli eventi, ovvero l'elenco di tutti eventi
@@ -1001,8 +890,6 @@ maggiori dettagli(ad es. una descrizione più estesa).
   <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />
   <img width="310" alt="event detail screen" src="../images/calendar_detail.png" />
 </div>
-
-[Torna su](#indice)
 
 ## Annunci (solo Mastodon)
 
@@ -1027,8 +914,6 @@ tua reazione, questa verrà rimossa e di conseguenza il contatore verrà decreme
   <img width="310" alt="calendar event list screen" src="../images/announcements.png" />
 </div>
 
-[Torna su](#indice)
-
 ## Scorciatoie
 
 Questa schermata presenta una lista delle scorciatoie verso istanze esterne che sono state aggiunte
@@ -1045,5 +930,3 @@ quest'ultimo (ragion per cui le operazioni potrebbero richiere un po' più di te
   <img width="310" alt="calendar event list screen" src="../images/shortcut_list.png" />
   <img width="310" alt="event detail screen" src="../images/shortcut_detail.png" />
 </div>
-
-[Torna su](#indice)
