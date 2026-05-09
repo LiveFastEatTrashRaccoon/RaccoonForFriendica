@@ -505,4 +505,33 @@
     <string name="button_discard">Отбросить</string>
     <string name="unsaved_draft_title">Несохраненный черновик</string>
     <string name="action_open_in_browser">Открыть в браузере</string>
+    <string name="action_select_foreign_instance"></string>
+    <string name="comment_bar_theme_red"></string>
+    <string name="language_ru" translatable="false"></string>
+    <string name="language_it" translatable="false"></string>
+    <string name="language_pl" translatable="false"></string>
+    <string name="language_pt_br" translatable="false"></string>
+    <string name="language_pt" translatable="false"></string>
+    <string name="language_uk" translatable="false"></string>
+    <string name="translation_provider_config_field_api_key"></string>
+    <string name="comment_bar_theme_green"></string>
+    <string name="translation_provider_config_field_server_url"></string>
+    <string name="action_manage_circles"></string>
+    <string name="settings_item_translation_provider"></string>
+    <string name="language_es" translatable="false"></string>
+    <string name="language_ro" translatable="false"></string>
+    <string name="language_ta" translatable="false"></string>
+    <plurals name="extended_social_info_quotes">
+    </plurals>
+    <string name="comment_bar_theme_blue"></string>
+    <string name="action_remove"></string>
+    <string name="language_de" translatable="false"></string>
+    <string name="language_en" translatable="false"></string>
+    <string name="settings_item_comment_bar_theme"></string>
+    <string name="action_back_to_home_instance"></string>
+    <string name="translation_provider_config_dialog_title"></string>
+    <string name="comment_bar_theme_rainbow"></string>
+    <string name="language_fi" translatable="false"></string>
+    <string name="language_fr" translatable="false"></string>
+    <string name="action_add"></string>
 </resources>
