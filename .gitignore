@@ -6,6 +6,7 @@ xcuserdata
 !src/**/build/
 local.properties
 .idea
+site/
 .DS_Store
 captures
 .externalNativeBuild
