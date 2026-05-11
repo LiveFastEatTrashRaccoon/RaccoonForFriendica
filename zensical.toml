@@ -178,7 +178,7 @@ features = [
     # This feature turns on navigation elements in the footer that allow the
     # user to navigate to a next or previous page.
     # https://zensical.org/docs/setup/footer/#navigation
-    "navigation.footer",
+    # "navigation.footer",
 
     # When navigation footer elements are enabled, documents can be directly attached
     # to sections, which is particularly useful for providing overview pages.
