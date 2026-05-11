@@ -76,7 +76,7 @@ will not be displayed).
     great job and changed the API response in order to make it possible to any app (not just Raccoon!)
     to display them properly.
 
-## Application UI general structure
+## UI general structure
 
 The application UI is divided into three parts:
 
