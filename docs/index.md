@@ -112,11 +112,8 @@ useful
 links:
 
 - check out the [User manual](manual/en/index.md);
-- have a look at the
-  project's [README](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/README.md)
-- consult
-  the [CONTRIBUTING](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/CONTRIBUTING.md)
-  guide.
+- visit our [Blog](https://livefasteattrashraccoon.github.io/blog/archive){ target = _blank };
+- have a look at the [README](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/README.md){ target = _blank };
 
 If, on the other hand, you just want to interact with the community, provide suggestions, report
 bugs, contribute with translations or tell your opinion, you can:
