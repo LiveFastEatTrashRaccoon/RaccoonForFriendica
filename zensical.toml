@@ -50,6 +50,7 @@ nav = [
         { "English" = "manual/en/index.md" },
         { "Italiano" = "manual/it/index.md" },
     ] },
+    { "Privacy" = "privacy.md" }
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize
@@ -313,6 +314,18 @@ alternate = [
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
 link = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica"
+
+[project.extra.consent]
+title = "Cookies"
+description = """
+    We only use strictly necessary cookies to make our site work. We do not use any tracking,
+    advertising, or analytical cookies. For more information, please see our
+    <a href="privacy">Privacy Policy</a>.
+"""
+actions = [
+    "accept",
+    "reject"
+]
 
 # ----------------------------------------------------------------------------
 # In this section you can configure the Markdown extensions that are used when
