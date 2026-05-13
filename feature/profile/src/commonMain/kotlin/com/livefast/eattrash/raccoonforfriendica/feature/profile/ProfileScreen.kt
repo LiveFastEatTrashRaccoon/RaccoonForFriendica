@@ -94,7 +94,6 @@ fun ProfileScreen(
     ) {
         Scaffold(
             modifier = modifier,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             topBar = {
                 TopAppBar(
                     windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),

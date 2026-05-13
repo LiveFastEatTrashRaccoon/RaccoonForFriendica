@@ -147,7 +147,6 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
 
     Scaffold(
         modifier = modifier.safeImePadding(),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 modifier = Modifier.clickable { scope.launch { goBackToTop() } },

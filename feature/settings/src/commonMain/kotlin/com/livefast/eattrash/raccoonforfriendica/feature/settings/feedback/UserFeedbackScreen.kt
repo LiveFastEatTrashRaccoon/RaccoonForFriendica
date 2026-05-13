@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -81,7 +80,6 @@ fun UserFeedbackScreen(modifier: Modifier = Modifier) {
         modifier
             .navigationBarsPadding()
             .safeImePadding(),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
