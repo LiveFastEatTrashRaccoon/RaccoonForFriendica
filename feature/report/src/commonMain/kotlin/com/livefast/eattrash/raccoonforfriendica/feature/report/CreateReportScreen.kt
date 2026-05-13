@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.report
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -99,7 +98,6 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .navigationBarsPadding()
             .safeImePadding(),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),

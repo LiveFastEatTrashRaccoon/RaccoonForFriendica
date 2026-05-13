@@ -270,9 +270,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                         }
                     } else {
                         ProvideCustomFontScale {
-                            Scaffold(
-                                contentWindowInsets = WindowInsets(0, 0, 0, 0),
-                            ) { paddingValues ->
+                            Scaffold(content = { paddingValues ->
                                 val startDestination: Destination = Destination.Main
                                 var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
                                     mutableStateOf(startDestination)
@@ -350,7 +348,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                         }
                                     }
                                 }
-                            }
+                            },)
                         }
                     }
                 }

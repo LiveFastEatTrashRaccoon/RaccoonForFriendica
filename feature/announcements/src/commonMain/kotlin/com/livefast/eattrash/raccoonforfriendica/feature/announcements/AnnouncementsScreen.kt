@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.announcements
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -88,7 +87,6 @@ fun AnnouncementsScreen(modifier: Modifier = Modifier) {
 
     Scaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 modifier = Modifier.clickable { scope.launch { goBackToTop() } },
