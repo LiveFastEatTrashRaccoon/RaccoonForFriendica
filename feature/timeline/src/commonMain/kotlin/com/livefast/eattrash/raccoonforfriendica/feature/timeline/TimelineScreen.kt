@@ -196,19 +196,17 @@ fun TimelineScreen(
                 },
                 navigationIcon = {
                     if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-                        if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
-                                    }
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = LocalResources.current.menu,
-                                    contentDescription = LocalStrings.current.actionOpenSideMenu,
-                                )
-                            }
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerCoordinator.toggleDrawer()
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = LocalResources.current.menu,
+                                contentDescription = LocalStrings.current.actionOpenSideMenu,
+                            )
                         }
                     }
                 },

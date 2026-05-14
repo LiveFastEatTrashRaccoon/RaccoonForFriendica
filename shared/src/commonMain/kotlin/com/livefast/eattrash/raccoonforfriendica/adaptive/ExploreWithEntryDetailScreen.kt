@@ -15,8 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.ge
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
