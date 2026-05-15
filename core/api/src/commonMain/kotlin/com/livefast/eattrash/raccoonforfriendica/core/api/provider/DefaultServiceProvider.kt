@@ -51,6 +51,8 @@ import kotlinx.serialization.json.Json
 internal class DefaultServiceProvider(
     private val factory: HttpClientEngine,
     private val appInfoRepository: AppInfoRepository,
+    private val requestTimeout: Long = 600_000,
+    private val connectTimeout: Long = 30_000,
 ) : ServiceProvider {
     companion object {
         private const val REAM_NAME = "Friendica"
@@ -104,10 +106,12 @@ internal class DefaultServiceProvider(
                         host = currentNode
                     }
                 }
-                install(HttpTimeout) {
-                    requestTimeoutMillis = 600_000
-                    connectTimeoutMillis = 30_000
-                    socketTimeoutMillis = 30_000
+                if (requestTimeout > 0 && connectTimeout > 0) {
+                    install(HttpTimeout) {
+                        requestTimeoutMillis = requestTimeout
+                        connectTimeoutMillis = connectTimeout
+                        socketTimeoutMillis = connectTimeout
+                    }
                 }
                 install(HttpRequestRetry) {
                     retryOnServerErrors(maxRetries = 3)
