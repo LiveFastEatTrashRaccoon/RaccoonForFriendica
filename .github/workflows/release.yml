@@ -43,10 +43,10 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew :androidApp:assembleRelease --stacktrace
 
       - name: Build Debian package
-        run: ./gradlew :shared:packageDeb --stacktrace
+        run: ./gradlew :desktopApp:packageDeb --stacktrace
 
       - name: Upload release build to artifacts
         uses: actions/upload-artifact@v7
@@ -54,7 +54,7 @@ jobs:
           name: release-artifacts
           path: |
             androidApp/build/outputs/apk/release/*.apk
-            shared/build/compose/binaries/main/deb/*.deb
+            desktopApp/build/compose/binaries/main/deb/*.deb
 
       - name: Create Github release
         uses: softprops/action-gh-release@v3
@@ -64,4 +64,4 @@ jobs:
           make_latest: true
           files: |
             androidApp/build/outputs/apk/release/*.apk
-            shared/build/compose/binaries/main/deb/*.deb
+            desktopApp/build/compose/binaries/main/deb/*.deb
