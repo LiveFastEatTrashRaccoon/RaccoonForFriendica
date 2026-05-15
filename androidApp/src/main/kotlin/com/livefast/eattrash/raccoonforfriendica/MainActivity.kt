@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            MainView(
+            App(
                 onLoadingFinished = {
                     loadingFinished = true
                 },
