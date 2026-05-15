@@ -92,6 +92,7 @@ dependencies {
     implementation(projects.core.resources)
     implementation(projects.domain.content.repository)
     implementation(projects.domain.identity.repository)
+    implementation(projects.domain.pushnotifications)
 
     debugImplementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.test.manifest)
