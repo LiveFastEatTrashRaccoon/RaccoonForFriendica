@@ -10,24 +10,32 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 
 class LibreTranslateProvider(
     private val baseUrl: String,
     private val apiKey: String? = null,
     factory: HttpClientEngine = provideHttpClientEngine(),
+    private val requestTimeout: Long = 600_000,
+    private val connectTimeout: Long = 30_000,
 ) : TranslationProvider {
 
     private val client = HttpClient(factory) {
-        install(HttpTimeout) {
-            requestTimeoutMillis = 600_000
-            connectTimeoutMillis = 30_000
-            socketTimeoutMillis = 30_000
+        expectSuccess = false
+        if (requestTimeout > 0 && connectTimeout > 0) {
+            install(HttpTimeout) {
+                requestTimeoutMillis = requestTimeout
+                connectTimeoutMillis = connectTimeout
+                socketTimeoutMillis = connectTimeout
+            }
         }
         install(HttpRequestRetry) {
             retryOnServerErrors(maxRetries = 3)
@@ -43,20 +51,26 @@ class LibreTranslateProvider(
         }
     }
 
-    override suspend fun translate(sourceText: String, sourceLang: String, targetLang: String): String {
-        val inputData = TranslationRequestBody(
-            text = sourceText,
-            source = sourceLang,
-            target = targetLang,
-            format = DEFAULT_FORMAT,
-            apiKey = apiKey.orEmpty(),
-        )
+    override suspend fun translate(sourceText: String, sourceLang: String, targetLang: String): String = runCatching {
         val response = client.post("$baseUrl/translate") {
             contentType(ContentType.Application.Json)
-            setBody(inputData)
+            accept(ContentType.Application.Json)
+            setBody(
+                TranslationRequestBody(
+                    text = sourceText,
+                    source = sourceLang,
+                    target = targetLang,
+                    format = DEFAULT_FORMAT,
+                    apiKey = apiKey.orEmpty(),
+                ),
+            )
         }
+        check(response.status.isSuccess())
         val outputData: TranslationResponseBody = response.body()
-        return outputData.text.orEmpty()
+        outputData.text.orEmpty()
+    }.getOrElse { e ->
+        if (e is CancellationException) throw e
+        ""
     }
 
     companion object {

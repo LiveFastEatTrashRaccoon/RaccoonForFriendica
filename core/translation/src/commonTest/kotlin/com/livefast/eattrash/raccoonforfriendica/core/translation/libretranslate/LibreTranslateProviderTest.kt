@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.core.translation.libretranslat
 
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
-import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
@@ -26,7 +25,7 @@ class LibreTranslateProviderTest {
             respond(
                 content = """{"translatedText":"$expectedTranslation"}""",
                 status = HttpStatusCode.OK,
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
             )
         }
 
@@ -34,6 +33,7 @@ class LibreTranslateProviderTest {
             baseUrl = baseUrl,
             apiKey = apiKey,
             factory = mockEngine,
+            requestTimeout = -1L,
         )
 
         val result = sut.translate(sourceText, sourceLang, targetLang)
@@ -49,9 +49,9 @@ class LibreTranslateProviderTest {
 
         val mockEngine = MockEngine {
             respond(
-                content = "{message: \"exceeded quota\"}",
+                content = """{"message": "exceeded quota"}""",
                 status = HttpStatusCode.Forbidden,
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
             )
         }
 
@@ -59,6 +59,7 @@ class LibreTranslateProviderTest {
             baseUrl = baseUrl,
             apiKey = apiKey,
             factory = mockEngine,
+            requestTimeout = -1L,
         )
 
         val result = sut.translate(sourceText, sourceLang, targetLang)
