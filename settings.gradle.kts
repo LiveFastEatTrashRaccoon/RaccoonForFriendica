@@ -36,6 +36,7 @@ dependencyResolutionManagement {
 
 include(":shared")
 include(":androidApp")
+include(":desktopApp")
 
 include(":core:api")
 include(":core:appearance")
