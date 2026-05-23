@@ -1,12 +1,12 @@
 # User manual
 
 Welcome to the User Manual of Raccoon for Friendica! This guide contains an explanation of the most
-important features of the app and intends to be an near-exhaustive guide to all what you can (and
+important features of the app and intends to be a near-exhaustive guide to all what you can (and
 can't) do from the app.
 
 ## Introduction
 
-**Friendica** is social platform and it has all the features you would expect from a piece of
+**Friendica** is social platform, and it has all the features you would expect from a piece of
 software of this category, you can:
 
 - see the timeline of posts created by other users;
@@ -146,7 +146,7 @@ Moreover, from each single post it is possible to:
 
 - access the [profile](#user-profile) of all users involved (author, re-sharer or original poster);
 - enter the [post detail](#post-detail) screen;
-- open the a drop-down action menu to:
+- open a drop-down action menu to:
   - share it via the system share mechanism;
   - copy its URL to the clipboard;
   - copy its title and content to clipboard;
@@ -157,10 +157,10 @@ Moreover, from each single post it is possible to:
   - open a "Details" screen with the raw source and additional information;
   - edit or delete it (only if you are the author);
   - translate the post content if its language is different from the current one (experimental);
-  - add a [shortcut](#shortcuts) to the instance where the posts belongs (if it is different from
+  - add a [shortcut](#shortcuts) to the instance where the posts belong (if it is different from
     the current one).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="timeline screen" src="../images/timeline.png" />
   <img width="310" alt="timeline with mute user dialog" src="../images/mute_bottom_sheet.png" />
 </div>
@@ -170,7 +170,7 @@ Moreover, from each single post it is possible to:
 In this screen you will be able to see it in its context (with ancestors until the root post
 and all descendants).
 
-Moreover you can the list of users who re-shared it or added it to their favorites.
+Moreover, you can the list of users who re-shared it or added it to their favorites.
 
 Apart from that, this screen is very similar to a regular [timeline](#timeline), and allows to
 perform the same actions and open user profiles or other post details.
@@ -179,7 +179,7 @@ If you open a post detail from a timeline-like screen (Home, Explore, Search, Fa
 list content, hashtag timeline, user detail) you will be able to navigate to the previous or next
 post in the sequence with horizontal swipe gestures.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="post detail screen" src="../images/post_detail.png" />
 </div>
 
@@ -191,7 +191,7 @@ tap to enter the pinch-to-zoom mode.
 From the top bar action menu, you can download the attachment to your device, share it as a file or
 as a URL and, for images, adjust the aspect ratio in case if were not displaying correctly.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="zoomable image detail screen" src="../images/image_detail.png" />
 </div>
 
@@ -234,7 +234,7 @@ From the top app bar action menu, you can also:
 - add a personal note on the user;
 - switch to [forum mode](#forum-mode) (if it is a group).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="user detail (classic mode) screen" src="../images/user_detail.png" />
 </div>
 
@@ -246,40 +246,40 @@ item you will enter the [thread detail](#thread-detail).
 
 From the top app bar action menu, you can also switch to [classic mode](#classic-mode).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="user detail (forum mode) screen" src="../images/forum_list.png" />
 </div>
 
 ## Thread detail
 
 This screen is similar to a [post detail](#post-detail) but comments are displayed in a Lemmy-like
-layout, i.e. indented according to their nesting level and with a coloured bar which makes it easier
+layout, i.e. indented according to their nesting level and with a colored bar which makes it easier
 to distinguish parent-child relationship between replies.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="thread detail screen" src="../images/thread_detail.png" />
 </div>
 
 ## Hashtag feed
 
 The hashtag feed is a special kind of [timeline](#timeline) featuring all the posts containing a
-given hashtag and it follows the same structure.
+given hashtag, and it follows the same structure.
 
 From the top app bar, you will be able to follow or unfollow the hashtag.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="hashtag feed screen" src="../images/hashtag_feed.png" />
 </div>
 
 ## Favorites & bookmarks
 
-Favorites and bookmarks are special kinds of [timelines](#timeline) and they follow the same
+Favorites and bookmarks are special kinds of [timelines](#timeline), and they follow the same
 structure.
 
 The only difference is that if you un-favorite or un-bookmark a post it will immediately disappear
 from the feed.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="favorites screen" src="../images/favorites.png" />
   <img width="310" alt="bookmarks screen" src="../images/bookmarks.png" />
 </div>
@@ -291,7 +291,7 @@ unfollow each one of them.
 
 Each item of this list allows to open the corresponding [feed](#hashtag-feed).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="followed hashtags screen" src="../images/followed_hashtags.png" />
 </div>
 
@@ -316,7 +316,7 @@ option selected in the [app settings](#application-settings).
 * note that on different backends the number or days may vary from 1 to 7 days depending on the server
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="explore screen (hashtags section)" src="../images/explore_hashtags.png" />
   <img width="310" alt="explore screen (links section)" src="../images/explore_links.png" />
 </div>
@@ -331,7 +331,7 @@ query string and a tab selector to choose the desired result type (either Posts,
 Opening a hashtag will lead you to the [dedicated feed](#hashtag-feed), opening a post to
 its [detail](#post-detail) and opening a user to the corresponding [profile](#user-profile).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="../images/search.png" />
 </div>
 
@@ -359,13 +359,13 @@ Moreover, it is possible to:
 - mark all notifications as read, by simply refresh the page (which will reset the unread counter);
 - dismiss all notifications by using the "Done all" button in the top bar.
 
-**Be careful**: after being dismissed notifications are cleared from the server and you will not be
-able to browse the list any more!
+**Be careful**: after being dismissed notifications are cleared from the server, and you will not be
+able to browse the list anymore!
 
 Tapping on each item of the list, it is possible to open the [user profile](#user-profile)
 or [post detail](#post-detail).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="inbox screen" src="../images/inbox.png" />
 </div>
 
@@ -409,7 +409,7 @@ The login flow involves two of these steps:
 If you do not have an account, you will have to first create one from the instance website, then
 log in from the mobile app.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="login intro screen" src="../images/login_1.png" />
   <img width="310" alt="select instance screen" src="../images/login_2.png" />
   <img width="310" alt="select instance screen" src="../images/login_3.png" />
@@ -421,7 +421,7 @@ As previously stated, this screen looks very similar to a regular [user profile]
 In the header, instead of the relationship/notification buttons you will find an "Edit profile"
 button to open your [profile preferences](#profile-settings).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="profile screen" src="../images/profile.png" />
 </div>
 
@@ -435,7 +435,7 @@ the avatar, display name and username of users plus the corresponding relationsh
 You can use the follow/send request/mutuals button to modify your relationship with the given
 account.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="user list screen (profile following)" src="../images/user_list.png" />
 </div>
 
@@ -447,7 +447,7 @@ requests, this screen contains the list of pending follow request you have recei
 For each one of the items you can either accept or reject the request, as well as open the
 corresponding [user profile](#user-profile).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="follow request screen" src="../images/follow_requests.png" />
 </div>
 
@@ -462,7 +462,7 @@ This screen contains some information about the current instance you are connect
 - list of rules members of this server have to comply with;
 - backend type and software version.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="node info screen" src="../images/node_info.png" />
 </div>
 
@@ -482,7 +482,7 @@ Moreover, this dialog is the entry point for two informative screens:
 - the list of licences for the libraries and resources used in the app;
 - an acknowledgements page where all app contributors are listed.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="app information dialog" src="../images/app_info.png" />
   <img width="310" alt="licenses screen" src="../images/licenses.png" />
 </div>
@@ -510,7 +510,7 @@ The profile data which can be edited are:
 issues on some versions of Friendica
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="edit profile screen" src="../images/edit_profile.png" />
 </div>
 
@@ -534,7 +534,7 @@ sections:
     following values:
     - **Always** images are loaded automatically no matter the type of network connection;
     - **On demand** images are never loaded unless you manually use the "Load" button;
-    - **In WiFi** images are loaded automatically on WiFi networks and on demand on metered
+    - **In WiFi** images are loaded automatically on Wi-Fi networks and on demand on metered
       networks (data saving mode);
   - **Markup for compositing** determines the type of markup syntax used in new posts (plain text —
     i.e. no markup — BBCode — Friendica-specific — HTML or Markdown — Mastodon
@@ -596,7 +596,7 @@ remote account you are currently using on your instance
 so please make sure the battery saving restrictions for Raccoon in your system settigs
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="settings screen, part 1" src="../images/settings_1.png" />
   <img width="310" alt="settings screen, part 2" src="../images/settings_2.png" />
 </div>
@@ -611,7 +611,7 @@ following sections:
 - **Limited** for user with a rate-limit;
 - **Words** for specific filters based on words you choose to exclude from your timeline.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="manage bans screen" src="../images/manage_bans.png" />
 </div>
 
@@ -656,7 +656,7 @@ formatting toolbar with the following buttons:
   - a Schedule icon for scheduled posts.
 
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="composer screen" src="../images/composer.png" />
 </div>
 
@@ -686,7 +686,7 @@ the server (with a 422 - Unprocessable entity), so this option has been hidden
 any effect
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="create report screen" src="../images/report.png" />
 </div>
 
@@ -704,7 +704,7 @@ because they do not have an account).
 Warning: this only works if you have activated the "Enable anonymous crash reports" option in
 the [settings](#application-settings) screen.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="submit user feedback screen" src="../images/user_feedback.png" />
 </div>
 
@@ -739,7 +739,7 @@ By tapping on each item in the circle list, you will open the corresponding post
 - the [forum mode](#forum-mode) for groups;
 - a dedicated timeline, for all other circles.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="circle list screen" src="../images/circles_list.png" />
   <img width="310" alt="circle detail screen" src="../images/circle_detail.png" />
 </div>
@@ -761,7 +761,7 @@ message bubbles and a text field in the bottom part of the screen to send new on
 Messages are being downloaded as long as they arrive while you are in this screen, otherwise you
 have to manually refresh the conversation list.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="conversation list screen" src="../images/dm_list.png" />
   <img width="310" alt="conversation  detail screen" src="../images/dm_detail.png" />
 </div>
@@ -777,14 +777,14 @@ For each picture in an album, you will have the possibility to:
 - delete it from the Gallery;
 - move it to another album.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="gallery list screen" src="../images/gallery_list.png" />
   <img width="310" alt="gallery  detail screen" src="../images/gallery_detail.png" />
 </div>
 
 ## Unpublished items
 
-This screen contains all the items awaiting publication and it is divided into two sections:
+This screen contains all the items awaiting publication, and it is divided into two sections:
 
 - **Scheduled** i.e. the list scheduled posts;
 - **Drafts** i.e. the list of drafts you created;
@@ -800,7 +800,7 @@ schedule date, so the preferred way to save a post and edit for later is:
   database and are not stored anywhere remotely, so will lose them if you change device or clear the
   application storage of Raccoon.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="unpublished items screen" src="../images/drafts.png" />
 </div>
 
@@ -817,7 +817,7 @@ for each item:
 For each event, you can export it to your device calendar and, by tapping on each list item, access
 a detail screen where more details (like a more extended description) are displayed.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />
   <img width="310" alt="event detail screen" src="../images/calendar_detail.png" />
 </div>
@@ -835,11 +835,11 @@ For each item in the list you can see:
 
 Every time you refresh this list, all unread items are marked as read.
 
-You can tap on an existing reaction to increment the counter by 1 or you can use the "+" button to
-insert a new reaction. If you tap again on your reaction, you are going to removed it and the
+You can tap on an existing reaction to increment the counter by 1, or you can use the "+" button to
+insert a new reaction. If you tap again on your reaction, you are going to remove it and the
 counter will therefore be decremented by 1.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="calendar event list screen" src="../images/announcements.png" />
 </div>
 
@@ -853,7 +853,7 @@ similar to a regular [timeline](#timeline) but, whenever you perform an interact
 add to bookmarks) the post is "translated" to a reference on your current instance and the action
 takes effect on that (this is why operations may take longer).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="calendar event list screen" src="../images/shortcut_list.png" />
   <img width="310" alt="event detail screen" src="../images/shortcut_detail.png" />
 </div>

@@ -273,7 +273,6 @@ private object AboutConstants {
         "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/releases/latest"
     const val WEBSITE_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica"
     const val GROUP_URL = "https://poliverso.org/profile/raccoonforfriendicaapp"
-    const val MANUAL_URL =
-        "https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/main"
+    const val MANUAL_URL = "https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/en"
     const val MATRIX_URL = "https://matrix.to/#/#raccoonforfriendicaapp:matrix.org"
 }

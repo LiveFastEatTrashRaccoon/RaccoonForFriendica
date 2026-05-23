@@ -11,7 +11,7 @@ da un software di questo tipo, in particolare permette di:
 
 - visualizzare la timeline dei post creati da altri utenti;
 - seguire un hashtag e visualizzare tutti i post che lo contengono;
-- creare nuovi post di primo livello o risposte ai post di altri, o pianificarne la pubblicazione
+- creare nuovi post di primo livello o risposte a post di altri, o pianificarne la pubblicazione
   per un secondo momento (e modificare/eliminare i tuoi post);
 - reagire con "mi piace" (o "non mi piace") ai post;
 - salvare un post nei segnalibri;
@@ -37,7 +37,7 @@ altre piattaforme federate simili:
 - implementa il concetto di gruppi definiti dall'utente o _cerchie_, che possono essere utilizzati
   anche come destinatari per la pubblicazione (in uscita) e non solo come timeline personalizzate
   (in ingresso);
-- messaggi diretti: permette di inviare direttamente un messaggio ad uno degli utenti che segui ed
+- messaggi diretti: permette di inviare direttamente un messaggio a uno degli utenti che segui e
   avere una conversazione privata;
 - galleria foto: permette di caricare foto e organizzarle in album, inoltre puoi inserire gli
   allegati facilmente nei tuoi post selezionandoli dal catalogo;
@@ -46,7 +46,7 @@ altre piattaforme federate simili:
 - supporta la citazione di post all'interno di altri post (ovvero il _cross-posting_);
 - permette di importare feed RSS in modo da poterli seguire come account normali e ricondividere
   i loro post;
-- permette di delegare la gestione di un account ad uno o più altri account e creare in modo molto
+- permette di delegare la gestione di un account a uno o più altri account e creare in modo molto
   semplice degli account indipendenti associati al tuo;
 - e, ovviamente, [molto altro ancora](https://friendi.ca/about/features).
 
@@ -170,7 +170,7 @@ Infine, a partire da ogni post è possibile:
   - aggiungere una [scorciatoia](#scorciatoie) all'istanza cui appartiene (se diversa da quella
     attuale).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="timeline screen" src="../images/timeline.png" />
   <img width="310" alt="timeline with mute user dialog" src="../images/mute_bottom_sheet.png" />
 </div>
@@ -184,7 +184,7 @@ ricevute).
 Inoltre, è possibile visualizzare l'elenco degli utenti che lo hanno ricondiviso o aggiunto ai
 preferiti.
 
-Comunque, questa schermata è molto simile ad una normale [timeline](#timeline) e consente di
+Comunque, questa schermata è molto simile a una normale [timeline](#timeline) e consente di
 eseguire le stesse azioni su post (reazioni e menu opzioni a scomparsa), nonché aprire i profili
 utente o il dettaglio di altri post della conversazione.
 
@@ -192,7 +192,7 @@ Se il dettaglio post viene aperto da una timeline (Home, Esplora, Preferiti, Seg
 lista, lista post contenenti hashtag, dettaglio utente) sarà possibile navigare al post precedente o
 al successivo con gesti di scorrimento orizzontale.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="post detail screen" src="../images/post_detail.png" />
 </div>
 
@@ -205,7 +205,7 @@ Dal menu azioni della barra superiore, è possibile scaricare l'allegato sul tuo
 condividerlo come file o come URL e, per le immagini, regolare le proporzioni nel caso in cui non
 venissero visualizzate correttamente.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="zoomable image detail screen" src="../images/image_detail.png" />
 </div>
 
@@ -220,7 +220,7 @@ la _modalità classica_ (per account individuali) e la _modalità forum_ (per ac
 Questa schermata si compone di due parti:
 
 - un'intestazione che mostra nome visualizzato, nome utente, immagine profilo e immagine di
-  copertina, il numero di seguaci/seguiti (da da cui è possibile aprire la lista utenti), biografia
+  copertina, il numero di seguaci/seguiti (da cui è possibile aprire la lista utenti), biografia
   e una serie di campi personalizzati;
 - l'elenco dei post creati dall'utente, suddiviso nelle seguenti sezioni:
   - **Post** elenco dei post di primo livello creati dall'utente;
@@ -252,7 +252,7 @@ Dal menu a scomparsa nella barra superiore è inoltre possibile:
 - aggiungere una nota personale;
 - passare alla [modalità forum](#modalita-forum) (se si tratta di un gruppo).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="user detail (classic mode) screen" src="../images/user_detail.png" />
 </div>
 
@@ -266,7 +266,7 @@ accedere al [dettaglio discussione](#dettaglio-discussione).
 Dal menu a scomparsa nella barra superiore, è inoltre possibile passare
 alla [modalità classica](#modalita-classica).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="user detail (forum mode) screen" src="../images/forum_list.png" />
 </div>
 
@@ -277,7 +277,7 @@ visualizzati con un layout in stile Lemmy, ovvero con un rientro a sinistra vari
 loro livello di annidamento e con una barra colorata che rende più facile individuare le relazioni
 di discendenza tra ogni post e le sue risposte.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="thread detail screen" src="../images/thread_detail.png" />
 </div>
 
@@ -289,7 +289,7 @@ schermata ha la stessa struttura di una timeline.
 
 Dalla barra superiore è possibile seguire (o smettere di seguire) l'hashtag in questione.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="hashtag feed screen" src="../images/hashtag_feed.png" />
 </div>
 
@@ -301,7 +301,7 @@ la stessa struttura delle timeline.
 L'unica differenza è che, se un post viene rimosso dai preferiti o dai segnalibri rispettivamente,
 esso scomparirà immediatamente dall'elenco.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="favorites screen" src="../images/favorites.png" />
   <img width="310" alt="bookmarks screen" src="../images/bookmarks.png" />
 </div>
@@ -314,7 +314,7 @@ smettere di seguirli.
 Ciascun elemento di questa lista permette di aprire
 l'[elenco post](#elenco-post-contenenti-un-hashtag) associato.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="followed hashtags screen" src="../images/followed_hashtags.png" />
 </div>
 
@@ -341,7 +341,7 @@ URL" selezionata nelle [impostazioni](#impostazioni-applicazione).
 seconda della tipologia di istanza
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="explore screen (hashtags section)" src="../images/explore_hashtags.png" />
   <img width="310" alt="explore screen (links section)" src="../images/explore_links.png" />
 </div>
@@ -360,7 +360,7 @@ relativo [elenco post](#elenco-post-contenenti-un-hashtag),
 facendo tap su un post si aprirà il relativo [dettaglio](#dettaglio-post) e facendo tap su un utente
 il [profilo](#profilo-utente) associato.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="search screen (posts section with 'raccoon' keyword)" src="../images/search.png" />
 </div>
 
@@ -396,7 +396,7 @@ più possibile visualizzarne l'elenco!
 Facendo tap su ciascuna voce della lista è possibile aprire il
 relativo [profilo utente](#profilo-utente) o [dettaglio post](#dettaglio-post).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="inbox screen" src="../images/inbox.png" />
 </div>
 
@@ -445,7 +445,7 @@ Il flusso di accesso prevede due tra questi passaggi:
 Se non disponi di un account, è necessario prima di tutto crearlo dal sito web dell'istanza, quindi
 effettuare il login nell'app mobile.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="login intro screen" src="../images/login_1.png" />
   <img width="310" alt="select instance screen" src="../images/login_2.png" />
   <img width="310" alt="select instance screen" src="../images/login_3.png" />
@@ -458,7 +458,7 @@ normale [profilo utente](#profilo-utente). Nell'intestazione, al posto del pulsa
 attivare le notifiche sarà presente un pulsante "Modifica profilo"
 che permette di accedere alle [preferenze del profilo](#impostazioni-account).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="profile screen" src="../images/profile.png" />
 </div>
 
@@ -473,7 +473,7 @@ e il nome utente, oltre al corrispondente stato di relazione con il tuo account.
 Puoi utilizzare i pulsanti Segui/Invia richiesta/Reciproci per modificare la tua relazione con
 questo utente.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="user list screen (profile following)" src="../images/user_list.png" />
 </div>
 
@@ -486,7 +486,7 @@ ricevute che risultano in attesa di approvazione.
 Per ciascuna delle voci dell'elenco è possibile accettare o rifiutare la richiesta nonché
 visualizzare il [profilo](#profilo-utente) dell'utente.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="follow request screen" src="../images/follow_requests.png" />
 </div>
 
@@ -502,7 +502,7 @@ particolare:
 - lista di regole che devono essere rispettate dai membri dell'istanza;
 - tipologia di backend e versione del software in esecuzione sul server.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="node info screen" src="../images/node_info.png" />
 </div>
 
@@ -522,7 +522,7 @@ Inoltre, questa finestra di dialogo contiene il punto accesso a due schermate in
 - lista delle licenze relative alle librerie e alle risorse usate nell'app;
 - una pagina di Riconoscimenti che elenca tutti coloro i quali hanno contribuito all'app.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="app information dialog" src="../images/app_info.png" />
   <img width="310" alt="licenses screen" src="../images/licenses.png" />
 </div>
@@ -550,7 +550,7 @@ I dati del profilo che possono essere modificati sono:
 problemi di compatibilità noti in alcune versioni di Friendica
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="edit profile screen" src="../images/edit_profile.png" />
 </div>
 
@@ -647,7 +647,7 @@ stati utilizzando sulla tua istanza
 background, controlla le impostazioni di risparmio energetico di Raccoon nelle impostazioni di sistema
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="settings screen, part 1" src="../images/settings_1.png" />
   <img width="310" alt="settings screen, part 2" src="../images/settings_2.png" />
 </div>
@@ -662,7 +662,7 @@ ad altri account. È suddivisa in due sezioni:
 - **Limitati** dedicata agli utenti con una quota di pubblicazione;
 - **Parole** per filtri specifici basati su parole da escludere dalle timeline.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="manage bans screen" src="../images/manage_bans.png" />
 </div>
 
@@ -714,7 +714,7 @@ pulsanti:
   - un'icona Salva per il salvataggio in bozze;
   - un'icona Orologio per i post schedulati.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="composer screen" src="../images/composer.png" />
 </div>
 
@@ -747,7 +747,7 @@ segnalazioni è stata nascosta
 sembra avere alcun effetto
 </p>
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="create report screen" src="../images/report.png" />
 </div>
 
@@ -765,7 +765,7 @@ tracker su GitHub (ad es. perché non hanno un account).
 Attenzione: questa funzionalità può essere utilizzata solo se l'opzione "Abilita segnalazioni
 anonime arresti anomali" è abilitata nella schermata [impostazioni](#impostazioni-applicazione).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="submit user feedback screen" src="../images/user_feedback.png" />
 </div>
 
@@ -803,7 +803,7 @@ Facendo tap su ogni voce della lista cerchie, verrà aperta la lista dei post co
 - la [modalità forum](#modalita-forum) per i gruppi;
 - una timeline dedicata per tutte le altre cerchie.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="circle list screen" src="../images/circles_list.png" />
   <img width="310" alt="circle detail screen" src="../images/circle_detail.png" />
 </div>
@@ -826,7 +826,7 @@ nuovi messaggi.
 Da notare che i messaggi vengono scaricati man mano che arrivano finché questa schermata è aperta,
 altrimenti sarà necessario fare refresh manualmente sull'elenco delle conversazioni.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="conversation list screen" src="../images/dm_list.png" />
   <img width="310" alt="conversation  detail screen" src="../images/dm_detail.png" />
 </div>
@@ -843,7 +843,7 @@ Per ogni immagine all'interno di un album è possibile:
 - eliminarla dalla galleria;
 - spostarla in un altro album.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="gallery list screen" src="../images/gallery_list.png" />
   <img width="310" alt="gallery  detail screen" src="../images/gallery_detail.png" />
 </div>
@@ -868,7 +868,7 @@ modificarlo per in un secondo momento è:
   nel database dell'applicazione e non vengono archiviati da nessuna parte in remoto, quindi li
   perderai se cambi dispositivo o cancelli i dati di Raccoon.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="unpublished items screen" src="../images/drafts.png" />
 </div>
 
@@ -886,7 +886,7 @@ condivisi con te suddivisi per mese con, per ciascuna voce:
 sugli elementi della lista, accedere alla schermata di dettaglio in cui verranno visualizzati
 maggiori dettagli(ad es. una descrizione più estesa).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="calendar event list screen" src="../images/calendar_list.png" />
   <img width="310" alt="event detail screen" src="../images/calendar_detail.png" />
 </div>
@@ -910,7 +910,7 @@ Puoi fare tap su una delle reazioni esistenti per incrementare il contatore di 1
 utilizzare il pulsante "+" per aggiungere una nuova reazione. Se fai una seconda volta tap sulla
 tua reazione, questa verrà rimossa e di conseguenza il contatore verrà decrementato di 1.
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="calendar event list screen" src="../images/announcements.png" />
 </div>
 
@@ -926,7 +926,7 @@ si effettua un'interazione (ad es. aggiungere ai preferiti o ai segnalibri), il 
 "convertito" nel riferimento corrispondente sull'istanza attuale e l'azione ha effetto su
 quest'ultimo (ragion per cui le operazioni potrebbero richiere un po' più di tempo).
 
-<div align="center">
+<div style="text-align: center;">
   <img width="310" alt="calendar event list screen" src="../images/shortcut_list.png" />
   <img width="310" alt="event detail screen" src="../images/shortcut_detail.png" />
 </div>
