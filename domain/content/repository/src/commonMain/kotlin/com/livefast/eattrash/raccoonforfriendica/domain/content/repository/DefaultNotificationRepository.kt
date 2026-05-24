@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toRawValue
+import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -25,7 +26,7 @@ internal class DefaultNotificationRepository(private val provider: ServiceProvid
         if (pageCursor == null && cachedValues.isNotEmpty()) {
             return cachedValues
         }
-        return runCatching {
+        return try {
             val response =
                 provider.notification.get(
                     types = types.mapNotNull { it.toRawValue() },
@@ -41,7 +42,10 @@ internal class DefaultNotificationRepository(private val provider: ServiceProvid
                         }
                     }
                 }
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
     }
 
     override suspend fun dismiss(id: String): Boolean = provider.notification.dismiss(id)

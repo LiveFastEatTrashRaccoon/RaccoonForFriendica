@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import io.ktor.utils.io.CancellationException
 import kotlinx.serialization.json.Json
 
 internal class DefaultNodeInfoRepository(
@@ -18,23 +19,32 @@ internal class DefaultNodeInfoRepository(
 ) : NodeInfoRepository {
     override suspend fun getInfo(): NodeInfoModel? {
         val instanceInfo =
-            runCatching {
+            try {
                 provider.instance.getInfo()
-            }.getOrNull()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                null
+            }
 
         val softwareName =
-            runCatching {
+            try {
                 extractSoftwareName()
-            }.getOrNull()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                null
+            }
 
         return instanceInfo?.toModel()?.copy(
             software = softwareName,
         )
     }
 
-    override suspend fun getRules(): List<RuleModel>? = runCatching {
+    override suspend fun getRules(): List<RuleModel>? = try {
         provider.instance.getRules().map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     private suspend fun extractSoftwareName(): String {
         val linksJson =

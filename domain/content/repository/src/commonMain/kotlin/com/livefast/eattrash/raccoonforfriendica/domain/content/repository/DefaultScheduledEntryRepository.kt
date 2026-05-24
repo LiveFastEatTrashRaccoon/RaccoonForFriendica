@@ -5,21 +5,28 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultScheduledEntryRepository(private val provider: ServiceProvider) : ScheduledEntryRepository {
-    override suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
+    override suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>? = try {
         provider.status
             .getScheduled(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getById(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun getById(id: String): TimelineEntryModel? = try {
         provider.status.getScheduledById(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun update(id: String, date: String): TimelineEntryModel? = runCatching {
+    override suspend fun update(id: String, date: String): TimelineEntryModel? = try {
         val data =
             FormDataContent(
                 parameters {
@@ -31,7 +38,10 @@ internal class DefaultScheduledEntryRepository(private val provider: ServiceProv
                 id = id,
                 data = data,
             ).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun delete(id: String): Boolean = provider.status.deleteScheduled(id)
 

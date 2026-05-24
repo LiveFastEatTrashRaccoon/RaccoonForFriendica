@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withTimeoutOrNull
@@ -42,18 +43,22 @@ internal class DefaultApiConfigurationRepository(
         return validateCredentials(credentials = credentials, node = node)
     }
 
-    override suspend fun refresh() = runCatching {
+    override suspend fun refresh(): Result<Unit> = try {
         val oldCredentials = retrieveFromKeyStore()
         check(oldCredentials is ApiCredentials.OAuth2)
         check(oldCredentials.refreshToken.isNotEmpty()) {
             // prevent refresh attempt with long-lived tokens, so continue without failing
-            return@runCatching
+            return@refresh Result.success(Unit)
         }
 
         val newCredentials = authManager.performRefresh(refreshToken = oldCredentials.refreshToken)
         checkNotNull(newCredentials)
 
         setAuth(newCredentials)
+        Result.success(Unit)
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        return Result.failure(e)
     }
 
     private suspend fun validateCredentials(credentials: ApiCredentials?, node: String): Boolean =

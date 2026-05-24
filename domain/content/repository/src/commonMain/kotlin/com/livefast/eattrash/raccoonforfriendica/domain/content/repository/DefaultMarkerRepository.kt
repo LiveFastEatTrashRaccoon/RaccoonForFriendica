@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultMarkerRepository(private val provider: ServiceProvider) : MarkerRepository {
     private val cachedValues = mutableMapOf<MarkerType, MarkerModel>()
@@ -15,16 +16,19 @@ internal class DefaultMarkerRepository(private val provider: ServiceProvider) : 
         if (cachedValues.contains(type) && !refresh) {
             cachedValues[type]
         } else {
-            runCatching {
+            try {
                 provider.marker
                     .get(timelines = listOf(type.toDto()))
                     .toModel()
                     .firstOrNull { it.type == type }
                     ?.also { cachedValues[type] = it }
-            }.getOrNull()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                null
+            }
         }
 
-    override suspend fun update(type: MarkerType, id: String): MarkerModel? = runCatching {
+    override suspend fun update(type: MarkerType, id: String): MarkerModel? = try {
         val fieldName = "${type.toDto()}[last_read_id]"
         val data =
             FormDataContent(
@@ -37,5 +41,8 @@ internal class DefaultMarkerRepository(private val provider: ServiceProvider) : 
             .toModel()
             .firstOrNull { it.type == type }
             ?.also { cachedValues[type] = it }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 }

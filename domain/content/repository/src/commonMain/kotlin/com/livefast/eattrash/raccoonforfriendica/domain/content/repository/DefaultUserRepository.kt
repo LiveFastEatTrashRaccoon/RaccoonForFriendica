@@ -17,6 +17,7 @@ import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.parameters
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultUserRepository(
     private val provider: ServiceProvider,
@@ -24,11 +25,14 @@ internal class DefaultUserRepository(
 ) : UserRepository {
     private var cachedUser: UserModel? = null
 
-    override suspend fun getById(id: String): UserModel? = runCatching {
+    override suspend fun getById(id: String): UserModel? = try {
         provider.user.getById(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun search(query: String, offset: Int, following: Boolean): List<UserModel>? = runCatching {
+    override suspend fun search(query: String, offset: Int, following: Boolean): List<UserModel>? = try {
         provider.user
             .search(
                 query = query,
@@ -36,16 +40,22 @@ internal class DefaultUserRepository(
                 resolve = true,
                 following = following,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getByHandle(handle: String): UserModel? = runCatching {
+    override suspend fun getByHandle(handle: String): UserModel? = try {
         provider.user
             .search(
                 query = handle,
                 resolve = true,
             ).first()
             .toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun getCurrent(refresh: Boolean): UserModel? {
         if (refresh) {
@@ -53,55 +63,71 @@ internal class DefaultUserRepository(
         }
         val fromCache = cachedUser
         check(fromCache == null) { return fromCache }
-        return runCatching {
+        return try {
             provider.user.verifyCredentials().toModel()
-        }.getOrNull().also {
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }.also {
             cachedUser = it
         }
     }
 
-    override suspend fun getRelationships(ids: List<String>): List<RelationshipModel>? = runCatching {
+    override suspend fun getRelationships(ids: List<String>): List<RelationshipModel>? = try {
         provider.user
             .getRelationships(ids)
             .map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getSuggestions(): List<UserModel>? = runCatching {
+    override suspend fun getSuggestions(): List<UserModel>? = try {
         provider.user
             .getSuggestions(
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.user.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getFollowers(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? =
-        runCatching {
-            withProvider(otherInstance) { provider ->
-                provider.user
-                    .getFollowers(
-                        id = id,
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    ).map { it.toModel() }
-            }
-        }.getOrNull()
+    override suspend fun getFollowers(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? = try {
+        withProvider(otherInstance) { provider ->
+            provider.user
+                .getFollowers(
+                    id = id,
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                ).map { it.toModel() }
+        }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getFollowing(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? =
-        runCatching {
-            withProvider(otherInstance) { provider ->
-                provider.user
-                    .getFollowing(
-                        id = id,
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                    ).map { it.toModel() }
-            }
-        }.getOrNull()
+    override suspend fun getFollowing(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? = try {
+        withProvider(otherInstance) { provider ->
+            provider.user
+                .getFollowing(
+                    id = id,
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                ).map { it.toModel() }
+        }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getListsContaining(id: String): List<CircleModel>? = runCatching {
+    override suspend fun getListsContaining(id: String): List<CircleModel>? = try {
         provider.user.getListsContaining(id).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun searchMyFollowing(query: String, pageCursor: String?): List<UserModel>? = runCatching {
+    override suspend fun searchMyFollowing(query: String, pageCursor: String?): List<UserModel>? = try {
         provider.search
             .search(
                 query = query,
@@ -111,86 +137,120 @@ internal class DefaultUserRepository(
                 limit = DEFAULT_PAGE_SIZE,
             ).accounts
             .map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun follow(id: String, reblogs: Boolean, notifications: Boolean): RelationshipModel? =
-        runCatching {
-            val data =
-                FollowUserForm(
-                    reblogs = reblogs,
-                    notify = notifications,
-                )
-            provider.user
-                .follow(
-                    id = id,
-                    data = data,
-                ).toModel()
-        }.getOrNull()
+    override suspend fun follow(id: String, reblogs: Boolean, notifications: Boolean): RelationshipModel? = try {
+        val data =
+            FollowUserForm(
+                reblogs = reblogs,
+                notify = notifications,
+            )
+        provider.user
+            .follow(
+                id = id,
+                data = data,
+            ).toModel()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun unfollow(id: String): RelationshipModel? = runCatching {
+    override suspend fun unfollow(id: String): RelationshipModel? = try {
         provider.user.unfollow(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? = runCatching {
+    override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
         val (list, cursor) =
             provider.followRequest.getAll(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
         ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun acceptFollowRequest(id: String) = runCatching {
+    override suspend fun acceptFollowRequest(id: String) = try {
         provider.followRequest.accept(id)
         true
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
-    override suspend fun rejectFollowRequest(id: String) = runCatching {
+    override suspend fun rejectFollowRequest(id: String) = try {
         provider.followRequest.reject(id)
         true
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
-    override suspend fun mute(id: String, durationSeconds: Long, notifications: Boolean): RelationshipModel? =
-        runCatching {
-            val data =
-                MuteUserForm(
-                    duration = durationSeconds,
-                    notifications = notifications,
-                )
-            provider.user
-                .mute(
-                    id = id,
-                    data = data,
-                ).toModel()
-        }.getOrNull()
+    override suspend fun mute(id: String, durationSeconds: Long, notifications: Boolean): RelationshipModel? = try {
+        val data =
+            MuteUserForm(
+                duration = durationSeconds,
+                notifications = notifications,
+            )
+        provider.user
+            .mute(
+                id = id,
+                data = data,
+            ).toModel()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun unmute(id: String): RelationshipModel? = runCatching {
+    override suspend fun unmute(id: String): RelationshipModel? = try {
         provider.user.unmute(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun block(id: String): RelationshipModel? = runCatching {
+    override suspend fun block(id: String): RelationshipModel? = try {
         provider.user.block(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun unblock(id: String): RelationshipModel? = runCatching {
+    override suspend fun unblock(id: String): RelationshipModel? = try {
         provider.user.unblock(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getMuted(pageCursor: String?): List<UserModel>? = runCatching {
+    override suspend fun getMuted(pageCursor: String?): List<UserModel>? = try {
         provider.user
             .getMuted(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getBlocked(pageCursor: String?): List<UserModel>? = runCatching {
+    override suspend fun getBlocked(pageCursor: String?): List<UserModel>? = try {
         provider.user
             .getBlocked(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun updateProfile(
         note: String?,
@@ -203,7 +263,7 @@ internal class DefaultUserRepository(
         hideCollections: Boolean?,
         indexable: Boolean?,
         fields: Map<String, String>?,
-    ) = runCatching {
+    ) = try {
         var result: Account
 
         // textual data
@@ -289,9 +349,12 @@ internal class DefaultUserRepository(
         }
 
         result.toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun updatePersonalNote(id: String, value: String): RelationshipModel? = runCatching {
+    override suspend fun updatePersonalNote(id: String, value: String): RelationshipModel? = try {
         val data =
             FormDataContent(
                 parameters {
@@ -299,7 +362,10 @@ internal class DefaultUserRepository(
                 },
             )
         provider.user.updatePersonalNote(id = id, data = data).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
         if (otherInstance.isNullOrEmpty()) {

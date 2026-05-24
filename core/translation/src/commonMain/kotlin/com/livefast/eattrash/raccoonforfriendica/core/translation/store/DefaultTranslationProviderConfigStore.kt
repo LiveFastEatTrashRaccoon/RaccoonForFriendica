@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.cancellation.CancellationException
 
 internal class DefaultTranslationProviderConfigStore(private val keyStore: TemporaryKeyStore) :
     TranslationProviderConfigStore {
@@ -26,9 +27,12 @@ internal class DefaultTranslationProviderConfigStore(private val keyStore: Tempo
         val defaultId = getDefaultId()
         val key = getKey(id)
         val rawValue = keyStore.get(key, "{}")
-        return runCatching {
+        return try {
             JsonSerializer.decodeFromString<TranslationProviderConfig>(rawValue)
-        }.getOrNull()?.let {
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }?.let {
             it.copy(default = it.id == defaultId)
         }
     }

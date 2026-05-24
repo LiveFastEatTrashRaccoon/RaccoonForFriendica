@@ -51,7 +51,7 @@ class LibreTranslateProvider(
         }
     }
 
-    override suspend fun translate(sourceText: String, sourceLang: String, targetLang: String): String = runCatching {
+    override suspend fun translate(sourceText: String, sourceLang: String, targetLang: String): String = try {
         val response = client.post("$baseUrl/translate") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -68,7 +68,7 @@ class LibreTranslateProvider(
         check(response.status.isSuccess())
         val outputData: TranslationResponseBody = response.body()
         outputData.text.orEmpty()
-    }.getOrElse { e ->
+    } catch (e: Exception) {
         if (e is CancellationException) throw e
         ""
     }

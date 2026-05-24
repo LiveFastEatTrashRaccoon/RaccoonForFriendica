@@ -19,6 +19,7 @@ import io.ktor.http.Parameters
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
 
 internal class DefaultCredentialsRepository(
@@ -35,17 +36,23 @@ internal class DefaultCredentialsRepository(
             }
         }
 
-    override suspend fun validate(node: String, credentials: ApiCredentials): UserModel? = runCatching {
+    override suspend fun validate(node: String, credentials: ApiCredentials): UserModel? = try {
         provider.changeNode(node)
         provider.setAuth(credentials.toServiceCredentials())
         provider.user.verifyCredentials().toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun validateNode(node: String): Boolean = runCatching {
+    override suspend fun validateNode(node: String): Boolean = try {
         provider.changeNode(node)
         provider.instance.getInfo()
         true
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
     override suspend fun createApplication(
         node: String,
@@ -53,7 +60,7 @@ internal class DefaultCredentialsRepository(
         website: String,
         redirectUri: String,
         scopes: String,
-    ): ClientApplicationModel? = runCatching {
+    ): ClientApplicationModel? = try {
         provider.changeNode(node)
         val data =
             CreateAppForm(
@@ -63,18 +70,24 @@ internal class DefaultCredentialsRepository(
                 scopes = scopes,
             )
         provider.app.create(data).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun validateApplicationCredentials(node: String, credentials: ApiCredentials): Boolean =
         when (credentials) {
             is ApiCredentials.HttpBasic -> true
             is ApiCredentials.OAuth2 -> {
-                runCatching {
+                try {
                     provider.changeNode(node)
                     provider.setAuth(credentials.toServiceCredentials())
                     provider.app.verifyCredentials().toModel()
                     true
-                }.getOrElse { false }
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    false
+                }
             }
         }
 
@@ -86,7 +99,7 @@ internal class DefaultCredentialsRepository(
         redirectUri: String,
         grantType: String,
         code: String,
-    ): ApiCredentials? = runCatching {
+    ): ApiCredentials? = try {
         val data =
             FormDataContent(
                 Parameters.build {
@@ -109,7 +122,10 @@ internal class DefaultCredentialsRepository(
                 .preparePost(url) { setBody(data) }.execute()
                 .bodyAsText()
         json.decodeFromString<OAuthToken>(responseBody).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun issueNewToken(
         node: String,
@@ -118,7 +134,7 @@ internal class DefaultCredentialsRepository(
         clientSecret: String,
         grantType: String,
         refreshToken: String,
-    ): ApiCredentials? = runCatching {
+    ): ApiCredentials? = try {
         val data =
             FormDataContent(
                 Parameters.build {
@@ -144,7 +160,10 @@ internal class DefaultCredentialsRepository(
         json.decodeFromString<OAuthToken>(responseBody)
             .copy(refreshToken = refreshToken)
             .toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     companion object {
         private const val QUERY_PARAM_CLIENT_ID = "client_id"

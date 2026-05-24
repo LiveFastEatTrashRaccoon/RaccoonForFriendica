@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
+import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -23,7 +24,7 @@ internal class DefaultTimelineRepository(
         if (pageCursor == null && cachedValues.isNotEmpty()) {
             return cachedValues
         }
-        return runCatching {
+        return try {
             val response =
                 provider.timeline.getPublic(
                     maxId = pageCursor,
@@ -38,7 +39,10 @@ internal class DefaultTimelineRepository(
                         }
                     }
                 }
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
     }
 
     override suspend fun getHome(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? {
@@ -50,7 +54,7 @@ internal class DefaultTimelineRepository(
         if (pageCursor == null && cachedValues.isNotEmpty()) {
             return cachedValues
         }
-        return runCatching {
+        return try {
             val response =
                 provider.timeline.getHome(
                     maxId = pageCursor,
@@ -65,7 +69,10 @@ internal class DefaultTimelineRepository(
                         }
                     }
                 }
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
     }
 
     override suspend fun getLocal(
@@ -81,7 +88,7 @@ internal class DefaultTimelineRepository(
         if (pageCursor == null && cachedValues.isNotEmpty() && otherInstance.isNullOrEmpty()) {
             cachedValues
         } else {
-            runCatching {
+            try {
                 val response =
                     provider.timeline.getPublic(
                         maxId = pageCursor,
@@ -97,7 +104,10 @@ internal class DefaultTimelineRepository(
                             }
                         }
                     }
-            }.getOrNull()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                null
+            }
         }
     }
 
@@ -105,7 +115,7 @@ internal class DefaultTimelineRepository(
         hashtag: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): ListWithPageCursor<TimelineEntryModel>? = runCatching {
+    ): ListWithPageCursor<TimelineEntryModel>? = try {
         val (list, cursor) = withProvider(otherInstance) { provider ->
             provider.timeline.getHashtag(
                 hashtag = hashtag,
@@ -114,9 +124,12 @@ internal class DefaultTimelineRepository(
             )
         }
         ListWithPageCursor(list = list.map { it.toModelWithReply() }, cursor = cursor)
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getCircle(id: String, pageCursor: String?): List<TimelineEntryModel>? = runCatching {
+    override suspend fun getCircle(id: String, pageCursor: String?): List<TimelineEntryModel>? = try {
         val response =
             provider.timeline.getList(
                 id = id,
@@ -124,7 +137,10 @@ internal class DefaultTimelineRepository(
                 limit = DEFAULT_PAGE_SIZE,
             )
         response.map { it.toModelWithReply() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
         if (otherInstance.isNullOrEmpty()) {

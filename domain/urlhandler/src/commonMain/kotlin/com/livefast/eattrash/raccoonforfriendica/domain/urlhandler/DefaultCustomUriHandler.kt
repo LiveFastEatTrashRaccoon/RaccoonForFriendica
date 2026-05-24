@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.EntryProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,8 +67,11 @@ internal class DefaultCustomUriHandler(
                 customTabsHelper.handle(url)
 
             else ->
-                runCatching {
+                try {
                     defaultHandler.openUri(url)
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    e.printStackTrace()
                 }
         }
     }

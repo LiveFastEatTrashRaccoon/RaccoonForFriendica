@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Auth
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -130,17 +131,20 @@ class LoginViewModel(
         }
     }
 
-    private suspend fun finalizeLogin(credentials: ApiCredentials) {
+    private fun finalizeLogin(credentials: ApiCredentials) {
         val node = uiState.value.nodeName
-        try {
-            loginUseCase(
-                node = node,
-                credentials = credentials,
-            )
-            emitEffect(LoginMviModel.Effect.Success)
-        } catch (e: Throwable) {
-            updateState { it.copy(loading = false) }
-            emitEffect(LoginMviModel.Effect.Failure(e.message))
+        viewModelScope.launch {
+            try {
+                loginUseCase(
+                    node = node,
+                    credentials = credentials,
+                )
+                emitEffect(LoginMviModel.Effect.Success)
+            } catch (e: Throwable) {
+                if (e is CancellationException) throw e
+                updateState { it.copy(loading = false) }
+                emitEffect(LoginMviModel.Effect.Failure(e.message))
+            }
         }
     }
 }

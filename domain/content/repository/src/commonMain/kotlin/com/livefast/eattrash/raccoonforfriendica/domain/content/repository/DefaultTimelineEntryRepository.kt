@@ -20,6 +20,7 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 
 internal class DefaultTimelineEntryRepository(
@@ -50,7 +51,7 @@ internal class DefaultTimelineEntryRepository(
         if (pageCursor == null && cachedValues.isNotEmpty() && enableCache && otherInstance.isNullOrEmpty()) {
             cachedValues
         } else {
-            runCatching {
+            try {
                 provider.user
                     .getStatuses(
                         id = userId,
@@ -68,29 +69,41 @@ internal class DefaultTimelineEntryRepository(
                             }
                         }
                     }
-            }.getOrNull()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                null
+            }
         }
     }
 
-    override suspend fun getById(id: String, otherInstance: String?): TimelineEntryModel? = runCatching {
+    override suspend fun getById(id: String, otherInstance: String?): TimelineEntryModel? = try {
         withProvider(otherInstance) { provider ->
             provider.status.get(id = id).toModelWithReply()
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getSource(id: String, otherInstance: String?): TimelineEntryModel? = runCatching {
+    override suspend fun getSource(id: String, otherInstance: String?): TimelineEntryModel? = try {
         withProvider(otherInstance) { provider ->
             provider.status.getSource(id = id).toModel()
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getContext(id: String, otherInstance: String?): TimelineContextModel? = runCatching {
+    override suspend fun getContext(id: String, otherInstance: String?): TimelineContextModel? = try {
         withProvider(otherInstance) { provider ->
             provider.status.getContext(id = id).toModel()
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun reblog(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun reblog(id: String): TimelineEntryModel? = try {
         val data =
             FormDataContent(
                 parameters {
@@ -102,57 +115,87 @@ internal class DefaultTimelineEntryRepository(
                 id = id,
                 data = data,
             ).toModelWithReply()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun unreblog(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun unreblog(id: String): TimelineEntryModel? = try {
         provider.status.unreblog(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun pin(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun pin(id: String): TimelineEntryModel? = try {
         provider.status.pin(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun unpin(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun unpin(id: String): TimelineEntryModel? = try {
         provider.status.unpin(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun favorite(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun favorite(id: String): TimelineEntryModel? = try {
         provider.status.favorite(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun unfavorite(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun unfavorite(id: String): TimelineEntryModel? = try {
         provider.status.unfavorite(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun bookmark(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun bookmark(id: String): TimelineEntryModel? = try {
         provider.status.bookmark(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun unbookmark(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun unbookmark(id: String): TimelineEntryModel? = try {
         provider.status.unbookmark(id).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
+    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel>? = try {
         provider.user
             .getFavorites(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.toModelWithReply() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel>? = runCatching {
+    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel>? = try {
         provider.user
             .getBookmarks(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.toModelWithReply() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun getUsersWhoFavorited(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): List<UserModel>? = runCatching {
+    ): List<UserModel>? = try {
         withProvider(otherInstance) { provider ->
             provider.status
                 .getFavoritedBy(
@@ -161,13 +204,16 @@ internal class DefaultTimelineEntryRepository(
                     limit = DEFAULT_PAGE_SIZE,
                 ).map { it.toModel() }
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun getUsersWhoReblogged(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): List<UserModel>? = runCatching {
+    ): List<UserModel>? = try {
         withProvider(otherInstance) { provider ->
             provider.status
                 .getRebloggedBy(
@@ -176,7 +222,10 @@ internal class DefaultTimelineEntryRepository(
                     limit = DEFAULT_PAGE_SIZE,
                 ).map { it.toModel() }
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun create(
         localId: String,
@@ -192,7 +241,7 @@ internal class DefaultTimelineEntryRepository(
         pollOptions: List<String>?,
         pollExpirationDate: String?,
         pollMultiple: Boolean?,
-    ): TimelineEntryModel? = runCatching {
+    ): TimelineEntryModel? = try {
         val pollData =
             if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
                 val pollDuration =
@@ -231,7 +280,10 @@ internal class DefaultTimelineEntryRepository(
                 key = localId,
                 data = data,
             ).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun update(
         id: String,
@@ -246,7 +298,7 @@ internal class DefaultTimelineEntryRepository(
         pollOptions: List<String>?,
         pollExpirationDate: String?,
         pollMultiple: Boolean?,
-    ): TimelineEntryModel? = runCatching {
+    ): TimelineEntryModel? = try {
         val pollData =
             if (pollOptions != null && pollMultiple != null && pollExpirationDate != null) {
                 val pollDuration =
@@ -284,11 +336,14 @@ internal class DefaultTimelineEntryRepository(
                 id = id,
                 data = data,
             ).toModelWithReply()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun delete(id: String): Boolean = provider.status.delete(id)
 
-    override suspend fun submitPoll(pollId: String, choices: List<Int>): PollModel? = runCatching {
+    override suspend fun submitPoll(pollId: String, choices: List<Int>): PollModel? = try {
         val data =
             SubmitPollVoteForm(
                 choices = choices,
@@ -298,7 +353,10 @@ internal class DefaultTimelineEntryRepository(
                 id = pollId,
                 data = data,
             ).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun dislike(id: String): Boolean {
         val data =
@@ -324,7 +382,7 @@ internal class DefaultTimelineEntryRepository(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): ListWithPageCursor<TimelineEntryModel>? = runCatching {
+    ): ListWithPageCursor<TimelineEntryModel>? = try {
         val (list, cursor) = withProvider(otherInstance) { provider ->
             provider.status.getQuotes(
                 id = id,
@@ -332,7 +390,10 @@ internal class DefaultTimelineEntryRepository(
             )
         }
         ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
         if (otherInstance.isNullOrEmpty()) {
