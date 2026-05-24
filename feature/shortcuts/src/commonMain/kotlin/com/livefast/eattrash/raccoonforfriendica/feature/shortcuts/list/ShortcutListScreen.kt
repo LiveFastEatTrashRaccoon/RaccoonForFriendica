@@ -46,6 +46,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import kotlinx.coroutines.flow.launchIn
@@ -91,7 +92,7 @@ fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifie
         modifier = modifier,
         topBar = {
             TopAppBar(
-                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                modifier = Modifier.clickableWithoutFocus { scope.launch { goBackToTop() } },
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {

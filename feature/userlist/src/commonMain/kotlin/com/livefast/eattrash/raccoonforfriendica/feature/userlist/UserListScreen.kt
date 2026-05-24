@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.userlist
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.rememberFileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
@@ -134,7 +134,7 @@ fun UserListScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                modifier = Modifier.clickableWithoutFocus { scope.launch { goBackToTop() } },
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {
