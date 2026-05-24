@@ -1,10 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -77,6 +75,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
@@ -149,7 +148,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
         modifier = modifier.safeImePadding(),
         topBar = {
             TopAppBar(
-                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                modifier = Modifier.clickableWithoutFocus { scope.launch { goBackToTop() } },
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {

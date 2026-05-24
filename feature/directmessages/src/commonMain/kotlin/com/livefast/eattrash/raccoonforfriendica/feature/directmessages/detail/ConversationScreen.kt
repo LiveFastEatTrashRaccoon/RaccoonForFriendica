@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -59,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithC
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
@@ -123,7 +123,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
             .safeImePadding(),
         topBar = {
             TopAppBar(
-                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                modifier = Modifier.clickableWithoutFocus { scope.launch { goBackToTop() } },
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {

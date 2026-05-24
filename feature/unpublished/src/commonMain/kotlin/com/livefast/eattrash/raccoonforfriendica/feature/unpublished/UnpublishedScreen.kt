@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -46,6 +45,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
@@ -90,7 +90,7 @@ fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier)
         modifier = modifier,
         topBar = {
             TopAppBar(
-                modifier = Modifier.clickable { scope.launch { goBackToTop() } },
+                modifier = Modifier.clickableWithoutFocus { scope.launch { goBackToTop() } },
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 scrollBehavior = scrollBehavior,
                 title = {

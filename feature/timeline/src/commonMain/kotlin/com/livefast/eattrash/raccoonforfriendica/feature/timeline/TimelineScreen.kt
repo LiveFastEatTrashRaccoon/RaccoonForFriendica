@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -75,6 +74,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDraw
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -182,7 +182,7 @@ fun TimelineScreen(
             TopAppBar(
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 modifier =
-                Modifier.clickable {
+                Modifier.clickableWithoutFocus {
                     if (uiState.availableTimelineTypes.isNotEmpty()) {
                         timelineTypeSelectorOpen = true
                     }

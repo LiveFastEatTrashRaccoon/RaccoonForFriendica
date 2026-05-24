@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +55,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberClipboardHelper
@@ -152,11 +152,7 @@ fun CircleTimelineScreen(
             TopAppBar(
                 windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
                 modifier =
-                Modifier.clickable {
-                    scope.launch {
-                        goBackToTop()
-                    }
-                },
+                Modifier.clickableWithoutFocus { scope.launch { goBackToTop() } },
                 scrollBehavior = scrollBehavior,
                 title = {
                     Text(
