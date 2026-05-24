@@ -86,19 +86,32 @@ internal class DefaultServiceProvider(
 
     private val baseUrl: String get() = "https://$currentNode/api"
 
+    private var client: HttpClient? = null
+    private var lastCredentials: ServiceCredentials? = null
+
     override fun changeNode(value: String) {
         if (currentNode != value) {
             currentNode = value
-            reinitialize(null)
+            reinitialize(credentials = lastCredentials, force = true)
         }
     }
 
     override fun setAuth(credentials: ServiceCredentials?) {
-        reinitialize(credentials)
+        if (lastCredentials != credentials) {
+            reinitialize(credentials = credentials, force = false)
+        }
     }
 
-    private fun reinitialize(credentials: ServiceCredentials?) {
-        val client =
+    private fun reinitialize(credentials: ServiceCredentials?, force: Boolean) {
+        if (!force && lastCredentials == credentials && client != null) {
+            return
+        }
+
+        lastCredentials = credentials
+        val oldClient = client
+        client = null
+        oldClient?.close()
+        val newClient =
             HttpClient(factory) {
                 defaultRequest {
                     url {
@@ -172,7 +185,8 @@ internal class DefaultServiceProvider(
                     }
                 }
             }
-        val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = client)
+        this.client = newClient
+        val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = newClient)
         announcement = getService(creationArgs)
         app = getService(creationArgs)
         directMessage = getService(creationArgs)

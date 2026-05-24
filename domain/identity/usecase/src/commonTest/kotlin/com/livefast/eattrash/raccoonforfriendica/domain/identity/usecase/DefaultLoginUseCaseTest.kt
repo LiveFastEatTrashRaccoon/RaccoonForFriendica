@@ -59,10 +59,10 @@ class DefaultLoginUseCaseTest {
 
         verifySuspend {
             apiConfigurationRepository.changeNode(node)
-            apiConfigurationRepository.setAuth(credentials)
             credentialsRepository.validate(node, credentials)
         }
         verifySuspend(mode = VerifyMode.not) {
+            apiConfigurationRepository.setAuth(credentials)
             accountRepository.getBy(handle = any())
             accountRepository.create(any())
             accountCredentialsCache.get(any())
