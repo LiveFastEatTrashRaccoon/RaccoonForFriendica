@@ -39,8 +39,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.rememberMaxTopBarInset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -220,12 +220,13 @@ fun SearchScreen(modifier: Modifier = Modifier, customOnSelectAction: ((Timeline
                             SearchSection.Hashtags,
                             SearchSection.Groups,
                         )
+                    val maxInset = rememberMaxTopBarInset()
                     SectionSelector(
                         modifier =
                         Modifier
                             .background(MaterialTheme.colorScheme.background)
                             .padding(
-                                top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
+                                top = maxInset * topAppBarState.collapsedFraction,
                                 bottom = Spacing.s,
                             ),
                         titles = titles.map { it.toReadableName() },
