@@ -11,9 +11,10 @@ import java.net.ServerSocket
 
 class EmbeddedRedirectServer {
     private var embeddedServer: EmbeddedServer<*, *>? = null
-    private val codeDeferred = CompletableDeferred<String>()
+    private var codeDeferred = CompletableDeferred<String>()
 
     fun start(): Int {
+        codeDeferred = CompletableDeferred()
         val port = findFreePort()
         embeddedServer = embeddedServer(CIO, port = port) {
             routing {

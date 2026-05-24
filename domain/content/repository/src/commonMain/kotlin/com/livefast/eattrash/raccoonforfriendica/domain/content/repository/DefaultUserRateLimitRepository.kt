@@ -3,36 +3,52 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLimitDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserRateLimitEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultUserRateLimitRepository(private val userRateLimitDao: UserRateLimitDao) :
     UserRateLimitRepository {
-    override suspend fun getAll(accountId: Long): List<UserRateLimitModel> = runCatching {
+    override suspend fun getAll(accountId: Long): List<UserRateLimitModel> = try {
         userRateLimitDao.getAll(accountId).map { it.toModel() }
-    }.getOrElse { emptyList() }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        emptyList()
+    }
 
-    override suspend fun getBy(handle: String, accountId: Long): UserRateLimitModel? = runCatching {
+    override suspend fun getBy(handle: String, accountId: Long): UserRateLimitModel? = try {
         userRateLimitDao
             .getBy(
                 accountId = accountId,
                 handle = handle,
             )?.toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun create(model: UserRateLimitModel): UserRateLimitModel? = runCatching {
+    override suspend fun create(model: UserRateLimitModel): UserRateLimitModel? = try {
         userRateLimitDao.insert(model.toEntity())
         getBy(handle = model.handle, accountId = model.accountId)
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun update(model: UserRateLimitModel): UserRateLimitModel? = runCatching {
+    override suspend fun update(model: UserRateLimitModel): UserRateLimitModel? = try {
         userRateLimitDao.update(model.toEntity())
         getBy(handle = model.handle, accountId = model.accountId)
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun delete(id: Long): Boolean = runCatching {
+    override suspend fun delete(id: Long): Boolean = try {
         val entity = UserRateLimitEntity(id = id, userHandle = "")
         userRateLimitDao.delete(entity)
         true
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 }
 
 private fun UserRateLimitEntity.toModel() = UserRateLimitModel(

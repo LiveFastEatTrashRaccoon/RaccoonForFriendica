@@ -5,10 +5,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultTranslationRepository(private val provider: ServiceProvider) : TranslationRepository {
     override suspend fun getTranslation(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel? =
-        runCatching {
+        try {
             val res =
                 provider.status.translate(
                     id = entry.id,
@@ -52,5 +53,8 @@ internal class DefaultTranslationRepository(private val provider: ServiceProvide
                 ),
                 provider = res.provider,
             )
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
 }

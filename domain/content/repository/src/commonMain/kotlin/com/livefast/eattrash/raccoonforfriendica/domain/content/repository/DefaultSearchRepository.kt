@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResul
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultSearchRepository(private val provider: ServiceProvider) : SearchRepository {
     override suspend fun search(
@@ -13,7 +14,7 @@ internal class DefaultSearchRepository(private val provider: ServiceProvider) : 
         type: SearchResultType,
         pageCursor: String?,
         resolve: Boolean,
-    ): List<ExploreItemModel>? = runCatching {
+    ): List<ExploreItemModel>? = try {
         val response =
             provider.search
                 .search(
@@ -39,7 +40,10 @@ internal class DefaultSearchRepository(private val provider: ServiceProvider) : 
                     ExploreItemModel.User(it.toModel())
                 }
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

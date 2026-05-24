@@ -45,7 +45,6 @@ val identityRepositoryModule =
         bindSingleton<CredentialsRepository> {
             DefaultCredentialsRepository(
                 provider = instance(tag = "other"),
-                engine = instance(),
                 json = instance(),
             )
         }

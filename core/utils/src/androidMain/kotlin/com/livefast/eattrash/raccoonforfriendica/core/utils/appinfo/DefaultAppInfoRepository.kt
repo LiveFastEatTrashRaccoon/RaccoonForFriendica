@@ -5,12 +5,13 @@ import android.content.pm.ApplicationInfo
 import android.os.Build
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.cancellation.CancellationException
 
 internal class DefaultAppInfoRepository(private val context: Context) : AppInfoRepository {
     private val _appInfo = MutableStateFlow(geInfo())
     override val appInfo: StateFlow<AppInfo?> = _appInfo
 
-    private fun geInfo(): AppInfo? = runCatching {
+    private fun geInfo(): AppInfo? = try {
         with(context) {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             AppInfo(
@@ -28,5 +29,8 @@ internal class DefaultAppInfoRepository(private val context: Context) : AppInfoR
                 isDebug = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0,
             )
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 }

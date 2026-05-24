@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
+import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -16,7 +17,7 @@ internal class DefaultTrendingRepository(
     private val mutex = Mutex()
     private val cachedTags: MutableList<TagModel> = mutableListOf()
 
-    override suspend fun getEntries(offset: Int, otherInstance: String?): List<TimelineEntryModel>? = runCatching {
+    override suspend fun getEntries(offset: Int, otherInstance: String?): List<TimelineEntryModel>? = try {
         withProvider(otherInstance) { provider ->
             val response =
                 provider.trend
@@ -26,7 +27,10 @@ internal class DefaultTrendingRepository(
                     )
             response.map { it.toModelWithReply() }
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun getHashtags(offset: Int, refresh: Boolean, otherInstance: String?): List<TagModel>? =
         withProvider(otherInstance) { provider ->
@@ -38,7 +42,7 @@ internal class DefaultTrendingRepository(
             if (offset == 0 && cachedTags.isNotEmpty() && otherInstance.isNullOrEmpty()) {
                 cachedTags
             } else {
-                runCatching {
+                try {
                     val response =
                         provider.trend
                             .getHashtags(
@@ -54,11 +58,14 @@ internal class DefaultTrendingRepository(
                                 }
                             }
                         }
-                }.getOrNull()
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    null
+                }
             }
         }
 
-    override suspend fun getLinks(offset: Int, otherInstance: String?): List<LinkModel>? = runCatching {
+    override suspend fun getLinks(offset: Int, otherInstance: String?): List<LinkModel>? = try {
         withProvider(otherInstance) { provider ->
             val response =
                 provider.trend
@@ -68,7 +75,10 @@ internal class DefaultTrendingRepository(
                     )
             response.map { it.toModel() }
         }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
         if (otherInstance.isNullOrEmpty()) {

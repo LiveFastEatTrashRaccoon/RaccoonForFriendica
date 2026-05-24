@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toRawValue
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
+import kotlin.coroutines.cancellation.CancellationException
 
 internal class DefaultPushNotificationRepository(private val provider: ServiceProvider) : PushNotificationRepository {
     override suspend fun create(
@@ -15,7 +16,7 @@ internal class DefaultPushNotificationRepository(private val provider: ServicePr
         auth: String,
         types: List<NotificationType>,
         policy: NotificationPolicy,
-    ): String? = runCatching {
+    ): String? = try {
         val data =
             FormDataContent(
                 parameters {
@@ -32,9 +33,12 @@ internal class DefaultPushNotificationRepository(private val provider: ServicePr
                 },
             )
         provider.push.create(data).serverKey
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun update(types: List<NotificationType>, policy: NotificationPolicy): String? = runCatching {
+    override suspend fun update(types: List<NotificationType>, policy: NotificationPolicy): String? = try {
         val data =
             FormDataContent(
                 parameters {
@@ -48,10 +52,16 @@ internal class DefaultPushNotificationRepository(private val provider: ServicePr
                 },
             )
         provider.push.update(data).serverKey
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun delete(): Boolean = runCatching {
+    override suspend fun delete(): Boolean = try {
         provider.push.delete()
         true
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 }

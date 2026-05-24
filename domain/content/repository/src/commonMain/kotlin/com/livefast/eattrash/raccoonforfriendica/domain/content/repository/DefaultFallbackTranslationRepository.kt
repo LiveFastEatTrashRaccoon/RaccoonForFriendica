@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationPro
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultFallbackTranslationRepository(
     private val translationProviderFactory: TranslationProviderFactory,
@@ -12,7 +13,7 @@ internal class DefaultFallbackTranslationRepository(
         entry: TimelineEntryModel,
         targetLang: String,
         config: TranslationProviderConfig?,
-    ): TranslatedTimelineEntryModel? = runCatching {
+    ): TranslatedTimelineEntryModel? = try {
         TranslatedTimelineEntryModel(
             source = entry,
             target =
@@ -82,7 +83,10 @@ internal class DefaultFallbackTranslationRepository(
             ),
             provider = config?.name.orEmpty(),
         )
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     private suspend fun String.translate(
         sourceLang: String?,

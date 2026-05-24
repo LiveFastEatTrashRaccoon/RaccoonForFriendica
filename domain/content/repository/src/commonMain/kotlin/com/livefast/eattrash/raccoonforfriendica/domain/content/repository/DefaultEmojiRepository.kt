@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultEmojiRepository(
     private val provider: ServiceProvider,
@@ -22,7 +23,7 @@ internal class DefaultEmojiRepository(
         }
     }
 
-    private suspend fun retrieve(node: String?): List<EmojiModel>? = runCatching {
+    private suspend fun retrieve(node: String?): List<EmojiModel>? = try {
         val res =
             if (node == null) {
                 provider.instance.getCustomEmojis()
@@ -31,5 +32,8 @@ internal class DefaultEmojiRepository(
                 otherProvider.instance.getCustomEmojis()
             }
         res.map { it.toModel() }
-    }.getOrElse { null }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 }

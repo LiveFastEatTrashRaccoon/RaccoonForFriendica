@@ -6,13 +6,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider) : PhotoAlbumRepository {
-    override suspend fun getAll(): List<MediaAlbumModel>? = runCatching {
+    override suspend fun getAll(): List<MediaAlbumModel>? = try {
         provider.photoAlbum.getAll().map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun update(oldName: String, newName: String): Boolean = runCatching {
+    override suspend fun update(oldName: String, newName: String): Boolean = try {
         val data =
             FormDataContent(
                 Parameters.build {
@@ -22,9 +26,12 @@ internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider
             )
         val res = provider.photoAlbum.update(data)
         res.result == "updated"
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
-    override suspend fun delete(name: String): Boolean = runCatching {
+    override suspend fun delete(name: String): Boolean = try {
         val data =
             FormDataContent(
                 Parameters.build {
@@ -33,10 +40,13 @@ internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider
             )
         val res = provider.photoAlbum.delete(data)
         res.result == "deleted"
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
     override suspend fun getPhotos(album: String, pageCursor: String?, latestFirst: Boolean): List<AttachmentModel>? =
-        runCatching {
+        try {
             provider.photoAlbum
                 .getPhotos(
                     album = album,
@@ -44,7 +54,10 @@ internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider
                     latestFirst = latestFirst,
                     limit = DEFAULT_PAGE_SIZE,
                 ).map { it.toModel() }
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

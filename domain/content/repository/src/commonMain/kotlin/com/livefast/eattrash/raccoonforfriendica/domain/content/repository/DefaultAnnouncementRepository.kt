@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AnnouncementModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -21,7 +22,7 @@ internal class DefaultAnnouncementRepository(private val provider: ServiceProvid
             return cachedValues.map { it }
         }
 
-        return runCatching {
+        return try {
             val response = provider.announcement.getAll()
             response
                 .map { it.toModel() }
@@ -30,7 +31,10 @@ internal class DefaultAnnouncementRepository(private val provider: ServiceProvid
                         cachedValues.addAll(it)
                     }
                 }
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
     }
 
     override suspend fun markAsRead(id: String): Boolean = provider.announcement.dismiss(id)

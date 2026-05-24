@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
@@ -55,9 +56,12 @@ internal class DefaultBlurHashDecoder(
                     decodeAc(colorEnc, maxAc * punch)
                 }
             }
-        runCatching {
+        try {
             composeBitmap(width, height, numCompX, numCompY, colors, useCache)
-        }.getOrNull()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
+        }
     }
 
     private fun decode83(str: String, from: Int = 0, to: Int = str.length): Int {

@@ -5,26 +5,33 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessa
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultDirectMessageRepository(private val provider: ServiceProvider) : DirectMessageRepository {
-    override suspend fun getAll(page: Int, limit: Int?): List<DirectMessageModel>? = runCatching {
+    override suspend fun getAll(page: Int, limit: Int?): List<DirectMessageModel>? = try {
         provider.directMessage
             .getAll(
                 page = page,
                 count = limit ?: DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getReplies(parentUri: String, page: Int): List<DirectMessageModel>? = runCatching {
+    override suspend fun getReplies(parentUri: String, page: Int): List<DirectMessageModel>? = try {
         provider.directMessage
             .getConversation(
                 uri = parentUri,
                 page = page,
                 count = DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun pollReplies(parentUri: String, minId: String): List<DirectMessageModel>? = runCatching {
+    override suspend fun pollReplies(parentUri: String, minId: String): List<DirectMessageModel>? = try {
         provider.directMessage
             .getConversation(
                 uri = parentUri,
@@ -32,14 +39,17 @@ internal class DefaultDirectMessageRepository(private val provider: ServiceProvi
                 page = 1,
                 count = DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun create(
         recipientId: String,
         text: String,
         title: String?,
         inReplyTo: String?,
-    ): DirectMessageModel? = runCatching {
+    ): DirectMessageModel? = try {
         val data =
             FormDataContent(
                 formData =
@@ -55,17 +65,26 @@ internal class DefaultDirectMessageRepository(private val provider: ServiceProvi
                 },
             )
         provider.directMessage.create(data).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun delete(id: String): Boolean = runCatching {
+    override suspend fun delete(id: String): Boolean = try {
         val res = provider.directMessage.delete(id.toLong())
         res.result == RESULT_OK
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
-    override suspend fun markAsRead(id: String): Boolean = runCatching {
+    override suspend fun markAsRead(id: String): Boolean = try {
         val res = provider.directMessage.markAsRead(id.toLong())
         res.result == RESULT_OK
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

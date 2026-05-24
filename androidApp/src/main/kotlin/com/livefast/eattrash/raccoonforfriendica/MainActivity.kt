@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRoute
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -98,8 +99,10 @@ class MainActivity : ComponentActivity() {
                 uri.host == DefaultAuthManager.REDIRECT_HOST -> {
                 val authManager = getAuthManager()
                 lifecycleScope.launch {
-                    runCatching {
+                    try {
                         authManager.performTokenExchange(uri.toString())
+                    } catch (e: Exception) {
+                        if (e is CancellationException) throw e
                     }
                 }
             }

@@ -10,38 +10,54 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toVisibility
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) :
     DraftRepository {
-    override suspend fun getAll(page: Int): List<TimelineEntryModel>? = runCatching {
+    override suspend fun getAll(page: Int): List<TimelineEntryModel>? = try {
         draftDao
             .getAll(
                 offset = page * DEFAULT_PAGE_SIZE,
                 limit = DEFAULT_PAGE_SIZE,
             ).map { it.toModel() }
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun getById(id: String): TimelineEntryModel? = runCatching {
+    override suspend fun getById(id: String): TimelineEntryModel? = try {
         draftDao.getBy(id)?.toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun create(item: TimelineEntryModel): TimelineEntryModel? = runCatching {
+    override suspend fun create(item: TimelineEntryModel): TimelineEntryModel? = try {
         val entity = item.toEntity()
         draftDao.insert(entity)
         getById(item.id)
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun update(item: TimelineEntryModel): TimelineEntryModel? = runCatching {
+    override suspend fun update(item: TimelineEntryModel): TimelineEntryModel? = try {
         val entity = item.toEntity()
         draftDao.update(entity)
         getById(item.id)
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
-    override suspend fun delete(id: String): Boolean = runCatching {
+    override suspend fun delete(id: String): Boolean = try {
         val entity = DraftEntity(id = id)
         draftDao.delete(entity)
         true
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
     private suspend fun DraftEntity.toModel() = TimelineEntryModel(
         id = id,
@@ -50,7 +66,12 @@ internal class DefaultDraftRepository(private val draftDao: DraftDao, private va
             ?.split(",")
             ?.filterNot { it.isEmpty() }
             ?.mapNotNull { id ->
-                runCatching { provider.media.getBy(id) }.getOrNull()?.toModel()
+                try {
+                    provider.media.getBy(id)
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    null
+                }?.toModel()
             }.orEmpty(),
         parentId = inReplyToId,
         lang = lang,

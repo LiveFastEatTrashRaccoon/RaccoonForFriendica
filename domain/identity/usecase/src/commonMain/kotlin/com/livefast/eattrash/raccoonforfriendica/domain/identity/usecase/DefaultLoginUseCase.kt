@@ -21,7 +21,6 @@ internal class DefaultLoginUseCase(
 ) : LoginUseCase {
     override suspend fun invoke(node: String, credentials: ApiCredentials) {
         apiConfigurationRepository.changeNode(node)
-        apiConfigurationRepository.setAuth(credentials)
         val user = credentialsRepository.validate(node = node, credentials = credentials)
         checkNotNull(user) { "Invalid credentials" }
 
@@ -49,6 +48,9 @@ internal class DefaultLoginUseCase(
             val anonymousAccountId = accountRepository.getBy(handle = "")?.id ?: 0
             val oldSettings = settingsRepository.get(account.id)
             val defaultSettings = settingsRepository.get(anonymousAccountId) ?: SettingsModel()
+
+            apiConfigurationRepository.setAuth(credentials)
+
             if (oldSettings == null) {
                 supportedFeatureRepository.refresh()
                 val supportsBBCode = supportedFeatureRepository.features.value.supportsBBCode

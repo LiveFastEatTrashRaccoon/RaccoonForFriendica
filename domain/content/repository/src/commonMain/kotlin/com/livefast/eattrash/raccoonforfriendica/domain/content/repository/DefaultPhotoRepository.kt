@@ -7,9 +7,10 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.utils.io.CancellationException
 
 internal class DefaultPhotoRepository(private val provider: ServiceProvider) : PhotoRepository {
-    override suspend fun create(bytes: ByteArray, album: String, alt: String): AttachmentModel? = runCatching {
+    override suspend fun create(bytes: ByteArray, album: String, alt: String): AttachmentModel? = try {
         val content =
             MultiPartFormDataContent(
                 formData {
@@ -27,7 +28,10 @@ internal class DefaultPhotoRepository(private val provider: ServiceProvider) : P
                 },
             )
         provider.photo.create(content = content).toModel()
-    }.getOrNull()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        null
+    }
 
     override suspend fun update(
         id: String,
@@ -35,7 +39,7 @@ internal class DefaultPhotoRepository(private val provider: ServiceProvider) : P
         album: String,
         newAlbum: String?,
         alt: String,
-    ): Boolean = runCatching {
+    ): Boolean = try {
         val content =
             MultiPartFormDataContent(
                 formData {
@@ -63,9 +67,12 @@ internal class DefaultPhotoRepository(private val provider: ServiceProvider) : P
             )
         val res = provider.photo.update(content = content)
         res.result == "updated"
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 
-    override suspend fun delete(id: String): Boolean = runCatching {
+    override suspend fun delete(id: String): Boolean = try {
         val content =
             MultiPartFormDataContent(
                 formData {
@@ -74,5 +81,8 @@ internal class DefaultPhotoRepository(private val provider: ServiceProvider) : P
             )
         val res = provider.photo.delete(content)
         res.result == "deleted"
-    }.getOrElse { false }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        false
+    }
 }

@@ -7,14 +7,14 @@ internal class DefaultAccountCredentialsCache(private val keyStore: TemporaryKey
         val type = keyStore.get(getKeyForType(accountId), "")
         val part1 = keyStore.get(getKeyForPart1(accountId), "")
         val part2 = keyStore.get(getKeyForPart2(accountId), "")
-        return when {
-            type == METHOD_BASIC && part1.isNotEmpty() && part2.isNotEmpty() ->
+        return when (type) {
+            METHOD_BASIC if part1.isNotEmpty() && part2.isNotEmpty() ->
                 ApiCredentials.HttpBasic(
                     user = part1,
                     pass = part2,
                 )
 
-            type == METHOD_OAUTH_2 && part1.isNotEmpty() ->
+            METHOD_OAUTH_2 if part1.isNotEmpty() ->
                 ApiCredentials.OAuth2(
                     accessToken = part1,
                     refreshToken = part2,
