@@ -1,0 +1,4 @@
+- fix: restored OAuth2 login flow
+- fix: window insets for top app bar and search field
+- fix: user manual link
+- chore: update dependencies
