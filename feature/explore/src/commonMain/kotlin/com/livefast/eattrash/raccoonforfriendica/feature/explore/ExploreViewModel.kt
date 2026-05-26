@@ -99,7 +99,9 @@ class ExploreViewModel(
                     refreshAvailableSections()
 
                     if (uiState.value.initial) {
-                        refresh(initial = true)
+                        viewModelScope.launch {
+                            refresh(initial = true)
+                        }
                     }
                 }.launchIn(this)
 
@@ -117,7 +119,11 @@ class ExploreViewModel(
             apiConfigurationRepository.node
                 .onEach { node ->
                     updateState { it.copy(currentNode = node) }
-                    refresh()
+                    if (node.isNotEmpty()) {
+                        viewModelScope.launch {
+                            refresh()
+                        }
+                    }
                 }.launchIn(this)
         }
     }

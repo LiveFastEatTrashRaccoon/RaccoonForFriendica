@@ -36,7 +36,9 @@ class GalleryViewModel(
             notificationCenter
                 .subscribe(AlbumsUpdatedEvent::class)
                 .onEach {
-                    refresh()
+                    viewModelScope.launch {
+                        refresh()
+                    }
                 }.launchIn(this)
 
             if (uiState.value.initial) {

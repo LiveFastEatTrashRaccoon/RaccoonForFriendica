@@ -61,7 +61,9 @@ internal class UserListViewModel(
                     }
                     if (uiState.value.initial) {
                         loadUser()
-                        refresh(initial = true)
+                        viewModelScope.launch {
+                            refresh(initial = true)
+                        }
                     }
                 }.launchIn(this)
 

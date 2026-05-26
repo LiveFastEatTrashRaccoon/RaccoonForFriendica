@@ -65,7 +65,9 @@ class ConversationListViewModel(
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
-                    refresh(initial = true)
+                    viewModelScope.launch {
+                        refresh(initial = true)
+                    }
                 }.launchIn(this)
         }
     }

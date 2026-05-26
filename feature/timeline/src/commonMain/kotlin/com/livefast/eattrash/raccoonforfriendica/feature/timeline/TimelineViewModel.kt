@@ -131,9 +131,6 @@ class TimelineViewModel(
             apiConfigurationRepository.node
                 .onEach { node ->
                     updateState { it.copy(currentNode = node) }
-                    refresh(
-                        forceRefresh = true,
-                    )
                 }.launchIn(this)
 
             combine(
@@ -151,10 +148,12 @@ class TimelineViewModel(
                     val hasUser =
                         user != null || !apiConfigurationRepository.hasCachedAuthCredentials()
                     if (hasSettings && hasUser) {
-                        refresh(
-                            initial = true,
-                            forceRefresh = true,
-                        )
+                        viewModelScope.launch {
+                            refresh(
+                                initial = true,
+                                forceRefresh = true,
+                            )
+                        }
                     }
                 }.launchIn(this)
         }

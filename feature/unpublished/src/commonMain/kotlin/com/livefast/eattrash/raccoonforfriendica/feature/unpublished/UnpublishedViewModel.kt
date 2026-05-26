@@ -65,7 +65,9 @@ class UnpublishedViewModel(
                     updateState { it.copy(currentUser = currentUser) }
 
                     if (uiState.value.initial) {
-                        refresh(initial = true)
+                        viewModelScope.launch {
+                            refresh(initial = true)
+                        }
                     }
                 }.launchIn(this)
 
