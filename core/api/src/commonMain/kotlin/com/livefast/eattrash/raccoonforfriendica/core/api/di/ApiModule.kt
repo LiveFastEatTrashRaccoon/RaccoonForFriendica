@@ -46,9 +46,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
 import kotlinx.serialization.json.Json
 import org.kodein.di.DI
 import org.kodein.di.bindFactory
+import org.kodein.di.bindProvider
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
@@ -59,15 +61,18 @@ val apiModule =
         bindSingleton<Json> {
             JsonSerializer
         }
+        bindSingleton<HttpClientEngine> {
+            provideHttpClientEngine()
+        }
         bindSingleton<ServiceProvider>(tag = "default") {
             DefaultServiceProvider(
-                factory = provideHttpClientEngine(),
+                factory = instance(),
                 appInfoRepository = instance(),
             )
         }
-        bindSingleton<ServiceProvider>(tag = "other") {
+        bindProvider<ServiceProvider>(tag = "other") {
             DefaultServiceProvider(
-                factory = provideHttpClientEngine(),
+                factory = instance(),
                 appInfoRepository = instance(),
             )
         }
