@@ -25,6 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -53,7 +54,9 @@ class InboxViewModel(
                     updateState {
                         it.copy(currentUserId = currentUser?.id)
                     }
-                    refresh(initial = true)
+                    viewModelScope.launch {
+                        refresh(initial = true)
+                    }
                 }.launchIn(this)
 
             settingsRepository.current
@@ -132,29 +135,34 @@ class InboxViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         val lastReadId = markerRepository.get(MarkerType.Notifications)?.lastReadId
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
-        val notifications =
-            paginationManager
-                .loadNextPage()
-                .takeIf { uiState.value.currentUserId != null }
-                .orEmpty()
-                .map { it.copy(read = it.hasPriorIdThen(lastReadId)) }
-        notifications.preloadImages()
-        updateState {
-            it.copy(
-                notifications = notifications,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(InboxMviModel.Effect.BackToTop)
+        try {
+            val notifications =
+                paginationManager
+                    .loadNextPage()
+                    .takeIf { uiState.value.currentUserId != null }
+                    .orEmpty()
+                    .map { it.copy(read = it.hasPriorIdThen(lastReadId)) }
+            notifications.preloadImages()
+            updateState {
+                it.copy(
+                    notifications = notifications,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+            if (wasRefreshing) {
+                emitEffect(InboxMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

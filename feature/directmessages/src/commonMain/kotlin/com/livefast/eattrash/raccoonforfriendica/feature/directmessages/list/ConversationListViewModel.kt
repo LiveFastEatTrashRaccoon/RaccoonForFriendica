@@ -12,6 +12,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -128,44 +129,49 @@ class ConversationListViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
         val currentUserId = uiState.value.currentUserId
         val wasRefreshing = uiState.value.refreshing
-        val items =
-            paginationManager
-                .loadNextPage()
-                .groupBy {
-                    it.parentUri
-                }.mapNotNull { (_, messages) ->
-                    val lastMessage =
-                        messages.takeIf { it.isNotEmpty() }?.maxBy { it.created.orEmpty() }
-                    val user =
-                        lastMessage?.sender?.takeIf { it.id != currentUserId }
-                            ?: lastMessage?.recipient
-                    if (user == null || lastMessage == null) {
-                        null
-                    } else {
-                        ConversationModel(
-                            otherUser = user,
-                            lastMessage = lastMessage,
-                            messageCount = messages.size,
-                            unreadCount = messages.count { m -> !m.read },
-                        )
+        try {
+            val items =
+                paginationManager
+                    .loadNextPage()
+                    .groupBy {
+                        it.parentUri
+                    }.mapNotNull { (_, messages) ->
+                        val lastMessage =
+                            messages.takeIf { it.isNotEmpty() }?.maxBy { it.created.orEmpty() }
+                        val user =
+                            lastMessage?.sender?.takeIf { it.id != currentUserId }
+                                ?: lastMessage?.recipient
+                        if (user == null || lastMessage == null) {
+                            null
+                        } else {
+                            ConversationModel(
+                                otherUser = user,
+                                lastMessage = lastMessage,
+                                messageCount = messages.size,
+                                unreadCount = messages.count { m -> !m.read },
+                            )
+                        }
                     }
-                }
-        updateState {
-            it.copy(
-                items = items,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(ConversationListMviModel.Effect.BackToTop)
+            updateState {
+                it.copy(
+                    items = items,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+            if (wasRefreshing) {
+                emitEffect(ConversationListMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

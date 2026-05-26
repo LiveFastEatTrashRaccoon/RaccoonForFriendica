@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Event
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventsPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -64,43 +65,49 @@ class CalendarViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
+
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
-        val events = paginationManager.loadNextPage()
-        val eventsGrouped =
-            events.groupBy {
-                val timestamp = it.startTime.toEpochMillis()
-                val (year, month) = timestamp.extractDatePart()
-                CalendarItem.Header(year = year, month = month)
-            }
-        val keys =
-            eventsGrouped.keys.sortedByDescending {
-                val monthPart = "${it.month}".padStart(2, '0')
-                "${it.year}-$monthPart"
-            }
-        val items =
-            buildList {
-                for (key in keys) {
-                    this += key
-                    val monthEvents =
-                        eventsGrouped[key]?.sortedByDescending { it.startTime }.orEmpty()
-                    for (event in monthEvents) {
-                        this += CalendarItem.EventItem(event)
+        try {
+            val events = paginationManager.loadNextPage()
+            val eventsGrouped =
+                events.groupBy {
+                    val timestamp = it.startTime.toEpochMillis()
+                    val (year, month) = timestamp.extractDatePart()
+                    CalendarItem.Header(year = year, month = month)
+                }
+            val keys =
+                eventsGrouped.keys.sortedByDescending {
+                    val monthPart = "${it.month}".padStart(2, '0')
+                    "${it.year}-$monthPart"
+                }
+            val items =
+                buildList {
+                    for (key in keys) {
+                        this += key
+                        val monthEvents =
+                            eventsGrouped[key]?.sortedByDescending { it.startTime }.orEmpty()
+                        for (event in monthEvents) {
+                            this += CalendarItem.EventItem(event)
+                        }
                     }
                 }
+            updateState {
+                it.copy(
+                    items = items,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
             }
-        updateState {
-            it.copy(
-                items = items,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(CalendarMviModel.Effect.BackToTop)
+            if (wasRefreshing) {
+                emitEffect(CalendarMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 }

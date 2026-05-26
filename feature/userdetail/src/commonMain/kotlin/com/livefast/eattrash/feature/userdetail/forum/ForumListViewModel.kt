@@ -32,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -175,27 +176,32 @@ class ForumListViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
-        val entries =
-            run {
-                // must wait until some content is fetched (due to replies being filtered out)
-                var res: List<TimelineEntryModel> = emptyList()
-                while (paginationManager.canFetchMore && res.isEmpty()) {
-                    res = paginationManager.loadNextPage()
+        try {
+            val entries =
+                run {
+                    // must wait until some content is fetched (due to replies being filtered out)
+                    var res: List<TimelineEntryModel> = emptyList()
+                    while (paginationManager.canFetchMore && res.isEmpty()) {
+                        res = paginationManager.loadNextPage()
+                    }
+                    res
                 }
-                res
+            entries.preloadImages()
+            updateState {
+                it.copy(
+                    entries = entries,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
             }
-        entries.preloadImages()
-        updateState {
-            it.copy(
-                entries = entries,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

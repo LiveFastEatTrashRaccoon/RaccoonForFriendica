@@ -17,6 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Local
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -111,25 +112,30 @@ class ConversationViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
-        val items =
-            paginationManager
-                .loadNextPage()
-                .onEach { markAsRead(it) }
-        val wasRefreshing = uiState.value.refreshing
-        updateState {
-            it.copy(
-                items = items,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(ConversationMviModel.Effect.BackToTop)
+        try {
+            val items =
+                paginationManager
+                    .loadNextPage()
+                    .onEach { markAsRead(it) }
+            val wasRefreshing = uiState.value.refreshing
+            updateState {
+                it.copy(
+                    items = items,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+            if (wasRefreshing) {
+                emitEffect(ConversationMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

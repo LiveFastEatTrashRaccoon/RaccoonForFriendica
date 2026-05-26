@@ -31,6 +31,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -69,7 +70,9 @@ class MyAccountViewModel(
                         user?.let {
                             with(emojiHelper) { it.withEmojisIfMissing() }
                         }
-                    loadData(currentUser)
+                    viewModelScope.launch {
+                        loadData(currentUser)
+                    }
                 }.launchIn(this)
 
             settingsRepository.current
@@ -208,19 +211,24 @@ class MyAccountViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
-        val entries = paginationManager.loadNextPage().distinctBy { it.safeKey }
-        entries.preloadImages()
-        updateState {
-            it.copy(
-                entries = entries,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
+        try {
+            val entries = paginationManager.loadNextPage().distinctBy { it.safeKey }
+            entries.preloadImages()
+            updateState {
+                it.copy(
+                    entries = entries,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

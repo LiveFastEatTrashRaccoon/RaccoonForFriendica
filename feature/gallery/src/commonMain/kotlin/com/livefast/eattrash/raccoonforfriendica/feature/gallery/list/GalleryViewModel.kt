@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Album
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -64,21 +65,27 @@ class GalleryViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
+
         updateState { it.copy(loading = true) }
-        val items = albumRepository.getAll().orEmpty()
-        val wasRefreshing = uiState.value.refreshing
-        updateState {
-            it.copy(
-                items = items,
-                canFetchMore = false,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(GalleryMviModel.Effect.BackToTop)
+        try {
+            val items = albumRepository.getAll().orEmpty()
+            val wasRefreshing = uiState.value.refreshing
+            updateState {
+                it.copy(
+                    items = items,
+                    canFetchMore = false,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+            if (wasRefreshing) {
+                emitEffect(GalleryMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

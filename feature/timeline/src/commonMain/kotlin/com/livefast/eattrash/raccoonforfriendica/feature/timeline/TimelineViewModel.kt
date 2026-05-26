@@ -37,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Imag
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -303,23 +304,28 @@ class TimelineViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
-        val entries = paginationManager.loadNextPage()
-        entries.preloadImages()
-        updateState {
-            it.copy(
-                entries = entries,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(TimelineMviModel.Effect.BackToTop)
+        try {
+            val entries = paginationManager.loadNextPage()
+            entries.preloadImages()
+            updateState {
+                it.copy(
+                    entries = entries,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+            if (wasRefreshing) {
+                emitEffect(TimelineMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

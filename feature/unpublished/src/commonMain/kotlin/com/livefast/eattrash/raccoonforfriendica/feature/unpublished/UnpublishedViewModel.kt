@@ -24,6 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Sched
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -132,20 +133,25 @@ class UnpublishedViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
-        val currentUser = uiState.value.currentUser
-        val entries = paginationManager.loadNextPage().map { it.copy(creator = currentUser) }
-        entries.preloadImages()
-        updateState {
-            it.copy(
-                entries = entries,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
+        try {
+            val currentUser = uiState.value.currentUser
+            val entries = paginationManager.loadNextPage().map { it.copy(creator = currentUser) }
+            entries.preloadImages()
+            updateState {
+                it.copy(
+                    entries = entries,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

@@ -21,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUs
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -135,35 +136,40 @@ internal class UserListViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         val currentState = uiState.value
         updateState { it.copy(loading = true) }
-        val users =
-            paginationManager
-                .loadNextPage()
-                .map { user ->
-                    if (currentState.currentUserId == null) {
-                        user.copy(relationshipStatus = null)
-                    } else if (user.id == currentState.currentUserId) {
-                        user.copy(relationshipStatus = null)
-                    } else {
-                        user
+        try {
+            val users =
+                paginationManager
+                    .loadNextPage()
+                    .map { user ->
+                        if (currentState.currentUserId == null) {
+                            user.copy(relationshipStatus = null)
+                        } else if (user.id == currentState.currentUserId) {
+                            user.copy(relationshipStatus = null)
+                        } else {
+                            user
+                        }
                     }
-                }
-        users.preloadImages()
-        val wasRefreshing = currentState.refreshing
-        updateState {
-            it.copy(
-                users = users,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(UserListMviModel.Effect.BackToTop)
+            users.preloadImages()
+            val wasRefreshing = currentState.refreshing
+            updateState {
+                it.copy(
+                    users = users,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+            if (wasRefreshing) {
+                emitEffect(UserListMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

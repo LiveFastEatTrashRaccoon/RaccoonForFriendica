@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -89,22 +90,27 @@ class AlbumDetailViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
-        updateState { it.copy(loading = true) }
+        if (uiState.value.loading) return
 
-        val wasRefreshing = uiState.value.refreshing
-        val items = paginationManager.loadNextPage().filter { it.thumbnail != null }
-        updateState {
-            it.copy(
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-                items = items,
-            )
-        }
-        if (wasRefreshing) {
-            emitEffect(AlbumDetailMviModel.Effect.BackToTop)
+        updateState { it.copy(loading = true) }
+        try {
+            val wasRefreshing = uiState.value.refreshing
+            val items = paginationManager.loadNextPage().filter { it.thumbnail != null }
+            updateState {
+                it.copy(
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                    items = items,
+                )
+            }
+            if (wasRefreshing) {
+                emitEffect(AlbumDetailMviModel.Effect.BackToTop)
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 
