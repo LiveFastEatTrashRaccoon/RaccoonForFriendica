@@ -15,6 +15,7 @@ internal class DefaultTrendingRepository(
     private val otherProvider: ServiceProvider,
 ) : TrendingRepository {
     private val mutex = Mutex()
+    private val otherMutex = Mutex()
     private val cachedTags: MutableList<TagModel> = mutableListOf()
 
     override suspend fun getEntries(offset: Int, otherInstance: String?): List<TimelineEntryModel>? = try {
@@ -80,14 +81,15 @@ internal class DefaultTrendingRepository(
         null
     }
 
-    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
+    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T =
         if (otherInstance.isNullOrEmpty()) {
-            return block(provider)
+            block(provider)
         } else {
-            otherProvider.changeNode(otherInstance)
-            return block(otherProvider)
+            otherMutex.withLock {
+                otherProvider.changeNode(otherInstance)
+                block(otherProvider)
+            }
         }
-    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

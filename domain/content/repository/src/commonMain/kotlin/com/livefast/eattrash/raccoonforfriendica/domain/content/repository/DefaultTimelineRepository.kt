@@ -13,6 +13,7 @@ internal class DefaultTimelineRepository(
     private val otherProvider: ServiceProvider,
 ) : TimelineRepository {
     private val mutex = Mutex()
+    private val otherMutex = Mutex()
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
 
     override suspend fun getPublic(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? {
@@ -142,14 +143,15 @@ internal class DefaultTimelineRepository(
         null
     }
 
-    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
+    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T =
         if (otherInstance.isNullOrEmpty()) {
-            return block(provider)
+            block(provider)
         } else {
-            otherProvider.changeNode(otherInstance)
-            return block(otherProvider)
+            otherMutex.withLock {
+                otherProvider.changeNode(otherInstance)
+                block(otherProvider)
+            }
         }
-    }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20
