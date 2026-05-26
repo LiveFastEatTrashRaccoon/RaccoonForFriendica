@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toVisibility
-import io.ktor.utils.io.CancellationException
+import kotlinx.coroutines.CancellationException
 
 internal class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) :
     DraftRepository {

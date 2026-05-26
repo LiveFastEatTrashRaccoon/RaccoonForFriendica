@@ -17,7 +17,7 @@ import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.parameters
-import io.ktor.utils.io.CancellationException
+import kotlinx.coroutines.CancellationException
 
 internal class DefaultUserRepository(
     private val provider: ServiceProvider,

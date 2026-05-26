@@ -18,9 +18,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 
 internal class DefaultTimelineEntryRepository(

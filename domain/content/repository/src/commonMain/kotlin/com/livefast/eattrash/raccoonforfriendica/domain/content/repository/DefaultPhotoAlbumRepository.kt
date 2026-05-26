@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
-import io.ktor.utils.io.CancellationException
+import kotlinx.coroutines.CancellationException
 
 internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider) : PhotoAlbumRepository {
     override suspend fun getAll(): List<MediaAlbumModel>? = try {
