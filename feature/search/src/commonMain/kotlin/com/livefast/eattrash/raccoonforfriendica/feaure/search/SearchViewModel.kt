@@ -35,6 +35,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Imag
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -208,21 +209,26 @@ class SearchViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
-        val entries = paginationManager.loadNextPage()
-        entries.mapNotNull { (it as? ExploreItemModel.Entry)?.entry }.preloadImages()
-        entries.mapNotNull { (it as? ExploreItemModel.User)?.user }.preloadAvatars()
-        updateState {
-            it.copy(
-                items = entries,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                earlyLoading = false,
-                initial = false,
-                refreshing = false,
-            )
+        try {
+            val entries = paginationManager.loadNextPage()
+            entries.mapNotNull { (it as? ExploreItemModel.Entry)?.entry }.preloadImages()
+            entries.mapNotNull { (it as? ExploreItemModel.User)?.user }.preloadAvatars()
+            updateState {
+                it.copy(
+                    items = entries,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    earlyLoading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

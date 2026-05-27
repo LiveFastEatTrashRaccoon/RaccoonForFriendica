@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResul
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
-import io.ktor.utils.io.CancellationException
+import kotlinx.coroutines.CancellationException
 
 internal class DefaultSearchRepository(private val provider: ServiceProvider) : SearchRepository {
     override suspend fun search(

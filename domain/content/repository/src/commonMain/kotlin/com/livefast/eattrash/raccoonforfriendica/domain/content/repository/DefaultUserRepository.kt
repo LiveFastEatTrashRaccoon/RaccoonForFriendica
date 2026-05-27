@@ -17,12 +17,15 @@ import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.parameters
-import io.ktor.utils.io.CancellationException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DefaultUserRepository(
     private val provider: ServiceProvider,
     private val otherProvider: ServiceProvider,
 ) : UserRepository {
+    private val otherMutex = Mutex()
     private var cachedUser: UserModel? = null
 
     override suspend fun getById(id: String): UserModel? = try {
@@ -367,14 +370,15 @@ internal class DefaultUserRepository(
         null
     }
 
-    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
+    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T =
         if (otherInstance.isNullOrEmpty()) {
-            return block(provider)
+            block(provider)
         } else {
-            otherProvider.changeNode(otherInstance)
-            return block(otherProvider)
+            otherMutex.withLock {
+                otherProvider.changeNode(otherInstance)
+                block(otherProvider)
+            }
         }
-    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20

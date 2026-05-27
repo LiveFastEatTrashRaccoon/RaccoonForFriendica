@@ -53,9 +53,7 @@ class DrawerViewModel(
                 }.launchIn(this)
             apiConfigurationRepository.node
                 .onEach { node ->
-                    updateState {
-                        it.copy(node = node)
-                    }
+                    updateState { it.copy(node = node) }
                 }.launchIn(this)
             supportedFeatureRepository.features
                 .onEach { features ->

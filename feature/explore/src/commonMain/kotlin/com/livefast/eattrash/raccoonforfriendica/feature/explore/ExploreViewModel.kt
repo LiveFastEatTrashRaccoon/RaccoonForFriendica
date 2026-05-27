@@ -37,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Imag
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.ExploreSection
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -99,7 +100,9 @@ class ExploreViewModel(
                     refreshAvailableSections()
 
                     if (uiState.value.initial) {
-                        refresh(initial = true)
+                        viewModelScope.launch {
+                            refresh(initial = true)
+                        }
                     }
                 }.launchIn(this)
 
@@ -117,7 +120,11 @@ class ExploreViewModel(
             apiConfigurationRepository.node
                 .onEach { node ->
                     updateState { it.copy(currentNode = node) }
-                    refresh()
+                    if (node.isNotEmpty()) {
+                        viewModelScope.launch {
+                            refresh()
+                        }
+                    }
                 }.launchIn(this)
         }
     }
@@ -209,20 +216,25 @@ class ExploreViewModel(
     }
 
     private suspend fun loadNextPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
-        val entries = paginationManager.loadNextPage()
-        entries.mapNotNull { (it as? ExploreItemModel.Entry)?.entry }.preloadImages()
-        entries.mapNotNull { (it as? ExploreItemModel.User)?.user }.preloadAvatars()
-        updateState {
-            it.copy(
-                items = entries,
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
+        try {
+            val entries = paginationManager.loadNextPage()
+            entries.mapNotNull { (it as? ExploreItemModel.Entry)?.entry }.preloadImages()
+            entries.mapNotNull { (it as? ExploreItemModel.User)?.user }.preloadAvatars()
+            updateState {
+                it.copy(
+                    items = entries,
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

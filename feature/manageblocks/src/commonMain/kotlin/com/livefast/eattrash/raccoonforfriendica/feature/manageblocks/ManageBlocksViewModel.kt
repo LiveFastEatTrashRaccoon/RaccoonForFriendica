@@ -16,6 +16,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksItem
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -137,19 +138,24 @@ class ManageBlocksViewModel(
     }
 
     private suspend fun loadNextUserPage() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) return
 
         updateState { it.copy(loading = true) }
-        val users = paginationManager.loadNextPage()
-        users.preloadImages()
-        updateState {
-            it.copy(
-                items = users.map { user -> ManageBlocksItem.User(user) },
-                canFetchMore = paginationManager.canFetchMore,
-                loading = false,
-                initial = false,
-                refreshing = false,
-            )
+        try {
+            val users = paginationManager.loadNextPage()
+            users.preloadImages()
+            updateState {
+                it.copy(
+                    items = users.map { user -> ManageBlocksItem.User(user) },
+                    canFetchMore = paginationManager.canFetchMore,
+                    loading = false,
+                    initial = false,
+                    refreshing = false,
+                )
+            }
+        } catch (e: Exception) {
+            updateState { it.copy(loading = false, refreshing = false) }
+            if (e is CancellationException) throw e
         }
     }
 

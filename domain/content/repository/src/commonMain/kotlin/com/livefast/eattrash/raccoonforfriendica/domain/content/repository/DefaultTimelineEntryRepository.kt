@@ -18,9 +18,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 
 internal class DefaultTimelineEntryRepository(
@@ -28,6 +28,7 @@ internal class DefaultTimelineEntryRepository(
     private val otherProvider: ServiceProvider,
 ) : TimelineEntryRepository {
     private val mutex = Mutex()
+    private val otherMutex = Mutex()
     private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
 
     override fun getCachedByUser(): List<TimelineEntryModel> = cachedValues
@@ -395,14 +396,15 @@ internal class DefaultTimelineEntryRepository(
         null
     }
 
-    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T {
+    private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T =
         if (otherInstance.isNullOrEmpty()) {
-            return block(provider)
+            block(provider)
         } else {
-            otherProvider.changeNode(otherInstance)
-            return block(otherProvider)
+            otherMutex.withLock {
+                otherProvider.changeNode(otherInstance)
+                block(otherProvider)
+            }
         }
-    }
 
     companion object {
         private const val DEFAULT_PAGE_SIZE = 20
