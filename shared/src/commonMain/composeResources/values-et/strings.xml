@@ -398,4 +398,27 @@
     <string name="theme_color_red">Krõmpsuv krabi</string>
     <string name="theme_color_white">Tormakas karu</string>
     <string name="theme_color_yellow">Naerutav siil</string>
+    <string name="action_back_to_home_instance">Tagasi koduserveri juurde</string>
+    <string name="action_select_foreign_instance">Vali väline server</string>
+    <string name="comment_bar_theme_blue">Uje beluuga</string>
+    <string name="comment_bar_theme_green">Pahur geko</string>
+    <string name="comment_bar_theme_rainbow">Kiirgav vihma-boa</string>
+    <string name="comment_bar_theme_red">Särtsakas krevett</string>
+    <string name="follow_required_message">Otsesõnumi saatmiseks pead teist osapoolt jälgima!</string>
+    <string name="inbox_configure_filter_dialog_subtitle">Kui mõni väärtus on valikust eemaldatud, siis näitab filter vaid lugemata kirjeid</string>
+    <string name="login_friendica_header">Tegutsen Friendicas</string>
+    <string name="login_mastodon_header">Tegutsen Mastodonis</string>
+    <string name="message_invalid_poll_error">Vigane küsitlus, palun kontrolli vastuste valikuid ja aegumiskuupäeva</string>
+    <string name="message_loading_translation">Laadin tõlkeid</string>
+    <string name="login_more_info_bottom_sheet_content">Sisselogimise protsess algab rakenduses serveri valimisega, mille järel jätkad OAuth2-protsessi veebibrauseris.\n\nKui sul pole veel kasutajakontot, vali palun server ja esmalt registreeru oma veebibrauseri abil.</string>
+    <string name="login_subtitle">Jälgimaks teisi kasutajad, koostamaks uusi postitusi või vastuseid ning haldamaks lemmikuid ja järjehoidjaid, palun logi sisse oma serverisse.</string>
+    <string name="login_title">🦝 Tere tulemast! 🦝</string>
+    <string name="message_alt_text_missing_error">Mõnedel failidel pole selgitusteksti (alt-teksti) - hõlbustuse ja parema kasutatavuse nimel palun lisa need</string>
+    <string name="message_are_you_sure">Kas sa oled kindel, et soovid jätkata?</string>
+    <string name="message_are_you_sure_exit">Kas sa oled kindel, et soovid väljuda?</string>
+    <string name="message_are_you_sure_reblog">See postitus n üle ühe kuu vana. Kas oled kindel, et tahad seda uuesti jagada?</string>
+    <string name="message_auth_issue">Tekkis viga, võib-olla on sinu tunnusluba aegunud.</string>
+    <string name="message_auth_issue_hint_2">logi uuesti sisse</string>
+    <string name="message_auth_issue_hint_3">kustuta rakenduse andmed</string>
+    <string name="message_auth_issue_hints_title">Sa võid proovida ühte järgnevatest tegevustest:</string>
 </resources>
