@@ -27,6 +27,10 @@ compose.desktop {
             packageName = "Raccoon"
             packageVersion = (rootProject.properties["versionName"] as? String)?.substringBefore("-")
             version = (rootProject.properties["buildNumber"] as? Int) ?: 1
+            description = "A client for Mastodon, Friendica and other federated social platforms."
+            copyright = "Copyright (C) 2026 LiveFastEatTrashRacoon"
+            vendor = "LiveFastEatTrashRaccoon"
+            licenseFile.set(rootProject.file("LICENSE"))
             includeAllModules = true
             macOS {
                 iconFile.set(project.file("src/jvmMain/resources/icon.icns"))
@@ -36,6 +40,8 @@ compose.desktop {
             }
             linux {
                 iconFile.set(project.file("src/jvmMain/resources/icon.png"))
+                debMaintainer = "livefast.eattrash.raccoon@gmail.com"
+                appCategory = "Network"
             }
         }
     }
