@@ -1,0 +1,10 @@
+[Desktop Entry]
+StartupWMClass=Main
+Name=Raccoon
+Comment=A client for Mastodon, Friendica and other federated social platforms.
+Exec=/opt/raccoon/bin/Raccoon
+Icon=/opt/raccoon/lib/Raccoon.png
+Terminal=false
+Type=Application
+Categories=Network
+MimeType=

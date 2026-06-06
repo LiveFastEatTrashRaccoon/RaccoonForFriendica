@@ -1,0 +1,20 @@
+Document: raccoon
+Title: Debian raccoon Manual
+Author: LiveFastEatTrashRaccoon <livefast.eattrash.raccoon@gmail.com>
+Abstract: This manual describes what raccoon is
+ and how it can be used to
+ manage online manuals on Debian systems.
+Section: unknown
+
+Format: debiandoc-sgml
+Files: /usr/share/doc/raccoon/raccoon.sgml.gz
+
+Format: postscript
+Files: /usr/share/doc/raccoon/raccoon.ps.gz
+
+Format: text
+Files: /usr/share/doc/raccoon/raccoon.text.gz
+
+Format: HTML
+Index: /usr/share/doc/raccoon/html/index.html
+Files: /usr/share/doc/raccoon/html/*.html
