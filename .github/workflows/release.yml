@@ -48,6 +48,17 @@ jobs:
       - name: Build Debian package
         run: ./gradlew :desktopApp:packageDeb --stacktrace
 
+      - name: Repackage Debian distributable
+        run: |
+          tmpDir=distribution/tmp
+          for f in desktopApp/build/compose/binaries/main/deb/*.deb; do filename=$f; done
+          dpkg -x $filename $tmpDir
+          mv $filename $filename.bak
+          cp -r distribution/deb/usr $tmpDir
+          cp -r distribution/deb/DEBIAN $tmpDir
+          dpkg -b $tmpDir $filename
+          rm -r $tmpDir
+
       - name: Upload release build to artifacts
         uses: actions/upload-artifact@v7
         with:

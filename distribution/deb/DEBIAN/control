@@ -9,7 +9,7 @@ Homepage: https://github.com/LiveFastEatTrashRaccoon
 #Vcs-Git: https://salsa.debian.org/debian/raccoon.git
 Rules-Requires-Root: no
 Package: raccoon
-Version: 1.0.0-beta04
+Version: 1.0.0
 Architecture: amd64
 Depends: libasound2t64 | libasound2, libbrotli1, libbsd0, libbz2-1.0, libc6, libexpat1, libfontconfig1, libfreetype6, libgcc-s1, libgl1, libglvnd0, libglx0, libmd0, libpng16-16t64 | libpng16-16, libstdc++6, libx11-6, libxau6, libxcb1, libxdmcp6, libxext6, libxi6, libxrender1, libxtst6, xdg-utils, zlib1g
 Description: A client for Mastodon, Friendica and other federated social platforms.

@@ -1,15 +1,14 @@
 ## What's Changed
 
-- feat: feat: add possibility to open posts in browser by @AkesiSeli in #838, #842
-- feat: add support local visibility options by @AkesiSeli in #838, #840
-- fix: avoid displaying recover page in profile by @AkesiSeli in #839
-- fix: calendar event time zones by @AkesiSeli in #837
-- fix: close unfollow request delete confirmation dialog by @AkesiSeli in #848
-- fix: profile section selector and links by @AkesiSeli in #850
-- fix: restore draft options menu by @AkesiSeli in #851
-- enhancement: add support for Bluesky source by @AkesiSeli in #836
-- enhancement: phrasing for draft mode and confirm exit dialog by @AkesiSeli in #841
-- chore: update l10n by @Weblate in #843
-- chore: update dependencies by @dependabot in #845, #846, #847
+This is a major version leap, so we'll skip minor fixes, chores & refactorings and focus on new features.
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.4.1...0.4.2
+- feat: support for expanded size devices with adaptive navigation
+- feat: add desktop target
+- feat: support translation via LibreTranslate
+- feat: add possibility to explore other instances
+- feat: display quoted posts
+- feat: add reply bar color themes
+- enh: new loading indicator
+- enh: update l10n and add new languages (pt_BR, et)
+
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.4.2...1.0.0
