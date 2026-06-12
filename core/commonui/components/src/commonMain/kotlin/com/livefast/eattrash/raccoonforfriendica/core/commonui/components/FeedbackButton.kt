@@ -17,6 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.tooling.preview.Preview
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.testutils.ProvideTestResources
 
 @Composable
 fun FeedbackButton(
@@ -61,4 +64,16 @@ fun FeedbackButton(
             color = tintColor,
         ),
     )
+}
+
+@Composable
+@Preview
+private fun FeedbackButtonPreview() {
+    ProvideTestResources {
+        FeedbackButton(
+            imageVector = LocalResources.current.thumbUp,
+            tintColor = Color.Red,
+            onClick = {},
+        )
+    }
 }
