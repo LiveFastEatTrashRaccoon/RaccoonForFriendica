@@ -421,4 +421,30 @@
     <string name="message_auth_issue_hint_2">logi uuesti sisse</string>
     <string name="message_auth_issue_hint_3">kustuta rakenduse andmed</string>
     <string name="message_auth_issue_hints_title">Sa võid proovida ühte järgnevatest tegevustest:</string>
+    <string name="message_character_limit_exceeded">Sa oled ületanud suurima lubatud tähemärkide arvu</string>
+    <string name="message_confirm_exit">Väljumiseks klõpsa uuesti 🔙</string>
+    <string name="message_empty_album">Tundub, et see album on ikka veel tühi… ✨</string>
+    <string name="message_empty_conversation">See on sinu eepilise vestluse algus kasutajaga</string>
+    <string name="mute_duration_item">Sa ei näe selle kasutaja ühtegi postitust järgnevalt</string>
+    <string name="message_generic_error">Tekkis ootamatu viga</string>
+    <string name="message_missing_rules">Palun vali vähemalt üks reegel</string>
+    <string name="message_sign_up_2">Liitu kohe!</string>
+    <string name="message_sign_up_1">Sul pole veel kasutajakontot?</string>
+    <string name="message_search_initial_empty">Hakka midagi kirjutama</string>
+    <string name="message_schedule_date_in_the_past">Ajastamiseks palun vali kuupäev tuilevikust</string>
+    <string name="timeline_entry_in_reply_to">vastuseks</string>
+    <string name="timeline_entry_reblogged_by">seda jagas uuesti</string>
+    <string name="timeline_layout_distraction_free">Müravaba</string>
+    <plurals name="extended_social_info_quotes">
+        <item quantity="one">%1$d tsiteerimine</item>
+        <item quantity="other">%1$d tsiteerimist</item>
+    </plurals>
+    <string name="message_no_public_timeline">Võib-olla see server ei luba vaadata oma ajajoont avalikult.</string>
+    <string name="translated_using">tõlkimiseks oli kasutusel %1$s</string>
+    <string name="action_translate_to">Tõlgi keelde: %1$s</string>
+    <string name="translated_from">tõlgitus keelest: %1$s</string>
+    <string name="action_show_original">näita algset teksti</string>
+    <string name="visibility_private">Vaid jälgijad</string>
+    <string name="visibility_direct">Vaid mainimised</string>
+    <string name="user_field_personal_note">Isiklik märge</string>
 </resources>
