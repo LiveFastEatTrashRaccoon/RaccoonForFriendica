@@ -1,5 +1,6 @@
 package extensions
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.gradle.api.Project
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -21,6 +22,7 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(libs.findLibrary("compose-m3-wsc").dependency)
                     implementation(libs.findLibrary("androidx-lifecycle-viewmodel-compose").dependency)
                     implementation(libs.findLibrary("compose-navigationevent").dependency)
+                    implementation(libs.findLibrary("compose-ui-tooling-preview").dependency)
                 }
             }
             jvmMain {
@@ -29,4 +31,12 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                 }
             }
         }
+    }
+
+internal fun Project.configureComposeMultiplatformAndroidLibrary(extension: KotlinMultiplatformAndroidLibraryExtension) =
+    extension.apply {
+        dependencies.add(
+            "androidRuntimeClasspath",
+            libs.findLibrary("compose-ui-tooling").dependency,
+        )
     }
