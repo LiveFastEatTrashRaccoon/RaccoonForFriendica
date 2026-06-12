@@ -33,13 +33,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.ProvideTestStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.testutils.ProvideTestResources
 
 @Composable
 fun SearchField(
@@ -138,4 +141,19 @@ fun SearchField(
             }
         },
     )
+}
+
+@Composable
+@Preview
+private fun SearchFieldPreview() {
+    Box {
+        ProvideTestStrings {
+            ProvideTestResources {
+                SearchField(
+                    value = "Search…",
+                    onValueChange = {},
+                )
+            }
+        }
+    }
 }
