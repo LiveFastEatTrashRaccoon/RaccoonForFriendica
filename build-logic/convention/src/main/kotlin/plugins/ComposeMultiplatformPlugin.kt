@@ -1,6 +1,8 @@
 package plugins
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import extensions.configureComposeMultiplatform
+import extensions.configureComposeMultiplatformAndroidLibrary
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -15,9 +17,12 @@ class ComposeMultiplatformPlugin : Plugin<Project> {
                 apply(libs.findPlugin("compose-compiler").pluginId)
             }
 
-            extensions.configure(
-                KotlinMultiplatformExtension::class.java,
-                ::configureComposeMultiplatform,
-            )
+            extensions.configure(KotlinMultiplatformExtension::class.java) {
+                configureComposeMultiplatform(this)
+
+                targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
+                    configureComposeMultiplatformAndroidLibrary(this)
+                }
+            }
         }
 }
