@@ -6,18 +6,16 @@ import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.MockStrings
+import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KodeinTestApplication
+import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KodeinTestRule
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.ProvideTestStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.testutils.MockResources
-import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestApplication
-import com.livefast.eattrash.raccoonforfriendica.core.testutils.KodeinTestRule
+import com.livefast.eattrash.raccoonforfriendica.core.resources.testutils.ProvideTestResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -80,7 +78,7 @@ class NodeInfoScreenScaffoldTest {
                 ),
             )
 
-            onNodeWithText("Node Info").assertIsDisplayed()
+            onNodeWithText("Node info").assertIsDisplayed()
             onNodeWithText("General").assertIsDisplayed()
             onNodeWithText("Instance title").assertIsDisplayed()
             onNodeWithText("Instance description").assertIsDisplayed()
@@ -115,7 +113,7 @@ class NodeInfoScreenScaffoldTest {
                 ),
             )
 
-            onNodeWithText("Node Info").assertIsDisplayed()
+            onNodeWithText("Node info").assertIsDisplayed()
             onNodeWithText("General").assertIsDisplayed()
             onNodeWithText("Instance title").assertIsDisplayed()
             onNodeWithText("Instance description").assertIsDisplayed()
@@ -145,7 +143,7 @@ class NodeInfoScreenScaffoldTest {
                 ),
             )
 
-            onNodeWithText("Node Info").assertIsDisplayed()
+            onNodeWithText("Node info").assertIsDisplayed()
             onNodeWithText("General").assertIsDisplayed()
             onNodeWithText("Instance title").assertIsDisplayed()
             onNodeWithText("Instance description").assertIsDisplayed()
@@ -161,22 +159,14 @@ class NodeInfoScreenScaffoldTest {
 
     private fun ComposeContentTestRule.setup(state: NodeInfoMviModel.State) {
         setContent {
-            CompositionLocalProvider(
-                LocalStrings provides
-                    MockStrings().apply {
-                        this["nodeInfoTitle"] = "Node Info"
-                        this["settingsHeaderGeneral"] = "General"
-                        this["nodeInfoSectionContact"] = "Contact"
-                        this["nodeInfoSectionRules"] = "Rules"
-                        this["itemOther"] = "Other"
-                        this["settingsAboutAppVersion"] = "Version"
-                        this["actionGoBack"] = "Go back"
-                        this["actionOpenDetail"] = "Open detail"
-                    },
-                LocalUriHandler provides uriHandler,
-                LocalResources provides MockResources,
-            ) {
-                NodeInfoScreenScaffold(state)
+            ProvideTestStrings {
+                ProvideTestResources {
+                    CompositionLocalProvider(
+                        LocalUriHandler provides uriHandler,
+                    ) {
+                        NodeInfoScreenScaffold(state)
+                    }
+                }
             }
         }
     }

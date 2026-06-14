@@ -27,5 +27,11 @@ kotlin {
                 implementation(projects.domain.identity.repository)
             }
         }
+        androidHostTest {
+            dependencies {
+                implementation(projects.core.l10n.testutils)
+                implementation(projects.core.resources.testutils)
+            }
+        }
     }
 }
