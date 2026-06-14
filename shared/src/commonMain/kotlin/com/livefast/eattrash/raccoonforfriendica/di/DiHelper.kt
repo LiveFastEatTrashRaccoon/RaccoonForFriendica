@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.navigationMo
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.notificationsModule
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.di.persistenceModule
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.di.preferencesModule
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.resourcesModule
 import com.livefast.eattrash.raccoonforfriendica.core.translation.di.translationModule
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.utilsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.contentPaginationModule
@@ -68,6 +69,7 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 notificationsModule,
                 persistenceModule,
                 preferencesModule,
+                resourcesModule,
                 translationModule,
                 utilsModule,
             )
@@ -122,7 +124,6 @@ fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
                 authModule,
                 mainRouterModule,
                 mainModule,
-                resourcesModule,
                 viewModelFactoryModule,
             )
         }

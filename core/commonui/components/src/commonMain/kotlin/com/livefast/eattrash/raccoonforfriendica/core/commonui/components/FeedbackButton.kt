@@ -72,7 +72,6 @@ private fun FeedbackButtonPreview() {
     ProvideTestResources {
         FeedbackButton(
             imageVector = LocalResources.current.thumbUp,
-            tintColor = Color.Red,
             onClick = {},
         )
     }

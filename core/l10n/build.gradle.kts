@@ -9,6 +9,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.compose.components.resources)
                 implementation(libs.kodein)
 
                 implementation(projects.core.di)

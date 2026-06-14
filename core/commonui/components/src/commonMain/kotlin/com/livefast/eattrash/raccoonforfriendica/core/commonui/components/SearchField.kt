@@ -146,14 +146,13 @@ fun SearchField(
 @Composable
 @Preview
 private fun SearchFieldPreview() {
-    Box {
-        ProvideTestStrings {
-            ProvideTestResources {
-                SearchField(
-                    value = "Search…",
-                    onValueChange = {},
-                )
-            }
+    ProvideTestStrings {
+        ProvideTestResources {
+            SearchField(
+                hint = LocalStrings.current.actionSearch,
+                value = "",
+                onValueChange = {},
+            )
         }
     }
 }

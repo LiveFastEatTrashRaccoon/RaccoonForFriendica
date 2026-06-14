@@ -8,3 +8,7 @@ fun getCoreResources(): CoreResources {
     val res by RootDI.di.instance<CoreResources>()
     return res
 }
+
+fun getDefaultResources() {
+
+}

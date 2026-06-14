@@ -16,7 +16,7 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
                             implementation(libs.findLibrary("compose-ui-test").dependency)
                             implementation(libs.findLibrary("compose-ui-test-manifest").dependency)
                             implementation(libs.findLibrary("robolectric").dependency)
-                            implementation(project(":core:testutils"))
+                            implementation(project(":core:di:testutils"))
                         }
                     }
                     "androidDeviceTest" -> {
