@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.core.testutils
+package com.livefast.eattrash.raccoonforfriendica.core.di.testutils
 
 import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import org.junit.rules.TestWatcher

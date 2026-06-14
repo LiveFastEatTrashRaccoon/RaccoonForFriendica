@@ -21,7 +21,7 @@ internal fun Project.configureTest(extension: KotlinMultiplatformExtension) =
                 when (name) {
                     "androidHostTest", "androidDeviceTest" -> {
                         dependencies {
-                            implementation(project(":core:testutils"))
+                            implementation(project(":core:di:testutils"))
                         }
                     }
                 }
