@@ -8,11 +8,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.compose.components.resources)
                 implementation(libs.compose.multiplatform.media.player)
-                implementation(libs.kodein)
 
-                implementation(projects.core.di)
+                implementation(projects.core.resources)
             }
         }
     }
@@ -20,7 +18,7 @@ kotlin {
 
 spotless {
     kotlin {
-        target("**/ProvideResources.kt")
+        target("**/ProvideTestResources.kt")
         suppressLintsFor {
             step = "ktlint"
             shortCode = "compose:compositionlocal-allowlist"
