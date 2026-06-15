@@ -12,10 +12,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KodeinTestApplication
 import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KodeinTestRule
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.ProvideTestStrings
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.l10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.testutils.ProvideTestResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.resourcesModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -28,8 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.provider
+import org.kodein.di.bindProvider
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -51,9 +50,11 @@ class NodeInfoScreenScaffoldTest {
     val diRule =
         KodeinTestRule(
             listOf(
+                l10nModule,
+                resourcesModule,
                 DI.Module("NodeInfoScreenTestModule") {
-                    bind<NavigationCoordinator> { provider { navigationCoordinator } }
-                    bind<MainRouter> { provider { mainRouter } }
+                    bindProvider { navigationCoordinator }
+                    bindProvider { mainRouter }
                 },
             ),
         )
@@ -159,14 +160,8 @@ class NodeInfoScreenScaffoldTest {
 
     private fun ComposeContentTestRule.setup(state: NodeInfoMviModel.State) {
         setContent {
-            ProvideTestStrings {
-                ProvideTestResources {
-                    CompositionLocalProvider(
-                        LocalUriHandler provides uriHandler,
-                    ) {
-                        NodeInfoScreenScaffold(state)
-                    }
-                }
+            CompositionLocalProvider(LocalUriHandler provides uriHandler) {
+                NodeInfoScreenScaffold(state)
             }
         }
     }
