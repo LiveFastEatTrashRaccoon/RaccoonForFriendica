@@ -478,7 +478,8 @@ import raccoonforfriendica.core.l10n.generated.resources.visibility_direct
 import raccoonforfriendica.core.l10n.generated.resources.visibility_private
 import raccoonforfriendica.core.l10n.generated.resources.visibility_public
 import raccoonforfriendica.core.l10n.generated.resources.visibility_unlisted
-class DefaultStrings : Strings {
+
+internal class DefaultStrings : Strings {
     override val accountAge: String
         @Composable get() = stringResource(Res.string.account_age)
     override val accountSectionAll: String
