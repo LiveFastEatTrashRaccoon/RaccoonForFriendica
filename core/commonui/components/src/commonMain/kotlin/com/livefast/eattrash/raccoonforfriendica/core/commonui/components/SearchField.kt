@@ -39,10 +39,10 @@ import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.testutils.ProvideTestStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.testutils.ProvideTestResources
 
 @Composable
 fun SearchField(
@@ -146,13 +146,10 @@ fun SearchField(
 @Composable
 @Preview
 private fun SearchFieldPreview() {
-    ProvideTestStrings {
-        ProvideTestResources {
-            SearchField(
-                hint = LocalStrings.current.actionSearch,
-                value = "",
-                onValueChange = {},
-            )
-        }
-    }
+    RootDI.setupPreview()
+    SearchField(
+        hint = LocalStrings.current.actionSearch,
+        value = "",
+        onValueChange = {},
+    )
 }
