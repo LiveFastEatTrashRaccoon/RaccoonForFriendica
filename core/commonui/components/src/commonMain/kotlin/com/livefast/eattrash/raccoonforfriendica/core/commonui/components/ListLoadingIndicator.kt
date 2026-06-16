@@ -18,7 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
@@ -59,4 +62,11 @@ fun ListLoadingIndicator(modifier: Modifier = Modifier) {
             tint = MaterialTheme.colorScheme.onPrimaryContainer,
         )
     }
+}
+
+@Composable
+@Preview
+private fun ListLoadingIndicatorPreview() {
+    RootDI.setupPreview()
+    ListLoadingIndicator()
 }

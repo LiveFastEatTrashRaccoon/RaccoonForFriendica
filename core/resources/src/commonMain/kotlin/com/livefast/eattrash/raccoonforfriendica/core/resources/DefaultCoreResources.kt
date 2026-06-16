@@ -150,7 +150,7 @@ import raccoonforfriendica.core.resources.generated.resources.volunteer_activism
 import raccoonforfriendica.core.resources.generated.resources.wordpress_small
 import raccoonforfriendica.core.resources.generated.resources.workspaces_fill
 
-class DefaultCoreResources : CoreResources {
+internal class DefaultCoreResources : CoreResources {
 
     // region Fonts
     override val atkinsonHyperlegible: FontFamily

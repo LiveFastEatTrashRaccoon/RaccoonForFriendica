@@ -11,8 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 
 @Composable
 fun PlaceholderImage(size: Dp, title: String, modifier: Modifier = Modifier) {
@@ -39,4 +43,14 @@ fun PlaceholderImage(size: Dp, title: String, modifier: Modifier = Modifier) {
             fontWeight = FontWeight.SemiBold,
         )
     }
+}
+
+@Composable
+@Preview
+private fun PlaceholderImagePreview() {
+    RootDI.setupPreview()
+    PlaceholderImage(
+        size = 24.dp,
+        title = "Raccoon",
+    )
 }
