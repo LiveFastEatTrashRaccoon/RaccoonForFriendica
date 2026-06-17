@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 
 @Composable
@@ -102,4 +103,14 @@ fun SectionSelector(
             },
         )
     }
+}
+
+@Composable
+@Preview
+private fun SectionSelectorPreview() {
+    SectionSelector(
+        currentSection = 0,
+        titles = listOf("Section 1", "Section 2", "Section 3"),
+        onSelectSection = {},
+    )
 }

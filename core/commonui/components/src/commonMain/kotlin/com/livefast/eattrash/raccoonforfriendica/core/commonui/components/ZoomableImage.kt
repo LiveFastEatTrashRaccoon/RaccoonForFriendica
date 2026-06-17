@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val LOADING_ANIMATION_DURATION = 1000
 
@@ -45,7 +46,7 @@ fun ZoomableImage(url: String, modifier: Modifier = Modifier, contentScale: Cont
 
     LaunchedEffect(contentScale) {
         visible = false
-        delay(50)
+        delay(50.milliseconds)
         visible = true
     }
 
