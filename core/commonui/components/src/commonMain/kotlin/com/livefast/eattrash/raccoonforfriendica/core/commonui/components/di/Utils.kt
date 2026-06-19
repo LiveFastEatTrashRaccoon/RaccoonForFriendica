@@ -17,7 +17,8 @@ fun getFabNestedScrollConnection(): FabNestedScrollConnection {
 @Composable
 fun rememberFabNestedScrollConnection() = remember { getFabNestedScrollConnection() }
 
-fun RootDI.setupPreview(vararg modules: DI.Module) {
+@Composable
+fun RootDI.SetupPreview(vararg modules: DI.Module) = remember {
     di = DI {
         importAll(resourcesModule, l10nModule, *modules)
     }
