@@ -17,7 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -145,12 +144,12 @@ private fun SpinnerFieldPreview() {
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .padding(Spacing.xs)
+            .padding(Spacing.xs),
     ) {
         SpinnerField(
             label = {
                 Text("Title")
-            }
+            },
         )
     }
 }
