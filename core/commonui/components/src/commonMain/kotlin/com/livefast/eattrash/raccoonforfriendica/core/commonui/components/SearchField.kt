@@ -34,6 +34,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -143,13 +145,25 @@ fun SearchField(
     )
 }
 
+private data class SearchFieldPreviewParameter(val value: String)
+
+private class SearchFieldPreviewParameterProvider : PreviewParameterProvider<SearchFieldPreviewParameter> {
+    override val values = sequenceOf(
+        SearchFieldPreviewParameter(value = ""),
+        SearchFieldPreviewParameter(value = "Text"),
+    )
+}
+
 @Composable
 @Preview
-private fun SearchFieldPreview() {
+private fun SearchFieldPreview(
+    @PreviewParameter(SearchFieldPreviewParameterProvider::class) param: SearchFieldPreviewParameter,
+) {
     RootDI.setupPreview()
     SearchField(
         hint = LocalStrings.current.actionSearch,
-        value = "",
+        value = param.value,
         onValueChange = {},
+        onClear = {},
     )
 }
