@@ -1,12 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
@@ -15,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -25,12 +29,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -53,9 +62,6 @@ fun CustomModalBottomSheet(
     onLongPress: ((Int) -> Unit)? = null,
     shouldHideOnSelect: ((Int) -> Boolean) = { true },
 ) {
-    val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-
     ModalBottomSheet(
         contentWindowInsets = { WindowInsets.navigationBars },
         sheetState = sheetState,
@@ -63,80 +69,152 @@ fun CustomModalBottomSheet(
             onSelect?.invoke(null)
         },
         content = {
-            Column(
-                modifier = Modifier.padding(bottom = Spacing.xs),
-            ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = fullColor,
-                )
-                Spacer(modifier = Modifier.height(Spacing.s))
-                LazyColumn {
-                    itemsIndexed(items = items) { idx, item ->
-                        Row(
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clip(
-                                    shape = RoundedCornerShape(CornerSize.xl),
-                                ).combinedClickable(
-                                    onClick = {
-                                        sheetScope
-                                            .launch {
-                                                if (shouldHideOnSelect(idx)) {
-                                                    sheetState.hide()
-                                                }
-                                            }.invokeOnCompletion {
-                                                onSelect?.invoke(idx)
-                                            }
-                                    },
-                                    onLongClick =
-                                    if (onLongPress != null) {
-                                        {
-                                            sheetScope
-                                                .launch {
-                                                    if (shouldHideOnSelect(idx)) {
-                                                        sheetState.hide()
-                                                    }
-                                                }.invokeOnCompletion {
-                                                    onLongPress(idx)
-                                                }
-                                        }
-                                    } else {
-                                        null
-                                    },
-                                ).padding(10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-                        ) {
-                            item.leadingContent?.invoke()
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-                            ) {
-                                Text(
-                                    text = item.label,
-                                    style =
-                                    item.customLabelStyle
-                                        ?: MaterialTheme.typography.bodyLarge,
-                                    color = fullColor,
-                                )
-                                if (!item.subtitle.isNullOrEmpty()) {
-                                    Text(
-                                        text = item.subtitle,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = ancillaryColor,
-                                    )
-                                }
-                            }
-                            item.trailingContent?.invoke()
-                        }
-                    }
-                }
-            }
+            CustomModalBottomSheetContent(
+                title = title,
+                items = items,
+                onSelect = onSelect,
+                onLongPress = onLongPress,
+                shouldHideOnSelect = shouldHideOnSelect,
+                sheetScope = sheetScope,
+                sheetState = sheetState,
+            )
         },
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@Composable
+private fun CustomModalBottomSheetContent(
+    title: String = "",
+    items: List<CustomModalBottomSheetItem> = emptyList(),
+    onSelect: ((Int?) -> Unit)? = null,
+    onLongPress: ((Int) -> Unit)? = null,
+    shouldHideOnSelect: ((Int) -> Boolean) = { true },
+    sheetScope: CoroutineScope = rememberCoroutineScope(),
+    sheetState: SheetState? = null,
+) {
+    val fullColor = MaterialTheme.colorScheme.onBackground
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+
+    Column(
+        modifier = Modifier.padding(bottom = Spacing.xs),
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = fullColor,
+        )
+        Spacer(modifier = Modifier.height(Spacing.s))
+        LazyColumn {
+            itemsIndexed(items = items) { idx, item ->
+                Row(
+                    modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(
+                            shape = RoundedCornerShape(CornerSize.xl),
+                        ).combinedClickable(
+                            onClick = {
+                                sheetScope
+                                    .launch {
+                                        if (shouldHideOnSelect(idx)) {
+                                            sheetState?.hide()
+                                        }
+                                    }.invokeOnCompletion {
+                                        onSelect?.invoke(idx)
+                                    }
+                            },
+                            onLongClick =
+                            if (onLongPress != null) {
+                                {
+                                    sheetScope
+                                        .launch {
+                                            if (shouldHideOnSelect(idx)) {
+                                                sheetState?.hide()
+                                            }
+                                        }.invokeOnCompletion {
+                                            onLongPress(idx)
+                                        }
+                                }
+                            } else {
+                                null
+                            },
+                        ).padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                ) {
+                    item.leadingContent?.invoke()
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                    ) {
+                        Text(
+                            text = item.label,
+                            style =
+                            item.customLabelStyle
+                                ?: MaterialTheme.typography.bodyLarge,
+                            color = fullColor,
+                        )
+                        if (!item.subtitle.isNullOrEmpty()) {
+                            Text(
+                                text = item.subtitle,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = ancillaryColor,
+                            )
+                        }
+                    }
+                    item.trailingContent?.invoke()
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+@Preview
+private fun CustomModalBottomSheetPreview() {
+    RootDI.SetupPreview()
+    Box(
+        modifier =
+        Modifier
+            .fillMaxSize()
+            .background(Color.White),
+    ) {
+        CustomModalBottomSheetContent(
+            title = "UI Theme",
+            items =
+            listOf(
+                CustomModalBottomSheetItem(
+                    label = "Light",
+                    trailingContent = {
+                        Icon(
+                            imageVector = LocalResources.current.lightMode,
+                            contentDescription = null,
+                        )
+                    },
+                ),
+                CustomModalBottomSheetItem(
+                    label = "Dark",
+                    trailingContent = {
+                        Icon(
+                            imageVector = LocalResources.current.darkMode,
+                            contentDescription = null,
+                        )
+                    },
+                ),
+                CustomModalBottomSheetItem(
+                    label = "Black",
+                    trailingContent = {
+                        Icon(
+                            imageVector = LocalResources.current.darkModeFill,
+                            contentDescription = null,
+                        )
+                    },
+                ),
+            ),
+        )
+    }
 }

@@ -28,9 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,6 +56,50 @@ fun EditTwoTextualInfosDialog(
     singleLine: Boolean = false,
     onClose: ((String?, String?) -> Unit)? = null,
 ) {
+    BasicAlertDialog(
+        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
+        onDismissRequest = {
+            onClose?.invoke(null, null)
+        },
+    ) {
+        EditTwoTextualInfosDialogContent(
+            title = title,
+            label1 = label1,
+            label2 = label2,
+            placeHolder1 = placeHolder1,
+            placeHolder2 = placeHolder2,
+            value1 = value1,
+            value2 = value2,
+            minLines = minLines,
+            maxLines = maxLines,
+            isError1 = isError1,
+            keyboardType1 = keyboardType1,
+            keyboardType2 = keyboardType2,
+            isError2 = isError2,
+            singleLine = singleLine,
+            onClose = onClose,
+        )
+    }
+}
+
+@Composable
+private fun EditTwoTextualInfosDialogContent(
+    title: String,
+    label1: String,
+    label2: String,
+    placeHolder1: String?,
+    placeHolder2: String?,
+    value1: String,
+    value2: String,
+    minLines: Int = 1,
+    maxLines: Int = 20,
+    isError1: Boolean = false,
+    keyboardType1: KeyboardType = KeyboardType.Text,
+    keyboardType2: KeyboardType = KeyboardType.Text,
+    isError2: Boolean = false,
+    singleLine: Boolean = false,
+    onClose: ((String?, String?) -> Unit)? = null,
+) {
     var textFieldValue1 by remember {
         mutableStateOf(TextFieldValue(text = value1))
     }
@@ -60,95 +107,103 @@ fun EditTwoTextualInfosDialog(
         mutableStateOf(TextFieldValue(text = value2))
     }
 
-    BasicAlertDialog(
-        modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
-        onDismissRequest = {
-            onClose?.invoke(null, null)
-        },
+    Column(
+        modifier =
+        Modifier
+            .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+            .padding(Spacing.m),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
     ) {
-        Column(
-            modifier =
-            Modifier
-                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                .padding(Spacing.m),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Spacer(modifier = Modifier.height(Spacing.s))
+
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            minLines = minLines,
+            maxLines = maxLines,
+            singleLine = singleLine,
+            isError = isError1,
+            colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+            ),
+            label = {
+                Text(
+                    text = label1,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            textStyle = MaterialTheme.typography.bodyMedium,
+            value = textFieldValue1,
+            placeholder = placeHolder1?.let { { Text(text = it) } },
+            keyboardOptions =
+            KeyboardOptions(
+                keyboardType = keyboardType1,
+            ),
+            onValueChange = { value ->
+                textFieldValue1 = value
+            },
+        )
+
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            minLines = minLines,
+            maxLines = maxLines,
+            singleLine = singleLine,
+            isError = isError2,
+            colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+            ),
+            label = {
+                Text(
+                    text = label2,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            textStyle = MaterialTheme.typography.bodyMedium,
+            value = textFieldValue2,
+            placeholder = placeHolder2?.let { { Text(text = it) } },
+            keyboardOptions =
+            KeyboardOptions(
+                keyboardType = keyboardType2,
+            ),
+            onValueChange = { value ->
+                textFieldValue2 = value
+            },
+        )
+
+        Spacer(modifier = Modifier.height(Spacing.xs))
+        Button(
+            onClick = {
+                onClose?.invoke(textFieldValue1.text, textFieldValue2.text)
+            },
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Spacer(modifier = Modifier.height(Spacing.s))
-
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                minLines = minLines,
-                maxLines = maxLines,
-                singleLine = singleLine,
-                isError = isError1,
-                colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                ),
-                label = {
-                    Text(
-                        text = label1,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                },
-                textStyle = MaterialTheme.typography.bodyMedium,
-                value = textFieldValue1,
-                placeholder = placeHolder1?.let { { Text(text = it) } },
-                keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = keyboardType1,
-                ),
-                onValueChange = { value ->
-                    textFieldValue1 = value
-                },
-            )
-
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                minLines = minLines,
-                maxLines = maxLines,
-                singleLine = singleLine,
-                isError = isError2,
-                colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                ),
-                label = {
-                    Text(
-                        text = label2,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                },
-                textStyle = MaterialTheme.typography.bodyMedium,
-                value = textFieldValue2,
-                placeholder = placeHolder2?.let { { Text(text = it) } },
-                keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = keyboardType2,
-                ),
-                onValueChange = { value ->
-                    textFieldValue2 = value
-                },
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.xs))
-            Button(
-                onClick = {
-                    onClose?.invoke(textFieldValue1.text, textFieldValue2.text)
-                },
-            ) {
-                Text(text = LocalStrings.current.buttonConfirm)
-            }
+            Text(text = LocalStrings.current.buttonConfirm)
         }
     }
+}
+
+@Composable
+@Preview
+private fun EditTwoTextualInfosDialogPreview() {
+    RootDI.SetupPreview()
+    EditTwoTextualInfosDialogContent(
+        title = "Change server",
+        label1 = "Protocol",
+        label2 = "Address",
+        placeHolder1 = "https",
+        placeHolder2 = "friendica.example.com",
+        value1 = "https",
+        value2 = "",
+    )
 }
