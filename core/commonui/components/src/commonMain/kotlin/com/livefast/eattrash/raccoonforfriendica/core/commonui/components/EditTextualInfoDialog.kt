@@ -28,9 +28,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,68 +49,102 @@ fun EditTextualInfoDialog(
     singleLine: Boolean = false,
     onClose: ((String?) -> Unit)? = null,
 ) {
-    var textFieldValue by remember {
-        mutableStateOf(TextFieldValue(text = value))
-    }
-
     BasicAlertDialog(
         modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
         onDismissRequest = {
             onClose?.invoke(null)
         },
     ) {
-        Column(
-            modifier =
-            Modifier
-                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                .padding(Spacing.m),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
+        EditTextualInfoDialogContent(
+            title = title,
+            label = label,
+            value = value,
+            minLines = minLines,
+            maxLines = maxLines,
+            isError = isError,
+            singleLine = singleLine,
+            onClose = onClose,
+        )
+    }
+}
+
+@Composable
+private fun EditTextualInfoDialogContent(
+    title: String,
+    label: String,
+    value: String,
+    minLines: Int = 1,
+    maxLines: Int = 20,
+    isError: Boolean = false,
+    singleLine: Boolean = false,
+    onClose: ((String?) -> Unit)? = null,
+) {
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(text = value))
+    }
+
+    Column(
+        modifier =
+        Modifier
+            .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+            .padding(Spacing.m),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Spacer(modifier = Modifier.height(Spacing.s))
+
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            minLines = minLines,
+            maxLines = maxLines,
+            singleLine = singleLine,
+            isError = isError,
+            colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+            ),
+            label = {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            textStyle = MaterialTheme.typography.bodyMedium,
+            value = textFieldValue,
+            keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+            ),
+            onValueChange = { value ->
+                textFieldValue = value
+            },
+        )
+
+        Spacer(modifier = Modifier.height(Spacing.xs))
+        Button(
+            onClick = {
+                onClose?.invoke(textFieldValue.text)
+            },
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Spacer(modifier = Modifier.height(Spacing.s))
-
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                minLines = minLines,
-                maxLines = maxLines,
-                singleLine = singleLine,
-                isError = isError,
-                colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                ),
-                label = {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                },
-                textStyle = MaterialTheme.typography.bodyMedium,
-                value = textFieldValue,
-                keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                ),
-                onValueChange = { value ->
-                    textFieldValue = value
-                },
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.xs))
-            Button(
-                onClick = {
-                    onClose?.invoke(textFieldValue.text)
-                },
-            ) {
-                Text(text = LocalStrings.current.buttonConfirm)
-            }
+            Text(text = LocalStrings.current.buttonConfirm)
         }
     }
+}
+
+@Composable
+@Preview
+private fun EditTextualInfoDialogPreview() {
+    RootDI.SetupPreview()
+    EditTextualInfoDialogContent(
+        title = "Edit Bio",
+        label = "Bio",
+        value = "I am a Raccoon",
+    )
 }
