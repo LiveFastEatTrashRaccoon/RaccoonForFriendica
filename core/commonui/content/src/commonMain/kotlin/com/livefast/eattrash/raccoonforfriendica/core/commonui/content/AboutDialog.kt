@@ -34,26 +34,25 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberAppInfoRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
-    val uriHandler = LocalUriHandler.current
+    val mainRouter = rememberMainRouter()
     val appInfoRepository = rememberAppInfoRepository()
     val appInfo by appInfoRepository.appInfo.collectAsState()
-    val mainRouter = rememberMainRouter()
-
-    fun handleAction(block: () -> Unit) {
-        onClose?.invoke()
-        block()
-    }
 
     BasicAlertDialog(
         modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),
@@ -61,149 +60,169 @@ fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
             onClose?.invoke()
         },
     ) {
-        Column(
+        AboutDialogContent(
+            appInfo = appInfo,
+            mainRouter = mainRouter,
+            onClose = onClose,
+        )
+    }
+}
+
+@Composable
+private fun AboutDialogContent(
+    appInfo: AppInfo?,
+    modifier: Modifier = Modifier,
+    mainRouter: MainRouter? = null,
+    onClose: (() -> Unit)? = null,
+) {
+    val uriHandler = LocalUriHandler.current
+
+    fun handleAction(block: () -> Unit) {
+        onClose?.invoke()
+        block()
+    }
+    Column(
+        modifier =
+        modifier
+            .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
+            .padding(Spacing.m),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = LocalStrings.current.settingsAbout,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Spacer(modifier = Modifier.height(Spacing.s))
+        LazyColumn(
             modifier =
             Modifier
-                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp))
-                .padding(Spacing.m),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(vertical = Spacing.s, horizontal = Spacing.m)
+                .heightIn(max = 400.dp),
+            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
-            Text(
-                text = LocalStrings.current.settingsAbout,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Spacer(modifier = Modifier.height(Spacing.s))
-            LazyColumn(
-                modifier =
-                Modifier
-                    .padding(vertical = Spacing.s, horizontal = Spacing.m)
-                    .heightIn(max = 400.dp),
-                verticalArrangement = Arrangement.spacedBy(Spacing.xs),
-            ) {
-                item {
-                    AboutItem(
-                        text = LocalStrings.current.settingsAboutAppVersion,
-                        value = appInfo?.versionCode.orEmpty(),
-                    )
-                }
-                item {
-                    AboutItem(
-                        text = LocalStrings.current.settingsAboutChangelog,
-                        icon = LocalResources.current.article,
-                        textDecoration = TextDecoration.Underline,
-                        onClick = {
-                            handleAction {
-                                uriHandler.openUri(AboutConstants.CHANGELOG_URL)
-                            }
-                        },
-                    )
-                }
-                item {
-                    Button(
-                        onClick = {
-                            handleAction {
-                                mainRouter.openUserFeedback()
-                            }
-                        },
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.s),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                modifier = Modifier.weight(1f),
-                                text = LocalStrings.current.settingsAboutReportIssue,
-                                style = MaterialTheme.typography.labelLarge,
-                            )
-                            Icon(
-                                imageVector = LocalResources.current.bugReport,
-                                contentDescription = null,
-                            )
+            item {
+                AboutItem(
+                    text = LocalStrings.current.settingsAboutAppVersion,
+                    value = appInfo?.versionCode.orEmpty(),
+                )
+            }
+            item {
+                AboutItem(
+                    text = LocalStrings.current.settingsAboutChangelog,
+                    icon = LocalResources.current.article,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            uriHandler.openUri(AboutConstants.CHANGELOG_URL)
                         }
+                    },
+                )
+            }
+            item {
+                Button(
+                    onClick = {
+                        handleAction {
+                            mainRouter?.openUserFeedback()
+                        }
+                    },
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = LocalStrings.current.settingsAboutReportIssue,
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        Icon(
+                            imageVector = LocalResources.current.bugReport,
+                            contentDescription = null,
+                        )
                     }
                 }
-                item {
-                    AboutItem(
-                        icon = LocalResources.current.code,
-                        text = LocalStrings.current.settingsAboutViewGithub,
-                        textDecoration = TextDecoration.Underline,
-                        onClick = {
-                            handleAction {
-                                uriHandler.openUri(AboutConstants.WEBSITE_URL)
-                            }
-                        },
-                    )
-                }
-                item {
-                    AboutItem(
-                        icon = LocalResources.current.openInBrowser,
-                        text = LocalStrings.current.settingsAboutViewFriendica,
-                        textDecoration = TextDecoration.Underline,
-                        onClick = {
-                            handleAction {
-                                uriHandler.openUri(AboutConstants.GROUP_URL)
-                            }
-                        },
-                    )
-                }
-                item {
-                    AboutItem(
-                        icon = LocalResources.current.chatFill,
-                        text = LocalStrings.current.settingsAboutMatrix,
-                        textDecoration = TextDecoration.Underline,
-                        onClick = {
-                            handleAction {
-                                uriHandler.openUri(AboutConstants.MATRIX_URL)
-                            }
-                        },
-                    )
-                }
-                item {
-                    AboutItem(
-                        text = LocalStrings.current.settingsAboutUserManual,
-                        icon = LocalResources.current.book,
-                        textDecoration = TextDecoration.Underline,
-                        onClick = {
-                            handleAction {
-                                uriHandler.openUri(AboutConstants.MANUAL_URL)
-                            }
-                        },
-                    )
-                }
-                item {
-                    AboutItem(
-                        text = LocalStrings.current.settingsAboutAcknowledgements,
-                        icon = LocalResources.current.volunteerActivism,
-                        textDecoration = TextDecoration.Underline,
-                        onClick = {
-                            handleAction {
-                                mainRouter.openAcknowledgements()
-                            }
-                        },
-                    )
-                }
-                item {
-                    AboutItem(
-                        text = LocalStrings.current.settingsAboutLicences,
-                        icon = LocalResources.current.gavel,
-                        textDecoration = TextDecoration.Underline,
-                        onClick = {
-                            handleAction {
-                                mainRouter.openLicences()
-                            }
-                        },
-                    )
-                }
             }
-            Button(
-                onClick = {
-                    onClose?.invoke()
-                },
-            ) {
-                Text(text = LocalStrings.current.buttonClose)
+            item {
+                AboutItem(
+                    icon = LocalResources.current.code,
+                    text = LocalStrings.current.settingsAboutViewGithub,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            uriHandler.openUri(AboutConstants.WEBSITE_URL)
+                        }
+                    },
+                )
             }
+            item {
+                AboutItem(
+                    icon = LocalResources.current.openInBrowser,
+                    text = LocalStrings.current.settingsAboutViewFriendica,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            uriHandler.openUri(AboutConstants.GROUP_URL)
+                        }
+                    },
+                )
+            }
+            item {
+                AboutItem(
+                    icon = LocalResources.current.chatFill,
+                    text = LocalStrings.current.settingsAboutMatrix,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            uriHandler.openUri(AboutConstants.MATRIX_URL)
+                        }
+                    },
+                )
+            }
+            item {
+                AboutItem(
+                    text = LocalStrings.current.settingsAboutUserManual,
+                    icon = LocalResources.current.book,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            uriHandler.openUri(AboutConstants.MANUAL_URL)
+                        }
+                    },
+                )
+            }
+            item {
+                AboutItem(
+                    text = LocalStrings.current.settingsAboutAcknowledgements,
+                    icon = LocalResources.current.volunteerActivism,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            mainRouter?.openAcknowledgements()
+                        }
+                    },
+                )
+            }
+            item {
+                AboutItem(
+                    text = LocalStrings.current.settingsAboutLicences,
+                    icon = LocalResources.current.gavel,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            mainRouter?.openLicences()
+                        }
+                    },
+                )
+            }
+        }
+        Button(
+            onClick = {
+                onClose?.invoke()
+            },
+        ) {
+            Text(text = LocalStrings.current.buttonClose)
         }
     }
 }
@@ -269,10 +288,22 @@ private fun AboutItem(
 }
 
 private object AboutConstants {
-    const val CHANGELOG_URL =
-        "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/releases/latest"
+    const val CHANGELOG_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/releases/latest"
     const val WEBSITE_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica"
     const val GROUP_URL = "https://poliverso.org/profile/raccoonforfriendicaapp"
     const val MANUAL_URL = "https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/en"
     const val MATRIX_URL = "https://matrix.to/#/#raccoonforfriendicaapp:matrix.org"
+}
+
+@Composable
+@Preview
+private fun AboutDialogContentPreview() {
+    RootDI.SetupPreview()
+    AboutDialogContent(
+        appInfo = AppInfo(
+            versionCode = "1.0.0",
+            isDebug = true,
+        ),
+        mainRouter = null,
+    )
 }
