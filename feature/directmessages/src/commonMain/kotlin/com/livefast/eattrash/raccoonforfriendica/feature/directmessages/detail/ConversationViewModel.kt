@@ -24,8 +24,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
-private const val POLLING_INTERVAL = 1200L
+private val POLLING_INTERVAL = 1.2.seconds
 
 class ConversationViewModel(
     private val otherUserId: String,

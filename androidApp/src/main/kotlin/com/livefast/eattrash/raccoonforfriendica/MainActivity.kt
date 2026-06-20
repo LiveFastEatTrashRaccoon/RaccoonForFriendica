@@ -21,6 +21,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,7 +124,7 @@ class MainActivity : ComponentActivity() {
     private fun handleIncomingAttachment(intent: Intent) {
         lifecycleScope.launch {
             // workaround: wait until the root NavigationAdapter has been set
-            delay(750L)
+            delay(750.milliseconds)
             val mainRouter = getMainRouter()
             when {
                 "text/plain" == intent.type -> {
@@ -150,7 +152,7 @@ class MainActivity : ComponentActivity() {
     private fun handleOpenInboxAtStartup() {
         lifecycleScope.launch {
             // workaround: wait until the root NavigationAdapter has been set
-            delay(1000L)
+            delay(1.seconds)
             val navigationCoordinator = getNavigationCoordinator()
             navigationCoordinator.popUntilRoot()
             navigationCoordinator.setCurrentSection(BottomNavigationSection.Inbox())

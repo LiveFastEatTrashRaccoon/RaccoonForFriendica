@@ -12,6 +12,7 @@ import io.ktor.http.parameters
 import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.seconds
 
 internal class DefaultMediaRepository(private val provider: ServiceProvider) : MediaRepository {
     override suspend fun getBy(id: String): AttachmentModel? = try {
@@ -40,10 +41,10 @@ internal class DefaultMediaRepository(private val provider: ServiceProvider) : M
         val res = provider.media.create(content = content).toModel()
         val id = res.id
         val url =
-            withTimeoutOrNull(5000) {
+            withTimeoutOrNull(5.seconds) {
                 var url = res.url
                 while (url.isEmpty()) {
-                    delay(1000)
+                    delay(1.seconds)
                     val pollingRes = getBy(id)
                     if (pollingRes != null) {
                         url = pollingRes.url

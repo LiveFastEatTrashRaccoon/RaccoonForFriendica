@@ -62,6 +62,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
@@ -1795,6 +1796,6 @@ class ComposerViewModel(
 
     companion object {
         private const val PLACEHOLDER_ID = "placeholder"
-        private const val SUGGESTION_DELAY = 750L
+        private val SUGGESTION_DELAY = 750.milliseconds
     }
 }
