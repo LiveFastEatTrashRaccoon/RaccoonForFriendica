@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -97,6 +96,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.kodein.di.compose.withDI
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(FlowPreview::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -134,7 +135,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
 
         launch {
             // set a timeout on the initialization
-            delay(1500)
+            delay(1.5.seconds)
             finishInitialization()
         }
 
@@ -193,7 +194,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
     LaunchedEffect(navigationCoordinator) {
         val customUriHandler = getCustomUriHandler(fallbackUriHandler)
         navigationCoordinator.deepLinkUrl
-            .debounce(750)
+            .debounce(750.milliseconds)
             .onEach { url ->
                 customUriHandler.openInternally(url)
             }.launchIn(this)
@@ -348,7 +349,8 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                         }
                                     }
                                 }
-                            },)
+                            },
+                                )
                         }
                     }
                 }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers.Main) :
     NavigationCoordinator {
@@ -85,7 +86,7 @@ internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Di
     }
 
     override suspend fun submitDeeplink(url: String) {
-        delay(750)
+        delay(750.milliseconds)
         deepLinkUrl.emit(url)
     }
 

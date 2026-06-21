@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 import kotlin.math.roundToLong
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun getAnimatedDots(
@@ -21,7 +21,7 @@ fun getAnimatedDots(
     var step by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
         while (true) {
-            delay(interval)
+            delay(interval.milliseconds)
             step = (step + 1) % maxStep
             yield()
         }
