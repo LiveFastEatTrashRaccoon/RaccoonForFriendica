@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,12 +29,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.livefast.eattrash.raccoonforfriendica.adaptive.ExploreWithEntryDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.adaptive.InboxWithEntryDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.adaptive.TimelineWithEntryDetailScreen
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -50,8 +47,10 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
+import com.livefast.eattrash.raccoonforfriendica.navigation.bottomGetEntryProvider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlin.math.roundToInt
 
 @Composable
@@ -99,7 +98,10 @@ fun MainScreen(
         }
     navigationCoordinator.setBottomBarScrollConnection(scrollConnection)
     val exitMessage = LocalStrings.current.messageConfirmExit
-    val bottomNavController = rememberNavController()
+    val backStack = rememberNavBackStack(
+        configuration = BottomNavigationSection.SavedStateConfiguration,
+        BottomNavigationSection.Home
+    )
 
     val hasBottomNavigation = isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)
     LaunchedEffect(navigationCoordinator, hasBottomNavigation) {
@@ -116,7 +118,8 @@ fun MainScreen(
             }.launchIn(this)
 
         if (hasBottomNavigation) {
-            val adapter = DefaultBottomNavigationAdapter(bottomNavController)
+            val adapter = DefaultBottomNavigationAdapter(backStack)
+            adapter.currentSection.update { BottomNavigationSection.Home }
             navigationCoordinator.setBottomNavigator(adapter)
 
             navigationCoordinator.currentBottomNavSection.onEach {
@@ -184,52 +187,38 @@ fun MainScreen(
         },
     ) {
         if (hasBottomNavigation) {
-            NavHost(
-                navController = bottomNavController,
-                startDestination = BottomNavigationSection.Home,
-            ) {
-                composable<BottomNavigationSection.Home> {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                NavDisplay(
+                    backStack = backStack,
+                    entryProvider = bottomGetEntryProvider(
+                        timelineViewModel = timelineViewModel,
+                        timelineLazyListState = timelineLazyListState,
+                        exploreViewModel = exploreViewModel,
+                        exploreLazyListState = exploreLazyListState,
+                        inboxViewModel = inboxViewModel,
+                        inboxLazyListState = inboxLazyListState,
+                        profileViewModel = profileViewModel,
+                        myAccountViewModel = myAccountViewModel,
+                        myAccountLazyListState = myAccountLazyListState
+                    )
+                )
+            }
+        } else {
+            when(lockedSection) {
+                BottomNavigationSection.Home -> {
                     TimelineScreen(
                         model = timelineViewModel,
                         lazyListState = timelineLazyListState,
                     )
                 }
-                composable<BottomNavigationSection.Explore> {
+                BottomNavigationSection.Explore -> {
                     ExploreScreen(
                         model = exploreViewModel,
                         lazyListState = exploreLazyListState,
                     )
                 }
-                composable<BottomNavigationSection.Inbox> {
-                    InboxScreen(
-                        model = inboxViewModel,
-                        lazyListState = inboxLazyListState,
-                    )
-                }
-                composable<BottomNavigationSection.Profile> {
-                    ProfileScreen(
-                        model = profileViewModel,
-                        myAccountModel = myAccountViewModel,
-                        myAccountLazyListState = myAccountLazyListState,
-                    )
-                }
-            }
-        } else {
-            when(lockedSection) {
-                BottomNavigationSection.Home -> {
-                    TimelineWithEntryDetailScreen(
-                        model = timelineViewModel,
-                        lazyListState = timelineLazyListState,
-                    )
-                }
-                BottomNavigationSection.Explore -> {
-                    ExploreWithEntryDetailScreen(
-                        model = exploreViewModel,
-                        lazyListState = exploreLazyListState,
-                    )
-                }
                 is BottomNavigationSection.Inbox -> {
-                    InboxWithEntryDetailScreen(
+                    InboxScreen(
                         model = inboxViewModel,
                         lazyListState = inboxLazyListState,
                     )
