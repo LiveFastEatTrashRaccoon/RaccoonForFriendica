@@ -17,7 +17,6 @@ kotlin {
                 implementation(libs.compose.material)
                 implementation(libs.compose.ui)
 
-                implementation(libs.androidx.navigation.compose)
                 implementation(libs.coil)
                 implementation(libs.compose.multiplatform.media.player)
                 implementation(libs.kodein.compose)

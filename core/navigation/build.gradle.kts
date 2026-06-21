@@ -9,7 +9,6 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.androidx.navigation.compose)
             implementation(libs.kodein)
 
             implementation(projects.core.di)

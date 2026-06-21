@@ -17,10 +17,10 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(libs.findLibrary("compose-foundation").dependency)
                     implementation(libs.findLibrary("compose-m3").dependency)
                     implementation(libs.findLibrary("compose-m3-adaptive").dependency)
-                    implementation(libs.findLibrary("compose-m3-adaptive-layout").dependency)
-                    implementation(libs.findLibrary("compose-m3-adaptive-navigation").dependency)
+                    implementation(libs.findLibrary("compose-m3-adaptive-nav3").dependency)
                     implementation(libs.findLibrary("compose-m3-wsc").dependency)
-                    implementation(libs.findLibrary("androidx-lifecycle-viewmodel-compose").dependency)
+                    implementation(libs.findLibrary("androidx-nav3-ui").dependency)
+                    implementation(libs.findLibrary("androidx-lifecycle-viewmodel-nav3").dependency)
                     implementation(libs.findLibrary("compose-navigationevent").dependency)
                     implementation(libs.findLibrary("compose-ui-tooling-preview").dependency)
                 }
