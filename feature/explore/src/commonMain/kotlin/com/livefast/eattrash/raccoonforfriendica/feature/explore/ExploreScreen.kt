@@ -32,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -101,7 +100,6 @@ fun ExploreScreen(
     model: ExploreMviModel,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
@@ -126,7 +124,6 @@ fun ExploreScreen(
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
     val isHomeInstance = uiState.otherInstance.isNullOrEmpty()
     var selectForeignInstanceOpened by remember { mutableStateOf(false) }
 
@@ -406,11 +403,7 @@ fun ExploreScreen(
                                 maxBodyLines = uiState.maxBodyLines,
                                 pollEnabled = isHomeInstance,
                                 onClick = { entry ->
-                                    if (customOnSelectCallback != null) {
-                                        customOnSelectCallback?.invoke(entry)
-                                    } else {
-                                        mainRouter.openEntryDetail(entry = entry, otherInstance = uiState.otherInstance)
-                                    }
+                                    mainRouter.openEntryDetail(entry = entry, otherInstance = uiState.otherInstance)
                                 },
                                 onOpenUrl = { url, allowOpenInternal ->
                                     if (allowOpenInternal) {
@@ -483,11 +476,7 @@ fun ExploreScreen(
                                     )
                                 },
                                 onOpenQuote = { e ->
-                                    if (customOnSelectCallback != null) {
-                                        customOnSelectCallback?.invoke(e)
-                                    } else {
-                                        mainRouter.openEntryDetail(e)
-                                    }
+                                    mainRouter.openEntryDetail(e)
                                 },
                                 options =
                                 buildList {

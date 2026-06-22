@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,12 +75,7 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HashtagScreen(
-    tag: String,
-    modifier: Modifier = Modifier,
-    otherInstance: String? = null,
-    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
-) {
+fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: HashtagMviModel = getViewModel<HashtagViewModel>(arg = HashtagViewModelArgs(tag))
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
@@ -105,7 +99,6 @@ fun HashtagScreen(
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
@@ -129,15 +122,11 @@ fun HashtagScreen(
                     }
 
                     is HashtagMviModel.Effect.OpenDetail -> {
-                        if (customOnSelectCallback != null) {
-                            customOnSelectCallback?.invoke(event.entry)
-                        } else {
-                            mainRouter.openEntryDetail(
-                                entry = event.entry,
-                                swipeNavigationEnabled = true,
-                                otherInstance = otherInstance,
-                            )
-                        }
+                        mainRouter.openEntryDetail(
+                            entry = event.entry,
+                            swipeNavigationEnabled = true,
+                            otherInstance = otherInstance,
+                        )
                     }
 
                     is HashtagMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
@@ -331,11 +320,7 @@ fun HashtagScreen(
                             )
                         },
                         onOpenQuote = { e ->
-                            if (customOnSelectCallback != null) {
-                                customOnSelectCallback?.invoke(e)
-                            } else {
-                                mainRouter.openEntryDetail(e)
-                            }
+                            mainRouter.openEntryDetail(e)
                         },
                         options =
                         buildList {
