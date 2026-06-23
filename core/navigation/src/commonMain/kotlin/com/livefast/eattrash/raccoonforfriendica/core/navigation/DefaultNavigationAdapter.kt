@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
-import androidx.navigation.NavController
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -8,15 +9,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 class DefaultNavigationAdapter(
-    private val navController: NavController,
+    private val backStack: NavBackStack<NavKey>,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) : NavigationAdapter {
 
@@ -25,9 +24,7 @@ class DefaultNavigationAdapter(
     private var job: Job? = null
 
     init {
-        navController.currentBackStack
-            .onEach { backStack -> canPop.update { backStack.size > 2 } }
-            .launchIn(scope)
+        updateCanPop()
     }
 
     override fun navigate(destination: Destination, replaceTop: Boolean) {
@@ -35,10 +32,12 @@ class DefaultNavigationAdapter(
             return
         }
         perform {
-            if (replaceTop && canPop.value) {
-                navController.popBackStack()
+            if (replaceTop) {
+                backStack[backStack.lastIndex] = destination
+            } else {
+                backStack.add(destination)
             }
-            navController.navigate(destination)
+            updateCanPop()
         }
     }
 
@@ -48,8 +47,9 @@ class DefaultNavigationAdapter(
         }
         perform {
             if (canPop.value) {
-                navController.popBackStack()
+                backStack.removeLast()
             }
+            updateCanPop()
         }
     }
 
@@ -58,8 +58,13 @@ class DefaultNavigationAdapter(
             return
         }
         perform {
-            navController.popBackStack(route = Destination.Main, inclusive = false)
+            backStack.retainAll { it == backStack.first() }
+            updateCanPop()
         }
+    }
+
+    private fun updateCanPop() {
+        canPop.update { backStack.size > 1 }
     }
 
     private fun perform(interval: Duration = 250.milliseconds, action: () -> Unit) {

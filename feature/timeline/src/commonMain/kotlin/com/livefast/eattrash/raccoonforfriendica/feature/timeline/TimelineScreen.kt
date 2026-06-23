@@ -40,7 +40,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,7 +101,6 @@ fun TimelineScreen(
     model: TimelineMviModel,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
@@ -132,7 +130,6 @@ fun TimelineScreen(
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
 
     suspend fun goBackToTop() {
         runCatching {
@@ -154,14 +151,10 @@ fun TimelineScreen(
                     }
 
                     is TimelineMviModel.Effect.OpenDetail -> {
-                        if (customOnSelectCallback != null) {
-                            customOnSelectCallback?.invoke(event.entry)
-                        } else {
-                            mainRouter.openEntryDetail(
-                                entry = event.entry,
-                                swipeNavigationEnabled = true,
-                            )
-                        }
+                        mainRouter.openEntryDetail(
+                            entry = event.entry,
+                            swipeNavigationEnabled = true,
+                        )
                     }
 
                     is TimelineMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
@@ -432,11 +425,7 @@ fun TimelineScreen(
                             )
                         },
                         onOpenQuote = { e ->
-                            if (customOnSelectCallback != null) {
-                                customOnSelectCallback?.invoke(e)
-                            } else {
-                                mainRouter.openEntryDetail(e)
-                            }
+                            mainRouter.openEntryDetail(e)
                         },
                         options =
                         buildList {

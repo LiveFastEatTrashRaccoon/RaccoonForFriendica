@@ -1,11 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.runtime.saveable.Saver
+import androidx.navigation3.runtime.NavKey
+import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 
 @Serializable
-sealed interface Destination {
+sealed interface Destination : NavKey {
     @Serializable
     data object Main : Destination
 
@@ -166,6 +170,56 @@ sealed interface Destination {
     data object Profile : Destination
 
     companion object {
+
+        val SavedStateConfiguration = SavedStateConfiguration {
+            serializersModule = SerializersModule {
+                polymorphic(NavKey::class) {
+                    subclass(Main::class, Main.serializer())
+                    subclass(EntryDetail::class, EntryDetail.serializer())
+                    subclass(ForumList::class, ForumList.serializer())
+                    subclass(UserDetail::class, UserDetail.serializer())
+                    subclass(Settings::class, Settings.serializer())
+                    subclass(HashTag::class, HashTag.serializer())
+                    subclass(UserList::class, UserList.serializer())
+                    subclass(Favorites::class, Favorites.serializer())
+                    subclass(Bookmarks::class, Bookmarks.serializer())
+                    subclass(QuotingEntries::class, QuotingEntries.serializer())
+                    subclass(FollowedHashtags::class, FollowedHashtags.serializer())
+                    subclass(Composer::class, Composer.serializer())
+                    subclass(Search::class, Search.serializer())
+                    subclass(Thread::class, Thread.serializer())
+                    subclass(ImageDetail::class, ImageDetail.serializer())
+                    subclass(ManageBlocks::class, ManageBlocks.serializer())
+                    subclass(Circles::class, Circles.serializer())
+                    subclass(CircleMembers::class, CircleMembers.serializer())
+                    subclass(CircleTimeline::class, CircleTimeline.serializer())
+                    subclass(FollowRequests::class, FollowRequests.serializer())
+                    subclass(EditProfile::class, EditProfile.serializer())
+                    subclass(NodeInfo::class, NodeInfo.serializer())
+                    subclass(Conversation::class, Conversation.serializer())
+                    subclass(Gallery::class, Gallery.serializer())
+                    subclass(AlbumDetail::class, AlbumDetail.serializer())
+                    subclass(Unpublished::class, Unpublished.serializer())
+                    subclass(CreateReport::class, CreateReport.serializer())
+                    subclass(UserFeedback::class, UserFeedback.serializer())
+                    subclass(Calendar::class, Calendar.serializer())
+                    subclass(EventDetail::class, EventDetail.serializer())
+                    subclass(Licences::class, Licences.serializer())
+                    subclass(WebView::class, WebView.serializer())
+                    subclass(Announcements::class, Announcements.serializer())
+                    subclass(Acknowledgements::class, Acknowledgements.serializer())
+                    subclass(ShortcutList::class, ShortcutList.serializer())
+                    subclass(ShortcutTimeline::class, ShortcutTimeline.serializer())
+                    subclass(Login::class, Login.serializer())
+                    subclass(LegacyLogin::class, LegacyLogin.serializer())
+                    subclass(NewAccount::class, NewAccount.serializer())
+                    subclass(ManageUserCircles::class, ManageUserCircles.serializer())
+                    subclass(Explore::class, Explore.serializer())
+                    subclass(Inbox::class, Inbox.serializer())
+                    subclass(Profile::class, Profile.serializer())
+                }
+            }
+        }
 
         val Saver = Saver<Destination, String>(
             save = { Json.encodeToString(it) },

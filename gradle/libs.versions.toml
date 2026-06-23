@@ -7,8 +7,8 @@ agp = "9.1.0"
 androidx-activity = "1.13.0"
 androidx-browser = "1.10.0"
 androidx-crypto = "1.1.0"
-androidx-lifecycle-viewmodel-compose = "2.10.0"
-androidx-navigation-compose = "2.9.2"
+androidx-lifecycle-viewmodel-nav3 = "2.11.0-beta02"
+androidx-nav3 = "1.2.0-alpha01"
 androidx-splashscreen = "1.2.0"
 androidx-sqlite = "2.6.2"
 androidx-test = "1.7.0"
@@ -20,10 +20,11 @@ compose-colorpicker = "1.2.0"
 compose-desktop-linux-deps = "0.2.5"
 compose-m3 = "1.9.0"
 compose-m3-adaptive = "1.2.0"
+compose-m3-adaptive-nav3 = "1.3.0-beta02"
 compose-multiplatform-media-player = "1.0.53"
 compose-navigationevent = "1.1.0"
 compose-plugin = "1.11.1"
-compose-ui-test = "1.11.2"
+compose-ui-test = "1.11.3"
 compose-m3-wsc = "1.9.0"
 connectivity = "2.4.1"
 espresso = "3.7.0"
@@ -55,8 +56,8 @@ unifiedpush-connector = "3.3.3"
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
 androidx-browser = { module = "androidx.browser:browser", version.ref = "androidx-browser" }
-androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-viewmodel-compose" }
-androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation-compose" }
+androidx-lifecycle-viewmodel-nav3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle-viewmodel-nav3" }
+androidx-nav3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "androidx-nav3" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "androidx-crypto" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-junit" }
@@ -82,8 +83,7 @@ compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.g
 compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "compose-plugin" }
 compose-m3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-m3" }
 compose-m3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-m3-adaptive" }
-compose-m3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-m3-adaptive" }
-compose-m3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "compose-m3-adaptive" }
+compose-m3-adaptive-nav3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "compose-m3-adaptive-nav3" }
 compose-m3-wsc = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose-m3-wsc" }
 compose-navigationevent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigationevent" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-plugin" }

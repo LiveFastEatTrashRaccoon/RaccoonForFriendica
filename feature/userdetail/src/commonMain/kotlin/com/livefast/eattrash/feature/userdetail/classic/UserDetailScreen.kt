@@ -39,7 +39,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -115,12 +114,7 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserDetailScreen(
-    id: String,
-    modifier: Modifier = Modifier,
-    otherInstance: String? = null,
-    customOnSelectAction: ((TimelineEntryModel) -> Unit)? = null,
-) {
+fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: UserDetailMviModel = getViewModel<UserDetailViewModel>(
         arg = UserDetailViewModelArgs(id),
     )
@@ -159,7 +153,6 @@ fun UserDetailScreen(
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var changeRateLimitBottomSheetOpen by remember { mutableStateOf(false) }
-    val customOnSelectCallback by rememberUpdatedState(customOnSelectAction)
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
     suspend fun goBackToTop() {
@@ -193,15 +186,11 @@ fun UserDetailScreen(
                     }
 
                     is UserDetailMviModel.Effect.OpenDetail -> {
-                        if (customOnSelectCallback != null) {
-                            customOnSelectCallback?.invoke(event.entry)
-                        } else {
-                            mainRouter.openEntryDetail(
-                                entry = event.entry,
-                                swipeNavigationEnabled = true,
-                                otherInstance = otherInstance,
-                            )
-                        }
+                        mainRouter.openEntryDetail(
+                            entry = event.entry,
+                            swipeNavigationEnabled = true,
+                            otherInstance = otherInstance,
+                        )
                     }
 
                     is UserDetailMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
@@ -729,11 +718,7 @@ fun UserDetailScreen(
                             )
                         },
                         onOpenQuote = { e ->
-                            if (customOnSelectCallback != null) {
-                                customOnSelectCallback?.invoke(e)
-                            } else {
-                                mainRouter.openEntryDetail(e)
-                            }
+                            mainRouter.openEntryDetail(e)
                         },
                         options =
                         buildList {
