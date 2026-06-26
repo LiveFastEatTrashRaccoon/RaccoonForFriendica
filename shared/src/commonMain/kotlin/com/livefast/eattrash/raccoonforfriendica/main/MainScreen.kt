@@ -188,6 +188,7 @@ fun MainScreen(
             Surface(color = MaterialTheme.colorScheme.background) {
                 NavDisplay(
                     backStack = backStack,
+                    onBack = { navigationCoordinator.pop() },
                     entryProvider = bottomGetEntryProvider(
                         timelineViewModel = timelineViewModel,
                         timelineLazyListState = timelineLazyListState,

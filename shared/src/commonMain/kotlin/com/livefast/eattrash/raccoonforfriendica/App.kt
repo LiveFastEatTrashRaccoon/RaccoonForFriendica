@@ -275,6 +275,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                 Surface(color = MaterialTheme.colorScheme.background) {
                                     NavDisplay(
                                         backStack = backStack,
+                                        onBack = { navigationCoordinator.pop() },
                                         entryDecorators = listOf(
                                             rememberSaveableStateHolderNavEntryDecorator(),
                                             rememberViewModelStoreNavEntryDecorator()
@@ -350,6 +351,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                             Surface(color = MaterialTheme.colorScheme.background) {
                                                 NavDisplay(
                                                     backStack = backStack,
+                                                    onBack = { navigationCoordinator.pop() },
                                                     entryDecorators = listOf(
                                                         rememberSaveableStateHolderNavEntryDecorator(),
                                                         rememberViewModelStoreNavEntryDecorator()
