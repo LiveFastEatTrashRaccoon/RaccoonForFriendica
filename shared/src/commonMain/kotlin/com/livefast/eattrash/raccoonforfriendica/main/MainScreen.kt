@@ -50,7 +50,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.navigation.bottomGetEntryProvider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlin.math.roundToInt
 
 @Composable
@@ -119,7 +118,6 @@ fun MainScreen(
 
         if (hasBottomNavigation) {
             val adapter = DefaultBottomNavigationAdapter(backStack)
-            adapter.currentSection.update { BottomNavigationSection.Home }
             navigationCoordinator.setBottomNavigator(adapter)
 
             navigationCoordinator.currentBottomNavSection.onEach {
