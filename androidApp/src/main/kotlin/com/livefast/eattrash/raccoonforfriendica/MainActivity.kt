@@ -37,6 +37,11 @@ class MainActivity : ComponentActivity() {
         val backPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    if (navigationCoordinator.canPop.value) {
+                        navigationCoordinator.pop()
+                        return
+                    }
+
                     // if in home, ask for confirmation
                     if (navigationCoordinator.currentBottomNavSection.value == BottomNavigationSection.Home) {
                         // asks for confirmation

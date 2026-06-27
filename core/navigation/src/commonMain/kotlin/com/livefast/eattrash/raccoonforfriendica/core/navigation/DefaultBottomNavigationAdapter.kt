@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.update
 
 class DefaultBottomNavigationAdapter(private val backStack: NavBackStack<NavKey>) : BottomNavigationAdapter {
 
-    override val currentSection = MutableStateFlow<BottomNavigationSection?>(null)
+    override val currentSection = MutableStateFlow(backStack.lastOrNull() as? BottomNavigationSection)
 
     override fun navigate(section: BottomNavigationSection) {
         backStack[0] = section
