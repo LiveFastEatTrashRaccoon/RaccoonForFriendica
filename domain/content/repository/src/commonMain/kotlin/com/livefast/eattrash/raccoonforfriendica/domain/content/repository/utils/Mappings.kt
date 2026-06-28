@@ -28,6 +28,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PollOption
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCard
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCardType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Quote
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuoteApproval
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuotePolicy
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuotePolicyForCurrentUser
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuoteState
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
@@ -67,6 +70,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuoteStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReactionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
@@ -156,6 +160,7 @@ internal fun Status.toModel() = TimelineEntryModel(
             else -> visibility
         }
     },
+    quotePermission = quoteApproval?.toQuotePermission(),
 )
 
 internal fun Quote.toModel(): TimelineEntryModel? = quotedStatus?.toModel()?.copy(quoteStatus = state?.toQuotedStatus())
@@ -172,6 +177,32 @@ private fun QuoteState.toQuotedStatus(): QuoteStatus = when (this) {
     QuoteState.BlockedDomain -> QuoteStatus.BlockedDomain
     QuoteState.MutedAccount -> QuoteStatus.MutedAccount
     else -> QuoteStatus.Unauthorized
+}
+
+private fun QuoteApproval.toQuotePermission(): QuotePermission {
+    /*
+     * From https://docs.joinmastodon.org/client/quotes/#interpreting-quote-policies
+     *
+     * For reference, the Mastodon Web UI uses the current_user, automatic and manual values as follows:
+     *
+     * - if current_user is automatic, allow quoting the post and label the button "Quote"
+     * - if the current_user is manual, allow quoting the post and label the button
+     *   "Request to quote" / "Author will manually review"
+     * - if the current_user is unknown or denied, disallow quoting, and display either
+     *   "Only followers can quote this post" or "You are not allowed to quote this post"
+     *   depending on the presence of followers in the policies
+     */
+    return when (currentUser) {
+        QuotePolicyForCurrentUser.Automatic -> QuotePermission.AutomaticallyApprove
+        QuotePolicyForCurrentUser.Manual -> QuotePermission.ManualApprove
+        else -> {
+            if (automatic.contains(QuotePolicy.Followers) || manual.contains(QuotePolicy.Followers)) {
+                QuotePermission.OnlyFollowers
+            } else {
+                QuotePermission.Unauthorized
+            }
+        }
+    }
 }
 
 private fun StatusMention.toModel() = UserModel(
