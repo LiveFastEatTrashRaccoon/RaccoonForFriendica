@@ -34,6 +34,7 @@ data class TimelineEntryModel(
     val quoteCount: Int = 0,
     val quoted: TimelineEntryModel? = null,
     val quoteStatus: QuoteStatus? = null,
+    val quotePermission: QuotePermission? = null,
     val reblog: TimelineEntryModel? = null,
     val reblogCount: Int = 0,
     @Transient val reblogLoading: Boolean = false,
