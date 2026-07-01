@@ -285,6 +285,10 @@
     <string name="notification_type_mention_name">Mentions &amp; Replies</string>
     <string name="notification_type_poll">a poll you participated in was closed</string>
     <string name="notification_type_poll_name">Polls</string>
+    <string name="notification_type_quote">quoted your post</string>
+    <string name="notification_type_quote_name">Quote</string>
+    <string name="notification_type_quoted_update">updated a post you quoted</string>
+    <string name="notification_type_quoted_update_name">Quote update</string>
     <string name="notification_type_reblog">re-shared your post</string>
     <string name="notification_type_reblog_name">Re-shares</string>
     <string name="notification_type_update">updated a post you re-shared</string>

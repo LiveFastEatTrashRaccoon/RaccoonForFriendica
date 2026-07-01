@@ -321,6 +321,10 @@ import raccoonforfriendica.core.l10n.generated.resources.notification_type_menti
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_mention_name
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_poll
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_poll_name
+import raccoonforfriendica.core.l10n.generated.resources.notification_type_quote
+import raccoonforfriendica.core.l10n.generated.resources.notification_type_quote_name
+import raccoonforfriendica.core.l10n.generated.resources.notification_type_quoted_update
+import raccoonforfriendica.core.l10n.generated.resources.notification_type_quoted_update_name
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_reblog
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_reblog_name
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_update
@@ -1088,6 +1092,14 @@ internal class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.notification_type_poll)
     override val notificationTypePollName: String
         @Composable get() = stringResource(Res.string.notification_type_poll_name)
+    override val notificationTypeQuote: String
+        @Composable get() = stringResource(Res.string.notification_type_quote)
+    override val notificationTypeQuoteName: String
+        @Composable get() = stringResource(Res.string.notification_type_quote_name)
+    override val notificationTypeQuotedUpdate: String
+        @Composable get() = stringResource(Res.string.notification_type_quoted_update)
+    override val notificationTypeQuotedUpdateName: String
+        @Composable get() = stringResource(Res.string.notification_type_quoted_update_name)
     override val notificationTypeReblog: String
         @Composable get() = stringResource(Res.string.notification_type_reblog)
     override val notificationTypeReblogName: String

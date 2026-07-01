@@ -307,6 +307,10 @@ interface Strings {
     val notificationTypeMentionName: String @Composable get
     val notificationTypePoll: String @Composable get
     val notificationTypePollName: String @Composable get
+    val notificationTypeQuote: String @Composable get
+    val notificationTypeQuoteName: String @Composable get
+    val notificationTypeQuotedUpdate: String @Composable get
+    val notificationTypeQuotedUpdateName: String @Composable get
     val notificationTypeReblog: String @Composable get
     val notificationTypeReblogName: String @Composable get
     val notificationTypeUpdate: String @Composable get
