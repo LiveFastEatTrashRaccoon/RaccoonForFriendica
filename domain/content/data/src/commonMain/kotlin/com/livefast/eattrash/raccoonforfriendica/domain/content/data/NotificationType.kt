@@ -20,6 +20,10 @@ sealed interface NotificationType {
 
     data object Update : NotificationType
 
+    data object Quote : NotificationType
+
+    data object QuotedUpdate : NotificationType
+
     data object Unknown : NotificationType
 
     companion object {
@@ -33,6 +37,8 @@ sealed interface NotificationType {
                 Poll,
                 Reblog,
                 Update,
+                Quote,
+                QuotedUpdate,
             )
     }
 }
@@ -47,5 +53,7 @@ fun NotificationType.toReadableName(): String = when (this) {
     NotificationType.Poll -> LocalStrings.current.notificationTypePollName
     NotificationType.Reblog -> LocalStrings.current.notificationTypeReblogName
     NotificationType.Update -> LocalStrings.current.notificationTypeUpdateName
+    NotificationType.Quote -> LocalStrings.current.notificationTypeQuoteName
+    NotificationType.QuotedUpdate -> LocalStrings.current.notificationTypeQuotedUpdateName
     else -> ""
 }
