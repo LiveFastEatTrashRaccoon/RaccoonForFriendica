@@ -1,10 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toRawValue
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
 import kotlin.coroutines.cancellation.CancellationException
@@ -24,12 +24,14 @@ internal class DefaultPushNotificationRepository(private val provider: ServicePr
                     append("subscription[keys][p256dh]", pubKey)
                     append("subscription[keys][auth]", auth)
                     for (type in NotificationType.ALL) {
-                        append(
-                            "data[alerts][${type.toRawValue()}]",
-                            (type in types).toString(),
-                        )
+                        type.toDto()?.also { typeDto ->
+                            append(
+                                "data[alerts][${typeDto.serialName}]",
+                                (type in types).toString(),
+                            )
+                        }
                     }
-                    append("data[policy]", policy.toDto())
+                    append("data[policy]", policy.toDto().serialName)
                 },
             )
         provider.push.create(data).serverKey
@@ -43,12 +45,14 @@ internal class DefaultPushNotificationRepository(private val provider: ServicePr
             FormDataContent(
                 parameters {
                     for (type in NotificationType.ALL) {
-                        append(
-                            "data[alerts][${type.toRawValue()}]",
-                            (type in types).toString(),
-                        )
+                        type.toDto()?.also { typeDto ->
+                            append(
+                                "data[alerts][${typeDto.serialName}]",
+                                (type in types).toString(),
+                            )
+                        }
                     }
-                    append("data[policy]", policy.toDto())
+                    append("data[policy]", policy.toDto().serialName)
                 },
             )
         provider.push.update(data).serverKey
