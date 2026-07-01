@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.dto
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class NotificationType {
     @SerialName("mention")
     MENTION,
@@ -27,6 +29,12 @@ enum class NotificationType {
     @SerialName("update")
     UPDATE,
 
+    @SerialName("quote")
+    QUOTE,
+
+    @SerialName("quoted_update")
+    QUOTED_UPDATE,
+
     @SerialName("admin.sign_up")
     ADMIN_SIGN_UP,
 
@@ -39,3 +47,6 @@ enum class NotificationType {
     @SerialName("moderation_warning")
     MODERATION_WARNING,
 }
+
+val NotificationType.serialName: String
+    get() = NotificationType.serializer().descriptor.getElementName(ordinal)
