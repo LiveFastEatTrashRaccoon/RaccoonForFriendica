@@ -27,7 +27,9 @@ dependencyResolutionManagement {
         }
         mavenCentral()
         // for compose-multiplatform-media-player -> compose-webview-multiplatform -> kcef -> jcef -> jogl-all
-        maven("https://jogamp.org/deployment/maven")
+        // jogl 2.5.0 is not on Maven Central, "https://jogamp.org/deployment/maven" is the official repo
+        // unfortunately is often down which causes CI errors in dependency resolution, so we're using a mirror
+        maven("https://maven.scijava.org/content/repositories/public/")
     }
 }
 
