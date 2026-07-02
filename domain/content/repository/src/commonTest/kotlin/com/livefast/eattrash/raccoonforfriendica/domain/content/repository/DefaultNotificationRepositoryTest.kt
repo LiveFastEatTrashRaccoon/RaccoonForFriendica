@@ -44,7 +44,7 @@ class DefaultNotificationRepositoryTest {
         assertEquals(emptyList(), res)
         verifySuspend {
             notificationService.get(
-                types = matches { it.contains("mention") },
+                types = matches { it.contains(NotificationTypeDto.MENTION) },
                 excludeTypes = null,
                 maxId = null,
                 minId = null,
@@ -73,7 +73,7 @@ class DefaultNotificationRepositoryTest {
         assertEquals(list.map { it.toModel() }, res)
         verifySuspend {
             notificationService.get(
-                types = matches { it.contains("mention") },
+                types = matches { it.contains(NotificationTypeDto.MENTION) },
                 excludeTypes = null,
                 maxId = null,
                 minId = null,
@@ -102,7 +102,7 @@ class DefaultNotificationRepositoryTest {
         assertEquals(list.map { it.toModel() }, res)
         verifySuspend {
             notificationService.get(
-                types = matches { it.contains("mention") },
+                types = matches { it.contains(NotificationTypeDto.MENTION) },
                 excludeTypes = null,
                 maxId = "0",
                 minId = null,
@@ -132,7 +132,7 @@ class DefaultNotificationRepositoryTest {
         assertEquals(list.map { it.toModel() }, res)
         verifySuspend(VerifyMode.exactly(1)) {
             notificationService.get(
-                types = matches { it.contains("mention") },
+                types = matches { it.contains(NotificationTypeDto.MENTION) },
                 excludeTypes = null,
                 maxId = null,
                 minId = null,
@@ -162,7 +162,7 @@ class DefaultNotificationRepositoryTest {
         assertEquals(list.map { it.toModel() }, res)
         verifySuspend(VerifyMode.exactly(2)) {
             notificationService.get(
-                types = matches { it.contains("mention") },
+                types = matches { it.contains(NotificationTypeDto.MENTION) },
                 excludeTypes = null,
                 maxId = null,
                 minId = null,

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -11,8 +12,8 @@ import io.ktor.http.isSuccess
 internal class DefaultNotificationService(private val baseUrl: String, private val client: HttpClient) :
     NotificationService {
     override suspend fun get(
-        types: List<String>,
-        excludeTypes: List<String>?,
+        types: List<NotificationType>,
+        excludeTypes: List<NotificationType>?,
         maxId: String?,
         minId: String?,
         includeAll: Boolean,

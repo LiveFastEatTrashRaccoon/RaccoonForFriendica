@@ -83,6 +83,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType as MediaTypeDto
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationPolicy as NotificationPolicyDto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType as NotificationTypeDto
 
 internal fun Status.toModelWithReply() = toModel().copy(
@@ -337,18 +338,6 @@ internal fun Tag.toModel() = TagModel(
     url = url,
 )
 
-internal fun NotificationType.toRawValue(): String? = when (this) {
-    NotificationType.Entry -> "status"
-    NotificationType.Favorite -> "favourite"
-    NotificationType.Follow -> "follow"
-    NotificationType.FollowRequest -> "follow_request"
-    NotificationType.Mention -> "mention"
-    NotificationType.Poll -> "poll"
-    NotificationType.Reblog -> "reblog"
-    NotificationType.Update -> "update"
-    else -> null
-}
-
 internal fun NotificationTypeDto.toModel(): NotificationType = when (this) {
     NotificationTypeDto.MENTION -> NotificationType.Mention
     NotificationTypeDto.STATUS -> NotificationType.Entry
@@ -358,14 +347,30 @@ internal fun NotificationTypeDto.toModel(): NotificationType = when (this) {
     NotificationTypeDto.FAVOURITE -> NotificationType.Favorite
     NotificationTypeDto.POLL -> NotificationType.Poll
     NotificationTypeDto.UPDATE -> NotificationType.Update
+    NotificationTypeDto.QUOTE -> NotificationType.Quote
+    NotificationTypeDto.QUOTED_UPDATE -> NotificationType.QuotedUpdate
     else -> NotificationType.Unknown
 }
 
-internal fun NotificationPolicy.toDto(): String = when (this) {
-    NotificationPolicy.All -> "all"
-    NotificationPolicy.Followed -> "followed"
-    NotificationPolicy.Follower -> "follower"
-    NotificationPolicy.None -> "none"
+internal fun NotificationType.toDto(): NotificationTypeDto? = when (this) {
+    NotificationType.Entry -> NotificationTypeDto.STATUS
+    NotificationType.Favorite -> NotificationTypeDto.FAVOURITE
+    NotificationType.Follow -> NotificationTypeDto.FOLLOW
+    NotificationType.FollowRequest -> NotificationTypeDto.FOLLOW_REQUEST
+    NotificationType.Mention -> NotificationTypeDto.MENTION
+    NotificationType.Poll -> NotificationTypeDto.POLL
+    NotificationType.Quote -> NotificationTypeDto.QUOTE
+    NotificationType.QuotedUpdate -> NotificationTypeDto.QUOTED_UPDATE
+    NotificationType.Reblog -> NotificationTypeDto.REBLOG
+    NotificationType.Update -> NotificationTypeDto.UPDATE
+    else -> null
+}
+
+internal fun NotificationPolicy.toDto(): NotificationPolicyDto = when (this) {
+    NotificationPolicy.All -> NotificationPolicyDto.ALL
+    NotificationPolicy.Followed -> NotificationPolicyDto.FOLLOWED
+    NotificationPolicy.Follower -> NotificationPolicyDto.FOLLOWER
+    NotificationPolicy.None -> NotificationPolicyDto.NONE
 }
 
 internal fun Notification.toModel() = NotificationModel(

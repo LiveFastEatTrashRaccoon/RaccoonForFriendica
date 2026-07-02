@@ -180,6 +180,8 @@ private fun NotificationType.toReadableName(): String = when (this) {
     NotificationType.Poll -> LocalStrings.current.notificationTypePoll
     NotificationType.Reblog -> LocalStrings.current.notificationTypeReblog
     NotificationType.Update -> LocalStrings.current.notificationTypeUpdate
+    NotificationType.Quote -> LocalStrings.current.notificationTypeQuote
+    NotificationType.QuotedUpdate -> LocalStrings.current.notificationTypeQuotedUpdate
     NotificationType.Unknown -> ""
 }
 
@@ -193,5 +195,7 @@ private fun NotificationType.toIcon(coreResources: CoreResources): ImageVector =
     NotificationType.Poll -> coreResources.barChart
     NotificationType.Reblog -> coreResources.rocketLaunchFill
     NotificationType.Update -> coreResources.edit
+    NotificationType.Quote -> coreResources.formatQuoteFill
+    NotificationType.QuotedUpdate -> coreResources.edit
     NotificationType.Unknown -> coreResources.notifications
 }
