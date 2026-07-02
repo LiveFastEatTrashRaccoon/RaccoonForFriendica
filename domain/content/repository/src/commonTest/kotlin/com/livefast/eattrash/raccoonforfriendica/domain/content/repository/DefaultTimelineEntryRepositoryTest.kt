@@ -648,4 +648,37 @@ class DefaultTimelineEntryRepositoryTest {
         verifySuspend { pollService.vote(id = "1", data = any()) }
     }
     // endregion
+
+    // region quotes
+    @Test
+    fun `given results when getQuoted then result and interactions are as expected`() = runTest {
+        everySuspend {
+            statusService.getQuotes(id = any(), maxId = any(), limit = any())
+        } returns (listOf(Status(id = "2")) to "")
+
+        val res = sut.getQuotes(
+            id = "1",
+            pageCursor = null,
+        )
+
+        assertNotNull(res)
+        assertEquals("", res.cursor)
+        assertEquals(1, res.list.size)
+        assertEquals("2", res.list.first().id)
+        verifySuspend { statusService.getQuotes(id = "1", maxId = null, limit = 20) }
+    }
+
+    @Test
+    fun `given success when revokeQuote then interactions are as expected`() = runTest {
+        everySuspend { statusService.revokeQuote(quotedId = any(), quotingId = any()) } returns true
+
+        val res = sut.revokeQuote(
+            quotedId = "1",
+            quotingId = "2",
+        )
+
+        assertTrue(res)
+        verifySuspend { statusService.revokeQuote(quotedId = "1", quotingId = "2") }
+    }
+    // endregion
 }
