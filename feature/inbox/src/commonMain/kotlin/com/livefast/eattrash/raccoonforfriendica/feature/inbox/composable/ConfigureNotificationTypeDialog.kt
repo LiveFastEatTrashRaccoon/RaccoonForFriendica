@@ -129,3 +129,18 @@ internal fun ConfigureNotificationTypeDialog(
         }
     }
 }
+
+@Composable
+private fun NotificationType.toReadableName(): String = when (this) {
+    NotificationType.Entry -> LocalStrings.current.notificationTypeEntryName
+    NotificationType.Favorite -> LocalStrings.current.notificationTypeFavoriteName
+    NotificationType.Follow -> LocalStrings.current.notificationTypeFollowName
+    NotificationType.FollowRequest -> LocalStrings.current.notificationTypeFollowRequestName
+    NotificationType.Mention -> LocalStrings.current.notificationTypeMentionName
+    NotificationType.Poll -> LocalStrings.current.notificationTypePollName
+    NotificationType.Reblog -> LocalStrings.current.notificationTypeReblogName
+    NotificationType.Update -> LocalStrings.current.notificationTypeUpdateName
+    NotificationType.Quote -> LocalStrings.current.notificationTypeQuoteName
+    NotificationType.QuotedUpdate -> LocalStrings.current.notificationTypeQuotedUpdateName
+    else -> ""
+}

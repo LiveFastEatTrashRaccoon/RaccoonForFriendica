@@ -1,8 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-import androidx.compose.runtime.Composable
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-
 sealed interface NotificationType {
     data object Mention : NotificationType
 
@@ -41,19 +38,4 @@ sealed interface NotificationType {
                 QuotedUpdate,
             )
     }
-}
-
-@Composable
-fun NotificationType.toReadableName(): String = when (this) {
-    NotificationType.Entry -> LocalStrings.current.notificationTypeEntryName
-    NotificationType.Favorite -> LocalStrings.current.notificationTypeFavoriteName
-    NotificationType.Follow -> LocalStrings.current.notificationTypeFollowName
-    NotificationType.FollowRequest -> LocalStrings.current.notificationTypeFollowRequestName
-    NotificationType.Mention -> LocalStrings.current.notificationTypeMentionName
-    NotificationType.Poll -> LocalStrings.current.notificationTypePollName
-    NotificationType.Reblog -> LocalStrings.current.notificationTypeReblogName
-    NotificationType.Update -> LocalStrings.current.notificationTypeUpdateName
-    NotificationType.Quote -> LocalStrings.current.notificationTypeQuoteName
-    NotificationType.QuotedUpdate -> LocalStrings.current.notificationTypeQuotedUpdateName
-    else -> ""
 }
