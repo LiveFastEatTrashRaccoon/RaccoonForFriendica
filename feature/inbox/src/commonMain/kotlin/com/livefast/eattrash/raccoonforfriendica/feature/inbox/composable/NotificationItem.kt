@@ -27,7 +27,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
@@ -48,6 +50,7 @@ internal fun NotificationItem(
     onOpenUser: ((UserModel) -> Unit)? = null,
     onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
     onClickUserRelationship: ((String, RelationshipStatusNextAction) -> Unit)? = null,
+    onRevokeQuote: ((TimelineEntryModel) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val entry = notification.entry
@@ -148,6 +151,16 @@ internal fun NotificationItem(
                     },
                     onOpenUser = onOpenUser,
                     onOpenUrl = onOpenUrl,
+                    options = buildList {
+                        if (notification.type == NotificationType.Quote && entry.quoted?.id != null) {
+                            this += OptionId.RevokeQuote.toOption()
+                        }
+                    },
+                    onSelectOption = {
+                        if (it == OptionId.RevokeQuote) {
+                            onRevokeQuote?.invoke(entry)
+                        }
+                    },
                 )
             } else if (user != null) {
                 NotificationUserInfo(
