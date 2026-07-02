@@ -104,4 +104,6 @@ interface TimelineEntryRepository {
         pageCursor: String? = null,
         otherInstance: String? = null,
     ): ListWithPageCursor<TimelineEntryModel>?
+
+    suspend fun revokeQuote(quotedId: String, quotingId: String): Boolean
 }

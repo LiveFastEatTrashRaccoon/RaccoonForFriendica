@@ -396,6 +396,9 @@ internal class DefaultTimelineEntryRepository(
         null
     }
 
+    override suspend fun revokeQuote(quotedId: String, quotingId: String): Boolean =
+        provider.status.revokeQuote(quotedId = quotedId, quotingId = quotingId)
+
     private suspend fun <T> withProvider(otherInstance: String?, block: suspend (ServiceProvider) -> T): T =
         if (otherInstance.isNullOrEmpty()) {
             block(provider)

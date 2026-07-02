@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
 interface InboxMviModel : MviModel<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect> {
     sealed interface Intent {
@@ -21,6 +22,8 @@ interface InboxMviModel : MviModel<InboxMviModel.Intent, InboxMviModel.State, In
         data class MarkAsRead(val notification: NotificationModel) : Intent
 
         data class Dismiss(val notification: NotificationModel) : Intent
+
+        data class RevokeQuote(val entry: TimelineEntryModel) : Intent
     }
 
     data class State(
@@ -40,5 +43,9 @@ interface InboxMviModel : MviModel<InboxMviModel.Intent, InboxMviModel.State, In
 
     sealed interface Effect {
         data object BackToTop : Effect
+
+        data object Success : Effect
+
+        data class Failure(val message: String? = null) : Effect
     }
 }

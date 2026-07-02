@@ -113,4 +113,7 @@ internal class DefaultStatusService(private val baseUrl: String, private val cli
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
         return data to cursor
     }
+
+    override suspend fun revokeQuote(quotedId: String, quotingId: String) =
+        client.post("$baseUrl/v1/statuses/$quotedId/quotes/$quotingId/revoke").status.isSuccess()
 }

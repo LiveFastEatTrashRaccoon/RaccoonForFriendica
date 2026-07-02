@@ -42,6 +42,8 @@ sealed interface OptionId {
 
     data object OpenInBrowser : OptionId
 
+    data object RevokeQuote : OptionId
+
     interface Custom : OptionId
 }
 
@@ -64,6 +66,7 @@ private fun OptionId.toReadableName(): String = when (this) {
     OptionId.Quote -> LocalStrings.current.actionQuote
     OptionId.CopyToClipboard -> LocalStrings.current.actionCopyToClipboard
     OptionId.OpenInBrowser -> LocalStrings.current.actionOpenInBrowser
+    OptionId.RevokeQuote -> LocalStrings.current.actionRemove
     else -> ""
 }
 
