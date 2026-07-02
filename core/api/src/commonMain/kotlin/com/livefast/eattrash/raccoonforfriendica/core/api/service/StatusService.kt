@@ -56,4 +56,6 @@ interface StatusService {
 
     suspend fun translate(id: String, data: FormDataContent): Translation
     suspend fun getQuotes(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Status>, String?>
+
+    suspend fun revokeQuote(quotedId: String, quotingId: String): Boolean
 }
