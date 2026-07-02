@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.hasPriorIdThen
@@ -20,6 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Notif
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
@@ -36,6 +38,7 @@ class InboxViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val notificationRepository: NotificationRepository,
+    private val entryRepository: TimelineEntryRepository,
     private val inboxManager: InboxManager,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
@@ -108,6 +111,7 @@ class InboxViewModel(
             is InboxMviModel.Intent.MarkAsRead -> markAsRead(intent.notification)
             InboxMviModel.Intent.DismissAll -> dismissAll()
             is InboxMviModel.Intent.Dismiss -> dismiss(intent.notification)
+            is InboxMviModel.Intent.RevokeQuote -> revokeQuote(intent.entry)
         }
     }
 
@@ -294,6 +298,22 @@ class InboxViewModel(
             notificationRepository.dismissAll()
             updateState { it.copy(markAllAsReadLoading = false) }
             refresh()
+        }
+    }
+
+    private fun revokeQuote(entry: TimelineEntryModel) {
+        viewModelScope.launch {
+            updateState { it.copy(loading = true) }
+            val success = entryRepository.revokeQuote(
+                quotedId = entry.quoted?.id.orEmpty(),
+                quotingId = entry.id,
+            )
+            updateState { it.copy(loading = false) }
+            if (success) {
+                emitEffect(InboxMviModel.Effect.Success)
+            } else {
+                emitEffect(InboxMviModel.Effect.Failure())
+            }
         }
     }
 }
