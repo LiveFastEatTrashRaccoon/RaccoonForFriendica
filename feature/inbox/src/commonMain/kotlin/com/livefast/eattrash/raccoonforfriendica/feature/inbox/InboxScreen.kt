@@ -17,6 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -73,6 +76,7 @@ fun InboxScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
+    val snackbarHostState = remember { SnackbarHostState() }
     val uriHandler = LocalUriHandler.current
     val mainRouter = rememberMainRouter()
     val scope = rememberCoroutineScope()
@@ -81,6 +85,8 @@ fun InboxScreen(
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDismissAllDialogOpen by remember { mutableStateOf(false) }
     var configureSelectedTypesDialogOpen by remember { mutableStateOf(false) }
+    val successMessage = LocalStrings.current.messageSuccess
+    val errorMessage = LocalStrings.current.messageGenericError
 
     suspend fun goBackToTop() {
         runCatching {
@@ -103,6 +109,8 @@ fun InboxScreen(
             .onEach { event ->
                 when (event) {
                     InboxMviModel.Effect.BackToTop -> goBackToTop()
+                    InboxMviModel.Effect.Success -> snackbarHostState.showSnackbar(successMessage)
+                    is InboxMviModel.Effect.Failure -> snackbarHostState.showSnackbar(errorMessage)
                 }
             }.launchIn(this)
     }
@@ -167,6 +175,17 @@ fun InboxScreen(
                     }
                 },
             )
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
         },
     ) { padding ->
         PullToRefreshBox(
@@ -250,6 +269,9 @@ fun InboxScreen(
                                     model.reduce(InboxMviModel.Intent.Unfollow(userId))
                                 }
                             }
+                        },
+                        onRevokeQuote = { entry ->
+                            model.reduce(InboxMviModel.Intent.RevokeQuote(entry))
                         },
                     )
 
