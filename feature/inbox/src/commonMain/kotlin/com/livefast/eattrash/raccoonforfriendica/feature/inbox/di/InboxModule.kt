@@ -14,6 +14,7 @@ val inboxModule =
                 identityRepository = instance(),
                 settingsRepository = instance(),
                 notificationRepository = instance(),
+                entryRepository = instance(),
                 inboxManager = instance(),
                 hapticFeedback = instance(),
                 imagePreloadManager = instance(),
