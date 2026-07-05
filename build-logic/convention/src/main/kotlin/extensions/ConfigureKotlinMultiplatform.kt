@@ -1,6 +1,6 @@
 package extensions
 
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -40,8 +40,8 @@ internal fun Project.configureKotlinMultiplatform(extension: KotlinMultiplatform
         jvm()
     }
 
-internal fun Project.configureKotlinMultiplatformAndroidLibrary(extension: KotlinMultiplatformAndroidLibraryExtension) =
-    extension.apply {
+internal fun Project.configureKotlinMultiplatformAndroidLibrary(target: KotlinMultiplatformAndroidLibraryTarget) =
+    target.apply {
         val moduleName = path.split(":").drop(1).joinToString(".")
         namespace = if (moduleName.isNotEmpty()) "$PACKAGE_PREFIX.$moduleName" else PACKAGE_PREFIX
 
@@ -54,5 +54,7 @@ internal fun Project.configureKotlinMultiplatformAndroidLibrary(extension: Kotli
             }
         }
 
-        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
+        androidResources {
+            enable = true
+        }
     }

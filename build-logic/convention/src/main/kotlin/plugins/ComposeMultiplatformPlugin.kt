@@ -1,11 +1,11 @@
 package plugins
 
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import extensions.configureComposeMultiplatform
-import extensions.configureComposeMultiplatformAndroidLibrary
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import utils.dependency
 import utils.libs
 import utils.pluginId
 
@@ -17,12 +17,12 @@ class ComposeMultiplatformPlugin : Plugin<Project> {
                 apply(libs.findPlugin("compose-compiler").pluginId)
             }
 
+            dependencies {
+                add("androidRuntimeClasspath", libs.findLibrary("compose-ui-tooling").dependency)
+            }
+
             extensions.configure(KotlinMultiplatformExtension::class.java) {
                 configureComposeMultiplatform(this)
-
-                targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
-                    configureComposeMultiplatformAndroidLibrary(this)
-                }
             }
         }
 }

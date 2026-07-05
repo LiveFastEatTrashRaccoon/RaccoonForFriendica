@@ -3,7 +3,7 @@ android-compileSdk = "37"
 android-minSdk = "26"
 android-targetSdk = "37"
 
-agp = "9.1.0"
+agp = "9.1.1"
 androidx-activity = "1.13.0"
 androidx-browser = "1.10.0"
 androidx-crypto = "1.1.0"
