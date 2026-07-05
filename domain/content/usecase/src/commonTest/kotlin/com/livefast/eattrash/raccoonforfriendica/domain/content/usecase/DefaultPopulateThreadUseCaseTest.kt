@@ -5,7 +5,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import dev.mokkery.answering.calls
-import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
@@ -45,62 +44,60 @@ class DefaultPopulateThreadUseCaseTest {
     }
 
     @Test
-    fun `given max depth reached when invoke then result and interactions are as expected`() = runTest {
+    fun `given max depth less than actual depth when invoke then result is as expected`() = runTest {
         val root =
             TimelineEntryModel(
-                id = "1",
-                content = "test",
+                id = "P0",
+                content = "root",
                 replyCount = 1,
             )
         val child1 =
             TimelineEntryModel(
-                id = "2",
+                id = "P1",
                 content = "reply 1",
-                replyCount = 1,
-            )
-        everySuspend {
-            timelineEntryRepository.getContext(any())
-        } returns
-            TimelineContextModel(
-                ancestors = listOf(root),
-                descendants = listOf(child1),
-            )
-
-        val res = sut.invoke(entry = root, maxDepth = 1)
-
-        assertEquals(
-            listOf(
-                root,
-                child1.copy(depth = 1, loadMoreButtonVisible = true),
-            ),
-            res,
-        )
-        verifySuspend {
-            timelineEntryRepository.getContext("1")
-        }
-        verifySuspend(VerifyMode.not) {
-            timelineEntryRepository.getContext("2")
-        }
-    }
-
-    @Test
-    fun `when invoke then result and interactions are as expected`() = runTest {
-        val root =
-            TimelineEntryModel(
-                id = "1",
-                content = "test",
-                replyCount = 1,
-            )
-        val child1 =
-            TimelineEntryModel(
-                id = "2",
-                content = "reply 1",
-                replyCount = 1,
+                replyCount = 3,
             )
         val child2 =
             TimelineEntryModel(
-                id = "3",
+                id = "P2",
                 content = "reply 2",
+                replyCount = 2,
+            )
+        val child11 =
+            TimelineEntryModel(
+                id = "P3",
+                content = "reply 3",
+            )
+        val child12 =
+            TimelineEntryModel(
+                id = "P4",
+                content = "reply 4",
+            )
+        val child13 =
+            TimelineEntryModel(
+                id = "P5",
+                content = "reply 5",
+                replyCount = 2,
+            )
+        val child21 =
+            TimelineEntryModel(
+                id = "P6",
+                content = "reply 6",
+            )
+        val child22 =
+            TimelineEntryModel(
+                id = "P7",
+                content = "reply 7",
+            )
+        val child131 =
+            TimelineEntryModel(
+                id = "P8",
+                content = "reply 8",
+            )
+        val child132 =
+            TimelineEntryModel(
+                id = "P9",
+                content = "reply 9",
             )
         everySuspend {
             timelineEntryRepository.getContext(any())
@@ -109,36 +106,166 @@ class DefaultPopulateThreadUseCaseTest {
             when (entryId) {
                 root.id ->
                     TimelineContextModel(
-                        ancestors = listOf(root),
-                        descendants = listOf(child1),
+                        descendants = listOf(child1, child2),
                     )
 
                 child1.id ->
                     TimelineContextModel(
                         ancestors = listOf(child1),
-                        descendants = listOf(child2),
+                        descendants = listOf(child11, child12, child13),
+                    )
+
+                child2.id ->
+                    TimelineContextModel(
+                        ancestors = listOf(child1),
+                        descendants = listOf(child21, child22),
+                    )
+
+                child13.id ->
+                    TimelineContextModel(
+                        ancestors = listOf(child1),
+                        descendants = listOf(child131, child132),
                     )
 
                 else -> TimelineContextModel()
             }
         }
 
-        val res = sut.invoke(entry = root)
+        val res = sut.invoke(entry = root, maxDepth = 2)
 
         assertEquals(
             listOf(
                 root,
                 child1.copy(depth = 1),
-                child2.copy(depth = 2),
+                child11.copy(depth = 2),
+                child12.copy(depth = 2),
+                // the pruning point is detected
+                child13.copy(depth = 2, loadMoreButtonVisible = true),
+                child2.copy(depth = 1),
+                child21.copy(depth = 2),
+                child22.copy(depth = 2),
             ),
             res,
         )
         verifySuspend {
-            timelineEntryRepository.getContext("1")
-            timelineEntryRepository.getContext("2")
+            timelineEntryRepository.getContext(child2.id)
         }
         verifySuspend(VerifyMode.not) {
-            timelineEntryRepository.getContext("3")
+            timelineEntryRepository.getContext(child11.id)
+            timelineEntryRepository.getContext(child12.id)
+            timelineEntryRepository.getContext(child13.id)
+            timelineEntryRepository.getContext(child21.id)
+            timelineEntryRepository.getContext(child22.id)
+        }
+    }
+
+    @Test
+    fun `given further invocation on partial tree, when invoke then result is as expected`() = runTest {
+        val root =
+            TimelineEntryModel(
+                id = "P0",
+                content = "root",
+                replyCount = 1,
+            )
+        val child1 =
+            TimelineEntryModel(
+                id = "P1",
+                content = "reply 1",
+                replyCount = 3,
+            )
+        val child2 =
+            TimelineEntryModel(
+                id = "P2",
+                content = "reply 2",
+                replyCount = 2,
+            )
+        val child11 =
+            TimelineEntryModel(
+                id = "P3",
+                content = "reply 3",
+            )
+        val child12 =
+            TimelineEntryModel(
+                id = "P4",
+                content = "reply 4",
+            )
+        val child13 =
+            TimelineEntryModel(
+                id = "P5",
+                content = "reply 5",
+                replyCount = 2,
+            )
+        val child21 =
+            TimelineEntryModel(
+                id = "P6",
+                content = "reply 6",
+            )
+        val child22 =
+            TimelineEntryModel(
+                id = "P7",
+                content = "reply 7",
+            )
+        val child131 =
+            TimelineEntryModel(
+                id = "P8",
+                content = "reply 8",
+            )
+        val child132 =
+            TimelineEntryModel(
+                id = "P9",
+                content = "reply 9",
+            )
+        everySuspend {
+            timelineEntryRepository.getContext(any())
+        } calls {
+            val entryId = it.arg<String>(0)
+            when (entryId) {
+                root.id ->
+                    TimelineContextModel(
+                        descendants = listOf(child1, child2),
+                    )
+
+                child1.id ->
+                    TimelineContextModel(
+                        ancestors = listOf(child1),
+                        descendants = listOf(child11, child12, child13),
+                    )
+
+                child2.id ->
+                    TimelineContextModel(
+                        ancestors = listOf(child1),
+                        descendants = listOf(child21, child22),
+                    )
+
+                child13.id ->
+                    TimelineContextModel(
+                        ancestors = listOf(child1),
+                        descendants = listOf(child131, child132),
+                    )
+
+                else -> TimelineContextModel()
+            }
+        }
+        val prunedTree = sut.invoke(entry = root, maxDepth = 2)
+        val pruningIndex = prunedTree.indexOfFirst { e -> e.loadMoreButtonVisible }
+        val subroot = prunedTree[pruningIndex]
+
+        val res = sut.invoke(entry = subroot, maxDepth = 2)
+
+        assertEquals(
+            listOf(
+                subroot.copy(loadMoreButtonVisible = false),
+                child131.copy(depth = 3),
+                child132.copy(depth = 3),
+            ),
+            res,
+        )
+        verifySuspend {
+            timelineEntryRepository.getContext(child13.id)
+        }
+        verifySuspend(VerifyMode.not) {
+            timelineEntryRepository.getContext(child131.id)
+            timelineEntryRepository.getContext(child132.id)
         }
     }
 }
