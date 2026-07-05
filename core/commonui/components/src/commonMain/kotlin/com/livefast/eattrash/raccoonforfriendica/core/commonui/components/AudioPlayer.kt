@@ -27,12 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import chaintech.videoplayer.host.MediaPlayerHost
 import chaintech.videoplayer.model.AudioFile
 import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.ui.audio.AudioPlayerComposable
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -207,4 +210,16 @@ private fun FakeAudioPlayerComposable(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun AudioPlayerPreview() {
+    RootDI.SetupPreview()
+    AudioPlayer(
+        modifier = Modifier.height(250.dp),
+        urls = listOf(),
+        titles = listOf(),
+        autoplay = false,
+    )
 }
