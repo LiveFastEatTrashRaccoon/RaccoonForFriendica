@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,6 +36,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
@@ -45,6 +49,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -232,4 +238,35 @@ fun AlbumImageItem(
             }
         }
     }
+}
+
+private data class AlbumImageItemPreviewParameter(
+    val attachment: AttachmentModel,
+    val options: List<Option> = listOf(),
+)
+
+private class AlbumImageItemPreviewParameterProvider : PreviewParameterProvider<AlbumImageItemPreviewParameter> {
+    override val values: Sequence<AlbumImageItemPreviewParameter> = sequenceOf(
+        AlbumImageItemPreviewParameter(
+            attachment = AttachmentModel(id = "id", url = "fake-url"),
+            options = listOf(Option(OptionId.Share, "share")),
+        ),
+        AlbumImageItemPreviewParameter(
+            attachment = AttachmentModel(id = "id", url = "fake-url", description = "fake-description"),
+            options = listOf(Option(OptionId.Share, "share")),
+        ),
+    )
+}
+
+@Composable
+@Preview
+private fun AlbumImageItemPreview(
+    @PreviewParameter(AlbumImageItemPreviewParameterProvider::class) parameter: AlbumImageItemPreviewParameter,
+) {
+    RootDI.SetupPreview()
+    AlbumImageItem(
+        modifier = Modifier.height(300.dp),
+        attachment = parameter.attachment,
+        options = parameter.options,
+    )
 }
