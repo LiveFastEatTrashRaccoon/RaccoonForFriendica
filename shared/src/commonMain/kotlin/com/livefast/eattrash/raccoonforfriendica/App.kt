@@ -188,24 +188,16 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
             .onEach { evt ->
                 when (evt) {
                     DrawerEvent.Toggle -> {
-                        drawerState.apply {
-                            launch {
-                                if (isClosed) {
-                                    open()
-                                } else {
-                                    close()
-                                }
-                            }
+                        if (drawerState.isClosed) {
+                            drawerState.open()
+                        } else {
+                            drawerState.close()
                         }
                     }
 
                     DrawerEvent.Close -> {
-                        drawerState.apply {
-                            launch {
-                                if (!isClosed) {
-                                    close()
-                                }
-                            }
+                        if (drawerState.isOpen) {
+                            drawerState.close()
                         }
                     }
                 }
