@@ -41,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
 fun AudioPlayer(urls: List<String>, titles: List<String>, modifier: Modifier = Modifier, autoplay: Boolean = false) {
+    if (urls.isEmpty()) return
     var isInitial by remember { mutableStateOf(true) }
 
     if (!autoplay && isInitial) {
