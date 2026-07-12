@@ -516,17 +516,4 @@
         <item quantity="other">%1$d citazioni</item>
     </plurals>
     <string name="notification_type_quoted_update_name">Aggiornamento citazione</string>
-    <string name="language_ru" translatable="false"></string>
-    <string name="language_it" translatable="false"></string>
-    <string name="language_pl" translatable="false"></string>
-    <string name="language_pt_br" translatable="false"></string>
-    <string name="language_pt" translatable="false"></string>
-    <string name="language_uk" translatable="false"></string>
-    <string name="language_es" translatable="false"></string>
-    <string name="language_ro" translatable="false"></string>
-    <string name="language_ta" translatable="false"></string>
-    <string name="language_de" translatable="false"></string>
-    <string name="language_en" translatable="false"></string>
-    <string name="language_fi" translatable="false"></string>
-    <string name="language_fr" translatable="false"></string>
 </resources>
