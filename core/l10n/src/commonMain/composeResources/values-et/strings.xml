@@ -166,7 +166,7 @@
     <string name="circle_type_group">Grupid</string>
     <string name="circle_type_predefined">Kanalid</string>
     <string name="circle_type_user_defined">Sinu loendid</string>
-    <string name="color_picker_dialog_insert_hex">Sisesta värvikood hex'ina</string>
+    <string name="color_picker_dialog_insert_hex">Sisesta värvikood hex\\'ina</string>
     <string name="color_picker_dialog_title">Vali värv</string>
     <string name="confirm_change_markup_mode">Kui muudad märgenduse tüüpi, siis kogu vormindus kaob. Kas soovida jätkata?</string>
     <string name="content_scale_fill_height">Täitmise kõrgus</string>
@@ -447,4 +447,21 @@
     <string name="visibility_private">Vaid jälgijad</string>
     <string name="visibility_direct">Vaid mainimised</string>
     <string name="user_field_personal_note">Isiklik märge</string>
+    <string name="language_ru" translatable="false"></string>
+    <string name="language_it" translatable="false"></string>
+    <string name="language_pl" translatable="false"></string>
+    <string name="language_pt_br" translatable="false"></string>
+    <string name="language_pt" translatable="false"></string>
+    <string name="language_uk" translatable="false"></string>
+    <string name="language_es" translatable="false"></string>
+    <string name="language_ro" translatable="false"></string>
+    <string name="notification_type_quote"></string>
+    <string name="notification_type_quote_name"></string>
+    <string name="notification_type_quoted_update"></string>
+    <string name="language_ta" translatable="false"></string>
+    <string name="language_de" translatable="false"></string>
+    <string name="language_en" translatable="false"></string>
+    <string name="notification_type_quoted_update_name"></string>
+    <string name="language_fi" translatable="false"></string>
+    <string name="language_fr" translatable="false"></string>
 </resources>
