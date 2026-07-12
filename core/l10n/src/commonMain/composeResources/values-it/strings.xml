@@ -520,4 +520,13 @@
     <string name="language_en" translatable="false"></string>
     <string name="language_fi" translatable="false"></string>
     <string name="language_fr" translatable="false"></string>
+    <string name="notification_type_quote">ha citato il tuo post</string>
+    <string name="notification_type_quote_name">Citazione</string>
+    <string name="notification_type_quoted_update">ha aggiornato un post citato</string>
+    <plurals name="extended_social_info_quotes">
+        <item quantity="one">%1$d citazione</item>
+        <item quantity="many">%1$d di citazioni</item>
+        <item quantity="other">%1$d citazioni</item>
+    </plurals>
+    <string name="notification_type_quoted_update_name">Aggiornamento citazione</string>
 </resources>
