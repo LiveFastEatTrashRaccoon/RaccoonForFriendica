@@ -19,9 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -86,4 +89,14 @@ fun ContentVideo(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun ContentVideoPreview() {
+    RootDI.SetupPreview()
+
+    ContentVideo(
+        url = "fake-url",
+    )
 }

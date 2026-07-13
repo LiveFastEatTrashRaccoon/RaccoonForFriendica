@@ -21,15 +21,23 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
+import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.aspectRatio
+import org.kodein.di.DI
+import org.kodein.di.bindSingleton
 
 @Composable
 fun ContentVisualAttachments(
@@ -187,4 +195,39 @@ private fun AttachmentElement(
 
         else -> Unit
     }
+}
+
+@Composable
+@Preview
+private fun ContentVisualAttachmentsPreview() {
+    RootDI.SetupPreview(
+        DI.Module("ContentVisualAttachmentsPreviewModule") {
+            bindSingleton {
+                object : BlurHashRepository {
+                    override suspend fun preload(params: BlurHashParams) = Unit
+                    override suspend fun get(params: BlurHashParams): ImageBitmap? = null
+                }
+            }
+        },
+    )
+
+    ContentVisualAttachments(
+        attachments = listOf(
+            AttachmentModel(
+                id = "fake-id-1",
+                url = "fake-url-1",
+                type = MediaType.Image,
+            ),
+            AttachmentModel(
+                id = "fake-id-2",
+                url = "fake-url-2",
+                type = MediaType.Image,
+            ),
+            AttachmentModel(
+                id = "fake-id-3",
+                url = "fake-url-3",
+                type = MediaType.Image,
+            ),
+        ),
+    )
 }
