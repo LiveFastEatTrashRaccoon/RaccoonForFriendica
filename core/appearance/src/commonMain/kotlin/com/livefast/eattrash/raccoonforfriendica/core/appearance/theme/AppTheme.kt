@@ -6,11 +6,7 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getBarColorProvider
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getColorSchemeProvider
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.getThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberBarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberColorSchemeProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
