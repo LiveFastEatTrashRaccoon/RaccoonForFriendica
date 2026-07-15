@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -36,8 +37,13 @@ internal class DefaultEntryActionRepository(
 
     override fun canBlock(entry: TimelineEntryModel): Boolean = entry.isFromOtherUser
 
-    override fun canQuote(entry: TimelineEntryModel): Boolean =
-        supportedFeatureRepository.features.value.supportsEntryShare
+    override fun canQuote(entry: TimelineEntryModel): Boolean = when {
+        // Friendica
+        supportedFeatureRepository.features.value.supportsEntryShare -> true
+        // Mastodon
+        entry.quotePermission in listOf(QuotePermission.AutomaticallyApprove, QuotePermission.ManualApprove) -> true
+        else -> false
+    }
 
     private val TimelineEntryModel.isFromCurrentUser: Boolean
         get() = isLogged && creator?.id == currentUserId
