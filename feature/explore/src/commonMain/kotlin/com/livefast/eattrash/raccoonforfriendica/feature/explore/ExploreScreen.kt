@@ -595,6 +595,7 @@ fun ExploreScreen(
                                         OptionId.Quote -> {
                                             item.entry.original.also { entryToShare ->
                                                 mainRouter.openComposer(
+                                                    quoted = entryToShare,
                                                     urlToShare = entryToShare.url,
                                                 )
                                             }

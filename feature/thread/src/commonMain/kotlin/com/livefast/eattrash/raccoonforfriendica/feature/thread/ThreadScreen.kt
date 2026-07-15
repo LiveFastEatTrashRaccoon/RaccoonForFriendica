@@ -456,7 +456,10 @@ fun ThreadScreen(
 
                                         OptionId.Quote -> {
                                             entry.original.also { entryToShare ->
-                                                mainRouter.openComposer(urlToShare = entryToShare.url)
+                                                mainRouter.openComposer(
+                                                    quoted = entryToShare,
+                                                    urlToShare = entryToShare.url,
+                                                )
                                             }
                                         }
 
@@ -670,7 +673,7 @@ fun ThreadScreen(
                                     OptionId.Quote -> {
                                         entry.original.also { entryToShare ->
                                             mainRouter.openComposer(
-                                                urlToShare = entryToShare.url,
+                                                quoted = entryToShare,
                                             )
                                         }
                                     }

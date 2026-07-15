@@ -44,6 +44,7 @@ interface MainRouter {
         inReplyTo: TimelineEntryModel? = null,
         inReplyToUser: UserModel? = null,
         editedPostId: String? = null,
+        quoted: TimelineEntryModel? = null,
         urlToShare: String? = null,
         inGroup: Boolean = false,
         initialText: String? = null,

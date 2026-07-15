@@ -155,6 +155,7 @@ class DefaultMainRouter(
         inReplyTo: TimelineEntryModel?,
         inReplyToUser: UserModel?,
         editedPostId: String?,
+        quoted: TimelineEntryModel?,
         urlToShare: String?,
         inGroup: Boolean,
         initialText: String?,
@@ -168,6 +169,9 @@ class DefaultMainRouter(
             if (inReplyToUser != null) {
                 userCache.put(inReplyToUser.id, inReplyToUser)
             }
+            if (quoted != null) {
+                entryCache.put(quoted.id, quoted)
+            }
         }
         val isGroup = inReplyToUser?.group == true && inGroup
         if (initialAttachment != null) {
@@ -178,6 +182,7 @@ class DefaultMainRouter(
                 inReplyToId = inReplyTo?.id,
                 inReplyToUsername = inReplyToUser?.username.takeIf { !isGroup },
                 inReplyToHandle = inReplyToUser?.handle.takeIf { !isGroup },
+                quotedId = quoted?.id,
                 groupUsername = inReplyToUser?.username.takeIf { isGroup },
                 groupHandle = inReplyToUser?.handle.takeIf { isGroup },
                 editedPostId = editedPostId,

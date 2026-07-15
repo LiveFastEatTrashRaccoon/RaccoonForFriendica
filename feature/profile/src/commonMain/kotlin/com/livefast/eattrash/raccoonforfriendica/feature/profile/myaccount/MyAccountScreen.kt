@@ -487,6 +487,7 @@ fun MyAccountScreen(
                             OptionId.Quote -> {
                                 entry.original.also { entryToShare ->
                                     mainRouter.openComposer(
+                                        quoted = entryToShare,
                                         urlToShare = entryToShare.url,
                                     )
                                 }

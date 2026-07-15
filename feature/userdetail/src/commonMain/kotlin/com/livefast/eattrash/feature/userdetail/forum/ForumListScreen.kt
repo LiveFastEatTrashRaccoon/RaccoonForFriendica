@@ -555,6 +555,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
                                         mainRouter.openComposer(
+                                            quoted = entryToShare,
                                             urlToShare = entryToShare.url,
                                         )
                                     }

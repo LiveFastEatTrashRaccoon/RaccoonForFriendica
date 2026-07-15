@@ -199,6 +199,7 @@ internal fun getEntryProvider(
             inReplyToId = it.inReplyToId,
             inReplyToUsername = it.inReplyToUsername,
             inReplyToHandle = it.inReplyToHandle,
+            quotedId = it.quotedId,
             groupUsername = it.groupUsername,
             groupHandle = it.groupHandle,
             editedPostId = it.editedPostId,

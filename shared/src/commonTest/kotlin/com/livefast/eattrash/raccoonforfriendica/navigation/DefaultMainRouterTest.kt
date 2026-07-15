@@ -258,7 +258,18 @@ class DefaultMainRouterTest {
     }
 
     @Test
-    fun `given reply when openEditUnpublished then interactions are as expected`() {
+    fun `given quote when openComposer then interactions are as expected`() {
+        val entry = TimelineEntryModel(id = "0", content = "")
+        sut.openComposer(quoted = entry)
+
+        verifySuspend {
+            entryCache.put(entry.id, entry)
+            navigationCoordinator.push(Destination.Composer(quotedId = entry.id))
+        }
+    }
+
+    @Test
+    fun `when openEditUnpublished then interactions are as expected`() {
         val entry = TimelineEntryModel(id = "0", content = "")
         sut.openEditUnpublished(
             entry = entry,
