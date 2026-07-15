@@ -270,6 +270,7 @@ internal fun CardTimelineItem(
                         ),
                         content = body,
                         autoloadImages = autoloadImages,
+                        hideInlineQuotes = entry.quoted != null,
                         maxLines = maxBodyLines,
                         emojis = entry.emojis,
                         onClick = { onClick?.invoke(entry) },
