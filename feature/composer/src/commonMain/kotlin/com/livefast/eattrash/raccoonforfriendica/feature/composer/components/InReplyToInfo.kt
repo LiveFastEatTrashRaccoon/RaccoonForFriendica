@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,9 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -44,6 +48,17 @@ internal fun InReplyToInfo(username: String, modifier: Modifier = Modifier) {
             },
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun InReplyToInfoPreview() {
+    RootDI.SetupPreview()
+    Surface {
+        InReplyToInfo(
+            username = "User name",
         )
     }
 }
