@@ -353,7 +353,7 @@ class DefaultMainRouter(
     override fun openManageCircles(user: UserModel) {
         scope.launch {
             userCache.put(user.id, user)
-            navigationCoordinator.push(Destination.ManageUserCircles(user.id))
         }
+        navigationCoordinator.push(Destination.ManageUserCircles(user.id))
     }
 }

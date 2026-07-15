@@ -117,26 +117,22 @@ private fun CustomModalBottomSheetContent(
                             shape = RoundedCornerShape(CornerSize.xl),
                         ).combinedClickable(
                             onClick = {
-                                sheetScope
-                                    .launch {
-                                        if (shouldHideOnSelect(idx)) {
-                                            sheetState?.hide()
-                                        }
-                                    }.invokeOnCompletion {
-                                        onSelect?.invoke(idx)
+                                sheetScope.launch {
+                                    if (shouldHideOnSelect(idx)) {
+                                        sheetState?.hide()
                                     }
+                                    onSelect?.invoke(idx)
+                                }
                             },
                             onLongClick =
                             if (onLongPress != null) {
                                 {
-                                    sheetScope
-                                        .launch {
-                                            if (shouldHideOnSelect(idx)) {
-                                                sheetState?.hide()
-                                            }
-                                        }.invokeOnCompletion {
-                                            onLongPress(idx)
+                                    sheetScope.launch {
+                                        if (shouldHideOnSelect(idx)) {
+                                            sheetState?.hide()
                                         }
+                                        onLongPress(idx)
+                                    }
                                 }
                             } else {
                                 null
