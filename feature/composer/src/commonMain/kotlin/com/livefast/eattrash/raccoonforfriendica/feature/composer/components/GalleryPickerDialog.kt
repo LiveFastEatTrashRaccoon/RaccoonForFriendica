@@ -119,16 +119,14 @@ fun GalleryPickerDialog(
                             .padding(end = Spacing.s)
                             .align(Alignment.CenterEnd),
                         onClick = {
-                            sheetScope
-                                .launch {
-                                    sheetState.hide()
-                                }.invokeOnCompletion {
-                                    if (selection.isNotEmpty()) {
-                                        onClose?.invoke(selection)
-                                    } else {
-                                        onClose?.invoke(null)
-                                    }
+                            sheetScope.launch {
+                                sheetState.hide()
+                                if (selection.isNotEmpty()) {
+                                    onClose?.invoke(selection)
+                                } else {
+                                    onClose?.invoke(null)
                                 }
+                            }
                         },
                     ) {
                         Text(
