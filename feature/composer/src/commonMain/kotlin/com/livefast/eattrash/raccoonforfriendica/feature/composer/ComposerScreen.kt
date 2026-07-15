@@ -97,6 +97,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Gal
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PollForm
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.QuotedInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SuggestionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.ComposerViewModelArgs
@@ -108,6 +109,7 @@ import kotlinx.coroutines.flow.onEach
 fun ComposerScreen(
     modifier: Modifier = Modifier,
     inReplyToId: String? = null,
+    quotedId: String? = null,
     inReplyToUsername: String? = null,
     inReplyToHandle: String? = null,
     groupUsername: String? = null,
@@ -118,7 +120,9 @@ fun ComposerScreen(
     urlToShare: String? = null,
     initialText: String? = null,
 ) {
-    val model: ComposerMviModel = getViewModel<ComposerViewModel>(arg = ComposerViewModelArgs(inReplyToId.orEmpty()))
+    val model: ComposerMviModel = getViewModel<ComposerViewModel>(
+        arg = ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId),
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -664,6 +668,15 @@ fun ComposerScreen(
                         bottom = Spacing.m,
                     ),
                     username = groupUsername,
+                )
+            } else if (uiState.quoted != null) {
+                QuotedInfo(
+                    username = uiState.quoted?.creator?.username.orEmpty(),
+                    Modifier.padding(
+                        start = Spacing.s,
+                        end = Spacing.s,
+                        bottom = Spacing.m,
+                    ),
                 )
             }
 

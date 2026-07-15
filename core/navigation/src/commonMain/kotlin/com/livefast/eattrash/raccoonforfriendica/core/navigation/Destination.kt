@@ -59,6 +59,7 @@ sealed interface Destination : NavKey {
         val inReplyToId: String? = null,
         val inReplyToUsername: String? = null,
         val inReplyToHandle: String? = null,
+        val quotedId: String? = null,
         val groupUsername: String? = null,
         val groupHandle: String? = null,
         val editedPostId: String? = null,

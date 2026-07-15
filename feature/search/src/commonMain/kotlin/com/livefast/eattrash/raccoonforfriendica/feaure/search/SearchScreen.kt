@@ -510,6 +510,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                                         OptionId.Quote -> {
                                             item.entry.original.also { entryToShare ->
                                                 mainRouter.openComposer(
+                                                    quoted = entryToShare,
                                                     urlToShare = entryToShare.url,
                                                 )
                                             }

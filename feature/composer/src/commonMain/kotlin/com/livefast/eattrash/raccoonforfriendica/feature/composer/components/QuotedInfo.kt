@@ -23,7 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
-internal fun CreateInGroupInfo(username: String, modifier: Modifier = Modifier) {
+internal fun QuotedInfo(username: String, modifier: Modifier = Modifier) {
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     Row(
@@ -33,14 +33,14 @@ internal fun CreateInGroupInfo(username: String, modifier: Modifier = Modifier) 
     ) {
         Icon(
             modifier = Modifier.size(IconSize.s),
-            imageVector = LocalResources.current.postAdd,
+            imageVector = LocalResources.current.formatQuoteFill,
             contentDescription = null,
             tint = ancillaryColor,
         )
         Text(
             text =
             buildAnnotatedString {
-                append(LocalStrings.current.actionCreateThreadInGroup)
+                append(LocalStrings.current.actionQuote)
                 append(" ")
                 withStyle(SpanStyle(color = fullColor)) {
                     append(username)
@@ -54,11 +54,11 @@ internal fun CreateInGroupInfo(username: String, modifier: Modifier = Modifier) 
 
 @Composable
 @Preview
-private fun CreateInGroupInfoPreview() {
+private fun QuotedInfoPreview() {
     RootDI.SetupPreview()
     Surface {
-        CreateInGroupInfo(
-            username = "Group name",
+        QuotedInfo(
+            username = "User name",
         )
     }
 }

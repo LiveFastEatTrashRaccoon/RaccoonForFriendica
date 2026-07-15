@@ -17,4 +17,6 @@ class CreateStatusForm(
     @SerialName("status") val status: String? = null,
     @SerialName("visibility") val visibility: String? = null,
     @SerialName("poll") val poll: CreatePollForm? = null,
+    @SerialName("quoted_status_id") val quoted: String? = null,
+    @SerialName("quote_approval_policy") val quotePolicy: String? = null,
 )

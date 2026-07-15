@@ -9,7 +9,7 @@ import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
-data class ComposerViewModelArgs(val inReplyToId: String) : ViewModelCreationArgs
+data class ComposerViewModelArgs(val inReplyToId: String?, val quotedId: String?) : ViewModelCreationArgs
 
 val composerModule =
     DI.Module("ComposerModule") {
@@ -23,6 +23,7 @@ val composerModule =
         bindViewModelWithArgs { args: ComposerViewModelArgs ->
             ComposerViewModel(
                 inReplyToId = args.inReplyToId,
+                quotedId = args.quotedId,
                 identityRepository = instance(),
                 timelineEntryRepository = instance(),
                 photoRepository = instance(),

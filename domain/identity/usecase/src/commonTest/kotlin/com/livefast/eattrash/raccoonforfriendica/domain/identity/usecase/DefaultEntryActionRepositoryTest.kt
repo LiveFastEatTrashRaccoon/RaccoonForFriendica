@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
@@ -388,7 +389,41 @@ class DefaultEntryActionRepositoryTest {
     }
 
     @Test
-    fun `given share unsupported when canQuote then result is as expected`() {
+    fun `given share unsupported and allow policy when canQuote then result is as expected`() {
+        every { supportedFeatureRepository.features } returns
+            MutableStateFlow(NodeFeatures())
+        val entry =
+            TimelineEntryModel(
+                id = "0",
+                content = "",
+                creator = UserModel(id = USER_ID),
+                quotePermission = QuotePermission.AutomaticallyApprove,
+            )
+
+        val res = sut.canQuote(entry)
+
+        assertTrue(res)
+    }
+
+    @Test
+    fun `given share unsupported and deny policy when canQuote then result is as expected`() {
+        every { supportedFeatureRepository.features } returns
+            MutableStateFlow(NodeFeatures())
+        val entry =
+            TimelineEntryModel(
+                id = "0",
+                content = "",
+                creator = UserModel(id = USER_ID),
+                quotePermission = QuotePermission.Unauthorized,
+            )
+
+        val res = sut.canQuote(entry)
+
+        assertFalse(res)
+    }
+
+    @Test
+    fun `given share unsupported and unknown policy when canQuote then result is as expected`() {
         every { supportedFeatureRepository.features } returns
             MutableStateFlow(NodeFeatures())
         val entry =

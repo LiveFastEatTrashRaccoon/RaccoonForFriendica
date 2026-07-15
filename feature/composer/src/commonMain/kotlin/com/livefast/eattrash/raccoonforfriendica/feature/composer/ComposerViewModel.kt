@@ -66,7 +66,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
-    private val inReplyToId: String,
+    private val inReplyToId: String?,
+    private val quotedId: String?,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
@@ -109,7 +110,7 @@ class ComposerViewModel(
                 .map { it.userSearchQuery }
                 .distinctUntilChanged()
                 .drop(1)
-                .debounce(750)
+                .debounce(750.milliseconds)
                 .onEach { query ->
                     refreshUsers(query)
                 }.launchIn(this)
@@ -161,22 +162,22 @@ class ComposerViewModel(
                         )
                     }
                 }.launchIn(this)
-            val parentId = inReplyToId.takeIf { it.isNotEmpty() }
-            val parent = parentId?.let { e -> entryCache.get(e) }
+            val parent = inReplyToId?.let { e -> entryCache.get(e) }
             val initialVisibility =
                 when {
                     editedPostId != null -> uiState.value.visibility
 
-                    parentId != null ->
+                    parent != null ->
                         currentSettings
                             ?.defaultReplyVisibility
                             ?.toVisibility()
                             // make sure to have a visibility less than or equal to the parent
-                            ?.takeIf { it <= (parent?.visibility ?: Visibility.Unlisted) }
-                            ?: parent?.visibility
+                            ?.takeIf { it <= (parent.visibility) }
+                            ?: parent.visibility
 
                     else -> currentSettings?.defaultPostVisibility?.toVisibility()
                 } ?: Visibility.Unlisted
+            val quoted = quotedId?.let { e -> entryCache.get(e) }
 
             updateState {
                 it.copy(
@@ -184,6 +185,7 @@ class ComposerViewModel(
                     attachmentLimit = nodeInfo?.attachmentLimit,
                     visibility = initialVisibility,
                     inReplyTo = parent,
+                    quoted = quoted,
                     markupMode = currentSettings?.markupMode ?: MarkupMode.PlainText,
                 )
             }
@@ -322,7 +324,6 @@ class ComposerViewModel(
                             }
                             val mentions =
                                 inReplyToId
-                                    .takeIf { it.isNotEmpty() }
                                     ?.let { entryCache.get(it) }
                                     ?.mentions
                                     .orEmpty()
@@ -798,23 +799,26 @@ class ComposerViewModel(
     }
 
     private fun addShareUrl(url: String) {
-        viewModelScope.launch {
-            val additionalPart =
-                buildString {
-                    append("\n")
-                    append("[share]$url[/share]")
+        // share via URL is only supported on Friendica
+        if (supportedFeatureRepository.features.value.supportsEntryShare) {
+            viewModelScope.launch {
+                val additionalPart =
+                    buildString {
+                        append("\n")
+                        append("[share]$url[/share]")
+                    }
+                val newValue =
+                    getNewTextFieldValue(
+                        value = uiState.value.bodyValue,
+                        additionalPart = additionalPart,
+                        offsetAfter = additionalPart.length,
+                    )
+                updateState {
+                    it.copy(
+                        bodyValue = newValue,
+                        hasUnsavedChanges = true,
+                    )
                 }
-            val newValue =
-                getNewTextFieldValue(
-                    value = uiState.value.bodyValue,
-                    additionalPart = additionalPart,
-                    offsetAfter = additionalPart.length,
-                )
-            updateState {
-                it.copy(
-                    bodyValue = newValue,
-                    hasUnsavedChanges = true,
-                )
             }
         }
     }
@@ -1474,7 +1478,7 @@ class ComposerViewModel(
 
     private suspend fun createPreview() {
         val currentState = uiState.value
-        val inReplyTo = inReplyToId.takeIf { it.isNotEmpty() }?.let { entryCache.get(it) }
+        val inReplyTo = inReplyToId?.let { entryCache.get(it) }
         val localId = getUuid()
         val entry =
             TimelineEntryModel(
@@ -1669,7 +1673,8 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId.takeIf { it.isNotEmpty() },
+                                    inReplyTo = inReplyToId,
+                                    quoted = quotedId,
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1689,7 +1694,8 @@ class ComposerViewModel(
                                     id = editId,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId.takeIf { it.isNotEmpty() },
+                                    inReplyTo = inReplyToId,
+                                    quoted = quotedId,
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1704,7 +1710,8 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId.takeIf { it.isNotEmpty() },
+                                    inReplyTo = inReplyToId,
+                                    quoted = quotedId,
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1723,12 +1730,12 @@ class ComposerViewModel(
                                     id = editId ?: key,
                                     content = text,
                                     title = title,
-                                    updated =
-                                    epochMillis().toIso8601Timestamp(withLocalTimezone = false),
+                                    updated = epochMillis().toIso8601Timestamp(withLocalTimezone = false),
                                     spoiler = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
-                                    parentId = inReplyToId.takeIf { it.isNotEmpty() },
+                                    parentId = inReplyToId,
+                                    quoted = quotedId?.let { TimelineEntryModel(id = it, content = "") },
                                     lang = currentState.lang,
                                     attachments =
                                     attachmentIds.map {

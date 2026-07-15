@@ -793,6 +793,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
                                         mainRouter.openComposer(
+                                            quoted = entryToShare,
                                             urlToShare = entryToShare.url,
                                         )
                                     }

@@ -436,6 +436,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
                                         mainRouter.openComposer(
+                                            quoted = entryToShare,
                                             urlToShare = entryToShare.url,
                                         )
                                     }

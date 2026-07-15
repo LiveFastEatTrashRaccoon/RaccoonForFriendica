@@ -424,7 +424,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
                                         mainRouter.openComposer(
-                                            urlToShare = entryToShare.url,
+                                            quoted = entryToShare,
                                         )
                                     }
                                 }

@@ -14,21 +14,28 @@ import com.mohamedrejeb.ksoup.entities.KsoupEntities
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 
-fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Boolean = true): AnnotatedString {
+fun String.parseHtml(
+    linkColor: Color,
+    quoteColor: Color,
+    requiresHtmlDecode: Boolean = true,
+    hideInlineQuotes: Boolean = false,
+): AnnotatedString {
     val builder = AnnotatedString.Builder()
     var inOrderedList = false
+    var inInlineQuote = false
     var orderedListIndex = 0
     val handler =
         KsoupHtmlHandler
             .Builder()
             .onOpenTag { name, attributes, _ ->
                 when (name) {
-                    "p" ->
+                    "p" -> {
+                        inInlineQuote = attributes["class"]?.contains("quote-inline") == true
                         if (builder.length != 0) {
                             // separate paragraphs with a blank line
                             builder.appendLine().appendLine()
                         }
-
+                    }
                     "span" -> Unit
                     "br" -> builder.appendLine()
                     "a" -> {
@@ -100,7 +107,12 @@ fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Bo
                 }
             }.onCloseTag { name, _ ->
                 when (name) {
-                    "p", "span", "br", "img" -> Unit
+                    "p" -> {
+                        if (inInlineQuote) {
+                            inInlineQuote = false
+                        }
+                    }
+                    "span", "br", "img" -> Unit
                     "b", "strong", "u", "i", "em", "s", "code" ->
                         runCatching {
                             builder.pop()
@@ -132,7 +144,10 @@ fun String.parseHtml(linkColor: Color, quoteColor: Color, requiresHtmlDecode: Bo
                     else -> println("onCloseTag: Unhandled tag $name")
                 }
             }.onText { text ->
-                builder.append(text)
+                if (!inInlineQuote) {
+                    // remove any elements with the quote-inline CSS class
+                    builder.append(text)
+                }
             }.build()
 
     val html = sanitize(requiresHtmlDecode)

@@ -318,6 +318,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
                                         mainRouter.openComposer(
+                                            quoted = entryToShare,
                                             urlToShare = entryToShare.url,
                                         )
                                     }

@@ -29,6 +29,7 @@ fun ContentBody(
     color: Color = MaterialTheme.colorScheme.onBackground,
     maxLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
+    hideInlineQuotes: Boolean = false,
     emojis: List<EmojiModel> = emptyList(),
     onClick: (() -> Unit)? = null,
     onOpenImage: ((String) -> Unit)? = null,
@@ -57,6 +58,7 @@ fun ContentBody(
                     val annotatedContent =
                         chunk.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
+                            hideInlineQuotes = hideInlineQuotes,
                             quoteColor =
                             MaterialTheme.colorScheme.onBackground.copy(
                                 ancillaryTextAlpha,
