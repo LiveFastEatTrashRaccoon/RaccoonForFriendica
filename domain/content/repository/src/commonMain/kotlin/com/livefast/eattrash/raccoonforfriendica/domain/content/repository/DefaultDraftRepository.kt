@@ -109,6 +109,7 @@ internal class DefaultDraftRepository(private val draftDao: DraftDao, private va
         id = id,
         mediaIds = attachments.joinToString(",") { it.id },
         inReplyToId = parentId,
+        quotedId = quoted?.id,
         lang = lang,
         localOnly = localOnly,
         sensitive = sensitive,

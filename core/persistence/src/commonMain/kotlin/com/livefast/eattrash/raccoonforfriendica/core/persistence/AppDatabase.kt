@@ -20,7 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserR
         DraftEntity::class,
         UserRateLimitEntity::class,
     ],
-    version = 23,
+    version = 24,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -44,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserR
         AutoMigration(from = 20, to = 21),
         AutoMigration(from = 21, to = 22),
         AutoMigration(from = 22, to = 23),
+        AutoMigration(from = 23, to = 24),
     ],
     exportSchema = true,
 )

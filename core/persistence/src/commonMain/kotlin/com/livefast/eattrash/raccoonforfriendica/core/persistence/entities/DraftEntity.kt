@@ -9,6 +9,7 @@ data class DraftEntity(
     @PrimaryKey(autoGenerate = false) val id: String,
     @ColumnInfo val mediaIds: String? = null,
     @ColumnInfo val inReplyToId: String? = null,
+    @ColumnInfo val quotedId: String? = null,
     @ColumnInfo val lang: String? = null,
     @ColumnInfo val sensitive: Boolean? = null,
     @ColumnInfo val spoiler: String? = null,
