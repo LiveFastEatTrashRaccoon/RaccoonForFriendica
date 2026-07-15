@@ -180,6 +180,7 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
         val hasUnsavedChanges: Boolean = false,
         val autoloadImages: Boolean = true,
         val inReplyTo: TimelineEntryModel? = null,
+        val quoted: TimelineEntryModel? = null,
         val markupMode: MarkupMode = MarkupMode.PlainText,
         val availableMarkupModes: List<MarkupMode> = emptyList(),
         val shouldShowMentionSuggestions: Boolean = false,
