@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.PI
 import kotlin.math.cos
@@ -38,11 +39,11 @@ internal class DefaultBlurHashDecoder(
         punch: Float,
         useCache: Boolean,
     ): ImageBitmap? = withContext(Dispatchers.IO) {
-        check(blurHash != null && blurHash.length >= 6) { return@withContext null }
+        if (blurHash == null || blurHash.length < 6) return@withContext null
         val numCompEnc = decode83(blurHash, 0, 1)
         val numCompX = (numCompEnc % 9) + 1
         val numCompY = (numCompEnc / 9) + 1
-        check(blurHash.length == 4 + 2 * numCompX * numCompY) { return@withContext null }
+        if (blurHash.length != 4 + 2 * numCompX * numCompY) return@withContext null
         val maxAcEnc = decode83(blurHash, 1, 2)
         val maxAc = (maxAcEnc + 1) / 166f
         val colors =
@@ -58,7 +59,7 @@ internal class DefaultBlurHashDecoder(
             }
         try {
             composeBitmap(width, height, numCompX, numCompY, colors, useCache)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             if (e is CancellationException) throw e
             null
         }
@@ -114,19 +115,18 @@ internal class DefaultBlurHashDecoder(
     ): ImageBitmap {
         // use an array for better performance when writing pixel colors
         val imageArray = IntArray(width * height)
-        val calculateCosX = !useCache || !cacheCosinesX.containsKey(width * numCompX)
-        val cosinesX = getArrayForCosinesX(calculateCosX, width, numCompX)
-        val calculateCosY = !useCache || !cacheCosinesY.containsKey(height * numCompY)
-        val cosinesY = getArrayForCosinesY(calculateCosY, height, numCompY)
+        val cosinesX = getArrayForCosinesX(useCache, width, numCompX)
+        val cosinesY = getArrayForCosinesY(useCache, height, numCompY)
         for (y in 0 until height) {
+            yield()
             for (x in 0 until width) {
                 var r = 0f
                 var g = 0f
                 var b = 0f
                 for (j in 0 until numCompY) {
                     for (i in 0 until numCompX) {
-                        val cosX = cosinesX.getCos(calculateCosX, i, numCompX, x, width)
-                        val cosY = cosinesY.getCos(calculateCosY, j, numCompY, y, height)
+                        val cosX = cosinesX[i + numCompX * x]
+                        val cosY = cosinesY[j + numCompY * y]
                         val basis = (cosX * cosY).toFloat()
                         val color = colors[j * numCompX + i]
                         r += color[0] * basis
@@ -142,33 +142,34 @@ internal class DefaultBlurHashDecoder(
         return imageArray.toComposeImageBitmap(width, height)
     }
 
-    private suspend fun getArrayForCosinesY(calculate: Boolean, height: Int, numCompY: Int) = when {
-        calculate -> {
-            DoubleArray(height * numCompY).also {
-                cacheCosinesY.put(height * numCompY, it)
+    private suspend fun getArrayForCosinesY(useCache: Boolean, height: Int, numCompY: Int): DoubleArray {
+        val key = height * numCompY
+        val cached = if (useCache) cacheCosinesY.get(key) else null
+        if (cached != null) return cached
+
+        val result = DoubleArray(key)
+        for (y in 0 until height) {
+            for (j in 0 until numCompY) {
+                result[j + numCompY * y] = cos(PI * y * j / height)
             }
         }
-
-        else -> {
-            cacheCosinesY.get(height * numCompY)!!
-        }
+        if (useCache) cacheCosinesY.put(key, result)
+        return result
     }
 
-    private suspend fun getArrayForCosinesX(calculate: Boolean, width: Int, numCompX: Int) = when {
-        calculate -> {
-            DoubleArray(width * numCompX).also {
-                cacheCosinesX.put(width * numCompX, it)
+    private suspend fun getArrayForCosinesX(useCache: Boolean, width: Int, numCompX: Int): DoubleArray {
+        val key = width * numCompX
+        val cached = if (useCache) cacheCosinesX.get(key) else null
+        if (cached != null) return cached
+
+        val result = DoubleArray(key)
+        for (x in 0 until width) {
+            for (i in 0 until numCompX) {
+                result[i + numCompX * x] = cos(PI * x * i / width)
             }
         }
-
-        else -> cacheCosinesX.get(width * numCompX)!!
-    }
-
-    private fun DoubleArray.getCos(calculate: Boolean, x: Int, numComp: Int, y: Int, size: Int): Double {
-        if (calculate) {
-            this[x + numComp * y] = cos(PI * y * x / size)
-        }
-        return this[x + numComp * y]
+        if (useCache) cacheCosinesX.put(key, result)
+        return result
     }
 
     private fun linearToSrgb(value: Float): Int {

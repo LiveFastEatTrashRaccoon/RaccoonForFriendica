@@ -38,11 +38,16 @@ internal fun BlurredPreview(
 
         LaunchedEffect(blurHash) {
             if (blurHash != null) {
+                // limit the size of the decoded blur hash to avoid memory issues
+                // (blurred preview is intended to be decoded at low resolution and scaled up)
+                val ratio = originalWidth.toFloat() / originalHeight
+                val targetWidth = if (ratio > 1) 32 else (32 * ratio).toInt().coerceAtLeast(1)
+                val targetHeight = if (ratio > 1) (32 / ratio).toInt().coerceAtLeast(1) else 32
                 val params =
                     BlurHashParams(
                         hash = blurHash,
-                        width = originalWidth,
-                        height = originalHeight,
+                        width = targetWidth,
+                        height = targetHeight,
                     )
                 imageBitmap = repository.get(params)
             }
