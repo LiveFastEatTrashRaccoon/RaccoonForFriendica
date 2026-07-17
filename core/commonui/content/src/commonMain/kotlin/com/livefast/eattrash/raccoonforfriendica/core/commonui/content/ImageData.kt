@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getImageLoaderProvider
-import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.attachmentsToDisplay
@@ -74,8 +73,7 @@ private fun ImageData.isSameAs(attachment: AttachmentModel): Boolean {
     return false
 }
 
-private fun String.toSignature(): String =
-    this.substringBefore('?').substringAfterLast('/')
+private fun String.toSignature(): String = this.substringBefore('?').substringAfterLast('/')
 
 private fun extractImagesData(html: String): List<ImageData> {
     val result = mutableListOf<ImageData>()
