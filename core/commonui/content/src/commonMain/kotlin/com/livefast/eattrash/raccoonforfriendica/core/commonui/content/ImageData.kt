@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.attachmentsToDisplay
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
@@ -34,46 +34,12 @@ internal fun extractImageData(html: String): ImageData? {
 }
 
 internal val TimelineEntryModel.attachmentsToDisplayWithoutInlineImages: List<AttachmentModel>
-    get() =
-        run {
-            val inlineImagesData = extractImagesData(content)
-            attachmentsToDisplay.filter { attachment ->
-                inlineImagesData.none { it.isSameAs(attachment) }
-            }
-        }
-
-private fun ImageData.isSameAs(attachment: AttachmentModel): Boolean {
-    val inlineUrl = url.trim()
-    if (inlineUrl.isBlank()) return false
-
-    // URL match
-    val attachmentUrls = listOf(attachment.url, attachment.previewUrl, attachment.thumbnail).mapNotNull { it?.trim() }
-    if (inlineUrl in attachmentUrls) {
-        return true
+    get() {
+        val inlineImagesData = extractImagesData(content)
+        // assume that the first n attachments are duplicate of the inline images
+        val toDrop = attachmentsToDisplay.filter { it.type == MediaType.Image }.take(inlineImagesData.size)
+        return attachmentsToDisplay - toDrop
     }
-
-    // description match
-    if (!description.isNullOrBlank() && description.length > 3 && description == attachment.description) {
-        return true
-    }
-
-    // signature match (helpful when URLs are proxied or have different versions)
-    val inlineSig = inlineUrl.toSignature()
-    val attachmentSignatures = listOf(
-        attachment.url.toSignature(),
-        attachment.previewUrl?.toSignature().orEmpty(),
-        attachment.thumbnail?.toSignature().orEmpty(),
-    )
-    if (inlineSig.length > 8 && inlineSig in attachmentSignatures) {
-        return true
-    }
-
-    getImageLoaderProvider()
-
-    return false
-}
-
-private fun String.toSignature(): String = this.substringBefore('?').substringAfterLast('/')
 
 private fun extractImagesData(html: String): List<ImageData> {
     val result = mutableListOf<ImageData>()
