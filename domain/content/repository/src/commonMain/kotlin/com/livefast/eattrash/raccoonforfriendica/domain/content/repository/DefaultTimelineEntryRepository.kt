@@ -2,12 +2,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ContentVisibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusAddons
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreatePollForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.SubmitPollVoteForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -235,7 +237,7 @@ internal class DefaultTimelineEntryRepository(
         spoilerText: String?,
         inReplyTo: String?,
         quoted: String?,
-        quotePolicy: String?,
+        quotePolicy: QuotePolicy?,
         sensitive: Boolean,
         mediaIds: List<String>?,
         visibility: Visibility,
@@ -268,7 +270,7 @@ internal class DefaultTimelineEntryRepository(
                 sensitive = sensitive,
                 inReplyTo = inReplyTo,
                 quoted = quoted,
-                quotePolicy = quotePolicy,
+                quotePolicy = quotePolicy?.toDto()?.serialName,
                 lang = lang,
                 spoilerText = spoilerText,
                 scheduledAt = scheduled,
@@ -297,7 +299,7 @@ internal class DefaultTimelineEntryRepository(
         spoilerText: String?,
         inReplyTo: String?,
         quoted: String?,
-        quotePolicy: String?,
+        quotePolicy: QuotePolicy?,
         sensitive: Boolean,
         mediaIds: List<String>?,
         visibility: Visibility,
@@ -329,7 +331,7 @@ internal class DefaultTimelineEntryRepository(
                 sensitive = sensitive,
                 inReplyTo = inReplyTo,
                 quoted = quoted,
-                quotePolicy = quotePolicy,
+                quotePolicy = quotePolicy?.toDto()?.serialName,
                 lang = lang,
                 spoilerText = spoilerText,
                 poll = pollData,
