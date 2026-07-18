@@ -167,6 +167,7 @@
     <string name="edit_profile_item_hide_collections">Make following and follower lists private</string>
     <string name="edit_profile_item_locked">Require manual approval for follow requests</string>
     <string name="edit_profile_item_no_index">Exclude my posts from public timelines</string>
+    <string name="edit_profile_item_quote_policy">Quote policy</string>
     <string name="edit_profile_section_fields">Custom fields (experimental)</string>
     <string name="edit_profile_section_flags">Visibility &amp; permissions</string>
     <string name="edit_profile_section_images">Images (experimental)</string>
@@ -301,6 +302,9 @@
     <string name="post_sensitive">Sensitive content</string>
     <string name="post_title">Post</string>
     <string name="preview_image">Preview image</string>
+    <string name="quote_policy_followers">Followers</string>
+    <string name="quote_policy_nobody">Nobody</string>
+    <string name="quote_policy_public">Everyone</string>
     <string name="relationship_status_following">Following</string>
     <string name="relationship_status_follows_you">Follows you</string>
     <string name="relationship_status_mutual">Mutual</string>

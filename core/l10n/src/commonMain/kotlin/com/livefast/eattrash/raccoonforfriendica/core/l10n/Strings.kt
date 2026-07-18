@@ -173,6 +173,7 @@ interface Strings {
     val editProfileItemHeader: String @Composable get
     val editProfileItemHideCollections: String @Composable get
     val editProfileItemLocked: String @Composable get
+    val editProfileItemQuotePolicy: String @Composable get
     val editProfileItemNoIndex: String @Composable get
     val editProfileSectionFields: String @Composable get
     val editProfileSectionFlags: String @Composable get
@@ -323,6 +324,9 @@ interface Strings {
     val postSensitive: String @Composable get
     val postTitle: String @Composable get
     val previewImage: String @Composable get
+    val quotePolicyFollowers: String @Composable get
+    val quotePolicyNobody: String @Composable get
+    val quotePolicyPublic: String @Composable get
     val relationshipStatusFollowing: String @Composable get
     val relationshipStatusFollowsYou: String @Composable get
     val relationshipStatusMutual: String @Composable get
