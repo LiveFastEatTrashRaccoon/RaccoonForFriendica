@@ -81,6 +81,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
@@ -181,7 +182,8 @@ fun ComposerScreen(
         mutableStateOf(false)
     }
     var confirmChangeMarkupModeDialogOpen by remember { mutableStateOf(false) }
-    var changeMarkupModeBottomSheetOpened by remember { mutableStateOf(false) }
+    var changeMarkupModeBottomSheetOpen by remember { mutableStateOf(false) }
+    var quotePolicyBottomSheetOpen by remember { mutableStateOf(false) }
     val navState = rememberNavigationEventState(NavigationEventInfo.None)
 
     LaunchedEffect(model) {
@@ -413,6 +415,18 @@ fun ComposerScreen(
                                 CustomOptions.ChangeMarkupMode.toOption(
                                     label = LocalStrings.current.actionChangeMarkupMode,
                                 )
+
+                            if (uiState.quotePoliciesSupported && uiState.publicationType != PublicationType.Draft) {
+                                this +=
+                                    CustomOptions.ChangeQuotePolicy.toOption(
+                                        label = buildString {
+                                            append(LocalStrings.current.editProfileItemQuotePolicy)
+                                            append(" (")
+                                            append(uiState.quotePolicy.toReadableName())
+                                            append(")")
+                                        },
+                                    )
+                            }
                         }
                     Box {
                         var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -504,6 +518,9 @@ fun ComposerScreen(
 
                                             CustomOptions.ChangeMarkupMode ->
                                                 confirmChangeMarkupModeDialogOpen = true
+
+                                            CustomOptions.ChangeQuotePolicy ->
+                                                quotePolicyBottomSheetOpen = true
 
                                             else -> Unit
                                         }
@@ -1121,22 +1138,35 @@ fun ComposerScreen(
                 onClose = { confirm ->
                     confirmChangeMarkupModeDialogOpen = false
                     if (confirm) {
-                        changeMarkupModeBottomSheetOpened = true
+                        changeMarkupModeBottomSheetOpen = true
                     }
                 },
             )
         }
 
-        if (changeMarkupModeBottomSheetOpened) {
+        if (changeMarkupModeBottomSheetOpen) {
             val modes = uiState.availableMarkupModes
             CustomModalBottomSheet(
                 title = LocalStrings.current.settingsItemMarkupMode,
                 items = modes.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
                 onSelect = { index ->
-                    changeMarkupModeBottomSheetOpened = false
+                    changeMarkupModeBottomSheetOpen = false
                     if (index != null) {
-                        val mode = modes[index]
-                        model.reduce(ComposerMviModel.Intent.ChangeMarkupMode(mode))
+                        model.reduce(ComposerMviModel.Intent.ChangeMarkupMode(modes[index]))
+                    }
+                },
+            )
+        }
+
+        if (quotePolicyBottomSheetOpen) {
+            val policies = listOf(QuotePolicy.Followers, QuotePolicy.Nobody, QuotePolicy.Public)
+            CustomModalBottomSheet(
+                title = LocalStrings.current.editProfileItemQuotePolicy,
+                items = policies.map { CustomModalBottomSheetItem(label = it.toReadableName()) },
+                onSelect = { index ->
+                    quotePolicyBottomSheetOpen = false
+                    if (index != null) {
+                        model.reduce(ComposerMviModel.Intent.ChangeQuotePolicy(policies[index]))
                     }
                 },
             )
@@ -1166,6 +1196,8 @@ private sealed interface CustomOptions : OptionId.Custom {
     data object InsertList : CustomOptions
 
     data object ChangeMarkupMode : CustomOptions
+
+    data object ChangeQuotePolicy : CustomOptions
 }
 
 private sealed interface ImagePickerRequest {
