@@ -10,4 +10,5 @@ data class AccountSource(
     @SerialName("note") val note: String? = null,
     @SerialName("privacy") val privacy: String? = null,
     @SerialName("sensitive") val sensitive: Boolean? = null,
+    @SerialName("quote_policy") val quotePolicy: QuotePolicy? = null,
 )

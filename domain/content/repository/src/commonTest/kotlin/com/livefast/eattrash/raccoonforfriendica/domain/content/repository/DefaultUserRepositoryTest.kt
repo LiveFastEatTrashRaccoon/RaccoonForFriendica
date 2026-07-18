@@ -348,6 +348,7 @@ class DefaultUserRepositoryTest {
             discoverable = null,
             hideCollections = null,
             indexable = null,
+            quotePolicy = null,
             fields = null,
         )
         assertNotNull(res)
@@ -370,6 +371,7 @@ class DefaultUserRepositoryTest {
             discoverable = null,
             hideCollections = null,
             indexable = null,
+            quotePolicy = null,
             fields = null,
         )
 

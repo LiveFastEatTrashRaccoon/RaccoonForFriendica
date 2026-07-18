@@ -183,6 +183,7 @@ import raccoonforfriendica.core.l10n.generated.resources.edit_profile_item_heade
 import raccoonforfriendica.core.l10n.generated.resources.edit_profile_item_hide_collections
 import raccoonforfriendica.core.l10n.generated.resources.edit_profile_item_locked
 import raccoonforfriendica.core.l10n.generated.resources.edit_profile_item_no_index
+import raccoonforfriendica.core.l10n.generated.resources.edit_profile_item_quote_policy
 import raccoonforfriendica.core.l10n.generated.resources.edit_profile_section_fields
 import raccoonforfriendica.core.l10n.generated.resources.edit_profile_section_flags
 import raccoonforfriendica.core.l10n.generated.resources.edit_profile_section_images
@@ -338,6 +339,9 @@ import raccoonforfriendica.core.l10n.generated.resources.post_by
 import raccoonforfriendica.core.l10n.generated.resources.post_sensitive
 import raccoonforfriendica.core.l10n.generated.resources.post_title
 import raccoonforfriendica.core.l10n.generated.resources.preview_image
+import raccoonforfriendica.core.l10n.generated.resources.quote_policy_followers
+import raccoonforfriendica.core.l10n.generated.resources.quote_policy_nobody
+import raccoonforfriendica.core.l10n.generated.resources.quote_policy_public
 import raccoonforfriendica.core.l10n.generated.resources.relationship_status_following
 import raccoonforfriendica.core.l10n.generated.resources.relationship_status_follows_you
 import raccoonforfriendica.core.l10n.generated.resources.relationship_status_mutual
@@ -826,6 +830,8 @@ internal class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.edit_profile_item_locked)
     override val editProfileItemNoIndex: String
         @Composable get() = stringResource(Res.string.edit_profile_item_no_index)
+    override val editProfileItemQuotePolicy: String
+        @Composable get() = stringResource(Res.string.edit_profile_item_quote_policy)
     override val editProfileSectionFields: String
         @Composable get() = stringResource(Res.string.edit_profile_section_fields)
     override val editProfileSectionFlags: String
@@ -1124,6 +1130,12 @@ internal class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.post_title)
     override val previewImage: String
         @Composable get() = stringResource(Res.string.preview_image)
+    override val quotePolicyFollowers: String
+        @Composable get() = stringResource(Res.string.quote_policy_followers)
+    override val quotePolicyNobody: String
+        @Composable get() = stringResource(Res.string.quote_policy_nobody)
+    override val quotePolicyPublic: String
+        @Composable get() = stringResource(Res.string.quote_policy_public)
     override val relationshipStatusFollowing: String
         @Composable get() = stringResource(Res.string.relationship_status_following)
     override val relationshipStatusFollowsYou: String

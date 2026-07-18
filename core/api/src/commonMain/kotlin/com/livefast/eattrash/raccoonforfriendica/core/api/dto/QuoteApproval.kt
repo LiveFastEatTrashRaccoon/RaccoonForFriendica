@@ -13,6 +13,7 @@ data class QuoteApproval(
     val currentUser: QuotePolicyForCurrentUser? = null,
 )
 
+@Serializable
 enum class QuotePolicy {
     @SerialName("public")
     Public,
@@ -22,6 +23,9 @@ enum class QuotePolicy {
 
     @SerialName("following")
     Following,
+
+    @SerialName("nobody")
+    Nobody,
 
     @SerialName("unsupported_policy")
     Unsupported,
@@ -40,3 +44,6 @@ enum class QuotePolicyForCurrentUser {
     @SerialName("unknown")
     Unknown,
 }
+
+val QuotePolicy.serialName: String
+    get() = QuotePolicy.serializer().descriptor.getElementName(ordinal)

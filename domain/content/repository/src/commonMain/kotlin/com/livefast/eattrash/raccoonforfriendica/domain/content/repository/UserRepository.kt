@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
@@ -58,6 +59,7 @@ interface UserRepository {
         discoverable: Boolean? = null,
         hideCollections: Boolean? = null,
         indexable: Boolean? = null,
+        quotePolicy: QuotePolicy? = null,
         fields: Map<String, String>? = null,
     ): UserModel?
 

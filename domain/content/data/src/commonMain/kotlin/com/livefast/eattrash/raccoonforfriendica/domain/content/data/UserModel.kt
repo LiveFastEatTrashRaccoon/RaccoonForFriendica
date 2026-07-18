@@ -21,6 +21,7 @@ data class UserModel(
     val hideCollections: Boolean = false,
     val id: String,
     val locked: Boolean = false,
+    val quotePolicy: QuotePolicy? = null,
     @Transient val muted: Boolean = false,
     val noIndex: Boolean = false,
     @Transient val notificationStatus: NotificationStatus? = null,
