@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -143,6 +144,8 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
         data object InsertList : Intent
 
         data class ChangeMarkupMode(val mode: MarkupMode) : Intent
+
+        data class ChangeQuotePolicy(val policy: QuotePolicy) : Intent
     }
 
     data class State(
@@ -191,6 +194,7 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
         val hashtagSuggestionsLoading: Boolean = false,
         val hashtagSuggestions: List<TagModel> = emptyList(),
         val inlineImagesSupported: Boolean = false,
+        val quotePolicy: QuotePolicy = QuotePolicy.Public,
     )
 
     sealed interface Effect {

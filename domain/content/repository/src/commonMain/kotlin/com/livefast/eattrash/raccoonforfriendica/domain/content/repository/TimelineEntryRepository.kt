@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -67,7 +68,7 @@ interface TimelineEntryRepository {
         spoilerText: String? = null,
         inReplyTo: String? = null,
         quoted: String? = null,
-        quotePolicy: String? = null,
+        quotePolicy: QuotePolicy? = null,
         sensitive: Boolean = false,
         mediaIds: List<String>? = null,
         visibility: Visibility,
@@ -85,7 +86,7 @@ interface TimelineEntryRepository {
         spoilerText: String? = null,
         inReplyTo: String? = null,
         quoted: String? = null,
-        quotePolicy: String? = null,
+        quotePolicy: QuotePolicy? = null,
         sensitive: Boolean = false,
         mediaIds: List<String>? = null,
         visibility: Visibility,

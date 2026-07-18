@@ -83,6 +83,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -576,13 +577,6 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             },
         )
     }
-}
-
-@Composable
-private fun QuotePolicy.toReadableName(): String = when (this) {
-    QuotePolicy.Followers -> LocalStrings.current.quotePolicyFollowers
-    QuotePolicy.Nobody -> LocalStrings.current.quotePolicyNobody
-    QuotePolicy.Public -> LocalStrings.current.quotePolicyPublic
 }
 
 private sealed interface CustomOptions : OptionId.Custom {

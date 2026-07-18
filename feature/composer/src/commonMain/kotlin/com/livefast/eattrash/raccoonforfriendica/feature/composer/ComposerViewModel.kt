@@ -23,6 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
@@ -179,6 +180,7 @@ class ComposerViewModel(
                     else -> currentSettings?.defaultPostVisibility?.toVisibility()
                 } ?: Visibility.Unlisted
             val quoted = quotedId?.let { e -> entryCache.get(e) ?: TimelineEntryModel(id = e, content = "") }
+            val initialQuotePolicy = userRepository.getCurrent()?.quotePolicy ?: QuotePolicy.Public
 
             updateState {
                 it.copy(
@@ -188,6 +190,7 @@ class ComposerViewModel(
                     inReplyTo = parent,
                     quoted = quoted,
                     markupMode = currentSettings?.markupMode ?: MarkupMode.PlainText,
+                    quotePolicy = initialQuotePolicy,
                 )
             }
 
@@ -535,6 +538,11 @@ class ComposerViewModel(
                     intent.attachment,
                     intent.description,
                 )
+
+            is ComposerMviModel.Intent.ChangeQuotePolicy ->
+                viewModelScope.launch {
+                    updateState { it.copy(quotePolicy = intent.policy) }
+                }
         }
     }
 
@@ -1647,6 +1655,7 @@ class ComposerViewModel(
 
         val key = getUuid()
         val publicationType = currentState.publicationType
+        val quotePolicy = currentState.quotePolicy
 
         viewModelScope.launch {
             if (
@@ -1660,6 +1669,7 @@ class ComposerViewModel(
 
             updateState { it.copy(loading = true) }
             val editId = editedPostId
+            val defaultQuotePolicy = userRepository.getCurrent()?.quotePolicy
             try {
                 val res =
                     when (publicationType) {
@@ -1676,6 +1686,11 @@ class ComposerViewModel(
                                     text = text,
                                     inReplyTo = inReplyToId,
                                     quoted = quotedId,
+                                    quotePolicy = if (quotePolicy != defaultQuotePolicy) {
+                                        quotePolicy
+                                    } else {
+                                        null
+                                    },
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1697,6 +1712,11 @@ class ComposerViewModel(
                                     text = text,
                                     inReplyTo = inReplyToId,
                                     quoted = quotedId,
+                                    quotePolicy = if (quotePolicy != defaultQuotePolicy) {
+                                        quotePolicy
+                                    } else {
+                                        null
+                                    },
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
@@ -1713,6 +1733,11 @@ class ComposerViewModel(
                                     text = text,
                                     inReplyTo = inReplyToId,
                                     quoted = quotedId,
+                                    quotePolicy = if (quotePolicy != defaultQuotePolicy) {
+                                        quotePolicy
+                                    } else {
+                                        null
+                                    },
                                     spoilerText = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,

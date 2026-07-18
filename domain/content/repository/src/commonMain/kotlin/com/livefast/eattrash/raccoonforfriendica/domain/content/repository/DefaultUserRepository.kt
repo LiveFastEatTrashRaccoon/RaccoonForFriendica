@@ -357,7 +357,10 @@ internal class DefaultUserRepository(
             result = provider.user.updateProfileImage(multipartFormData)
         }
 
-        result.toModel()
+        result.toModel().also {
+            // refresh cached value, just in case
+            cachedUser = it
+        }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
