@@ -10,7 +10,9 @@ import kotlinx.coroutines.CancellationException
 
 internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider) : PhotoAlbumRepository {
     override suspend fun getAll(): List<MediaAlbumModel>? = try {
-        provider.photoAlbum.getAll().map { it.toModel() }
+        provider.photo.getAll().groupBy { it.album }.map { entry ->
+            MediaAlbumModel(name = entry.key.orEmpty(), items = entry.value.size)
+        }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
@@ -47,13 +49,11 @@ internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider
 
     override suspend fun getPhotos(album: String, pageCursor: String?, latestFirst: Boolean): List<AttachmentModel>? =
         try {
-            provider.photoAlbum
-                .getPhotos(
-                    album = album,
-                    maxId = pageCursor,
-                    latestFirst = latestFirst,
-                    limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModel() }
+            if (!pageCursor.isNullOrEmpty()) {
+                // no pagination
+                return listOf()
+            }
+            provider.photo.getAll().filter { it.album == album }.map { it.toModel() }
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             null

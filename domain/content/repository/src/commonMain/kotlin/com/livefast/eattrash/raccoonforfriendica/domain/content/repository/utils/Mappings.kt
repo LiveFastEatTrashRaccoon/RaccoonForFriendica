@@ -10,7 +10,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Field
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaContact
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhotoAlbum
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPrivateMessage
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.HistoryItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
@@ -59,7 +58,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.HashtagHist
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
@@ -523,18 +521,6 @@ internal fun FriendicaPrivateMessage.toModel() = DirectMessageModel(
     title = title,
 )
 
-internal fun FriendicaPhotoAlbum.toModel() = MediaAlbumModel(
-    created =
-    created?.let { date ->
-        parseDate(
-            value = date,
-            format = FriendicaDateFormats.PHOTO_ALBUMS,
-        )
-    },
-    items = count,
-    name = name,
-)
-
 internal fun SearchResultType.toDto(): String = when (this) {
     SearchResultType.Entries -> "statuses"
     SearchResultType.Hashtags -> "hashtags"
@@ -570,7 +556,7 @@ internal fun CustomEmoji.toModel() = EmojiModel(
 
 private object FriendicaDateFormats {
     const val PRIVATE_MESSAGES = "EEE MMM dd HH:mm:ss xxxx yyyy"
-    const val PHOTO_ALBUMS = "yyyy-MM-dd HH:mm:ss"
+    const val EVENTS = "yyyy-MM-dd HH:mm:ss"
 }
 
 internal fun MarkerType.toDto(): String = when (this) {
@@ -608,14 +594,14 @@ internal fun Event.toModel() = EventModel(
     startTime =
     parseDate(
         value = startTime,
-        format = FriendicaDateFormats.PHOTO_ALBUMS,
+        format = FriendicaDateFormats.EVENTS,
         withLocalTimezone = true,
     ),
     endTime =
     endTime?.let { date ->
         parseDate(
             value = date,
-            format = FriendicaDateFormats.PHOTO_ALBUMS,
+            format = FriendicaDateFormats.EVENTS,
             withLocalTimezone = true,
         ).takeIf {
             val t = it.toEpochMillis()
