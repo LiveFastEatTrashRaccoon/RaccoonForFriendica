@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -265,6 +267,7 @@ internal class DefaultUserRepository(
         discoverable: Boolean?,
         hideCollections: Boolean?,
         indexable: Boolean?,
+        quotePolicy: QuotePolicy?,
         fields: Map<String, String>?,
     ) = try {
         var result: Account
@@ -293,6 +296,9 @@ internal class DefaultUserRepository(
                     }
                     if (indexable != null) {
                         append("indexable", if (indexable) "1" else "0")
+                    }
+                    if (quotePolicy != null) {
+                        append("source[quote_policy]", quotePolicy.toDto().serialName)
                     }
                     if (fields != null) {
                         val serializedFields =

@@ -29,7 +29,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCard
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PreviewCardType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Quote
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuoteApproval
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuotePolicyForCurrentUser
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuoteState
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
@@ -71,6 +70,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuoteStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReactionModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
@@ -85,6 +85,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType as MediaTypeDto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationPolicy as NotificationPolicyDto
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType as NotificationTypeDto
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuotePolicy as QuotePolicyDto
 
 internal fun Status.toModelWithReply() = toModel().copy(
     inReplyTo =
@@ -169,6 +170,19 @@ internal fun Quote.toModel(): TimelineEntryModel? = quotedStatus?.toModel()?.cop
         TimelineEntryModel(id = id, content = "", quoteStatus = state?.toQuotedStatus())
     }
 
+internal fun QuotePolicy.toDto(): QuotePolicyDto = when (this) {
+    QuotePolicy.Followers -> QuotePolicyDto.Followers
+    QuotePolicy.Nobody -> QuotePolicyDto.Nobody
+    QuotePolicy.Public -> QuotePolicyDto.Public
+}
+
+internal fun QuotePolicyDto.toModel(): QuotePolicy? = when (this) {
+    QuotePolicyDto.Public -> QuotePolicy.Public
+    QuotePolicyDto.Followers -> QuotePolicy.Followers
+    QuotePolicyDto.Nobody -> QuotePolicy.Nobody
+    else -> null
+}
+
 private fun QuoteState.toQuotedStatus(): QuoteStatus = when (this) {
     QuoteState.Pending -> QuoteStatus.Pending
     QuoteState.Accepted -> QuoteStatus.Accepted
@@ -197,7 +211,7 @@ private fun QuoteApproval.toQuotePermission(): QuotePermission {
         QuotePolicyForCurrentUser.Automatic -> QuotePermission.AutomaticallyApprove
         QuotePolicyForCurrentUser.Manual -> QuotePermission.ManualApprove
         else -> {
-            if (automatic.contains(QuotePolicy.Followers) || manual.contains(QuotePolicy.Followers)) {
+            if (automatic.contains(QuotePolicyDto.Followers) || manual.contains(QuotePolicyDto.Followers)) {
                 QuotePermission.OnlyFollowers
             } else {
                 QuotePermission.Unauthorized
@@ -315,6 +329,7 @@ internal fun CredentialAccount.toModel() = UserModel(
     id = id,
     locked = locked,
     noIndex = noIndex,
+    quotePolicy = source?.quotePolicy?.toModel(),
     url = url,
     username = username,
 )

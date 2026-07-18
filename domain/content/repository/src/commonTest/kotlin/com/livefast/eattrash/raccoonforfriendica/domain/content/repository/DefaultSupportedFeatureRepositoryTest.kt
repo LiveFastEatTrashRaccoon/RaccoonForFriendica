@@ -48,6 +48,7 @@ class DefaultSupportedFeatureRepositoryTest {
         assertFalse(res.supportsDislike)
         assertTrue(res.supportsTranslation)
         assertFalse(res.supportsLocalVisibility)
+        assertTrue(res.supportsQuotePolicies)
         verifySuspend {
             nodeInfoRepository.getInfo()
         }
@@ -77,6 +78,7 @@ class DefaultSupportedFeatureRepositoryTest {
         assertTrue(res.supportsDislike)
         assertFalse(res.supportsTranslation)
         assertFalse(res.supportsLocalVisibility)
+        assertFalse(res.supportsQuotePolicies)
         verifySuspend {
             nodeInfoRepository.getInfo()
         }
@@ -106,6 +108,7 @@ class DefaultSupportedFeatureRepositoryTest {
         assertTrue(res.supportsDislike)
         assertFalse(res.supportsTranslation)
         assertFalse(res.supportsLocalVisibility)
+        assertFalse(res.supportsQuotePolicies)
         verifySuspend {
             nodeInfoRepository.getInfo()
         }
@@ -135,6 +138,7 @@ class DefaultSupportedFeatureRepositoryTest {
         assertFalse(res.supportsDislike)
         assertTrue(res.supportsTranslation)
         assertTrue(res.supportsLocalVisibility)
+        assertTrue(res.supportsQuotePolicies)
         verifySuspend {
             nodeInfoRepository.getInfo()
         }

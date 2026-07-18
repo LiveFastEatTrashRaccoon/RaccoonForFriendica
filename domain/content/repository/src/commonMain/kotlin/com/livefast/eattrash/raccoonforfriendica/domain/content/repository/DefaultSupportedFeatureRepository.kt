@@ -28,6 +28,7 @@ internal class DefaultSupportedFeatureRepository(private val nodeInfoRepository:
                 supportsTranslation = !info.isFriendica,
                 supportsInlineImages = info.isFriendica,
                 supportsLocalVisibility = info.isGoToSocial || info.isHomeTown,
+                supportsQuotePolicies = !info.isFriendica,
             )
         }
     }
