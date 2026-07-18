@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 
 @Stable
 interface EditProfileMviModel :
@@ -60,6 +61,8 @@ interface EditProfileMviModel :
 
         data object DeleteAccount : Intent
 
+        data class ChangeQuotePolicy(val value: QuotePolicy)  : Intent
+
         data object Submit : Intent
     }
 
@@ -77,6 +80,8 @@ interface EditProfileMviModel :
         val discoverable: Boolean = false,
         val hideCollections: Boolean = false,
         val noIndex: Boolean = false,
+        val canSetQuotePolicy: Boolean = false,
+        val quotePolicy: QuotePolicy? = null,
         val fields: List<FieldModel> = emptyList(),
         val canAddFields: Boolean = false,
         val availableEmojis: List<EmojiModel> = emptyList(),
@@ -91,32 +96,24 @@ interface EditProfileMviModel :
 
             if (loading != other.loading) return false
             if (hasUnsavedChanges != other.hasUnsavedChanges) return false
-            if (displayName != other.displayName) return false
-            if (bio != other.bio) return false
-            if (avatar != other.avatar) return false
-            if (avatarBytes != null) {
-                if (other.avatarBytes == null) return false
-                if (!avatarBytes.contentEquals(other.avatarBytes)) return false
-            } else if (other.avatarBytes != null) {
-                return false
-            }
-            if (header != other.header) return false
-            if (headerBytes != null) {
-                if (other.headerBytes == null) return false
-                if (!headerBytes.contentEquals(other.headerBytes)) return false
-            } else if (other.headerBytes != null) {
-                return false
-            }
             if (bot != other.bot) return false
             if (locked != other.locked) return false
             if (discoverable != other.discoverable) return false
             if (hideCollections != other.hideCollections) return false
             if (noIndex != other.noIndex) return false
-            if (fields != other.fields) return false
+            if (canSetQuotePolicy != other.canSetQuotePolicy) return false
             if (canAddFields != other.canAddFields) return false
-            if (availableEmojis != other.availableEmojis) return false
             if (autoloadImages != other.autoloadImages) return false
             if (hideNavigationBarWhileScrolling != other.hideNavigationBarWhileScrolling) return false
+            if (displayName != other.displayName) return false
+            if (bio != other.bio) return false
+            if (avatar != other.avatar) return false
+            if (!avatarBytes.contentEquals(other.avatarBytes)) return false
+            if (header != other.header) return false
+            if (!headerBytes.contentEquals(other.headerBytes)) return false
+            if (quotePolicy != other.quotePolicy) return false
+            if (fields != other.fields) return false
+            if (availableEmojis != other.availableEmojis) return false
 
             return true
         }
@@ -124,22 +121,27 @@ interface EditProfileMviModel :
         override fun hashCode(): Int {
             var result = loading.hashCode()
             result = 31 * result + hasUnsavedChanges.hashCode()
+            result = 31 * result + bot.hashCode()
+            result = 31 * result + locked.hashCode()
+            result = 31 * result + discoverable.hashCode()
+            result = 31 * result + hideCollections.hashCode()
+            result = 31 * result + noIndex.hashCode()
+            result = 31 * result + canSetQuotePolicy.hashCode()
+            result = 31 * result + canAddFields.hashCode()
+            result = 31 * result + autoloadImages.hashCode()
+            result = 31 * result + hideNavigationBarWhileScrolling.hashCode()
             result = 31 * result + displayName.hashCode()
             result = 31 * result + bio.hashCode()
             result = 31 * result + (avatar?.hashCode() ?: 0)
             result = 31 * result + (avatarBytes?.contentHashCode() ?: 0)
             result = 31 * result + (header?.hashCode() ?: 0)
             result = 31 * result + (headerBytes?.contentHashCode() ?: 0)
-            result = 31 * result + bot.hashCode()
-            result = 31 * result + locked.hashCode()
-            result = 31 * result + discoverable.hashCode()
-            result = 31 * result + hideCollections.hashCode()
-            result = 31 * result + noIndex.hashCode()
+            result = 31 * result + (quotePolicy?.hashCode() ?: 0)
             result = 31 * result + fields.hashCode()
-            result = 31 * result + canAddFields.hashCode()
             result = 31 * result + availableEmojis.hashCode()
             return result
         }
+
     }
 
     sealed interface Effect {

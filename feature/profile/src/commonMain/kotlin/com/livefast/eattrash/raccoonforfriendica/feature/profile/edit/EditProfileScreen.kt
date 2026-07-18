@@ -63,6 +63,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EditFieldItem
@@ -70,6 +72,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.InsertEmo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsImageInfo
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -79,6 +82,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWit
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -106,6 +110,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
     var hasDisplayNameFocus by remember { mutableStateOf(false) }
     var hasBioFocus by remember { mutableStateOf(false) }
     var insertEmojiModalOpen by remember { mutableStateOf(false) }
+    var quotePolicyBottomSheetOpen by remember { mutableStateOf(false) }
     val navState = rememberNavigationEventState(NavigationEventInfo.None)
 
     fun goBackToTop() {
@@ -484,6 +489,17 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     },
                 )
             }
+            if (uiState.canSetQuotePolicy) {
+                item {
+                    SettingsRow(
+                        title = LocalStrings.current.editProfileItemQuotePolicy,
+                        value = uiState.quotePolicy?.toReadableName().orEmpty(),
+                        onTap = {
+                            quotePolicyBottomSheetOpen = true
+                        }
+                    )
+                }
+            }
 
             item {
                 Spacer(modifier = Modifier.height(Spacing.xxxl))
@@ -545,6 +561,28 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             },
         )
     }
+
+    if (quotePolicyBottomSheetOpen) {
+        val policies = listOf(QuotePolicy.Public, QuotePolicy.Followers, QuotePolicy.Nobody)
+        val items = policies.map { CustomModalBottomSheetItem(label = it.toReadableName()) }
+        CustomModalBottomSheet(
+            title = LocalStrings.current.editProfileItemQuotePolicy,
+            items = items,
+            onSelect = { idx ->
+                quotePolicyBottomSheetOpen = false
+                if (idx != null) {
+                    model.reduce(EditProfileMviModel.Intent.ChangeQuotePolicy(policies[idx]))
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun QuotePolicy.toReadableName(): String = when (this) {
+    QuotePolicy.Followers -> LocalStrings.current.quotePolicyFollowers
+    QuotePolicy.Nobody -> LocalStrings.current.quotePolicyNobody
+    QuotePolicy.Public -> LocalStrings.current.quotePolicyPublic
 }
 
 private sealed interface CustomOptions : OptionId.Custom {

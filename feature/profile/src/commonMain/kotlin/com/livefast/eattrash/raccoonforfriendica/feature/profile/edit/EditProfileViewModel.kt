@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDeleg
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
@@ -30,6 +31,7 @@ class EditProfileViewModel(
     private val emojiRepository: EmojiRepository,
     private val settingsRepository: SettingsRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,
+    private val supportedFeatureRepository: SupportedFeatureRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
     MviModelDelegate<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>
@@ -37,24 +39,20 @@ class EditProfileViewModel(
     EditProfileMviModel {
     init {
         viewModelScope.launch {
-            imageAutoloadObserver.enabled
-                .onEach { autoloadImages ->
-                    updateState {
-                        it.copy(
-                            autoloadImages = autoloadImages,
-                        )
-                    }
-                }.launchIn(this)
+            imageAutoloadObserver.enabled.onEach { autoloadImages ->
+                updateState { it.copy(autoloadImages = autoloadImages) }
+            }.launchIn(this)
 
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
-                        it.copy(
-                            hideNavigationBarWhileScrolling =
-                            settings?.hideNavigationBarWhileScrolling ?: true,
-                        )
+                        it.copy(hideNavigationBarWhileScrolling = settings?.hideNavigationBarWhileScrolling ?: true)
                     }
                 }.launchIn(this)
+
+            supportedFeatureRepository.features.onEach { features ->
+                updateState { it.copy(canSetQuotePolicy = features.supportsQuotePolicies) }
+            }.launchIn(this)
 
             userRepository.getCurrent(refresh = true)?.also { currentUser ->
                 updateState {
@@ -67,6 +65,7 @@ class EditProfileViewModel(
                         locked = currentUser.locked,
                         noIndex = currentUser.noIndex,
                         discoverable = currentUser.discoverable,
+                        quotePolicy = currentUser.quotePolicy,
                         fields = currentUser.fields,
                         canAddFields = currentUser.fields.size < 4,
                     )
@@ -170,6 +169,15 @@ class EditProfileViewModel(
                     val url = "https://$node"
                     emitEffect(EditProfileMviModel.Effect.OpenUrl(url))
                 }
+
+            is EditProfileMviModel.Intent.ChangeQuotePolicy -> viewModelScope.launch {
+                updateState {
+                    it.copy(
+                        quotePolicy = intent.value,
+                        hasUnsavedChanges = true,
+                    )
+                }
+            }
 
             EditProfileMviModel.Intent.Submit -> submit()
         }
@@ -325,6 +333,7 @@ class EditProfileViewModel(
                     indexable = !currentState.noIndex,
                     hideCollections = currentState.hideCollections,
                     discoverable = currentState.discoverable,
+                    quotePolicy = currentState.quotePolicy,
                     fields = fieldMap,
                     avatar = currentState.avatarBytes,
                     header = currentState.headerBytes,

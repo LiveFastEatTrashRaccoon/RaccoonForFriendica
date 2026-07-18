@@ -22,6 +22,7 @@ val profileModule =
                 emojiRepository = instance(),
                 settingsRepository = instance(),
                 apiConfigurationRepository = instance(),
+                supportedFeatureRepository = instance(),
                 imageAutoloadObserver = instance(),
             )
         }
