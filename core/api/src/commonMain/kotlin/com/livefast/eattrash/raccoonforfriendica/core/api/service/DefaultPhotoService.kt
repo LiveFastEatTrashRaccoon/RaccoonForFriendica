@@ -5,12 +5,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 internal class DefaultPhotoService(private val baseUrl: String, private val client: HttpClient) : PhotoService {
+    override suspend fun getAll(): List<FriendicaPhoto> = client.get("$baseUrl/friendica/photos/list").body()
+
     override suspend fun create(content: MultiPartFormDataContent): FriendicaPhoto =
         client.post("$baseUrl/friendica/photo/create") {
             contentType(ContentType.Application.Json)

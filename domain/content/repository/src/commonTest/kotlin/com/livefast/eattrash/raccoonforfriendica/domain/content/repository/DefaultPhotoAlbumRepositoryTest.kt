@@ -2,9 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaApiResult
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhotoAlbum
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoAlbumService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.PhotoService
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -12,29 +13,42 @@ import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.matcher.matches
 import dev.mokkery.mock
+import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class DefaultPhotoAlbumRepositoryTest {
+    private val photoService = mock<PhotoService>()
     private val photoAlbumService = mock<PhotoAlbumService>()
     private val serviceProvider =
-        mock<ServiceProvider> { every { photoAlbum } returns photoAlbumService }
+        mock<ServiceProvider> {
+            every { photo } returns photoService
+            every { photoAlbum } returns photoAlbumService
+        }
     private val sut = DefaultPhotoAlbumRepository(provider = serviceProvider)
 
     @Test
     fun `when getAll then result is as expected`() = runTest {
-        val list = listOf(FriendicaPhotoAlbum(name = "fake-album"))
-        everySuspend { photoAlbumService.getAll() } returns list
+        val list = listOf(
+            FriendicaPhoto(id = "id-1", album = "fake-album-1"),
+            FriendicaPhoto(id = "id-2", album = "fake-album-1"),
+            FriendicaPhoto(id = "id-3", album = "fake-album-2"),
+        )
+        everySuspend { photoService.getAll() } returns list
 
         val res = sut.getAll()
 
-        assertEquals(list.map { it.toModel() }, res)
+        assertNotNull(res)
+        assertEquals(2, res.size)
+        assertEquals(MediaAlbumModel(name = "fake-album-1", items = 2), res[0])
+        assertEquals(MediaAlbumModel(name = "fake-album-2", items = 1), res[1])
         verifySuspend {
-            photoAlbumService.getAll()
+            photoService.getAll()
         }
     }
 
@@ -93,27 +107,41 @@ class DefaultPhotoAlbumRepositoryTest {
     }
 
     @Test
-    fun `when getPhotos then result is as expected`() = runTest {
-        val list = listOf(FriendicaPhoto(id = "0"))
+    fun `given first page when getPhotos then result is as expected`() = runTest {
+        val list = listOf(
+            FriendicaPhoto(id = "id-1", album = "fake-album-1"),
+            FriendicaPhoto(id = "id-2", album = "fake-album-1"),
+            FriendicaPhoto(id = "id-3", album = "fake-album-2"),
+        )
         everySuspend {
-            photoAlbumService.getPhotos(
-                album = any(),
-                maxId = any(),
-                latestFirst = any(),
-                limit = any(),
-            )
+            photoService.getAll()
         } returns list
 
-        val res = sut.getPhotos(album = "fake-album", pageCursor = null)
+        val res = sut.getPhotos(album = "fake-album-1", pageCursor = null)
 
-        assertEquals(list.map { it.toModel() }, res)
+        assertEquals(list.subList(0, 2).map { it.toModel() }, res)
         verifySuspend {
-            photoAlbumService.getPhotos(
-                album = "fake-album",
-                maxId = null,
-                latestFirst = false,
-                limit = 20,
-            )
+            photoService.getAll()
+        }
+    }
+
+    @Test
+    fun `given other page when getPhotos then result is as expected`() = runTest {
+        val list = listOf(
+            FriendicaPhoto(id = "id-1", album = "fake-album-1"),
+            FriendicaPhoto(id = "id-2", album = "fake-album-1"),
+            FriendicaPhoto(id = "id-3", album = "fake-album-2"),
+        )
+        everySuspend {
+            photoService.getAll()
+        } returns list
+
+        val res = sut.getPhotos(album = "fake-album-1", pageCursor = "id-2")
+
+        assertNotNull(res)
+        assertEquals(0, res.size)
+        verifySuspend(VerifyMode.not) {
+            photoService.getAll()
         }
     }
 }
