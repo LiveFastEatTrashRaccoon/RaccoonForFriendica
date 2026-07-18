@@ -132,6 +132,7 @@ class ComposerViewModel(
                             galleryFeatureSupported = features.supportsPhotoGallery,
                             pollFeatureSupported = features.supportsPolls,
                             inlineImagesSupported = features.supportsInlineImages,
+                            quotePoliciesSupported = features.supportsQuotePolicies,
                             availableVisibilities =
                             buildList {
                                 this += Visibility.Public
@@ -177,7 +178,7 @@ class ComposerViewModel(
 
                     else -> currentSettings?.defaultPostVisibility?.toVisibility()
                 } ?: Visibility.Unlisted
-            val quoted = quotedId?.let { e -> entryCache.get(e) }
+            val quoted = quotedId?.let { e -> entryCache.get(e) ?: TimelineEntryModel(id = e, content = "") }
 
             updateState {
                 it.copy(

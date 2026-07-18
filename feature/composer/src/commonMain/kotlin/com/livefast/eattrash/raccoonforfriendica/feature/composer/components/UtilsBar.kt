@@ -20,7 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.PublicationTyp
 internal fun UtilsBar(
     publicationType: PublicationType,
     modifier: Modifier = Modifier,
-    hasPoll: Boolean = false,
+    attachmentsEnabled: Boolean = false,
     supportsRichEditing: Boolean = true,
     supportsInlineImages: Boolean = false,
     onClickLink: (() -> Unit)? = null,
@@ -43,7 +43,7 @@ internal fun UtilsBar(
         ) {
             // add picture (from device gallery) button
             IconButton(
-                enabled = !hasPoll,
+                enabled = attachmentsEnabled,
                 onClick = {
                     onClickAttachment?.invoke()
                 },

@@ -167,6 +167,7 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
         val titleFeatureSupported: Boolean = false,
         val galleryFeatureSupported: Boolean = false,
         val pollFeatureSupported: Boolean = false,
+        val quotePoliciesSupported: Boolean = false,
         val galleryCurrentAlbum: String? = null,
         val galleryAlbums: List<MediaAlbumModel> = emptyList(),
         val galleryCanFetchMore: Boolean = true,

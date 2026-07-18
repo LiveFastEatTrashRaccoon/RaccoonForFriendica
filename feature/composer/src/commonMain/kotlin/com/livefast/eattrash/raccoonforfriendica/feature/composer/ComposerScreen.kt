@@ -387,7 +387,10 @@ fun ComposerScreen(
                                     )
                             }
 
-                            if (uiState.pollFeatureSupported && uiState.attachments.isEmpty()) {
+                            if (uiState.pollFeatureSupported &&
+                                uiState.attachments.isEmpty() &&
+                                uiState.quoted == null
+                            ) {
                                 this +=
                                     CustomOptions.TogglePoll.toOption(
                                         label =
@@ -555,11 +558,15 @@ fun ComposerScreen(
                         },
                     )
                 }
+                val attachmentsAllowed = listOf(
+                    (!uiState.pollFeatureSupported || uiState.poll == null),
+                    (!uiState.quotePoliciesSupported || uiState.quoted == null),
+                ).all { it }
                 UtilsBar(
                     modifier = Modifier.fillMaxWidth(),
                     supportsRichEditing = uiState.supportsRichEditing,
                     supportsInlineImages = uiState.inlineImagesSupported,
-                    hasPoll = uiState.poll != null,
+                    attachmentsEnabled = attachmentsAllowed,
                     publicationType = uiState.publicationType,
                     onClickLink = {
                         linkDialogOpen = true
