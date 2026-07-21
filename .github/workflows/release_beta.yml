@@ -44,27 +44,12 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: ./gradlew :androidApp:assembleRelease --stacktrace
 
-      - name: Build Debian package
-        run: ./gradlew :desktopApp:packageDeb --stacktrace
-
-      - name: Repackage Debian distributable
-        run: |
-          tmpDir=distribution/tmp
-          for f in desktopApp/build/compose/binaries/main/deb/*.deb; do filename=$f; done
-          dpkg -x $filename $tmpDir
-          mv $filename $filename.bak
-          cp -r distribution/deb/usr $tmpDir
-          cp -r distribution/deb/DEBIAN $tmpDir
-          dpkg -b $tmpDir $filename
-          rm -r $tmpDir
-
       - name: Upload release build to artifacts
         uses: actions/upload-artifact@v7
         with:
           name: release-artifacts
           path: |
             androidApp/build/outputs/apk/release/*.apk
-            desktopApp/build/compose/binaries/main/deb/*.deb
 
       - name: Create Github release
         uses: softprops/action-gh-release@v3
@@ -73,4 +58,3 @@ jobs:
           prerelease: true
           files: |
             androidApp/build/outputs/apk/release/*.apk
-            desktopApp/build/compose/binaries/main/deb/*.deb
