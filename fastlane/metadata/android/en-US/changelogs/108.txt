@@ -1,0 +1,9 @@
+- feat: quote posts on Mastodon, set quote policy, see quote notifications and revoke quotes
+- fix: restore search bar focusability
+- fix: improve stability while scrolling posts
+- fix: avoid duplicate inline images/attachments
+- fix: access gallery on Friendica
+- enh: improve reply loading logic
+- refactor: migrate to Nav3 and improve support for tablets and foldables
+- chore: update l10n
+- chore: update dependencies
