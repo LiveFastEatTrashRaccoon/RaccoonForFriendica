@@ -493,4 +493,31 @@
     <string name="unsaved_draft_title">Borrador sin guardar</string>
     <string name="button_discard">Descartar</string>
     <string name="action_open_in_browser">Abrir en navegador</string>
+    <string name="action_back_to_home_instance">Volver a la instancia principal</string>
+    <string name="action_select_foreign_instance">Seleccionar instancia externa</string>
+    <string name="comment_bar_theme_blue">Beluga brillante</string>
+    <string name="comment_bar_theme_green">Geco juicioso</string>
+    <string name="comment_bar_theme_rainbow">Boa bribón</string>
+    <string name="comment_bar_theme_red">Gamba gigantesca</string>
+    <string name="edit_profile_item_quote_policy">Política de cita</string>
+    <string name="notification_type_quote">ha citado tu post</string>
+    <string name="notification_type_quote_name">Cita</string>
+    <string name="notification_type_quoted_update">ha actualizado un post que has citado</string>
+    <string name="notification_type_quoted_update_name">Actualización cita</string>
+    <string name="quote_policy_followers">Seguidores</string>
+    <string name="quote_policy_nobody">Nadie</string>
+    <string name="quote_policy_public">Cualquiera</string>
+    <string name="settings_item_comment_bar_theme">Tema de la barra de respuestas</string>
+    <string name="settings_item_translation_provider">Proveedor de traducción</string>
+    <string name="translation_provider_config_dialog_title">Añadir configuración LibreTranslate</string>
+    <string name="translation_provider_config_field_api_key">Clave de API</string>
+    <string name="translation_provider_config_field_server_url">URL del servidor</string>
+    <string name="action_manage_circles">Gestionar círculos</string>
+    <string name="action_add">Añadir</string>
+    <string name="action_remove">Eliminar</string>
+    <plurals name="extended_social_info_quotes">
+        <item quantity="one">%1$d cita</item>
+        <item quantity="many">%1$d de citas</item>
+        <item quantity="other">%1$d citas</item>
+    </plurals>
 </resources>

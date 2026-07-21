@@ -516,4 +516,8 @@
         <item quantity="other">%1$d citazioni</item>
     </plurals>
     <string name="notification_type_quoted_update_name">Aggiornamento citazione</string>
+    <string name="edit_profile_item_quote_policy">Politica di citazione</string>
+    <string name="quote_policy_followers">Seguaci</string>
+    <string name="quote_policy_nobody">Nessuno</string>
+    <string name="quote_policy_public">Tutti</string>
 </resources>
