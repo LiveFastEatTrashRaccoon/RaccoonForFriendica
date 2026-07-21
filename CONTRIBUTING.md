@@ -56,16 +56,13 @@ In order to create version `α.β.γ-betaδ`
 
 - [ ] checkout the `master` branch
 - [ ] increment `buildNumber` (ε) and `versionName` (α.β.γ-betaδ) in `gradle.properties`
-- [ ] increment `Version:` in `distribution/deb/DEBIAN/control`
 - [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
   changes you want to display on the stores (remember: 500-character limit)
-- [ ] copy the content of `ε.txt` in `distribution/deb/DEBIAN/changelog` for dpkg
 - [ ] add everything to stage and create a commit with the message "version α.β.γ-betaδ"
 - [ ] tag the commit with the label "α.β.γ-betaδ"
 - [ ] push both the commit and tag to `origin` and wait for the workflows to finish
 - [ ] create a signed AAB and upload it to Google Play in the `beta` track (open tests) using the
   content of `ε.txt` as the changelog
-- [ ] (optional) create an announcement in the Friendica group
 
 #### Stable releases
 
