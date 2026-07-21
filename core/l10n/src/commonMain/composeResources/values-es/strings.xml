@@ -502,7 +502,7 @@
     <string name="edit_profile_item_quote_policy">Política de cita</string>
     <string name="notification_type_quote">ha citado tu post</string>
     <string name="notification_type_quote_name">Cita</string>
-    <string name="notification_type_quoted_update">ha actualizado un post qué has citado</string>
+    <string name="notification_type_quoted_update">ha actualizado un post que has citado</string>
     <string name="notification_type_quoted_update_name">Actualización cita</string>
     <string name="quote_policy_followers">Seguidores</string>
     <string name="quote_policy_nobody">Nadie</string>
