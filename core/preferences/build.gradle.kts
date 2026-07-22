@@ -14,7 +14,8 @@ kotlin {
         }
         commonMain {
             dependencies {
-                implementation(libs.kodein)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.kotlinx.coroutines)
             }

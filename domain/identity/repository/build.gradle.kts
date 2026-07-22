@@ -10,7 +10,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.kodein)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(libs.ktor.client.core)
 
                 implementation(projects.core.api)

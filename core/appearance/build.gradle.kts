@@ -15,7 +15,8 @@ kotlin {
         }
         commonMain {
             dependencies {
-                implementation(libs.kodein)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(libs.materialKolor)
 
                 implementation(projects.core.di)

@@ -10,7 +10,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.compose.components.resources)
-                implementation(libs.kodein)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
 
                 implementation(projects.core.di)
             }

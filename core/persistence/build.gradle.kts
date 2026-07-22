@@ -9,7 +9,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.kodein)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(libs.kotlinx.coroutines)
                 implementation(libs.room.sqlite)
                 implementation(libs.room.runtime)

@@ -29,7 +29,7 @@ compose-m3-wsc = "1.9.0"
 connectivity = "2.5.0"
 espresso = "3.7.0"
 junit = "4.13.2"
-kodein = "7.33.0"
+koin = "4.2.2"
 kotlin = "2.4.10"
 kotlinpoet = "2.3.0"
 kotlinx-coroutines = "1.11.0"
@@ -100,8 +100,12 @@ espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "esp
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 junit = { module = "junit:junit", version.ref = "junit" }
 
-kodein = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
-kodein-compose = { module = "org.kodein.di:kodein-di-framework-compose", version.ref = "kodein" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-test = { module = "io.insert-koin:koin-test" }
 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }

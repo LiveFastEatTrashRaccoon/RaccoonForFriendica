@@ -8,10 +8,11 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(libs.coil.compose)
                 implementation(libs.compose.colorpicker)
                 implementation(libs.compose.multiplatform.media.player)
-                implementation(libs.kodein)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.di)
