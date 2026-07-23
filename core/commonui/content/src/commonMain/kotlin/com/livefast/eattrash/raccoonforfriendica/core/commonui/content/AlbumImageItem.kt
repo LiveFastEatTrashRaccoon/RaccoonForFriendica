@@ -49,8 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -263,7 +262,7 @@ private class AlbumImageItemPreviewParameterProvider : PreviewParameterProvider<
 private fun AlbumImageItemPreview(
     @PreviewParameter(AlbumImageItemPreviewParameterProvider::class) parameter: AlbumImageItemPreviewParameter,
 ) {
-    RootDI.SetupPreview()
+    setupPreview()
     AlbumImageItem(
         modifier = Modifier.height(300.dp),
         attachment = parameter.attachment,

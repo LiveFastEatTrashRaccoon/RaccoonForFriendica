@@ -1,5 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
-import org.kodein.di.DI
+import org.koin.core.module.Module
 
-internal expect val nativeShareModule: DI.Module
+internal expect val nativeShareModule: Module

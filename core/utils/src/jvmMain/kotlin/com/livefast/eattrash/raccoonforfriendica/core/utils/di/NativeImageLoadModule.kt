@@ -1,13 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import coil3.PlatformContext
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindSingleton
-import org.kodein.di.singleton
+import org.koin.dsl.module
 
-internal actual val nativeImageLoadModule = DI.Module("NativeImageLoadModule") {
-    bindSingleton<PlatformContext> {
+internal actual val nativeImageLoadModule = module {
+    single<PlatformContext> {
         PlatformContext.INSTANCE
     }
 }

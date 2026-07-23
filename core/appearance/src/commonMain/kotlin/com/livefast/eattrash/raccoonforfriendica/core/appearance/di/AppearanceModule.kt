@@ -4,18 +4,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.Defa
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.DefaultThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeColorRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindSingleton
-import org.kodein.di.singleton
+import org.koin.dsl.module
 
-val appearanceModule =
-    DI.Module("AppearanceModule") {
-        import(nativeAppearanceModule)
-        bindSingleton<ThemeColorRepository> {
-            DefaultThemeColorRepository()
-        }
-        bindSingleton<ThemeRepository> {
-            DefaultThemeRepository()
-        }
+val appearanceModule = module {
+    includes(nativeAppearanceModule)
+    single<ThemeColorRepository> {
+        DefaultThemeColorRepository()
     }
+    single<ThemeRepository> {
+        DefaultThemeRepository()
+    }
+}

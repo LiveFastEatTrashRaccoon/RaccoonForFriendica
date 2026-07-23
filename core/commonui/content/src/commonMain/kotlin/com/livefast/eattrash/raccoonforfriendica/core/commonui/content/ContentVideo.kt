@@ -23,8 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -94,7 +93,7 @@ fun ContentVideo(
 @Composable
 @Preview
 private fun ContentVideoPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
 
     ContentVideo(
         url = "fake-url",

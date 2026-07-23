@@ -5,21 +5,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.settings.Defau
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.settings.SettingsWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.DefaultTemporaryKeyStore
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val preferencesModule =
-    DI.Module("PreferencesModule") {
-        import(nativePreferencesModule)
+val preferencesModule = module {
+    includes(nativePreferencesModule)
 
-        bindSingleton<SettingsWrapper> {
-            val provider = instance<SettingsProvider>()
-            DefaultSettingsWrapper(settings = provider.provide())
-        }
-        bindSingleton<TemporaryKeyStore> {
-            DefaultTemporaryKeyStore(
-                settings = instance(),
-            )
-        }
+    single<SettingsWrapper> {
+        val provider = get<SettingsProvider>()
+        DefaultSettingsWrapper(settings = provider.provide())
     }
+    single<TemporaryKeyStore> {
+        DefaultTemporaryKeyStore(
+            settings = get(),
+        )
+    }
+}

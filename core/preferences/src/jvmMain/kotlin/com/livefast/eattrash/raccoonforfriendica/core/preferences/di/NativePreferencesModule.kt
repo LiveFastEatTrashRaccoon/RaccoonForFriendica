@@ -6,22 +6,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.provider.Defau
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.provider.DefaultSettingsProvider
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.provider.PreferencesProvider
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.provider.SettingsProvider
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-internal actual val nativePreferencesModule =
-    DI.Module("NativePreferencesModule") {
-        bindSingleton<PreferencesProvider> {
-            DefaultPreferencesProvider()
-        }
-        bindSingleton<EncryptionHelper> {
-            DefaultEncryptionHelper()
-        }
-        bindSingleton<SettingsProvider> {
-            DefaultSettingsProvider(
-                provider = instance(),
-                encryptionHelper = instance(),
-            )
-        }
+internal actual val nativePreferencesModule = module {
+    single<PreferencesProvider> {
+        DefaultPreferencesProvider()
     }
+    single<EncryptionHelper> {
+        DefaultEncryptionHelper()
+    }
+    single<SettingsProvider> {
+        DefaultSettingsProvider(
+            provider = get(),
+            encryptionHelper = get(),
+        )
+    }
+}

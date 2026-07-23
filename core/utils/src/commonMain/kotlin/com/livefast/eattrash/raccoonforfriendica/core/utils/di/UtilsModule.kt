@@ -11,49 +11,46 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.ConnectivityProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.DefaultNetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val utilsModule =
-    DI.Module("UtilsModule") {
-        importAll(
-            nativeAppIconModule,
-            nativeAppInfoModule,
-            nativeCalendarModule,
-            nativeClipboardModule,
-            nativeConnectivityModule,
-            nativeDebugModule,
-            nativeFileSystemModule,
-            nativeGalleryModule,
-            nativeImageLoadModule,
-            nativeShareModule,
-            nativeOpenUrlModule,
-            nativeVibrateModule,
-        )
+val utilsModule = module {
+    includes(
+        nativeAppIconModule,
+        nativeAppInfoModule,
+        nativeCalendarModule,
+        nativeClipboardModule,
+        nativeConnectivityModule,
+        nativeDebugModule,
+        nativeFileSystemModule,
+        nativeGalleryModule,
+        nativeImageLoadModule,
+        nativeShareModule,
+        nativeOpenUrlModule,
+        nativeVibrateModule,
+    )
 
-        bindSingleton<BlurHashDecoder> {
-            DefaultBlurHashDecoder()
-        }
-        bindSingleton<BlurHashRepository> {
-            DefaultBlurHashRepository(
-                decoder = instance(),
-            )
-        }
-        bindSingleton<ImagePreloadManager> {
-            DefaultImagePreloadManager(
-                context = instance(),
-                imageLoaderProvider = instance(),
-            )
-        }
-        bindSingleton<ImageLoaderProvider> {
-            DefaultImageLoaderProvider(
-                context = instance(),
-                fileSystemManager = instance(),
-            )
-        }
-        bindSingleton<NetworkStateObserver> {
-            val connectivityProvider = instance<ConnectivityProvider>()
-            DefaultNetworkStateObserver(connectivityProvider.provide())
-        }
+    single<BlurHashDecoder> {
+        DefaultBlurHashDecoder()
     }
+    single<BlurHashRepository> {
+        DefaultBlurHashRepository(
+            decoder = get(),
+        )
+    }
+    single<ImagePreloadManager> {
+        DefaultImagePreloadManager(
+            context = get(),
+            imageLoaderProvider = get(),
+        )
+    }
+    single<ImageLoaderProvider> {
+        DefaultImageLoaderProvider(
+            context = get(),
+            fileSystemManager = get(),
+        )
+    }
+    single<NetworkStateObserver> {
+        val connectivityProvider = get<ConnectivityProvider>()
+        DefaultNetworkStateObserver(connectivityProvider.provide())
+    }
+}

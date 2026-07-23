@@ -37,8 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -172,7 +171,7 @@ private fun CustomModalBottomSheetContent(
 @Composable
 @Preview
 private fun CustomModalBottomSheetPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     Box(
         modifier =
         Modifier

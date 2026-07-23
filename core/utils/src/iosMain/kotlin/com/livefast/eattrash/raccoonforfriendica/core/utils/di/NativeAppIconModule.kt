@@ -2,14 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.DefaultAppIconManager
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindSingleton
-import org.kodein.di.singleton
+import org.koin.dsl.module
 
-internal actual val nativeAppIconModule =
-    DI.Module("NativeAppIconModule") {
-        bindSingleton<AppIconManager> {
-            DefaultAppIconManager()
-        }
+internal actual val nativeAppIconModule = module {
+    single<AppIconManager> {
+        DefaultAppIconManager()
     }
+}

@@ -2,9 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import okio.Path
-import org.kodein.di.instance
 
 interface FileSystemManager {
     val isSupported: Boolean
@@ -26,10 +25,7 @@ interface FileSystemManager {
     fun getTempDir(): Path
 }
 
-fun getFileSystemManager(): FileSystemManager {
-    val res by RootDI.di.instance<FileSystemManager>()
-    return res
-}
+fun getFileSystemManager(): FileSystemManager = getByInjection(FileSystemManager::class)
 
 @Composable
 fun rememberFileSystemManager() = remember { getFileSystemManager() }

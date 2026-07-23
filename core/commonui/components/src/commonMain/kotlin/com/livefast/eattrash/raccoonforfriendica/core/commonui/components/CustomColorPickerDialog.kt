@@ -38,8 +38,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -218,7 +217,7 @@ private fun CustomColorPickerDialogContent(
 @Composable
 @Preview
 private fun CustomColorPickerDialogContentPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     CustomColorPickerDialogContent(
         initialValue = Color.Red,
         selectedValue = Color.Red,

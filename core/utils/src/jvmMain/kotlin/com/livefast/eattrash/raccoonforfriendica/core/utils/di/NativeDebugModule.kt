@@ -2,15 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.DefaultCrashReportManager
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import org.koin.dsl.module
 
-internal actual val nativeDebugModule =
-    DI.Module("NativeDebugModule") {
-        bindSingleton<CrashReportManager> {
-            DefaultCrashReportManager(keyStore = instance())
-        }
+internal actual val nativeDebugModule = module {
+    single<CrashReportManager> {
+        DefaultCrashReportManager(keyStore = get())
     }
+}

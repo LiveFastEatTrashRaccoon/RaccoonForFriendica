@@ -6,33 +6,30 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDa
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLimitDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DatabaseProvider
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DefaultDatabaseProvider
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val persistenceModule =
-    DI.Module("PersistenceModule") {
-        import(nativePersistenceModule)
+val persistenceModule = module {
+    includes(nativePersistenceModule)
 
-        bindSingleton<DatabaseProvider> {
-            DefaultDatabaseProvider(
-                builderProvider = instance(),
-            )
-        }
-        bindSingleton<AccountDao> {
-            val provider = instance<DatabaseProvider>()
-            provider.provideDatabase().getAccountDao()
-        }
-        bindSingleton<SettingsDao> {
-            val provider = instance<DatabaseProvider>()
-            provider.provideDatabase().getSettingsDao()
-        }
-        bindSingleton<DraftDao> {
-            val provider = instance<DatabaseProvider>()
-            provider.provideDatabase().getDraftDao()
-        }
-        bindSingleton<UserRateLimitDao> {
-            val provider = instance<DatabaseProvider>()
-            provider.provideDatabase().getUserRateLimitDao()
-        }
+    single<DatabaseProvider> {
+        DefaultDatabaseProvider(
+            builderProvider = get(),
+        )
     }
+    single<AccountDao> {
+        val provider = get<DatabaseProvider>()
+        provider.provideDatabase().getAccountDao()
+    }
+    single<SettingsDao> {
+        val provider = get<DatabaseProvider>()
+        provider.provideDatabase().getSettingsDao()
+    }
+    single<DraftDao> {
+        val provider = get<DatabaseProvider>()
+        provider.provideDatabase().getDraftDao()
+    }
+    single<UserRateLimitDao> {
+        val provider = get<DatabaseProvider>()
+        provider.provideDatabase().getUserRateLimitDao()
+    }
+}

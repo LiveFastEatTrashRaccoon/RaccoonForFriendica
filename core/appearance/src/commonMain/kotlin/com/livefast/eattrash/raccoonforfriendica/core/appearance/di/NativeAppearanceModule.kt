@@ -1,5 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.di
 
-import org.kodein.di.DI
+import org.koin.core.module.Module
 
-internal expect val nativeAppearanceModule: DI.Module
+internal expect val nativeAppearanceModule: Module
