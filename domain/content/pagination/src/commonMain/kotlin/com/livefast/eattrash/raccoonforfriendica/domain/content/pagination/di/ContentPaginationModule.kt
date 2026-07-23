@@ -24,104 +24,100 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
-import org.kodein.di.DI
-import org.kodein.di.bindProvider
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val contentPaginationModule =
-    DI.Module("ContentPaginationModule") {
-        bindProvider<AlbumPhotoPaginationManager> {
-            DefaultAlbumPhotoPaginationManager(
-                albumRepository = instance(),
-            )
-        }
-        bindProvider<DirectMessagesPaginationManager> {
-            DefaultDirectMessagesPaginationManager(
-                directMessageRepository = instance(),
-                emojiHelper = instance(),
-            )
-        }
-        bindProvider<EventPaginationManager> {
-            DefaultEventPaginationManager(
-                eventRepository = instance(),
-            )
-        }
-        bindProvider<ExplorePaginationManager> {
-            DefaultExplorePaginationManager(
-                trendingRepository = instance(),
-                userRepository = instance(),
-                emojiHelper = instance(),
-                replyHelper = instance(),
-                accountRepository = instance(),
-                stopWordRepository = instance(),
-                notificationCenter = instance(),
-            )
-        }
-        bindProvider<FollowedHashtagsPaginationManager> {
-            DefaultFollowedHashtagsPaginationManager(
-                tagRepository = instance(),
-            )
-        }
-        bindProvider<FollowRequestPaginationManager> {
-            DefaultFollowRequestPaginationManager(
-                userRepository = instance(),
-                emojiHelper = instance(),
-            )
-        }
-        bindProvider<NotificationsPaginationManager> {
-            DefaultNotificationsPaginationManager(
-                notificationRepository = instance(),
-                userRepository = instance(),
-                emojiHelper = instance(),
-                replyHelper = instance(),
-            )
-        }
-        bindProvider<SearchPaginationManager> {
-            DefaultSearchPaginationManager(
-                searchRepository = instance(),
-                userRepository = instance(),
-                emojiHelper = instance(),
-                replyHelper = instance(),
-                accountRepository = instance(),
-                stopWordRepository = instance(),
-                notificationCenter = instance(),
-            )
-        }
-        bindProvider<TimelinePaginationManager> {
-            DefaultTimelinePaginationManager(
-                timelineRepository = instance(),
-                timelineEntryRepository = instance(),
-                accountRepository = instance(),
-                userRateLimitRepository = instance(),
-                emojiHelper = instance(),
-                replyHelper = instance(),
-                stopWordRepository = instance(),
-                followedHashtagCache = instance(),
-                notificationCenter = instance(),
-            )
-        }
-        bindProvider<UnpublishedPaginationManager> {
-            DefaultUnpublishedPaginationManager(
-                scheduledEntryRepository = instance(),
-                draftRepository = instance(),
-                notificationCenter = instance(),
-            )
-        }
-        bindProvider<UserPaginationManager> {
-            DefaultUserPaginationManager(
-                userRepository = instance(),
-                timelineEntryRepository = instance(),
-                circlesRepository = instance(),
-                accountRepository = instance(),
-                userRateLimitRepository = instance(),
-                emojiHelper = instance(),
-                notificationCenter = instance(),
-            )
-        }
-        bindSingleton<TimelineNavigationManager> {
-            DefaultTimelineNavigationManager(
-                paginationManager = instance(),
-            )
-        }
+val contentPaginationModule = module {
+    factory<AlbumPhotoPaginationManager> {
+        DefaultAlbumPhotoPaginationManager(
+            albumRepository = get(),
+        )
     }
+    factory<DirectMessagesPaginationManager> {
+        DefaultDirectMessagesPaginationManager(
+            directMessageRepository = get(),
+            emojiHelper = get(),
+        )
+    }
+    factory<EventPaginationManager> {
+        DefaultEventPaginationManager(
+            eventRepository = get(),
+        )
+    }
+    factory<ExplorePaginationManager> {
+        DefaultExplorePaginationManager(
+            trendingRepository = get(),
+            userRepository = get(),
+            emojiHelper = get(),
+            replyHelper = get(),
+            accountRepository = get(),
+            stopWordRepository = get(),
+            notificationCenter = get(),
+        )
+    }
+    factory<FollowedHashtagsPaginationManager> {
+        DefaultFollowedHashtagsPaginationManager(
+            tagRepository = get(),
+        )
+    }
+    factory<FollowRequestPaginationManager> {
+        DefaultFollowRequestPaginationManager(
+            userRepository = get(),
+            emojiHelper = get(),
+        )
+    }
+    factory<NotificationsPaginationManager> {
+        DefaultNotificationsPaginationManager(
+            notificationRepository = get(),
+            userRepository = get(),
+            emojiHelper = get(),
+            replyHelper = get(),
+        )
+    }
+    factory<SearchPaginationManager> {
+        DefaultSearchPaginationManager(
+            searchRepository = get(),
+            userRepository = get(),
+            emojiHelper = get(),
+            replyHelper = get(),
+            accountRepository = get(),
+            stopWordRepository = get(),
+            notificationCenter = get(),
+        )
+    }
+    factory<TimelinePaginationManager> {
+        DefaultTimelinePaginationManager(
+            timelineRepository = get(),
+            timelineEntryRepository = get(),
+            accountRepository = get(),
+            userRateLimitRepository = get(),
+            emojiHelper = get(),
+            replyHelper = get(),
+            stopWordRepository = get(),
+            followedHashtagCache = get(),
+            notificationCenter = get(),
+        )
+    }
+    factory<UnpublishedPaginationManager> {
+        DefaultUnpublishedPaginationManager(
+            scheduledEntryRepository = get(),
+            draftRepository = get(),
+            notificationCenter = get(),
+        )
+    }
+    factory<UserPaginationManager> {
+        DefaultUserPaginationManager(
+            userRepository = get(),
+            timelineEntryRepository = get(),
+            circlesRepository = get(),
+            accountRepository = get(),
+            userRateLimitRepository = get(),
+            emojiHelper = get(),
+            notificationCenter = get(),
+        )
+    }
+    single<TimelineNavigationManager> {
+        DefaultTimelineNavigationManager(
+            paginationManager = get(),
+        )
+    }
+}

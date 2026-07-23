@@ -18,57 +18,54 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converte
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.DefaultBBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.DefaultMarkdownConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.MarkdownConverter
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val contentUseCaseModule =
-    DI.Module("ContentUseCaseModule") {
-        bindSingleton<ExportUserListUseCase> {
-            DefaultExportUserListUseCase(
-                userRepository = instance(),
-            )
-        }
-        bindSingleton<ToggleEntryFavoriteUseCase> {
-            DefaultToggleEntryFavoriteUseCase(
-                entryRepository = instance(),
-            )
-        }
-        bindSingleton<ToggleEntryDislikeUseCase> {
-            DefaultToggleEntryDislikeUseCase(
-                entryRepository = instance(),
-            )
-        }
-        bindSingleton<BBCodeConverter> {
-            DefaultBBCodeConverter()
-        }
-        bindSingleton<MarkdownConverter> {
-            DefaultMarkdownConverter()
-        }
-        bindSingleton<StripMarkupUseCase> {
-            DefaultStripMarkupUseCase(
-                bbCodeConverter = instance(),
-                markdownConverter = instance(),
-            )
-        }
-        bindSingleton<GetTranslationUseCase> {
-            DefaultGetTranslationUseCase(
-                supportedFeatureRepository = instance(),
-                defaultRepository = instance(),
-                fallbackRepository = instance(),
-                stripMarkup = instance(),
-                translationProviderConfigStore = instance(),
-            )
-        }
-        bindSingleton<PopulateThreadUseCase> {
-            DefaultPopulateThreadUseCase(
-                timelineEntryRepository = instance(),
-                emojiHelper = instance(),
-            )
-        }
-        bindSingleton<GetInnerUrlUseCase> {
-            DefaultGetInnerUrlUseCase(
-                apiConfigurationRepository = instance(),
-            )
-        }
+val contentUseCaseModule = module {
+    single<ExportUserListUseCase> {
+        DefaultExportUserListUseCase(
+            userRepository = get(),
+        )
     }
+    single<ToggleEntryFavoriteUseCase> {
+        DefaultToggleEntryFavoriteUseCase(
+            entryRepository = get(),
+        )
+    }
+    single<ToggleEntryDislikeUseCase> {
+        DefaultToggleEntryDislikeUseCase(
+            entryRepository = get(),
+        )
+    }
+    single<BBCodeConverter> {
+        DefaultBBCodeConverter()
+    }
+    single<MarkdownConverter> {
+        DefaultMarkdownConverter()
+    }
+    single<StripMarkupUseCase> {
+        DefaultStripMarkupUseCase(
+            bbCodeConverter = get(),
+            markdownConverter = get(),
+        )
+    }
+    single<GetTranslationUseCase> {
+        DefaultGetTranslationUseCase(
+            supportedFeatureRepository = get(),
+            defaultRepository = get(),
+            fallbackRepository = get(),
+            stripMarkup = get(),
+            translationProviderConfigStore = get(),
+        )
+    }
+    single<PopulateThreadUseCase> {
+        DefaultPopulateThreadUseCase(
+            timelineEntryRepository = get(),
+            emojiHelper = get(),
+        )
+    }
+    single<GetInnerUrlUseCase> {
+        DefaultGetInnerUrlUseCase(
+            apiConfigurationRepository = get(),
+        )
+    }
+}

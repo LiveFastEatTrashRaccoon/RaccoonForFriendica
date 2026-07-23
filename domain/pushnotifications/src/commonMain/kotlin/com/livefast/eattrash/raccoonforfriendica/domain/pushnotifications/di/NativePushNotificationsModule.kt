@@ -1,5 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.di
 
-import org.kodein.di.DI
+import org.koin.core.module.Module
 
-internal expect val nativePushNotificationsModule: DI.Module
+internal expect val nativePushNotificationsModule: Module

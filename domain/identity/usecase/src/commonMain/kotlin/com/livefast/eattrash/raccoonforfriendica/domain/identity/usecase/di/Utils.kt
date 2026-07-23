@@ -2,32 +2,22 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
-import org.kodein.di.instance
 
-fun getActiveAccountMonitor(): ActiveAccountMonitor {
-    val res by RootDI.di.instance<ActiveAccountMonitor>()
-    return res
-}
+fun getActiveAccountMonitor(): ActiveAccountMonitor = getByInjection(ActiveAccountMonitor::class)
 
 @Composable
 fun rememberActiveAccountMonitor() = remember { getActiveAccountMonitor() }
 
-fun getSetupAccountUseCase(): SetupAccountUseCase {
-    val res by RootDI.di.instance<SetupAccountUseCase>()
-    return res
-}
+fun getSetupAccountUseCase(): SetupAccountUseCase = getByInjection(SetupAccountUseCase::class)
 
 @Composable
 fun rememberSetupAccountUseCase() = remember { getSetupAccountUseCase() }
 
-fun getEntryActionRepository(): EntryActionRepository {
-    val res by RootDI.di.instance<EntryActionRepository>()
-    return res
-}
+fun getEntryActionRepository(): EntryActionRepository = getByInjection(EntryActionRepository::class)
 
 @Composable
 fun rememberEntryActionRepository() = remember { getEntryActionRepository() }
