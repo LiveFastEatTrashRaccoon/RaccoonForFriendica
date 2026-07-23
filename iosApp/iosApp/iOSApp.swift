@@ -5,8 +5,10 @@ import os
 @main
 struct iOSApp: App {
 
+    private let koin: Koin
+
     init() {
-        DiHelperKt.doInitDi { _ in }
+        koin = DiHelperKt.setupDi()
     }
 
     var body: some Scene {
@@ -39,7 +41,7 @@ struct iOSApp: App {
         }
 
         Task {
-            let authManager = DiHelperKt.provideAuthManager()
+            let authManager = koin.get<AuthManager>()
             do {
                 try await authManager.performTokenExchange(url: url.absoluteString)
             } catch {
