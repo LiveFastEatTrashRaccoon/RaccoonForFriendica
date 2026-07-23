@@ -3,9 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.di
 import com.livefast.eattrash.feature.userdetail.di.userDetailModule
 import com.livefast.eattrash.raccoonforfriendica.core.api.di.apiModule
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.appearanceModule
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.viewModelFactoryModule
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.commonUiComponentsModule
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.l10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.navigationModule
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.notificationsModule
@@ -17,8 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.di.utilsModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.di.contentPaginationModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.contentRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.di.contentUseCaseModule
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.identityRepositoryModule
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.identityUseCaseModule
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di.pullNotificationsModule
@@ -33,8 +29,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.composerMod
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.directMessagesModule
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.di.drawerModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.entryDetailModule
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.di.exploreModule
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.di.entryListModule
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.di.exploreModule
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.di.followRequestsModule
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.di.galleryModule
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di.hashtagModule
@@ -52,82 +48,78 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.timelineMod
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.di.unpublishedModule
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.userListModule
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.searchModule
-import org.kodein.di.DI
+import org.koin.core.KoinApplication
+import org.koin.core.context.startKoin
+import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.includes
 
-fun initDi(additionalBuilder: DI.Builder.() -> Unit = {}) {
-    RootDI.di =
-        DI {
-            additionalBuilder()
+fun setupDi(config: KoinAppDeclaration? = null): KoinApplication = startKoin {
+    includes(config)
 
-            // core modules
-            importAll(
-                apiModule,
-                appearanceModule,
-                commonUiComponentsModule,
-                l10nModule,
-                navigationModule,
-                notificationsModule,
-                persistenceModule,
-                preferencesModule,
-                resourcesModule,
-                translationModule,
-                utilsModule,
-            )
+    // core modules
+    modules(
+        apiModule,
+        appearanceModule,
+        commonUiComponentsModule,
+        l10nModule,
+        navigationModule,
+        notificationsModule,
+        persistenceModule,
+        preferencesModule,
+        resourcesModule,
+        translationModule,
+        utilsModule,
+    )
 
-            // domain
-            importAll(
-                contentPaginationModule,
-                contentRepositoryModule,
-                contentUseCaseModule,
-                identityRepositoryModule,
-                identityUseCaseModule,
-                pullNotificationsModule,
-                pushNotificationsModule,
-                urlHandlerModule,
-            )
+    // domain
+    modules(
+        contentPaginationModule,
+        contentRepositoryModule,
+        contentUseCaseModule,
+        identityRepositoryModule,
+        identityUseCaseModule,
+        pullNotificationsModule,
+        pushNotificationsModule,
+        urlHandlerModule,
+    )
 
-            // features
-            importAll(
-                acknowledgementsModule,
-                announcementsModule,
-                calendarModule,
-                circlesModule,
-                composerModule,
-                directMessagesModule,
-                drawerModule,
-                entryDetailModule,
-                exploreModule,
-                entryListModule,
-                followRequestsModule,
-                galleryModule,
-                hashtagModule,
-                imageDetailModule,
-                inboxModule,
-                licenceModule,
-                loginModule,
-                manageBlocksModule,
-                nodeInfoModule,
-                profileModule,
-                reportModule,
-                searchModule,
-                settingsModule,
-                shortcutsModule,
-                threadModule,
-                timelineModule,
-                unpublishedModule,
-                userDetailModule,
-                userListModule,
-            )
+    // features
+    modules(
+        acknowledgementsModule,
+        announcementsModule,
+        calendarModule,
+        circlesModule,
+        composerModule,
+        directMessagesModule,
+        drawerModule,
+        entryDetailModule,
+        exploreModule,
+        entryListModule,
+        followRequestsModule,
+        galleryModule,
+        hashtagModule,
+        imageDetailModule,
+        inboxModule,
+        licenceModule,
+        loginModule,
+        manageBlocksModule,
+        nodeInfoModule,
+        profileModule,
+        reportModule,
+        searchModule,
+        settingsModule,
+        shortcutsModule,
+        threadModule,
+        timelineModule,
+        unpublishedModule,
+        userDetailModule,
+        userListModule,
+    )
 
-            // shared
-            importAll(
-                authModule,
-                mainRouterModule,
-                mainModule,
-                viewModelFactoryModule,
-            )
-        }
+    // shared
+    modules(
+        authModule,
+        mainRouterModule,
+        mainModule,
+    )
 }
-
-// Needed for the OAuth flow on iOS
-fun provideAuthManager(): AuthManager = getAuthManager()

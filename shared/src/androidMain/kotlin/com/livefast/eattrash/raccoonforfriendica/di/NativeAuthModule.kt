@@ -2,13 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.di
 
 import com.livefast.eattrash.raccoonforfriendica.auth.DefaultRedirectServer
 import com.livefast.eattrash.raccoonforfriendica.auth.RedirectServer
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindSingleton
-import org.kodein.di.singleton
+import org.koin.dsl.module
 
-actual val nativeAuthModule = DI.Module("NativeAuthModule") {
-    bindSingleton<RedirectServer> {
+actual val nativeAuthModule = module {
+    single<RedirectServer> {
         DefaultRedirectServer()
     }
 }
