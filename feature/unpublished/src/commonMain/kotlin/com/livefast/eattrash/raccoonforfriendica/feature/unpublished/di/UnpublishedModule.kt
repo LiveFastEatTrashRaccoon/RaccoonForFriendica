@@ -1,23 +1,21 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.unpublished.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-val unpublishedModule =
-    DI.Module("UnpublishedModule") {
-        bindViewModel {
-            UnpublishedViewModel(
-                paginationManager = instance(),
-                identityRepository = instance(),
-                settingsRepository = instance(),
-                scheduledEntryRepository = instance(),
-                draftRepository = instance(),
-                imagePreloadManager = instance(),
-                blurHashRepository = instance(),
-                imageAutoloadObserver = instance(),
-                notificationCenter = instance(),
-            )
-        }
+val unpublishedModule = module {
+    viewModel {
+        UnpublishedViewModel(
+            paginationManager = get(),
+            identityRepository = get(),
+            settingsRepository = get(),
+            scheduledEntryRepository = get(),
+            draftRepository = get(),
+            imagePreloadManager = get(),
+            blurHashRepository = get(),
+            imageAutoloadObserver = get(),
+            notificationCenter = get(),
+        )
     }
+}

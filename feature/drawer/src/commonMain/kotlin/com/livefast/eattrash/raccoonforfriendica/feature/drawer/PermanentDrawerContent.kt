@@ -22,11 +22,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PermanentDrawerContent(
@@ -34,7 +34,7 @@ fun PermanentDrawerContent(
     onSelectDestination: (Destination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val model: PermanentDrawerMviModel = getViewModel<PermanentDrawerViewModel>()
+    val model: PermanentDrawerMviModel = koinViewModel<PermanentDrawerViewModel>()
     val uiState by model.uiState.collectAsState()
     val destinations = buildList {
         add(Destination.Main)

@@ -1,22 +1,20 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-val manageBlocksModule =
-    DI.Module("ManageBlocksModule") {
-        bindViewModel {
-            ManageBlocksViewModel(
-                paginationManager = instance(),
-                userRepository = instance(),
-                settingsRepository = instance(),
-                accountRepository = instance(),
-                userRateLimitRepository = instance(),
-                imagePreloadManager = instance(),
-                imageAutoloadObserver = instance(),
-                stopWordRepository = instance(),
-            )
-        }
+val manageBlocksModule = module {
+    viewModel {
+        ManageBlocksViewModel(
+            paginationManager = get(),
+            userRepository = get(),
+            settingsRepository = get(),
+            accountRepository = get(),
+            userRateLimitRepository = get(),
+            imagePreloadManager = get(),
+            imageAutoloadObserver = get(),
+            stopWordRepository = get(),
+        )
     }
+}

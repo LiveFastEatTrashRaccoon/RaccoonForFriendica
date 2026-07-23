@@ -10,7 +10,7 @@ internal object LicenceUrls {
         "https://github.com/Chaintech-Network/ComposeMultiplatformMediaPlayer/blob/main/LICENSE.txt"
     const val CONNECTIVITY = "https://github.com/jordond/connectivity/blob/main/LICENSE"
     const val FRIENDICA = "https://github.com/friendica/friendica/blob/2024.09-rc/LICENSE"
-    const val KODEIN = "https://github.com/kosi-libs/Kodein/blob/main/LICENSE.txt"
+    const val KOIN = "https://github.com/InsertKoinIO/koin/blob/main/LICENSE"
     const val KSOUP = "https://github.com/fleeksoft/ksoup/blob/release/LICENSE.md"
     const val KTOR = "https://github.com/ktorio/ktor/blob/main/LICENSE"
     const val MASTODON = "https://github.com/mastodon/mastodon/blob/main/LICENSE"

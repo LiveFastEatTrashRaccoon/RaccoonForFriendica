@@ -60,7 +60,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
@@ -104,6 +103,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Uti
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.ComposerViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -121,9 +122,9 @@ fun ComposerScreen(
     urlToShare: String? = null,
     initialText: String? = null,
 ) {
-    val model: ComposerMviModel = getViewModel<ComposerViewModel>(
-        arg = ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId),
-    )
+    val model: ComposerMviModel = koinViewModel<ComposerViewModel> {
+        parametersOf(ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId))
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

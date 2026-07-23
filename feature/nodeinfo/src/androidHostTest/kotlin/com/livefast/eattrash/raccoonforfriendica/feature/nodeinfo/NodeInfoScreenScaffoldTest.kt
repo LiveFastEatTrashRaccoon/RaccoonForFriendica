@@ -10,8 +10,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
-import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KodeinTestApplication
-import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KodeinTestRule
+import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KoinTestRule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.l10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
@@ -27,13 +26,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.kodein.di.DI
-import org.kodein.di.bindProvider
+import org.koin.dsl.module
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(application = KodeinTestApplication::class)
 class NodeInfoScreenScaffoldTest {
     private val uriHandler = mock<UriHandler>()
 
@@ -48,13 +44,13 @@ class NodeInfoScreenScaffoldTest {
 
     @get:Rule
     val diRule =
-        KodeinTestRule(
+        KoinTestRule(
             listOf(
                 l10nModule,
                 resourcesModule,
-                DI.Module("NodeInfoScreenTestModule") {
-                    bindProvider { navigationCoordinator }
-                    bindProvider { mainRouter }
+                module {
+                    factory { navigationCoordinator }
+                    factory { mainRouter }
                 },
             ),
         )

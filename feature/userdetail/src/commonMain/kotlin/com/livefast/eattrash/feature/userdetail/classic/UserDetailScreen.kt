@@ -60,7 +60,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimension
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
@@ -110,14 +109,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternall
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
-    val model: UserDetailMviModel = getViewModel<UserDetailViewModel>(
-        arg = UserDetailViewModelArgs(id),
-    )
+    val model: UserDetailMviModel = koinViewModel<UserDetailViewModel> {
+        parametersOf(UserDetailViewModelArgs(id))
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

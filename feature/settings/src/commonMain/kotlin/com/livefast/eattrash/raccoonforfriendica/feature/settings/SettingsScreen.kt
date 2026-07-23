@@ -61,7 +61,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomColorPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
@@ -108,6 +107,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.SettingsVie
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -119,7 +120,9 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         remember(factory) {
             factory.create()
         }
-    val model: SettingsMviModel = getViewModel<SettingsViewModel>(arg = SettingsViewModelArgs(controller))
+    val model: SettingsMviModel = koinViewModel<SettingsViewModel> {
+        parametersOf(SettingsViewModelArgs(controller))
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

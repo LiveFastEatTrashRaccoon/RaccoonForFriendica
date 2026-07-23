@@ -42,7 +42,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -66,6 +65,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.UserListVie
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,15 +79,15 @@ fun UserListScreen(
     enableExport: Boolean = false,
     otherInstance: String? = null,
 ) {
-    val model: UserListMviModel =
-        getViewModel<UserListViewModel>(
-            arg =
+    val model: UserListMviModel = koinViewModel<UserListViewModel> {
+        parametersOf(
             UserListViewModelArgs(
                 type.toUserListType(),
                 userId.orEmpty(),
                 entryId.orEmpty(),
             ),
         )
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

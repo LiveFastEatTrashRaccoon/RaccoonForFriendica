@@ -37,7 +37,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -54,18 +53,20 @@ import com.livefast.eattrash.raccoonforfriendica.feature.report.components.Selec
 import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Modifier) {
-    val model: CreateReportMviModel =
-        getViewModel<CreateReportViewModel>(
-            arg =
+    val model: CreateReportMviModel = koinViewModel<CreateReportViewModel> {
+        parametersOf(
             CreateReportViewModelArgs(
                 userId = userId,
                 entryId = entryId.orEmpty(),
             ),
         )
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

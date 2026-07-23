@@ -1,31 +1,29 @@
 package com.livefast.eattrash.raccoonforfriendica.feaure.search.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-val searchModule =
-    DI.Module("SearchModule") {
-        bindViewModel {
-            SearchViewModel(
-                paginationManager = instance(),
-                userRepository = instance(),
-                timelineEntryRepository = instance(),
-                settingsRepository = instance(),
-                identityRepository = instance(),
-                hapticFeedback = instance(),
-                imagePreloadManager = instance(),
-                blurHashRepository = instance(),
-                apiConfigurationRepository = instance(),
-                accountRepository = instance(),
-                instanceShortcutRepository = instance(),
-                imageAutoloadObserver = instance(),
-                toggleEntryFavorite = instance(),
-                toggleEntryDislike = instance(),
-                getTranslation = instance(),
-                getInnerUrl = instance(),
-                notificationCenter = instance(),
-            )
-        }
+val searchModule = module {
+    viewModel {
+        SearchViewModel(
+            paginationManager = get(),
+            userRepository = get(),
+            timelineEntryRepository = get(),
+            settingsRepository = get(),
+            identityRepository = get(),
+            hapticFeedback = get(),
+            imagePreloadManager = get(),
+            blurHashRepository = get(),
+            apiConfigurationRepository = get(),
+            accountRepository = get(),
+            instanceShortcutRepository = get(),
+            imageAutoloadObserver = get(),
+            toggleEntryFavorite = get(),
+            toggleEntryDislike = get(),
+            getTranslation = get(),
+            getInnerUrl = get(),
+            notificationCenter = get(),
+        )
     }
+}

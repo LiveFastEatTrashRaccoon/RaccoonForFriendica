@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -71,12 +70,16 @@ import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di.HashtagViewM
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
-    val model: HashtagMviModel = getViewModel<HashtagViewModel>(arg = HashtagViewModelArgs(tag))
+    val model: HashtagMviModel = koinViewModel<HashtagViewModel> {
+        parametersOf(HashtagViewModelArgs(tag))
+    }
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
     val canPopState by navigationCoordinator.canPop.collectAsState()

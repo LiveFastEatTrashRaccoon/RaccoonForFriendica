@@ -51,7 +51,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
@@ -70,15 +69,16 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.Conve
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifier = Modifier) {
-    val model: ConversationMviModel =
-        getViewModel<ConversationViewModel>(
-            arg = ConversationViewModelArgs(otherUserId = otherUserId, parentUri = parentUri),
-        )
+    val model: ConversationMviModel = koinViewModel<ConversationViewModel> {
+        parametersOf(ConversationViewModelArgs(otherUserId = otherUserId, parentUri = parentUri))
+    }
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
     val canPopState by navigationCoordinator.canPop.collectAsState()

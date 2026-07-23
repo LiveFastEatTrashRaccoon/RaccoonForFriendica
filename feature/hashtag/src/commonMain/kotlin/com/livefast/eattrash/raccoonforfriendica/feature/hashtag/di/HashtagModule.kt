@@ -1,49 +1,46 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.ViewModelCreationArgs
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModelWithArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-data class HashtagViewModelArgs(val tag: String) : ViewModelCreationArgs
+data class HashtagViewModelArgs(val tag: String)
 
-val hashtagModule =
-    DI.Module("HashtagModule") {
-        bindViewModel {
-            FollowedHashtagsViewModel(
-                cache = instance(),
-                paginationManager = instance(),
-                tagRepository = instance(),
-                settingsRepository = instance(),
-                hapticFeedback = instance(),
-                notificationCenter = instance(),
-            )
-        }
-        bindViewModelWithArgs { args: HashtagViewModelArgs ->
-            HashtagViewModel(
-                tag = args.tag,
-                paginationManager = instance(),
-                timelineEntryRepository = instance(),
-                tagRepository = instance(),
-                settingsRepository = instance(),
-                identityRepository = instance(),
-                userRepository = instance(),
-                apiConfigurationRepository = instance(),
-                accountRepository = instance(),
-                instanceShortcutRepository = instance(),
-                hapticFeedback = instance(),
-                imagePreloadManager = instance(),
-                blurHashRepository = instance(),
-                imageAutoloadObserver = instance(),
-                toggleEntryFavorite = instance(),
-                toggleEntryDislike = instance(),
-                getTranslation = instance(),
-                getInnerUrl = instance(),
-                timelineNavigationManager = instance(),
-                notificationCenter = instance(),
-            )
-        }
+val hashtagModule = module {
+    viewModel {
+        FollowedHashtagsViewModel(
+            cache = get(),
+            paginationManager = get(),
+            tagRepository = get(),
+            settingsRepository = get(),
+            hapticFeedback = get(),
+            notificationCenter = get(),
+        )
     }
+    viewModel { params ->
+        val args: HashtagViewModelArgs = params.get()
+        HashtagViewModel(
+            tag = args.tag,
+            paginationManager = get(),
+            timelineEntryRepository = get(),
+            tagRepository = get(),
+            settingsRepository = get(),
+            identityRepository = get(),
+            userRepository = get(),
+            apiConfigurationRepository = get(),
+            accountRepository = get(),
+            instanceShortcutRepository = get(),
+            hapticFeedback = get(),
+            imagePreloadManager = get(),
+            blurHashRepository = get(),
+            imageAutoloadObserver = get(),
+            toggleEntryFavorite = get(),
+            toggleEntryDislike = get(),
+            getTranslation = get(),
+            getInnerUrl = get(),
+            timelineNavigationManager = get(),
+            notificationCenter = get(),
+        )
+    }
+}

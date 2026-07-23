@@ -1,23 +1,21 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.report.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.ViewModelCreationArgs
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModelWithArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-internal data class CreateReportViewModelArgs(val userId: String, val entryId: String) : ViewModelCreationArgs
+internal data class CreateReportViewModelArgs(val userId: String, val entryId: String)
 
-val reportModule =
-    DI.Module("ReportModule") {
-        bindViewModelWithArgs { args: CreateReportViewModelArgs ->
-            CreateReportViewModel(
-                userId = args.userId,
-                entryId = args.entryId,
-                nodeInfoRepository = instance(),
-                supportedFeatureRepository = instance(),
-                reportRepository = instance(),
-                userCache = instance(),
-            )
-        }
+val reportModule = module {
+    viewModel { params ->
+        val args: CreateReportViewModelArgs = params.get()
+        CreateReportViewModel(
+            userId = args.userId,
+            entryId = args.entryId,
+            nodeInfoRepository = get(),
+            supportedFeatureRepository = get(),
+            reportRepository = get(),
+            userCache = get(),
+        )
     }
+}

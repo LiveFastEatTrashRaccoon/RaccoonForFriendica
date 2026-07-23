@@ -1,27 +1,25 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.inbox.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-val inboxModule =
-    DI.Module("InboxModule") {
-        bindViewModel {
-            InboxViewModel(
-                paginationManager = instance(),
-                userRepository = instance(),
-                identityRepository = instance(),
-                settingsRepository = instance(),
-                notificationRepository = instance(),
-                entryRepository = instance(),
-                inboxManager = instance(),
-                hapticFeedback = instance(),
-                imagePreloadManager = instance(),
-                blurHashRepository = instance(),
-                markerRepository = instance(),
-                pullNotificationManager = instance(),
-                imageAutoloadObserver = instance(),
-            )
-        }
+val inboxModule = module {
+    viewModel {
+        InboxViewModel(
+            paginationManager = get(),
+            userRepository = get(),
+            identityRepository = get(),
+            settingsRepository = get(),
+            notificationRepository = get(),
+            entryRepository = get(),
+            inboxManager = get(),
+            hapticFeedback = get(),
+            imagePreloadManager = get(),
+            blurHashRepository = get(),
+            markerRepository = get(),
+            pullNotificationManager = get(),
+            imageAutoloadObserver = get(),
+        )
     }
+}

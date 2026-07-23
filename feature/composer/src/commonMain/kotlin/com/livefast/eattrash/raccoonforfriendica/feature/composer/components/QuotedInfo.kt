@@ -17,8 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -55,7 +54,7 @@ internal fun QuotedInfo(username: String, modifier: Modifier = Modifier) {
 @Composable
 @Preview
 private fun QuotedInfoPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     Surface {
         QuotedInfo(
             username = "User name",
