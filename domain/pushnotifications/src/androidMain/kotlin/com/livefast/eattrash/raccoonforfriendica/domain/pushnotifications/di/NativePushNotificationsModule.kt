@@ -4,25 +4,22 @@ import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.common
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.common.UnifiedPushInteractor
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.DefaultPushNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-internal actual val nativePushNotificationsModule =
-    DI.Module("NativePushNotificationsModule") {
-        bindSingleton<PushNotificationManager> {
-            DefaultPushNotificationManager(
-                context = instance(),
-                pushNotificationRepository = instance(),
-                accountRepository = instance(),
-                nodeInfoRepository = instance(),
-            )
-        }
-        bindSingleton<UnifiedPushInteractor> {
-            DefaultUnifiedPushInteractor(
-                pullNotificationManager = instance(),
-                pushNotificationManager = instance(),
-                accountRepository = instance(),
-            )
-        }
+internal actual val nativePushNotificationsModule = module {
+    single<PushNotificationManager> {
+        DefaultPushNotificationManager(
+            context = get(),
+            pushNotificationRepository = get(),
+            accountRepository = get(),
+            nodeInfoRepository = get(),
+        )
     }
+    single<UnifiedPushInteractor> {
+        DefaultUnifiedPushInteractor(
+            pullNotificationManager = get(),
+            pushNotificationManager = get(),
+            accountRepository = get(),
+        )
+    }
+}

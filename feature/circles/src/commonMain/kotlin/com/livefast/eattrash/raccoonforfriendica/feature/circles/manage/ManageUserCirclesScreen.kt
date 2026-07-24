@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
@@ -46,13 +45,15 @@ import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.ManageUserCi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
-    val model: ManageUserCirclesMviModel = getViewModel<ManageUserCirclesViewModel>(
-        arg = ManageUserCirclesViewModelArgs(userId = userId),
-    )
+    val model: ManageUserCirclesMviModel = koinViewModel<ManageUserCirclesViewModel> {
+        parametersOf(ManageUserCirclesViewModelArgs(userId = userId))
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

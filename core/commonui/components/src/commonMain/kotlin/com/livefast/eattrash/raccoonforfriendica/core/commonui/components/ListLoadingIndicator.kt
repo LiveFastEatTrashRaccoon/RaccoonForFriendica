@@ -20,8 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
@@ -67,6 +66,6 @@ fun ListLoadingIndicator(modifier: Modifier = Modifier) {
 @Composable
 @Preview
 private fun ListLoadingIndicatorPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     ListLoadingIndicator()
 }

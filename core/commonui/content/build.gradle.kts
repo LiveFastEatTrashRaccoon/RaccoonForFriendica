@@ -8,8 +8,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(libs.calf)
-                implementation(libs.kodein)
                 implementation(libs.ksoup.html)
 
                 implementation(projects.core.appearance)

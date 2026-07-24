@@ -1,36 +1,34 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.timeline.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-val timelineModule =
-    DI.Module("TimelineModule") {
-        bindViewModel {
-            TimelineViewModel(
-                paginationManager = instance(),
-                identityRepository = instance(),
-                activeAccountMonitor = instance(),
-                apiConfigurationRepository = instance(),
-                timelineEntryRepository = instance(),
-                settingsRepository = instance(),
-                userRepository = instance(),
-                circlesRepository = instance(),
-                hapticFeedback = instance(),
-                imagePreloadManager = instance(),
-                blurHashRepository = instance(),
-                accountRepository = instance(),
-                instanceShortcutRepository = instance(),
-                imageAutoloadObserver = instance(),
-                announcementsManager = instance(),
-                toggleEntryFavorite = instance(),
-                toggleEntryDislike = instance(),
-                getTranslation = instance(),
-                getInnerUrl = instance(),
-                timelineNavigationManager = instance(),
-                followedHashtagCache = instance(),
-                notificationCenter = instance(),
-            )
-        }
+val timelineModule = module {
+    viewModel {
+        TimelineViewModel(
+            paginationManager = get(),
+            identityRepository = get(),
+            activeAccountMonitor = get(),
+            apiConfigurationRepository = get(),
+            timelineEntryRepository = get(),
+            settingsRepository = get(),
+            userRepository = get(),
+            circlesRepository = get(),
+            hapticFeedback = get(),
+            imagePreloadManager = get(),
+            blurHashRepository = get(),
+            accountRepository = get(),
+            instanceShortcutRepository = get(),
+            imageAutoloadObserver = get(),
+            announcementsManager = get(),
+            toggleEntryFavorite = get(),
+            toggleEntryDislike = get(),
+            getTranslation = get(),
+            getInnerUrl = get(),
+            timelineNavigationManager = get(),
+            followedHashtagCache = get(),
+            notificationCenter = get(),
+        )
     }
+}

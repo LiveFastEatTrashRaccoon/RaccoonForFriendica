@@ -1,32 +1,30 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.explore.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-val exploreModule =
-    DI.Module("ExploreModule") {
-        bindViewModel {
-            ExploreViewModel(
-                paginationManager = instance(),
-                userRepository = instance(),
-                timelineEntryRepository = instance(),
-                identityRepository = instance(),
-                settingsRepository = instance(),
-                hapticFeedback = instance(),
-                imagePreloadManager = instance(),
-                blurHashRepository = instance(),
-                apiConfigurationRepository = instance(),
-                accountRepository = instance(),
-                instanceShortcutRepository = instance(),
-                imageAutoloadObserver = instance(),
-                toggleEntryFavorite = instance(),
-                toggleEntryDislike = instance(),
-                getTranslation = instance(),
-                getInnerUrl = instance(),
-                credentialsRepository = instance(),
-                notificationCenter = instance(),
-            )
-        }
+val exploreModule = module {
+    viewModel {
+        ExploreViewModel(
+            paginationManager = get(),
+            userRepository = get(),
+            timelineEntryRepository = get(),
+            identityRepository = get(),
+            settingsRepository = get(),
+            hapticFeedback = get(),
+            imagePreloadManager = get(),
+            blurHashRepository = get(),
+            apiConfigurationRepository = get(),
+            accountRepository = get(),
+            instanceShortcutRepository = get(),
+            imageAutoloadObserver = get(),
+            toggleEntryFavorite = get(),
+            toggleEntryDislike = get(),
+            getTranslation = get(),
+            getInnerUrl = get(),
+            credentialsRepository = get(),
+            notificationCenter = get(),
+        )
     }
+}

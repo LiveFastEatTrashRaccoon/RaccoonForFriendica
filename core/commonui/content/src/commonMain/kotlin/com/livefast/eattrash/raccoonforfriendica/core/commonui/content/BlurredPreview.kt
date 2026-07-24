@@ -14,14 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberBlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.toComposeImageBitmap
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
+import org.koin.dsl.module
 
 @Composable
 internal fun BlurredPreview(
@@ -71,9 +69,9 @@ internal fun BlurredPreview(
 @Composable
 @Preview
 private fun BlurredPreviewPreview() {
-    RootDI.SetupPreview(
-        DI.Module("BlurredPreviewPreviewModule") {
-            bindSingleton {
+    setupPreview(
+        module {
+            single {
                 object : BlurHashRepository {
                     override suspend fun preload(params: BlurHashParams) = Unit
 

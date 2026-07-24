@@ -1,5 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.di
 
-import org.kodein.di.DI
+import org.koin.core.module.Module
 
-expect val nativeAuthModule: DI.Module
+expect val nativeAuthModule: Module

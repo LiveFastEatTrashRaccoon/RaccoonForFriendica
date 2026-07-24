@@ -2,17 +2,13 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.DefaultHapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import org.koin.dsl.module
 
 internal actual val nativeVibrateModule =
-    DI.Module("NativeVibrateModule") {
-        bindSingleton<HapticFeedback> {
+    module{
+        single<HapticFeedback> {
             DefaultHapticFeedback(
-                context = instance(),
+                context = get(),
             )
         }
     }

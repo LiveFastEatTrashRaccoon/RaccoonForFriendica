@@ -8,7 +8,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.kodein)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.compose.viewmodel)
 
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)

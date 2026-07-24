@@ -19,7 +19,8 @@ kotlin {
 
                 implementation(libs.coil)
                 implementation(libs.compose.multiplatform.media.player)
-                implementation(libs.kodein.compose)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.compose.viewmodel)
                 implementation(libs.ktor.client.core)
 
                 implementation(projects.core.api)

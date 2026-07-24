@@ -9,12 +9,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -30,19 +30,17 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.rememberL10nManager
@@ -104,13 +102,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.kodein.di.compose.withDI
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(FlowPreview::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
+fun App(onLoadingFinished: (() -> Unit)? = null) {
     // initialize crash reporting as soon as possible
     val crashReportManager = remember { getCrashReportManager() }
     LaunchedEffect(crashReportManager) {
@@ -255,11 +254,11 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                             )
                             ProvideCustomFontScale {
                                 // preload ViewModels for all top-level sections
-                                val timelineModel: TimelineMviModel = getViewModel<TimelineViewModel>()
-                                val exploreModel: ExploreMviModel = getViewModel<ExploreViewModel>()
-                                val inboxModel: InboxMviModel = getViewModel<InboxViewModel>()
-                                val profileModel: ProfileMviModel = getViewModel<ProfileViewModel>()
-                                val myAccountModel: MyAccountMviModel = getViewModel<MyAccountViewModel>()
+                                val timelineModel: TimelineMviModel = koinViewModel<TimelineViewModel>()
+                                val exploreModel: ExploreMviModel = koinViewModel<ExploreViewModel>()
+                                val inboxModel: InboxMviModel = koinViewModel<InboxViewModel>()
+                                val profileModel: ProfileMviModel = koinViewModel<ProfileViewModel>()
+                                val myAccountModel: MyAccountMviModel = koinViewModel<MyAccountViewModel>()
                                 val timelineLazyListState = rememberLazyListState()
                                 val exploreLazyListState = rememberLazyListState()
                                 val inboxLazyListState = rememberLazyListState()
@@ -270,7 +269,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                         onBack = { navigationCoordinator.pop() },
                                         entryDecorators = listOf(
                                             rememberSaveableStateHolderNavEntryDecorator(),
-                                            rememberViewModelStoreNavEntryDecorator()
+                                            rememberViewModelStoreNavEntryDecorator(),
                                         ),
                                         sceneStrategies = listOf(listDetailStrategy),
                                         entryProvider = getEntryProvider(
@@ -312,30 +311,26 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                             },
                                         ) {
                                             // preload ViewModels for all top-level sections
-                                            val timelineViewModel: TimelineMviModel = getViewModel<TimelineViewModel>()
-                                            val exploreViewModel: ExploreMviModel = getViewModel<ExploreViewModel>()
-                                            val inboxViewModel: InboxMviModel = getViewModel<InboxViewModel>()
-                                            val profileViewModel: ProfileMviModel = getViewModel<ProfileViewModel>()
-                                            val myAccountViewModel: MyAccountMviModel =
-                                                getViewModel<MyAccountViewModel>()
-                                            val favoritesViewModel: EntryListMviModel =
-                                                getViewModel<EntryListViewModel>(arg = EntryListViewModelArgs(type = EntryListType.Favorites))
-                                            val bookmarksViewModel: EntryListMviModel =
-                                                getViewModel<EntryListViewModel>(arg = EntryListViewModelArgs(type = EntryListType.Bookmarks))
-                                            val followedHashtagsViewModel: FollowedHashtagsMviModel =
-                                                getViewModel<FollowedHashtagsViewModel>()
-                                            val followRequestsViewModel: FollowRequestsMviModel =
-                                                getViewModel<FollowRequestsViewModel>()
-                                            val circlesViewModel: CirclesMviModel = getViewModel<CirclesViewModel>()
-                                            val conversationListViewModel: ConversationListMviModel =
-                                                getViewModel<ConversationListViewModel>()
-                                            val galleryViewModel: GalleryMviModel = getViewModel<GalleryViewModel>()
-                                            val unpublishedViewModel: UnpublishedMviModel =
-                                                getViewModel<UnpublishedViewModel>()
-                                            val calendarViewModel: CalendarMviModel = getViewModel<CalendarViewModel>()
-                                            val shortcutListViewModel: ShortcutListMviModel =
-                                                getViewModel<ShortcutListViewModel>()
-                                            val nodeInfoViewModel: NodeInfoMviModel = getViewModel<NodeInfoViewModel>()
+                                            val timelineViewModel: TimelineMviModel = koinViewModel<TimelineViewModel>()
+                                            val exploreViewModel: ExploreMviModel = koinViewModel<ExploreViewModel>()
+                                            val inboxViewModel: InboxMviModel = koinViewModel<InboxViewModel>()
+                                            val profileViewModel: ProfileMviModel = koinViewModel<ProfileViewModel>()
+                                            val myAccountViewModel: MyAccountMviModel = koinViewModel<MyAccountViewModel>()
+                                            val favoritesViewModel: EntryListMviModel = koinViewModel<EntryListViewModel>{
+                                                parametersOf(EntryListViewModelArgs(type = EntryListType.Favorites))
+                                            }
+                                            val bookmarksViewModel: EntryListMviModel = koinViewModel<EntryListViewModel> {
+                                                parametersOf(EntryListViewModelArgs(type = EntryListType.Bookmarks))
+                                            }
+                                            val followedHashtagsViewModel: FollowedHashtagsMviModel = koinViewModel<FollowedHashtagsViewModel>()
+                                            val followRequestsViewModel: FollowRequestsMviModel = koinViewModel<FollowRequestsViewModel>()
+                                            val circlesViewModel: CirclesMviModel = koinViewModel<CirclesViewModel>()
+                                            val conversationListViewModel: ConversationListMviModel = koinViewModel<ConversationListViewModel>()
+                                            val galleryViewModel: GalleryMviModel = koinViewModel<GalleryViewModel>()
+                                            val unpublishedViewModel: UnpublishedMviModel = koinViewModel<UnpublishedViewModel>()
+                                            val calendarViewModel: CalendarMviModel = koinViewModel<CalendarViewModel>()
+                                            val shortcutListViewModel: ShortcutListMviModel = koinViewModel<ShortcutListViewModel>()
+                                            val nodeInfoViewModel: NodeInfoMviModel = koinViewModel<NodeInfoViewModel>()
                                             val timelineLazyListState = rememberLazyListState()
                                             val exploreLazyListState = rememberLazyListState()
                                             val inboxLazyListState = rememberLazyListState()
@@ -346,7 +341,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) = withDI(RootDI.di) {
                                                     onBack = { navigationCoordinator.pop() },
                                                     entryDecorators = listOf(
                                                         rememberSaveableStateHolderNavEntryDecorator(),
-                                                        rememberViewModelStoreNavEntryDecorator()
+                                                        rememberViewModelStoreNavEntryDecorator(),
                                                     ),
                                                     sceneStrategies = listOf(listDetailStrategy),
                                                     entryProvider = getEntryProvider(

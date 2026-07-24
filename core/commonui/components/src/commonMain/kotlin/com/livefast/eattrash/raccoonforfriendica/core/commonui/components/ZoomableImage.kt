@@ -28,8 +28,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -146,6 +145,6 @@ fun ZoomableImage(url: String, modifier: Modifier = Modifier, contentScale: Cont
 @Composable
 @Preview
 private fun ZoomableImagePreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     ZoomableImage(url = "fake-image")
 }

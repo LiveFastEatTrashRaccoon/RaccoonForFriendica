@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.feature.userdetail.di.ForumListViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.rememberFabNestedScrollConnection
@@ -89,12 +88,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternall
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
-    val model: ForumListMviModel = getViewModel<ForumListViewModel>(arg = ForumListViewModelArgs(id))
+    val model: ForumListMviModel = koinViewModel<ForumListViewModel> {
+        parametersOf(ForumListViewModelArgs(id))
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

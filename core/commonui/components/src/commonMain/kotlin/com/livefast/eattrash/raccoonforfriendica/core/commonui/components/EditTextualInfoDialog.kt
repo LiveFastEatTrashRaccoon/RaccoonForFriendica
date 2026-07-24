@@ -32,8 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,7 +140,7 @@ private fun EditTextualInfoDialogContent(
 @Composable
 @Preview
 private fun EditTextualInfoDialogPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     EditTextualInfoDialogContent(
         title = "Edit Bio",
         label = "Bio",

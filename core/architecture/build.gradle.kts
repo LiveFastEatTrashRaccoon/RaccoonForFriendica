@@ -9,8 +9,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlinx.coroutines)
-                implementation(libs.kodein)
-                implementation(libs.kodein.compose)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(projects.core.di)
             }
         }

@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
@@ -67,12 +66,15 @@ import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.di.ShortcutTi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
-    val model: ShortcutTimelineMviModel =
-        getViewModel<ShortcutTimelineViewModel>(arg = ShortcutTimelineViewModelArgs(node))
+    val model: ShortcutTimelineMviModel = koinViewModel<ShortcutTimelineViewModel> {
+        parametersOf(ShortcutTimelineViewModelArgs(node))
+    }
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
     val canPopState by navigationCoordinator.canPop.collectAsState()

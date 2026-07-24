@@ -4,15 +4,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.translation.DefaultTransla
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderFactory
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.DefaultTranslationProviderConfigStore
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val translationModule = DI.Module("TranslationModule") {
-    bindSingleton<TranslationProviderFactory> {
+val translationModule = module {
+    single<TranslationProviderFactory> {
         DefaultTranslationProviderFactory()
     }
-    bindSingleton<TranslationProviderConfigStore> {
-        DefaultTranslationProviderConfigStore(keyStore = instance())
+    single<TranslationProviderConfigStore> {
+        DefaultTranslationProviderConfigStore(keyStore = get())
     }
 }

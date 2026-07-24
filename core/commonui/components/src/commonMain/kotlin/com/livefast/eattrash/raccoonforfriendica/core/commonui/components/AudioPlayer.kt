@@ -34,8 +34,7 @@ import chaintech.videoplayer.host.MediaPlayerHost
 import chaintech.videoplayer.model.AudioFile
 import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.ui.audio.AudioPlayerComposable
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -216,7 +215,7 @@ private fun FakeAudioPlayerComposable(
 @Composable
 @Preview
 private fun AudioPlayerPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     AudioPlayer(
         modifier = Modifier.height(250.dp),
         urls = listOf(),

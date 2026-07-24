@@ -106,9 +106,9 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                     this +=
                         LicenceItem(
                             type = LicenceItemType.Library,
-                            title = "Kodein",
-                            subtitle = "A straightforward and yet very useful dependency retrieval container",
-                            url = LicenceUrls.KODEIN,
+                            title = "Koin",
+                            subtitle = "The pragmatic Kotlin & Kotlin Multiplatform Dependency Injection framework",
+                            url = LicenceUrls.KOIN,
                         )
                     this +=
                         LicenceItem(

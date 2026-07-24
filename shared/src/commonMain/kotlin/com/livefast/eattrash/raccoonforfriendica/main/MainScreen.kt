@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultBottomNavigationAdapter
@@ -50,6 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.navigation.bottomGetEntryProvider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -66,7 +66,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     lockedSection: BottomNavigationSection = BottomNavigationSection.Home,
 ) {
-    val model: MainMviModel = getViewModel<MainViewModel>()
+    val model: MainMviModel = koinViewModel<MainViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = rememberNavigationCoordinator()
     val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()

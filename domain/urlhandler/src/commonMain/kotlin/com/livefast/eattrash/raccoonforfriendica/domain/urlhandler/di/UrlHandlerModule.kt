@@ -13,50 +13,47 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.Fet
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.FetchUserUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
-import org.kodein.di.DI
-import org.kodein.di.bindFactory
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val urlHandlerModule =
-    DI.Module("UrlHandlerModule") {
-        bindSingleton<FetchUserUseCase> {
-            DefaultFetchUserUseCase(
-                searchRepository = instance(),
-            )
-        }
-        bindSingleton<FetchEntryUseCase> {
-            DefaultFetchEntryUseCase(
-                searchRepository = instance(),
-            )
-        }
-        bindSingleton<HashtagProcessor> {
-            DefaultHashtagProcessor(
-                mainRouter = instance(),
-            )
-        }
-        bindSingleton<UserProcessor> {
-            DefaultUserProcessor(
-                mainRouter = instance(),
-                fetchUser = instance(),
-            )
-        }
-        bindSingleton<EntryProcessor> {
-            DefaultEntryProcessor(
-                mainRouter = instance(),
-                fetchEntry = instance(),
-            )
-        }
-
-        bindFactory<UriHandler, CustomUriHandler> { fallback ->
-            DefaultCustomUriHandler(
-                defaultHandler = fallback,
-                customTabsHelper = instance(),
-                settingsRepository = instance(),
-                mainRouter = instance(),
-                hashtagProcessor = instance(),
-                userProcessor = instance(),
-                entryProcessor = instance(),
-            )
-        }
+val urlHandlerModule = module {
+    single<FetchUserUseCase> {
+        DefaultFetchUserUseCase(
+            searchRepository = get(),
+        )
     }
+    single<FetchEntryUseCase> {
+        DefaultFetchEntryUseCase(
+            searchRepository = get(),
+        )
+    }
+    single<HashtagProcessor> {
+        DefaultHashtagProcessor(
+            mainRouter = get(),
+        )
+    }
+    single<UserProcessor> {
+        DefaultUserProcessor(
+            mainRouter = get(),
+            fetchUser = get(),
+        )
+    }
+    single<EntryProcessor> {
+        DefaultEntryProcessor(
+            mainRouter = get(),
+            fetchEntry = get(),
+        )
+    }
+
+    factory<CustomUriHandler> { params ->
+        val arg: UriHandler = params.get()
+        DefaultCustomUriHandler(
+            defaultHandler = arg,
+            customTabsHelper = get(),
+            settingsRepository = get(),
+            mainRouter = get(),
+            hashtagProcessor = get(),
+            userProcessor = get(),
+            entryProcessor = get(),
+        )
+    }
+}

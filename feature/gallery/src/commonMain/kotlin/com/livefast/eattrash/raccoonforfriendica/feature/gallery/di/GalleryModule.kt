@@ -1,33 +1,30 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.gallery.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.ViewModelCreationArgs
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModel
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.bindViewModelWithArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryViewModel
-import org.kodein.di.DI
-import org.kodein.di.instance
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
 
-data class AlbumDetailViewModelArgs(val albumName: String) : ViewModelCreationArgs
+data class AlbumDetailViewModelArgs(val albumName: String)
 
-val galleryModule =
-    DI.Module("GalleryModule") {
-        bindViewModel {
-            GalleryViewModel(
-                albumRepository = instance(),
-                settingsRepository = instance(),
-                notificationCenter = instance(),
-            )
-        }
-        bindViewModelWithArgs { args: AlbumDetailViewModelArgs ->
-            AlbumDetailViewModel(
-                albumName = args.albumName,
-                paginationManager = instance(),
-                photoRepository = instance(),
-                albumRepository = instance(),
-                settingsRepository = instance(),
-                imageAutoloadObserver = instance(),
-                notificationCenter = instance(),
-            )
-        }
+val galleryModule = module {
+    viewModel {
+        GalleryViewModel(
+            albumRepository = get(),
+            settingsRepository = get(),
+            notificationCenter = get(),
+        )
     }
+    viewModel { params ->
+        val args: AlbumDetailViewModelArgs = params.get()
+        AlbumDetailViewModel(
+            albumName = args.albumName,
+            paginationManager = get(),
+            photoRepository = get(),
+            albumRepository = get(),
+            settingsRepository = get(),
+            imageAutoloadObserver = get(),
+            notificationCenter = get(),
+        )
+    }
+}

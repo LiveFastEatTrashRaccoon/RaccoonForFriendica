@@ -7,8 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.SetupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.di.RootDI
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 
 @Composable
 fun MultiColorPreview(colors: List<Color>, modifier: Modifier = Modifier) {
@@ -32,7 +31,7 @@ fun MultiColorPreview(colors: List<Color>, modifier: Modifier = Modifier) {
 @Composable
 @Preview
 private fun MultiColorPreviewPreview() {
-    RootDI.SetupPreview()
+    setupPreview()
     MultiColorPreview(
         modifier = Modifier.size(24.dp),
         colors = listOf(

@@ -47,7 +47,6 @@ import androidx.compose.ui.text.withLink
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
@@ -61,11 +60,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternall
 import com.livefast.eattrash.raccoonforfriendica.feature.login.di.LoginViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
-    val model: LoginMviModel = getViewModel<LoginViewModel>(arg = LoginViewModelArgs(loginType.toLoginType()))
+    val model: LoginMviModel = koinViewModel<LoginViewModel> {
+        parametersOf(LoginViewModelArgs(loginType.toLoginType()))
+    }
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

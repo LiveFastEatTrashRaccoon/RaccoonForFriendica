@@ -2,19 +2,16 @@ package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.coordinator.DefaultNotificationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.coordinator.NotificationCoordinator
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.dsl.module
 
-val pushNotificationsModule =
-    DI.Module("PushNotificationsModule") {
-        import(nativePushNotificationsModule)
-        bindSingleton<NotificationCoordinator> {
-            DefaultNotificationCoordinator(
-                settingsRepository = instance(),
-                inboxManager = instance(),
-                pullNotificationManager = instance(),
-                pushNotificationManager = instance(),
-            )
-        }
+val pushNotificationsModule = module {
+    includes(nativePushNotificationsModule)
+    single<NotificationCoordinator> {
+        DefaultNotificationCoordinator(
+            settingsRepository = get(),
+            inboxManager = get(),
+            pullNotificationManager = get(),
+            pushNotificationManager = get(),
+        )
     }
+}

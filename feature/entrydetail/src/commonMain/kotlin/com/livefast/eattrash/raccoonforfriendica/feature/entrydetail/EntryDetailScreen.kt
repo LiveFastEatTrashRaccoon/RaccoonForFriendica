@@ -59,7 +59,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.rememberFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -94,6 +93,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.EntryDet
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,9 +106,11 @@ fun EntryDetailScreen(
     otherInstance: String? = null,
     customBackAction: (() -> Unit)? = null,
 ) {
-    val model: EntryDetailMviModel = getViewModel<EntryDetailViewModel>(
+    val model: EntryDetailMviModel = koinViewModel<EntryDetailViewModel>(
         key = id,
-        arg = EntryDetailViewModelArgs(id = id, swipeNavigationEnabled = swipeNavigationEnabled),
+        parameters = {
+            parametersOf(EntryDetailViewModelArgs(id = id, swipeNavigationEnabled = swipeNavigationEnabled))
+        },
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

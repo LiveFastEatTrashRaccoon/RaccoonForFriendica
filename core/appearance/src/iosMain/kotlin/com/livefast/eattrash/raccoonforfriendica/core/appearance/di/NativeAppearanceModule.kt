@@ -4,17 +4,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.BarColorP
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.DefaultBarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.DefaultColorSchemeProvider
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.bindSingleton
-import org.kodein.di.singleton
+import org.koin.dsl.module
 
-actual val nativeAppearanceModule =
-    DI.Module("NativeAppearanceModule") {
-        bindSingleton<BarColorProvider> {
-            DefaultBarColorProvider()
-        }
-        bindSingleton<ColorSchemeProvider> {
-            DefaultColorSchemeProvider()
-        }
+actual val nativeAppearanceModule = module {
+    single<BarColorProvider> {
+        DefaultBarColorProvider()
     }
+    single<ColorSchemeProvider> {
+        DefaultColorSchemeProvider()
+    }
+}

@@ -29,7 +29,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.di.getViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -43,6 +42,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.ImageDetailViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,14 +53,14 @@ fun ImageDetailScreen(
     initialIndex: Int = 0,
     videoIndices: List<Int> = emptyList(),
 ) {
-    val model: ImageDetailMviModel =
-        getViewModel<ImageDetailViewModel>(
-            arg =
+    val model: ImageDetailMviModel = koinViewModel<ImageDetailViewModel> {
+        parametersOf(
             ImageDetailViewModelArgs(
                 urls = urls,
                 initialIndex = initialIndex,
             ),
         )
+    }
     val uiState by model.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = rememberNavigationCoordinator()

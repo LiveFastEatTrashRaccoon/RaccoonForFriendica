@@ -27,7 +27,8 @@ kotlin {
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.connectivity.core)
-                implementation(libs.kodein)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
                 implementation(libs.ktor.cio)
                 implementation(libs.sentry)
 

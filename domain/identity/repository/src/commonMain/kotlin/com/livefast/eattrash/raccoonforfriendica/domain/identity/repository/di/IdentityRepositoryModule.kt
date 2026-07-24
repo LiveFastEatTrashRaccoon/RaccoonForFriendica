@@ -18,60 +18,58 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Imag
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
-import org.kodein.di.DI
-import org.kodein.di.bindSingleton
-import org.kodein.di.instance
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-val identityRepositoryModule =
-    DI.Module("IdentityRepositoryModule") {
-        bindSingleton<AccountCredentialsCache> {
-            DefaultAccountCredentialsCache(
-                keyStore = instance(),
-            )
-        }
-        bindSingleton<AccountRepository> {
-            DefaultAccountRepository(
-                accountDao = instance(),
-            )
-        }
-        bindSingleton<ApiConfigurationRepository> {
-            DefaultApiConfigurationRepository(
-                provider = instance(tag = "default"),
-                keyStore = instance(),
-                credentialsRepository = instance(),
-                authManager = instance(),
-            )
-        }
-        bindSingleton<CredentialsRepository> {
-            DefaultCredentialsRepository(
-                provider = instance(tag = "other"),
-                json = instance(),
-            )
-        }
-        bindSingleton<IdentityRepository> {
-            DefaultIdentityRepository(
-                provider = instance(tag = "default"),
-            )
-        }
-        bindSingleton<ImageAutoloadObserver> {
-            DefaultImageAutoloadObserver(
-                networkStateObserver = instance(),
-                settingsRepository = instance(),
-            )
-        }
-        bindSingleton<SettingsRepository> {
-            DefaultSettingsRepository(
-                settingsDao = instance(),
-            )
-        }
-        bindSingleton<StopWordRepository> {
-            DefaultStopWordRepository(
-                keyStore = instance(),
-            )
-        }
-        bindSingleton<InstanceShortcutRepository> {
-            DefaultInstanceShortcutRepository(
-                keyStore = instance(),
-            )
-        }
+val identityRepositoryModule = module {
+    single<AccountCredentialsCache> {
+        DefaultAccountCredentialsCache(
+            keyStore = get(),
+        )
     }
+    single<AccountRepository> {
+        DefaultAccountRepository(
+            accountDao = get(),
+        )
+    }
+    single<ApiConfigurationRepository> {
+        DefaultApiConfigurationRepository(
+            provider = get(named("default")),
+            keyStore = get(),
+            credentialsRepository = get(),
+            authManager = get(),
+        )
+    }
+    single<CredentialsRepository> {
+        DefaultCredentialsRepository(
+            provider = get(named("other")),
+            json = get(),
+        )
+    }
+    single<IdentityRepository> {
+        DefaultIdentityRepository(
+            provider = get(named("default")),
+        )
+    }
+    single<ImageAutoloadObserver> {
+        DefaultImageAutoloadObserver(
+            networkStateObserver = get(),
+            settingsRepository = get(),
+        )
+    }
+    single<SettingsRepository> {
+        DefaultSettingsRepository(
+            settingsDao = get(),
+        )
+    }
+    single<StopWordRepository> {
+        DefaultStopWordRepository(
+            keyStore = get(),
+        )
+    }
+    single<InstanceShortcutRepository> {
+        DefaultInstanceShortcutRepository(
+            keyStore = get(),
+        )
+    }
+}

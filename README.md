@@ -221,7 +221,7 @@ For the main app:
 - [Compose Multiplatform Media Player](https://github.com/Chaintech-Network/ComposeMultiplatformMediaPlayer)
   for video playback;
 - [Connectivity](https://github.com/jordond/connectivity) to detect network state changes;
-- [Kodein](https://github.com/kosi-libs/Kodein) for dependency injection;
+- [Koin](https://insert-koin.io/) for dependency injection;
 - [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
 - [Ktor](https://ktor.io/) for networking;
 - [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for preference storage;
