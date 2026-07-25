@@ -1,5 +1,6 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
+    id("com.livefast.eattrash.di")
     id("com.livefast.eattrash.spotless")
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
@@ -9,8 +10,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.core)
                 implementation(libs.kotlinx.coroutines)
                 implementation(libs.room.sqlite)
                 implementation(libs.room.runtime)

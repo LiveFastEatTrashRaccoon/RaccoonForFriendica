@@ -1,16 +1,15 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
+    id("com.livefast.eattrash.di")
+    id("com.livefast.eattrash.serialization")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
-    id("com.livefast.eattrash.serialization")
 }
 
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.core)
                 implementation(libs.kotlinx.coroutines)
                 implementation(libs.ktor.client.core)
 

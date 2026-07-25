@@ -1,6 +1,7 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
     id("com.livefast.eattrash.composeMultiplatform")
+    id("com.livefast.eattrash.di")
     id("com.livefast.eattrash.sentryDsn")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
@@ -27,8 +28,6 @@ kotlin {
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.connectivity.core)
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.core)
                 implementation(libs.ktor.cio)
                 implementation(libs.sentry)
 
