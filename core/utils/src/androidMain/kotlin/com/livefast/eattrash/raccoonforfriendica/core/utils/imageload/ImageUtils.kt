@@ -5,10 +5,14 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import coil3.annotation.ExperimentalCoilApi
 import coil3.decode.Decoder
 import coil3.gif.AnimatedImageDecoder
 import coil3.gif.GifDecoder
 import coil3.network.NetworkFetcher
+import coil3.network.ktor3.KtorNetworkFetcherFactory
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
+import io.ktor.client.HttpClient
 
 actual fun ByteArray.toComposeImageBitmap(): ImageBitmap = BitmapFactory.decodeByteArray(this, 0, size).asImageBitmap()
 
@@ -23,4 +27,8 @@ actual fun getNativeDecoders(): List<Decoder.Factory> = buildList {
     }
 }
 
-actual fun getNativeFetchers(): List<NetworkFetcher.Factory> = emptyList()
+@OptIn(ExperimentalCoilApi::class)
+actual fun getNativeFetchers(): List<NetworkFetcher.Factory> = buildList {
+    val httpClient = HttpClient(provideHttpClientEngine())
+    add(KtorNetworkFetcherFactory(httpClient))
+}

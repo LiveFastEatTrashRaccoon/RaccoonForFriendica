@@ -43,7 +43,7 @@ kotlin {
                 implementation(libs.androidx.browser)
                 implementation(libs.coil.gif)
                 implementation(libs.connectivity.device)
-                implementation(libs.ktor.android)
+                implementation(libs.ktor.okhttp)
                 implementation(libs.moko.permissions)
                 implementation(libs.moko.permissions.compose)
                 implementation(libs.moko.permissions.notifications)
