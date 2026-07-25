@@ -1,6 +1,7 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
     id("com.livefast.eattrash.composeMultiplatform")
+    id("com.livefast.eattrash.di")
     id("com.livefast.eattrash.spotless")
 }
 
@@ -8,8 +9,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.core)
                 implementation(libs.calf)
                 implementation(libs.ksoup.html)
 

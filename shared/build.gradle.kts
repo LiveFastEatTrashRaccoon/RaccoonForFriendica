@@ -1,6 +1,7 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
     id("com.livefast.eattrash.composeMultiplatform")
+    id("com.livefast.eattrash.di")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
     id("com.livefast.eattrash.serialization")
@@ -19,8 +20,6 @@ kotlin {
 
                 implementation(libs.coil)
                 implementation(libs.compose.multiplatform.media.player)
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.compose.viewmodel)
                 implementation(libs.ktor.client.core)
 
                 implementation(projects.core.api)
@@ -99,6 +98,10 @@ customKotlinMultiplatformExtension {
     baseName.set("shared")
     // Required when using NativeSQLiteDriver
     iOSCustomLinkerOptions.set(listOf("-lsqlite3"))
+}
+
+customDiExtension {
+    useViewModels()
 }
 
 dependencies {
