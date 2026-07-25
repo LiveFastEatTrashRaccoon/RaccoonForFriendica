@@ -41,6 +41,11 @@ gradlePlugin {
             implementationClass = "plugins.KotlinMultiplatformPlugin"
         }
 
+        register("diPlugin") {
+            id = "com.livefast.eattrash.di"
+            implementationClass = "plugins.DiPlugin"
+        }
+
         register("serializationPlugin") {
             id = "com.livefast.eattrash.serialization"
             implementationClass = "plugins.SerializationPlugin"
