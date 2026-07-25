@@ -55,7 +55,7 @@ internal data class ServiceCreationArgs(val baseUrl: String, val client: HttpCli
 
 val apiModule = module {
     single<Json> {
-        JsonSerializer
+        Json { ignoreUnknownKeys = true }
     }
     single<HttpClientEngine> {
         provideHttpClientEngine()
@@ -157,5 +157,3 @@ val apiModule = module {
         DefaultUserService(baseUrl = arg.baseUrl, client = arg.client)
     }
 }
-
-private val JsonSerializer = Json { ignoreUnknownKeys = true }
