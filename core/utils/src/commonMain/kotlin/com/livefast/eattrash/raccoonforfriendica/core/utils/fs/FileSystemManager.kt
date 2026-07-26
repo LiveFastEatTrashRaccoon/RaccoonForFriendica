@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import okio.Path
 
@@ -25,7 +26,6 @@ interface FileSystemManager {
     fun getTempDir(): Path
 }
 
-fun getFileSystemManager(): FileSystemManager = getByInjection(FileSystemManager::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberFileSystemManager() = remember { getFileSystemManager() }
+fun rememberFileSystemManager() = remember { getByInjection(FileSystemManager::class) }

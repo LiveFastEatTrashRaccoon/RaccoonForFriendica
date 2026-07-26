@@ -2,22 +2,20 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
 
-fun getActiveAccountMonitor(): ActiveAccountMonitor = getByInjection(ActiveAccountMonitor::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberActiveAccountMonitor() = remember { getActiveAccountMonitor() }
+fun rememberActiveAccountMonitor() = remember { getByInjection(ActiveAccountMonitor::class) }
 
-fun getSetupAccountUseCase(): SetupAccountUseCase = getByInjection(SetupAccountUseCase::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberSetupAccountUseCase() = remember { getSetupAccountUseCase() }
+fun rememberSetupAccountUseCase() = remember { getByInjection(SetupAccountUseCase::class) }
 
-fun getEntryActionRepository(): EntryActionRepository = getByInjection(EntryActionRepository::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberEntryActionRepository() = remember { getEntryActionRepository() }
+fun rememberEntryActionRepository() = remember { getByInjection(EntryActionRepository::class) }

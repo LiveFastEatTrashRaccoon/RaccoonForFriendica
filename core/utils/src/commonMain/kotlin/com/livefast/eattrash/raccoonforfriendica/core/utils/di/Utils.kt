@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.Clipboard
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
@@ -15,45 +16,40 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkState
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import org.koin.core.parameter.parametersOf
 
-fun getImageLoaderProvider(): ImageLoaderProvider = getByInjection(ImageLoaderProvider::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberImageLoaderProvider() = remember { getImageLoaderProvider() }
+fun rememberImageLoaderProvider() = remember { getByInjection(ImageLoaderProvider::class) }
 
-fun getGalleryHelper(): GalleryHelper = getByInjection(GalleryHelper::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberGalleryHelper() = remember { getGalleryHelper() }
+fun rememberGalleryHelper() = remember { getByInjection(GalleryHelper::class) }
 
-fun getShareHelper(): ShareHelper = getByInjection(ShareHelper::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberShareHelper() = remember { getShareHelper() }
+fun rememberShareHelper() = remember { getByInjection(ShareHelper::class) }
 
-fun getAppInfoRepository(): AppInfoRepository = getByInjection(AppInfoRepository::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberAppInfoRepository() = remember { getAppInfoRepository() }
+fun rememberAppInfoRepository() = remember { getByInjection(AppInfoRepository::class) }
 
-fun getBlurHashRepository(): BlurHashRepository = getByInjection(BlurHashRepository::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberBlurHashRepository() = remember { getBlurHashRepository() }
+fun rememberBlurHashRepository() = remember { getByInjection(BlurHashRepository::class) }
 
-fun getCrashReportManager(): CrashReportManager = getByInjection(CrashReportManager::class)
-
-fun getCalendarHelper(): CalendarHelper = getByInjection(CalendarHelper::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberCalendarHelper() = remember { getCalendarHelper() }
+fun rememberCrashReportManager() = remember { getByInjection(CrashReportManager::class) }
 
-fun getNetworkStateObserver(): NetworkStateObserver = getByInjection(NetworkStateObserver::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberNetworkStateObserver() = remember { getNetworkStateObserver() }
+fun rememberCalendarHelper() = remember { getByInjection(CalendarHelper::class) }
 
-fun getClipboardHelper(clipboard: Clipboard): ClipboardHelper =
+@OptIn(DelicateDiApi::class)
+@Composable
+fun rememberNetworkStateObserver() = remember { getByInjection(NetworkStateObserver::class) }
+
+@OptIn(DelicateDiApi::class)
+@Composable
+fun rememberClipboardHelper(clipboard: Clipboard) = remember {
     getByInjection(clazz = ClipboardHelper::class, parameters = { parametersOf(clipboard) })
-
-@Composable
-fun rememberClipboardHelper(clipboard: Clipboard) = remember { getClipboardHelper(clipboard) }
+}

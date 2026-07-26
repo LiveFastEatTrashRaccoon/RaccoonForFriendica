@@ -5,19 +5,17 @@ import androidx.compose.runtime.remember
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.BarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 
-fun getThemeRepository(): ThemeRepository = getByInjection(ThemeRepository::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberThemeRepository() = remember { getThemeRepository() }
+fun rememberThemeRepository() = remember { getByInjection(ThemeRepository::class) }
 
-fun getColorSchemeProvider(): ColorSchemeProvider = getByInjection(ColorSchemeProvider::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberColorSchemeProvider() = remember { getColorSchemeProvider() }
+fun rememberColorSchemeProvider() = remember { getByInjection(ColorSchemeProvider::class) }
 
-fun getBarColorProvider(): BarColorProvider = getByInjection(BarColorProvider::class)
-
+@OptIn(DelicateDiApi::class)
 @Composable
-fun rememberBarColorProvider() = remember { getBarColorProvider() }
+fun rememberBarColorProvider() = remember { getByInjection(BarColorProvider::class) }
