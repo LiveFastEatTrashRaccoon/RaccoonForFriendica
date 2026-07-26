@@ -6,6 +6,7 @@ import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
+@DelicateDiApi
 actual fun <T : Any> getByInjection(clazz: KClass<T>, qualifier: Qualifier?, parameters: ParametersDefinition?): T =
     InnerHelper.retrieve(qualifier = qualifier, parameters = parameters)
 
