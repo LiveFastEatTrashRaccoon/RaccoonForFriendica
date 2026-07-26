@@ -71,6 +71,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTextField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
@@ -132,7 +133,10 @@ fun ComposerScreen(
     val navigationCoordinator = rememberNavigationCoordinator()
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val galleryHelper = rememberGalleryHelper()
-    val attachmentCache = remember { getAttachmentCache() }
+    val attachmentCache = remember {
+        @OptIn(DelicateDiApi::class)
+        getAttachmentCache()
+    }
     val focusManager = LocalFocusManager.current
     val missingDataError = LocalStrings.current.messagePostEmptyText
     val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
