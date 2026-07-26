@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.service
 
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.logDebug
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.common.UnifiedPushInteractor
@@ -8,6 +9,7 @@ import org.unifiedpush.android.connector.PushService
 import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
 
+@OptIn(DelicateDiApi::class)
 class DefaultPushService : PushService() {
     private val interactor = getByInjection(UnifiedPushInteractor::class)
 
