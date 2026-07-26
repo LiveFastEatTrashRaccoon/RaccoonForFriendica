@@ -22,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -51,7 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDraw
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.getCrashReportManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberCrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberNetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
@@ -59,7 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.r
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberSetupAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.getCustomUriHandler
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.rememberCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarViewModel
@@ -111,7 +110,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun App(onLoadingFinished: (() -> Unit)? = null) {
     // initialize crash reporting as soon as possible
-    val crashReportManager = remember { getCrashReportManager() }
+    val crashReportManager = rememberCrashReportManager()
     LaunchedEffect(crashReportManager) {
         crashReportManager.initialize()
     }
@@ -129,6 +128,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     val currentSettings by settingsRepository.current.collectAsState()
     val scope = rememberCoroutineScope()
     val fallbackUriHandler = LocalUriHandler.current
+    val customUriHandler = rememberCustomUriHandler(fallbackUriHandler)
 
     val backStack = rememberNavBackStack(
         configuration = Destination.SavedStateConfiguration,
@@ -204,7 +204,6 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
     }
 
     LaunchedEffect(navigationCoordinator) {
-        val customUriHandler = getCustomUriHandler(fallbackUriHandler)
         navigationCoordinator.deepLinkUrl
             .debounce(750.milliseconds)
             .onEach { url ->
@@ -224,13 +223,13 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
         }
     }
 
-    AppTheme(
-        useDynamicColors = currentSettings?.dynamicColors == true,
-        barTheme = currentSettings?.barTheme ?: UiBarTheme.Transparent,
-    ) {
-        ProvideResources {
-            ProvideCustomUriHandler {
-                ProvideStrings(lang = currentSettings?.lang ?: Locales.EN) {
+    ProvideResources {
+        ProvideCustomUriHandler {
+            ProvideStrings(lang = currentSettings?.lang ?: Locales.EN) {
+                AppTheme(
+                    useDynamicColors = currentSettings?.dynamicColors == true,
+                    barTheme = currentSettings?.barTheme ?: UiBarTheme.Transparent,
+                ) {
                     if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         ModalNavigationDrawer(
                             drawerState = drawerState,
@@ -315,21 +314,29 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                                             val exploreViewModel: ExploreMviModel = koinViewModel<ExploreViewModel>()
                                             val inboxViewModel: InboxMviModel = koinViewModel<InboxViewModel>()
                                             val profileViewModel: ProfileMviModel = koinViewModel<ProfileViewModel>()
-                                            val myAccountViewModel: MyAccountMviModel = koinViewModel<MyAccountViewModel>()
-                                            val favoritesViewModel: EntryListMviModel = koinViewModel<EntryListViewModel>{
-                                                parametersOf(EntryListViewModelArgs(type = EntryListType.Favorites))
-                                            }
-                                            val bookmarksViewModel: EntryListMviModel = koinViewModel<EntryListViewModel> {
-                                                parametersOf(EntryListViewModelArgs(type = EntryListType.Bookmarks))
-                                            }
-                                            val followedHashtagsViewModel: FollowedHashtagsMviModel = koinViewModel<FollowedHashtagsViewModel>()
-                                            val followRequestsViewModel: FollowRequestsMviModel = koinViewModel<FollowRequestsViewModel>()
+                                            val myAccountViewModel: MyAccountMviModel =
+                                                koinViewModel<MyAccountViewModel>()
+                                            val favoritesViewModel: EntryListMviModel =
+                                                koinViewModel<EntryListViewModel> {
+                                                    parametersOf(EntryListViewModelArgs(type = EntryListType.Favorites))
+                                                }
+                                            val bookmarksViewModel: EntryListMviModel =
+                                                koinViewModel<EntryListViewModel> {
+                                                    parametersOf(EntryListViewModelArgs(type = EntryListType.Bookmarks))
+                                                }
+                                            val followedHashtagsViewModel: FollowedHashtagsMviModel =
+                                                koinViewModel<FollowedHashtagsViewModel>()
+                                            val followRequestsViewModel: FollowRequestsMviModel =
+                                                koinViewModel<FollowRequestsViewModel>()
                                             val circlesViewModel: CirclesMviModel = koinViewModel<CirclesViewModel>()
-                                            val conversationListViewModel: ConversationListMviModel = koinViewModel<ConversationListViewModel>()
+                                            val conversationListViewModel: ConversationListMviModel =
+                                                koinViewModel<ConversationListViewModel>()
                                             val galleryViewModel: GalleryMviModel = koinViewModel<GalleryViewModel>()
-                                            val unpublishedViewModel: UnpublishedMviModel = koinViewModel<UnpublishedViewModel>()
+                                            val unpublishedViewModel: UnpublishedMviModel =
+                                                koinViewModel<UnpublishedViewModel>()
                                             val calendarViewModel: CalendarMviModel = koinViewModel<CalendarViewModel>()
-                                            val shortcutListViewModel: ShortcutListMviModel = koinViewModel<ShortcutListViewModel>()
+                                            val shortcutListViewModel: ShortcutListMviModel =
+                                                koinViewModel<ShortcutListViewModel>()
                                             val nodeInfoViewModel: NodeInfoMviModel = koinViewModel<NodeInfoViewModel>()
                                             val timelineLazyListState = rememberLazyListState()
                                             val exploreLazyListState = rememberLazyListState()

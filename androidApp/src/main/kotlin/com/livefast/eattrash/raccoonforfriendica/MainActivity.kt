@@ -11,11 +11,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
+import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.getAuthManager
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -24,7 +26,11 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(DelicateDiApi::class)
 class MainActivity : ComponentActivity() {
+    private val authManager = getByInjection(AuthManager::class)
+    private val navigationCoordinator = getByInjection(NavigationCoordinator::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         var loadingFinished = false
         installSplashScreen().setKeepOnScreenCondition {
@@ -33,7 +39,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        val navigationCoordinator = getNavigationCoordinator()
         val backPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -104,7 +109,6 @@ class MainActivity : ComponentActivity() {
             // OAuth2 redirect URL
             uri.scheme == DefaultAuthManager.REDIRECT_SCHEME &&
                 uri.host == DefaultAuthManager.REDIRECT_HOST -> {
-                val authManager = getAuthManager()
                 lifecycleScope.launch {
                     try {
                         authManager.performTokenExchange(uri.toString())
@@ -118,7 +122,6 @@ class MainActivity : ComponentActivity() {
                 // try opening deep link URL
                 uri.toString().takeUnless { it.isEmpty() }?.also { deeplinkUrl ->
                     lifecycleScope.launch {
-                        val navigationCoordinator = getNavigationCoordinator()
                         navigationCoordinator.submitDeeplink(deeplinkUrl)
                     }
                 }
@@ -158,7 +161,6 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             // workaround: wait until the root NavigationAdapter has been set
             delay(1.seconds)
-            val navigationCoordinator = getNavigationCoordinator()
             navigationCoordinator.popUntilRoot()
             navigationCoordinator.setCurrentSection(BottomNavigationSection.Inbox())
         }

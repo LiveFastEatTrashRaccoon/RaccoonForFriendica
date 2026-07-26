@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.di.ServiceCreationArgs
-import com.livefast.eattrash.raccoonforfriendica.core.api.di.getService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
@@ -24,6 +23,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineServic
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
+import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
+import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
@@ -47,6 +48,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
+import org.koin.core.parameter.parametersOf
 
 internal class DefaultServiceProvider(
     private val factory: HttpClientEngine,
@@ -196,26 +198,30 @@ internal class DefaultServiceProvider(
 
         this.client = currentClient
         val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = currentClient)
-        announcement = getService(creationArgs)
-        app = getService(creationArgs)
-        directMessage = getService(creationArgs)
-        event = getService(creationArgs)
-        followRequest = getService(creationArgs)
-        instance = getService(creationArgs)
-        list = getService(creationArgs)
-        marker = getService(creationArgs)
-        media = getService(creationArgs)
-        notification = getService(creationArgs)
-        photo = getService(creationArgs)
-        photoAlbum = getService(creationArgs)
-        poll = getService(creationArgs)
-        push = getService(creationArgs)
-        report = getService(creationArgs)
-        search = getService(creationArgs)
-        status = getService(creationArgs)
-        tag = getService(creationArgs)
-        timeline = getService(creationArgs)
-        trend = getService(creationArgs)
-        user = getService(creationArgs)
+        announcement = createServiceInstance(creationArgs)
+        app = createServiceInstance(creationArgs)
+        directMessage = createServiceInstance(creationArgs)
+        event = createServiceInstance(creationArgs)
+        followRequest = createServiceInstance(creationArgs)
+        instance = createServiceInstance(creationArgs)
+        list = createServiceInstance(creationArgs)
+        marker = createServiceInstance(creationArgs)
+        media = createServiceInstance(creationArgs)
+        notification = createServiceInstance(creationArgs)
+        photo = createServiceInstance(creationArgs)
+        photoAlbum = createServiceInstance(creationArgs)
+        poll = createServiceInstance(creationArgs)
+        push = createServiceInstance(creationArgs)
+        report = createServiceInstance(creationArgs)
+        search = createServiceInstance(creationArgs)
+        status = createServiceInstance(creationArgs)
+        tag = createServiceInstance(creationArgs)
+        timeline = createServiceInstance(creationArgs)
+        trend = createServiceInstance(creationArgs)
+        user = createServiceInstance(creationArgs)
     }
+
+    @OptIn(DelicateDiApi::class)
+    private inline fun <reified T : Any> createServiceInstance(args: ServiceCreationArgs): T =
+        getByInjection(clazz = T::class, parameters = { parametersOf(args) })
 }
