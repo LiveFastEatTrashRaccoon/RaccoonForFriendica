@@ -11,9 +11,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KoinTestRule
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.l10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.resourcesModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
@@ -156,8 +159,12 @@ class NodeInfoScreenScaffoldTest {
 
     private fun ComposeContentTestRule.setup(state: NodeInfoMviModel.State) {
         setContent {
-            CompositionLocalProvider(LocalUriHandler provides uriHandler) {
-                NodeInfoScreenScaffold(state)
+            ProvideResources {
+                ProvideStrings(lang = Locales.EN) {
+                    CompositionLocalProvider(LocalUriHandler provides uriHandler) {
+                        NodeInfoScreenScaffold(state)
+                    }
+                }
             }
         }
     }
