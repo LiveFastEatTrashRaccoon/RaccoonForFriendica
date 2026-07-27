@@ -17,7 +17,7 @@ open class GenerateInnerTranslationApiConfigTask : DefaultTask() {
     private val outputDirectory: File = project.file("build/generated/custom")
 
     @TaskAction
-    fun generateSentryConfig() {
+    fun generateInnerTranslationApiConfig() {
         val props = loadProperties()
         val file =
             FileSpec
@@ -28,13 +28,13 @@ open class GenerateInnerTranslationApiConfigTask : DefaultTask() {
                         .addProperty(
                             PropertySpec
                                 .builder(name = "TRANSLATION_API_URL", type = String::class)
-                                .initializer(format = "%S", props.getProperty("translation.api.url"))
+                                .initializer(format = "%S", props.getProperty("translation.api.url") ?: "")
                                 .build(),
                         )
                         .addProperty(
                             PropertySpec
                                 .builder(name = "TRANSLATION_API_KEY", type = String::class)
-                                .initializer(format = "%S", props.getProperty("translation.api.key"))
+                                .initializer(format = "%S", props.getProperty("translation.api.key") ?: "")
                                 .build(),
                         )
                         .build(),
@@ -43,7 +43,13 @@ open class GenerateInnerTranslationApiConfigTask : DefaultTask() {
     }
 
     private fun loadProperties(): Properties =
-        File(inputDirectory, "build.properties").inputStream().use {
-            Properties().apply { load(it) }
+        File(inputDirectory, "build.properties").let { file ->
+            if (file.exists()) {
+                file.inputStream().use {
+                    Properties().apply { load(it) }
+                }
+            } else {
+                Properties()
+            }
         }
 }

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.mokkery).apply(false)
     alias(libs.plugins.room).apply(false)
     alias(libs.plugins.kotlinx.kover).apply(false)
+    alias(libs.plugins.sentry).apply(false)
     alias(libs.plugins.spotless).apply(false)
     alias(libs.plugins.compose.desktop.linux.deps).apply(false)
 }

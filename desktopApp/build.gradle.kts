@@ -25,7 +25,7 @@ compose.desktop {
     application {
         mainClass = "com.livefast.eattrash.raccoonforfriendica.Main"
         nativeDistributions {
-            javaHome = System.getenv("JAVA_HOME")
+            javaHome = System.getenv("JAVA_HOME") ?: ""
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Raccoon"
             packageVersion = (rootProject.properties["versionName"] as? String)?.substringBefore("-")
