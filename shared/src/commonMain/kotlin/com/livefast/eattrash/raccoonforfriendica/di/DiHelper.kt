@@ -48,10 +48,13 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.di.timelineMod
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.di.unpublishedModule
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.userListModule
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.di.searchModule
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.includes
+
+fun KoinApplication.getAuthManager(): AuthManager = koin.get()
 
 fun setupDi(config: KoinAppDeclaration? = null): KoinApplication = startKoin {
     includes(config)

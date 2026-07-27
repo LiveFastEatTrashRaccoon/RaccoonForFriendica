@@ -18,7 +18,7 @@ open class GenerateSentryConfigTask : DefaultTask() {
     @TaskAction
     fun generateSentryConfig() {
         val props = loadProperties()
-        val dsn = props.getProperty("sentry_dsn")
+        val dsn = props.getProperty("sentry_dsn") ?: ""
         val file =
             FileSpec
                 .builder(packageName = PACKAGE_PREFIX, fileName = "SentryConfigurationValues")
@@ -36,7 +36,13 @@ open class GenerateSentryConfigTask : DefaultTask() {
     }
 
     private fun loadProperties(): Properties =
-        File(inputDirectory, "build.properties").inputStream().use {
-            Properties().apply { load(it) }
+        File(inputDirectory, "build.properties").let { file ->
+            if (file.exists()) {
+                file.inputStream().use {
+                    Properties().apply { load(it) }
+                }
+            } else {
+                Properties()
+            }
         }
 }

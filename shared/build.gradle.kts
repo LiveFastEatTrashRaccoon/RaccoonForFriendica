@@ -5,10 +5,16 @@ plugins {
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
     id("com.livefast.eattrash.serialization")
-    alias(libs.plugins.compose.desktop.linux.deps)
+    alias(libs.plugins.sentry)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.mokkery)
+}
+
+sentryKmp {
+    autoInstall {
+        enabled.set(false)
+    }
 }
 
 kotlin {
@@ -17,9 +23,9 @@ kotlin {
             dependencies {
                 implementation(libs.compose.material)
                 implementation(libs.compose.ui)
-
                 implementation(libs.coil)
                 implementation(libs.compose.multiplatform.media.player)
+                implementation(libs.koin.core)
                 implementation(libs.ktor.client.core)
 
                 implementation(projects.core.api)
@@ -42,7 +48,7 @@ kotlin {
                 implementation(projects.domain.content.repository)
                 implementation(projects.domain.content.usecase)
                 implementation(projects.domain.identity.data)
-                implementation(projects.domain.identity.repository)
+                api(projects.domain.identity.repository)
                 implementation(projects.domain.identity.usecase)
                 implementation(projects.domain.pullnotifications)
                 implementation(projects.domain.pushnotifications)
@@ -95,9 +101,21 @@ kotlin {
 }
 
 customKotlinMultiplatformExtension {
-    baseName.set("shared")
-    // Required when using NativeSQLiteDriver
-    iOSCustomLinkerOptions.set(listOf("-lsqlite3"))
+    iosFramework(
+        baseName = "shared",
+        linkerOptions =
+            listOf(
+                // required when using NativeSQLiteDriver
+                "-lsqlite3",
+                // tell the linker to look for Sentry.framework
+                "-framework",
+                "Sentry",
+            ),
+        exports =
+            listOf(
+                projects.domain.identity.repository,
+            ),
+    )
 }
 
 customDiExtension {

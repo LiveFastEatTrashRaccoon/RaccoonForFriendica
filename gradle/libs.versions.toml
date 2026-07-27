@@ -172,4 +172,6 @@ mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 
 room = { id = "androidx.room", version.ref = "room" }
 
+sentry = { id = "io.sentry.kotlin.multiplatform.gradle", version.ref = "sentry" }
+
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
