@@ -51,7 +51,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.parameter.parametersOf
 
 internal class DefaultServiceProvider(
-    private val factory: HttpClientEngine,
+    private val engine: HttpClientEngine,
     private val appInfoRepository: AppInfoRepository,
     private val requestTimeout: Long = 600_000,
     private val connectTimeout: Long = 30_000,
@@ -119,7 +119,7 @@ internal class DefaultServiceProvider(
                 cachedClient
             } else {
                 val newClient =
-                    HttpClient(factory) {
+                    HttpClient(engine) {
                         defaultRequest {
                             url {
                                 protocol = URLProtocol.HTTPS

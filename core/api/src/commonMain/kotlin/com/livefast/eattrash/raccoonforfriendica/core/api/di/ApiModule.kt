@@ -62,13 +62,13 @@ val apiModule = module {
     }
     single<ServiceProvider>(named("default")) {
         DefaultServiceProvider(
-            factory = get(),
+            engine = get(),
             appInfoRepository = get(),
         )
     }
     factory<ServiceProvider>(named("other")) {
         DefaultServiceProvider(
-            factory = get(),
+            engine = get(),
             appInfoRepository = get(),
         )
     }
