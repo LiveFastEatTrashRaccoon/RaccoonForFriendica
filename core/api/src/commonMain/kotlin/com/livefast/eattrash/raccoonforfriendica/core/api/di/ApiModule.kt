@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.DefaultServiceProvider
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceFactory
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
@@ -48,8 +49,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpC
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.serialization.json.Json
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import kotlin.reflect.KClass
 
 internal data class ServiceCreationArgs(val baseUrl: String, val client: HttpClient)
 
@@ -64,12 +67,20 @@ val apiModule = module {
         DefaultServiceProvider(
             engine = get(),
             appInfoRepository = get(),
+            factory = object : ServiceFactory {
+                override fun <T : Any> create(clazz: KClass<T>, args: ServiceCreationArgs): T =
+                    get(clazz = clazz, parameters = { parametersOf(args) })
+            },
         )
     }
     factory<ServiceProvider>(named("other")) {
         DefaultServiceProvider(
             engine = get(),
             appInfoRepository = get(),
+            factory = object : ServiceFactory {
+                override fun <T : Any> create(clazz: KClass<T>, args: ServiceCreationArgs): T =
+                    get(clazz = clazz, parameters = { parametersOf(args) })
+            },
         )
     }
     factory<AnnouncementService> { params ->
