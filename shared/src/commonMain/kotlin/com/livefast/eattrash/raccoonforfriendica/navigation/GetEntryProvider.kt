@@ -210,6 +210,7 @@ internal fun getEntryProvider(
             draftId = it.draftId,
             urlToShare = it.urlToShare,
             initialText = it.initialText,
+            hasInitialAttachment = it.hasInitialAttachment,
         )
     }
     entry<Destination.Search>(metadata = ListDetailSceneStrategy.listPane()) {

@@ -71,7 +71,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsSwitchRow
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTextField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
-import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
@@ -86,7 +85,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di.getAttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.AttachmentsGrid
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreateInGroupInfo
@@ -122,6 +120,7 @@ fun ComposerScreen(
     draftId: String? = null,
     urlToShare: String? = null,
     initialText: String? = null,
+    hasInitialAttachment: Boolean = false,
 ) {
     val model: ComposerMviModel = koinViewModel<ComposerViewModel> {
         parametersOf(ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId))
@@ -133,10 +132,6 @@ fun ComposerScreen(
     val navigationCoordinator = rememberNavigationCoordinator()
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val galleryHelper = rememberGalleryHelper()
-    val attachmentCache = remember {
-        @OptIn(DelicateDiApi::class)
-        getAttachmentCache()
-    }
     val focusManager = LocalFocusManager.current
     val missingDataError = LocalStrings.current.messagePostEmptyText
     val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility
@@ -192,9 +187,6 @@ fun ComposerScreen(
     val navState = rememberNavigationEventState(NavigationEventInfo.None)
 
     LaunchedEffect(model) {
-        val initialAttachment = attachmentCache.get()
-        attachmentCache.clear()
-
         when {
             draftId != null ->
                 model.reduce(ComposerMviModel.Intent.LoadDraft(draftId))
@@ -219,13 +211,11 @@ fun ComposerScreen(
                     ),
                 )
 
-            initialAttachment != null ->
-                model.reduce(ComposerMviModel.Intent.AddAttachment(initialAttachment))
+            hasInitialAttachment ->
+                model.reduce(ComposerMviModel.Intent.AddInitialAttachment)
 
             inReplyToId != null ->
-                model.reduce(
-                    ComposerMviModel.Intent.AddInitialMentions(initialHandle = inReplyToHandle),
-                )
+                model.reduce(ComposerMviModel.Intent.AddInitialMentions(initialHandle = inReplyToHandle))
 
             !inReplyToHandle.isNullOrEmpty() ->
                 model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))

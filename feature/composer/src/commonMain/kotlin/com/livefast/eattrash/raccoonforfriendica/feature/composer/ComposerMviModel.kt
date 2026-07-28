@@ -46,6 +46,8 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
 
         data class SetSensitive(val sensitive: Boolean) : Intent
 
+        data object AddInitialAttachment : Intent
+
         data class AddAttachment(val byteArray: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true

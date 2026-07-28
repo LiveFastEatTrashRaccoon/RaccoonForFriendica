@@ -33,6 +33,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Album
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
@@ -90,6 +91,7 @@ class ComposerViewModel(
     private val stripMarkup: StripMarkupUseCase,
     private val bbCodeConverter: BBCodeConverter,
     private val notificationCenter: NotificationCenter,
+    private val attachmentCache: AttachmentCache,
 ) : ViewModel(),
     MviModelDelegate<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>
     by DefaultMviModelDelegate(initialState = ComposerMviModel.State()),
@@ -289,6 +291,18 @@ class ComposerViewModel(
                         it.copy(
                             visibility = intent.visibility,
                             hasUnsavedChanges = true,
+                        )
+                    }
+                }
+
+            ComposerMviModel.Intent.AddInitialAttachment ->
+                viewModelScope.launch {
+                    val attachmentBytes = attachmentCache.get()
+                    attachmentCache.clear()
+                    if (attachmentBytes != null) {
+                        uploadAttachment(
+                            byteArray = attachmentBytes,
+                            isInlineImage = false,
                         )
                     }
                 }

@@ -188,6 +188,7 @@ class DefaultMainRouter(
                 editedPostId = editedPostId,
                 urlToShare = urlToShare,
                 initialText = initialText,
+                hasInitialAttachment = initialAttachment != null,
             ),
         )
     }

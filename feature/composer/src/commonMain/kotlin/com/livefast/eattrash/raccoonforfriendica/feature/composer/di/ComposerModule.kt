@@ -42,6 +42,7 @@ val composerModule = module {
             stripMarkup = get(),
             bbCodeConverter = get(),
             notificationCenter = get(),
+            attachmentCache = get(),
         )
     }
 }
