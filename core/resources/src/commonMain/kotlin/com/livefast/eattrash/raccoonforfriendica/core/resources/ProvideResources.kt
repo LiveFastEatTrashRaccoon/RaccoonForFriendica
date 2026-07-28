@@ -7,13 +7,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
 import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
 
-@OptIn(DelicateDiApi::class)
 val LocalResources: ProvidableCompositionLocal<CoreResources> =
     staticCompositionLocalOf {
         error("CompositionLocal CoreResources not found")
     }
 
-@OptIn(DelicateDiApi::class)
 @Composable
 fun ProvideResources(content: @Composable () -> Unit) {
     val resources = rememberCoreResources()
