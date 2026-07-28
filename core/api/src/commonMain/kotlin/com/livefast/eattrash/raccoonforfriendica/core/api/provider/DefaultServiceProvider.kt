@@ -23,8 +23,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineServic
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
-import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
-import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
@@ -48,11 +46,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
-import org.koin.core.parameter.parametersOf
 
 internal class DefaultServiceProvider(
     private val engine: HttpClientEngine,
     private val appInfoRepository: AppInfoRepository,
+    private val factory: ServiceFactory,
     private val requestTimeout: Long = 600_000,
     private val connectTimeout: Long = 30_000,
 ) : ServiceProvider {
@@ -87,8 +85,6 @@ internal class DefaultServiceProvider(
     override lateinit var user: UserService
 
     private val baseUrl: String get() = "https://$currentNode/api"
-
-    private var client: HttpClient? = null
     private var lastCredentials: ServiceCredentials? = null
     private val clientCache = mutableMapOf<Pair<String, ServiceCredentials?>, HttpClient>()
 
@@ -100,18 +96,16 @@ internal class DefaultServiceProvider(
     }
 
     override fun setAuth(credentials: ServiceCredentials?) {
-        if (lastCredentials != credentials) {
-            reinitialize(credentials = credentials, force = false)
-        }
+        reinitialize(credentials = credentials, force = false)
     }
 
     private fun reinitialize(credentials: ServiceCredentials?, force: Boolean) {
-        if (!force && lastCredentials == credentials && client != null) {
+        val key = currentNode to credentials
+        if (!force && lastCredentials == credentials && clientCache[key] != null) {
             return
         }
 
         lastCredentials = credentials
-        val key = currentNode to credentials
         val cachedClient = clientCache[key]
 
         val currentClient =
@@ -196,32 +190,27 @@ internal class DefaultServiceProvider(
                 newClient
             }
 
-        this.client = currentClient
         val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = currentClient)
-        announcement = createServiceInstance(creationArgs)
-        app = createServiceInstance(creationArgs)
-        directMessage = createServiceInstance(creationArgs)
-        event = createServiceInstance(creationArgs)
-        followRequest = createServiceInstance(creationArgs)
-        instance = createServiceInstance(creationArgs)
-        list = createServiceInstance(creationArgs)
-        marker = createServiceInstance(creationArgs)
-        media = createServiceInstance(creationArgs)
-        notification = createServiceInstance(creationArgs)
-        photo = createServiceInstance(creationArgs)
-        photoAlbum = createServiceInstance(creationArgs)
-        poll = createServiceInstance(creationArgs)
-        push = createServiceInstance(creationArgs)
-        report = createServiceInstance(creationArgs)
-        search = createServiceInstance(creationArgs)
-        status = createServiceInstance(creationArgs)
-        tag = createServiceInstance(creationArgs)
-        timeline = createServiceInstance(creationArgs)
-        trend = createServiceInstance(creationArgs)
-        user = createServiceInstance(creationArgs)
+        announcement = factory.create(clazz = AnnouncementService::class, args = creationArgs)
+        app = factory.create(clazz = AppService::class, args = creationArgs)
+        directMessage = factory.create(clazz = DirectMessageService::class, args = creationArgs)
+        event = factory.create(clazz = EventService::class, args = creationArgs)
+        followRequest = factory.create(clazz = FollowRequestService::class, args = creationArgs)
+        instance = factory.create(clazz = InstanceService::class, args = creationArgs)
+        list = factory.create(clazz = ListService::class, args = creationArgs)
+        marker = factory.create(clazz = MarkerService::class, args = creationArgs)
+        media = factory.create(clazz = MediaService::class, args = creationArgs)
+        notification = factory.create(clazz = NotificationService::class, args = creationArgs)
+        photo = factory.create(clazz = PhotoService::class, args = creationArgs)
+        photoAlbum = factory.create(clazz = PhotoAlbumService::class, args = creationArgs)
+        poll = factory.create(clazz = PollService::class, args = creationArgs)
+        push = factory.create(clazz = PushService::class, args = creationArgs)
+        report = factory.create(clazz = ReportService::class, args = creationArgs)
+        search = factory.create(clazz = SearchService::class, args = creationArgs)
+        status = factory.create(clazz = StatusService::class, args = creationArgs)
+        tag = factory.create(clazz = TagsService::class, args = creationArgs)
+        timeline = factory.create(clazz = TimelineService::class, args = creationArgs)
+        trend = factory.create(clazz = TrendsService::class, args = creationArgs)
+        user = factory.create(clazz = UserService::class, args = creationArgs)
     }
-
-    @OptIn(DelicateDiApi::class)
-    private inline fun <reified T : Any> createServiceInstance(args: ServiceCreationArgs): T =
-        getByInjection(clazz = T::class, parameters = { parametersOf(args) })
 }
