@@ -67,6 +67,7 @@ sealed interface Destination : NavKey {
         val draftId: String? = null,
         val urlToShare: String? = null,
         val initialText: String? = null,
+        val hasInitialAttachment: Boolean = false,
     ) : Destination
 
     @Serializable
