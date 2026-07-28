@@ -85,8 +85,6 @@ internal class DefaultServiceProvider(
     override lateinit var user: UserService
 
     private val baseUrl: String get() = "https://$currentNode/api"
-
-    private var client: HttpClient? = null
     private var lastCredentials: ServiceCredentials? = null
     private val clientCache = mutableMapOf<Pair<String, ServiceCredentials?>, HttpClient>()
 
@@ -98,18 +96,16 @@ internal class DefaultServiceProvider(
     }
 
     override fun setAuth(credentials: ServiceCredentials?) {
-        if (lastCredentials != credentials) {
-            reinitialize(credentials = credentials, force = false)
-        }
+        reinitialize(credentials = credentials, force = false)
     }
 
     private fun reinitialize(credentials: ServiceCredentials?, force: Boolean) {
-        if (!force && lastCredentials == credentials && client != null) {
+        val key = currentNode to credentials
+        if (!force && lastCredentials == credentials && clientCache[key] != null) {
             return
         }
 
         lastCredentials = credentials
-        val key = currentNode to credentials
         val cachedClient = clientCache[key]
 
         val currentClient =
@@ -194,7 +190,6 @@ internal class DefaultServiceProvider(
                 newClient
             }
 
-        this.client = currentClient
         val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = currentClient)
         announcement = factory.create(clazz = AnnouncementService::class, args = creationArgs)
         app = factory.create(clazz = AppService::class, args = creationArgs)
