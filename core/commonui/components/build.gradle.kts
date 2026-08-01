@@ -22,3 +22,7 @@ kotlin {
         }
     }
 }
+
+customDiExtension {
+    useCompose()
+}

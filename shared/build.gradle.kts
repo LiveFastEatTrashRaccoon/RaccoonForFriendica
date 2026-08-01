@@ -119,7 +119,7 @@ customKotlinMultiplatformExtension {
 }
 
 customDiExtension {
-    useViewModels()
+    useCompose(withViewModels = true)
 }
 
 dependencies {

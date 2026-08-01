@@ -31,5 +31,5 @@ kotlin {
 }
 
 customDiExtension {
-    useViewModels()
+    useCompose(withViewModels = true)
 }

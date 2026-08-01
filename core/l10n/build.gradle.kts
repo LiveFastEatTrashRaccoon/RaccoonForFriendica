@@ -18,6 +18,10 @@ kotlin {
     }
 }
 
+customDiExtension {
+    useCompose()
+}
+
 spotless {
     kotlin {
         target("**/ProvideStrings.kt")

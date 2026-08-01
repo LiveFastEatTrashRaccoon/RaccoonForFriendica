@@ -7,7 +7,7 @@ import utils.dependency
 import utils.libs
 
 interface CustomDiExtension {
-    fun useViewModels()
+    fun useCompose(withViewModels: Boolean = false)
 }
 
 internal fun Project.configureDi(extension: KotlinMultiplatformExtension) {
@@ -30,11 +30,14 @@ internal fun Project.configureDi(extension: KotlinMultiplatformExtension) {
 }
 
 open class CustomDiExtensionImpl(private val target: Project) : CustomDiExtension {
-    override fun useViewModels() {
+    override fun useCompose(withViewModels: Boolean) {
         with(target) {
             extensions.configure<KotlinMultiplatformExtension> {
                 sourceSets.getByName("commonMain").dependencies {
-                    implementation(libs.findLibrary("koin-compose-viewmodel").dependency)
+                    implementation(libs.findLibrary("koin-compose").dependency)
+                    if (withViewModels) {
+                        implementation(libs.findLibrary("koin-compose-viewmodel").dependency)
+                    }
                 }
             }
         }
