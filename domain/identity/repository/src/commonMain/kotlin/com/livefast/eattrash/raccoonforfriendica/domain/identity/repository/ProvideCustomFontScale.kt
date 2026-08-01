@@ -7,12 +7,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toScaleFactor
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.rememberSettingsRepository
+import org.koin.compose.koinInject
 
 @Composable
 fun ProvideCustomFontScale(content: @Composable () -> Unit) {
     val defaultDensity = LocalDensity.current
-    val settingsRepository = rememberSettingsRepository()
+    val settingsRepository: SettingsRepository = koinInject()
     val currentSettings by settingsRepository.current.collectAsState()
     val scaleFactor = currentSettings?.fontScale?.toScaleFactor() ?: 1f
     CompositionLocalProvider(

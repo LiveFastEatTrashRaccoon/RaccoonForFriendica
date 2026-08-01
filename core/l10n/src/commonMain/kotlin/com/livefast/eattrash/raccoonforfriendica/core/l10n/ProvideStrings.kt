@@ -5,7 +5,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalLayoutDirection
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.rememberStrings
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 val LocalStrings: ProvidableCompositionLocal<Strings> =
     staticCompositionLocalOf {
@@ -14,7 +15,7 @@ val LocalStrings: ProvidableCompositionLocal<Strings> =
 
 @Composable
 fun ProvideStrings(lang: String, content: @Composable () -> Unit) {
-    val strings = rememberStrings(lang)
+    val strings: Strings = koinInject(parameters = { parametersOf(lang) })
     CompositionLocalProvider(
         LocalStrings provides strings,
         LocalLayoutDirection provides lang.toLanguageDirection(),

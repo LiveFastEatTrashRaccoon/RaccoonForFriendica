@@ -72,13 +72,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsS
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SpoilerTextField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberGalleryHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
@@ -102,6 +102,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Uti
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.ComposerViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -129,9 +130,9 @@ fun ComposerScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
-    val galleryHelper = rememberGalleryHelper()
+    val galleryHelper: GalleryHelper = koinInject()
     val focusManager = LocalFocusManager.current
     val missingDataError = LocalStrings.current.messagePostEmptyText
     val invalidVisibilityError = LocalStrings.current.messagePostInvalidVisibility

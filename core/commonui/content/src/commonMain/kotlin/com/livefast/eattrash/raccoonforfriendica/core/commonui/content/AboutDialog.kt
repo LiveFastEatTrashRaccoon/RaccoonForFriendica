@@ -41,16 +41,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfo
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberAppInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
-    val mainRouter = rememberMainRouter()
-    val appInfoRepository = rememberAppInfoRepository()
+    val mainRouter: MainRouter = koinInject()
+    val appInfoRepository: AppInfoRepository = koinInject()
     val appInfo by appInfoRepository.appInfo.collectAsState()
 
     BasicAlertDialog(

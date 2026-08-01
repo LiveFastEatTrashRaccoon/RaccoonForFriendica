@@ -56,7 +56,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toScaleFactor
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toTypography
@@ -81,8 +81,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageFlag
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageName
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
@@ -90,7 +90,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.toReadableNa
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getPrettyDuration
-import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.rememberFileSystemManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapperBindEffect
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
@@ -107,6 +107,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.SettingsVie
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
@@ -126,12 +127,12 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
-    val mainRouter = rememberMainRouter()
+    val mainRouter: MainRouter = koinInject()
     val scope = rememberCoroutineScope()
-    val fileSystemManager = rememberFileSystemManager()
-    val themeRepository = rememberThemeRepository()
+    val fileSystemManager: FileSystemManager = koinInject()
+    val themeRepository: ThemeRepository = koinInject()
     val snackbarHostState = remember { SnackbarHostState() }
     val successMessage = LocalStrings.current.messageSuccess
     val errorMessage = LocalStrings.current.messageGenericError

@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,17 +18,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewAccountScreen(modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
 
     Scaffold(

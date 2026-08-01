@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
@@ -43,8 +42,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Placeh
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -55,6 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAcc
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,8 +68,8 @@ fun ProfileScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val scope = rememberCoroutineScope()
-    val drawerCoordinator = rememberDrawerCoordinator()
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val drawerCoordinator: DrawerCoordinator = koinInject()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val successMessage = LocalStrings.current.messageSuccess
     var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }

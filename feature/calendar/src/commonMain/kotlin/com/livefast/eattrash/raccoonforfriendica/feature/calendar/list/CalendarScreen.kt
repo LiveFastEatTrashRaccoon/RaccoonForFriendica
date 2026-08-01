@@ -40,20 +40,21 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberCalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarRow
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarRowPlaceholder
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,13 +63,13 @@ fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
-    val mainRouter = rememberMainRouter()
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val mainRouter: MainRouter = koinInject()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val calendarHelper = rememberCalendarHelper()
+    val calendarHelper: CalendarHelper = koinInject()
 
     fun goBackToTop() {
         runCatching {

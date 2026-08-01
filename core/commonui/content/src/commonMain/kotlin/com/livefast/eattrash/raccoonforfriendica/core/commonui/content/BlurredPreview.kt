@@ -15,10 +15,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberBlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.toComposeImageBitmap
+import org.koin.compose.koinInject
 import org.koin.dsl.module
 
 @Composable
@@ -29,7 +29,7 @@ internal fun BlurredPreview(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.FillWidth,
 ) {
-    val repository = rememberBlurHashRepository()
+    val repository: BlurHashRepository = koinInject()
 
     if (originalWidth > 0 && originalHeight > 0) {
         var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }

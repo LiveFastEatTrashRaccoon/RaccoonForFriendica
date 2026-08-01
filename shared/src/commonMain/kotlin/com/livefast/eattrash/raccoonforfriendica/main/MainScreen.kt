@@ -35,7 +35,7 @@ import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigati
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultBottomNavigationAdapter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
@@ -49,6 +49,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.navigation.bottomGetEntryProvider
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
@@ -68,7 +69,7 @@ fun MainScreen(
 ) {
     val model: MainMviModel = koinViewModel<MainViewModel>()
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

@@ -63,9 +63,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.rememberFabNestedScrollConnection
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
@@ -82,9 +82,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSecti
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard.ClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
@@ -92,10 +93,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.prettifyDate
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberClipboardHelper
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
+import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
@@ -104,11 +104,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
@@ -122,17 +123,17 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val uriHandler = LocalUriHandler.current
-    val mainRouter = rememberMainRouter()
+    val mainRouter: MainRouter = koinInject()
     val lazyListState = rememberLazyListState()
-    val fabNestedScrollConnection = rememberFabNestedScrollConnection()
+    val fabNestedScrollConnection: FabNestedScrollConnection = koinInject()
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val shareHelper = rememberShareHelper()
-    val actionRepository = rememberEntryActionRepository()
+    val shareHelper: ShareHelper = koinInject()
+    val actionRepository: EntryActionRepository = koinInject()
     val stickyHeaderTopOffset by animateDpAsState(
         if (lazyListState.firstVisibleItemIndex >= 2) {
             Dimensions.maxTopBarInset * topAppBarState.collapsedFraction
@@ -142,7 +143,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
     )
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
-    val clipboardHelper = rememberClipboardHelper(clipboard)
+    val clipboardHelper: ClipboardHelper = koinInject(parameters = { parametersOf(clipboard) })
     val genericError = LocalStrings.current.messageGenericError
     val focusManager = LocalFocusManager.current
     var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }

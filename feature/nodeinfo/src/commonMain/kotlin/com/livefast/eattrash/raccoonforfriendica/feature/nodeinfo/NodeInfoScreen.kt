@@ -60,8 +60,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.SettingsR
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
@@ -71,11 +71,12 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @Composable
 fun NodeInfoScreen(model: NodeInfoMviModel, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }
     val successMessage = LocalStrings.current.messageSuccess
 
@@ -127,10 +128,10 @@ fun NodeInfoScreenScaffold(
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val uriHandler = LocalUriHandler.current
-    val mainRouter = rememberMainRouter()
+    val mainRouter: MainRouter = koinInject()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 

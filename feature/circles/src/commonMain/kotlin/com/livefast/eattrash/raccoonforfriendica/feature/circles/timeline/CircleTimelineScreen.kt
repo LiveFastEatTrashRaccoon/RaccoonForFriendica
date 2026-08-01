@@ -50,26 +50,27 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberMainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard.ClipboardHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberClipboardHelper
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberShareHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
+import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberEntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.CircleTimelineViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
@@ -81,21 +82,21 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
         parametersOf(CircleTimelineViewModelArgs(id))
     }
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current
-    val mainRouter = rememberMainRouter()
+    val mainRouter: MainRouter = koinInject()
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val shareHelper = rememberShareHelper()
-    val actionRepository = rememberEntryActionRepository()
+    val shareHelper: ShareHelper = koinInject()
+    val actionRepository: EntryActionRepository = koinInject()
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboard = LocalClipboard.current
-    val clipboardHelper = rememberClipboardHelper(clipboard)
+    val clipboardHelper: ClipboardHelper = koinInject(parameters = { parametersOf(clipboard) })
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
