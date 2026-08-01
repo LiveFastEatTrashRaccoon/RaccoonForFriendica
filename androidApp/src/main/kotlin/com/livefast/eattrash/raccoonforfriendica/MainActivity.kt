@@ -11,11 +11,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.livefast.eattrash.raccoonforfriendica.auth.DefaultAuthManager
-import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
-import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.getMainRouter
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import kotlinx.coroutines.CancellationException
@@ -23,13 +21,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-@OptIn(DelicateDiApi::class)
 class MainActivity : ComponentActivity() {
-    private val authManager = getByInjection(AuthManager::class)
-    private val navigationCoordinator = getByInjection(NavigationCoordinator::class)
+    private val authManager: AuthManager by inject()
+    private val mainRouter: MainRouter by inject()
+    private val navigationCoordinator: NavigationCoordinator by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var loadingFinished = false
@@ -133,7 +132,6 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             // workaround: wait until the root NavigationAdapter has been set
             delay(750.milliseconds)
-            val mainRouter = getMainRouter()
             when {
                 "text/plain" == intent.type -> {
                     intent.getStringExtra(Intent.EXTRA_TEXT)?.also { content ->
