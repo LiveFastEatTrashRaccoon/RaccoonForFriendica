@@ -11,7 +11,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(projects.core.appearance)
-                implementation(projects.core.di)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
                 implementation(projects.core.preferences)

@@ -13,7 +13,6 @@ kotlin {
                 implementation(libs.ksoup.html)
 
                 implementation(projects.core.appearance)
-                implementation(projects.core.di)
                 implementation(projects.core.commonui.components)
                 implementation(projects.core.htmlparse)
                 implementation(projects.core.l10n)

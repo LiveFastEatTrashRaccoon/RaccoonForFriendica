@@ -18,7 +18,6 @@ kotlin {
             dependencies {
                 implementation(libs.materialKolor)
 
-                implementation(projects.core.di)
                 implementation(projects.core.l10n)
                 implementation(projects.core.resources)
             }

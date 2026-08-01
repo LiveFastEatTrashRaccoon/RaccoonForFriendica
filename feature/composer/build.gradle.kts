@@ -13,7 +13,6 @@ kotlin {
                 implementation(projects.core.architecture)
                 implementation(projects.core.commonui.components)
                 implementation(projects.core.commonui.content)
-                implementation(projects.core.di)
                 implementation(projects.core.htmlparse)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)

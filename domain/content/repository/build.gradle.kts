@@ -14,7 +14,6 @@ kotlin {
                 implementation(libs.ktor.client.core)
 
                 implementation(projects.core.api)
-                implementation(projects.core.di)
                 implementation(projects.core.translation)
                 implementation(projects.core.utils)
 

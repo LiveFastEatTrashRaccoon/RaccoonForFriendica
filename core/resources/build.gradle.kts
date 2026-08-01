@@ -11,8 +11,6 @@ kotlin {
             dependencies {
                 implementation(libs.compose.components.resources)
                 implementation(libs.compose.multiplatform.media.player)
-
-                implementation(projects.core.di)
             }
         }
     }
