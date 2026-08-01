@@ -10,7 +10,6 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.di)
             implementation(projects.core.utils)
             implementation(projects.domain.content.data)
         }

@@ -86,7 +86,6 @@ dependencies {
 
     implementation(projects.shared)
     implementation(projects.core.appearance)
-    implementation(projects.core.di)
     implementation(projects.core.utils)
     implementation(projects.core.navigation)
     implementation(projects.core.persistence)

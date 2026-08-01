@@ -31,7 +31,6 @@ kotlin {
                 implementation(projects.core.api)
                 implementation(projects.core.appearance)
                 implementation(projects.core.architecture)
-                implementation(projects.core.di)
                 implementation(projects.core.commonui.components)
                 implementation(projects.core.commonui.content)
                 implementation(projects.core.l10n)
@@ -119,7 +118,7 @@ customKotlinMultiplatformExtension {
 }
 
 customDiExtension {
-    useViewModels()
+    useCompose(withViewModels = true)
 }
 
 dependencies {

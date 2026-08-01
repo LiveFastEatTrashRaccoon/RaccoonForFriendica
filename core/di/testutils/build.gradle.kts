@@ -11,8 +11,6 @@ kotlin {
                 implementation(kotlin("test-junit"))
                 implementation(libs.androidx.test.core)
                 implementation(libs.koin.test)
-
-                implementation(projects.core.di)
             }
         }
     }

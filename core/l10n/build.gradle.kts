@@ -11,11 +11,13 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.compose.components.resources)
-
-                implementation(projects.core.di)
             }
         }
     }
+}
+
+customDiExtension {
+    useCompose()
 }
 
 spotless {

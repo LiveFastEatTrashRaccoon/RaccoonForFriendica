@@ -38,27 +38,27 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.rememberL10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultNavigationAdapter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberCrashReportManager
-import com.livefast.eattrash.raccoonforfriendica.core.utils.di.rememberNetworkStateObserver
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.di.rememberSettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberActiveAccountMonitor
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.di.rememberSetupAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.di.rememberCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarViewModel
@@ -101,6 +101,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
@@ -110,25 +111,25 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun App(onLoadingFinished: (() -> Unit)? = null) {
     // initialize crash reporting as soon as possible
-    val crashReportManager = rememberCrashReportManager()
+    val crashReportManager: CrashReportManager = koinInject()
     LaunchedEffect(crashReportManager) {
         crashReportManager.initialize()
     }
 
-    val navigationCoordinator = rememberNavigationCoordinator()
-    val l10nManager = rememberL10nManager()
-    val themeRepository = rememberThemeRepository()
-    val settingsRepository = rememberSettingsRepository()
-    val activeAccountMonitor = rememberActiveAccountMonitor()
-    val setupAccountUseCase = rememberSetupAccountUseCase()
-    val networkStateObserver = rememberNetworkStateObserver()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
+    val l10nManager: L10nManager = koinInject()
+    val themeRepository: ThemeRepository = koinInject()
+    val settingsRepository: SettingsRepository = koinInject()
+    val activeAccountMonitor: ActiveAccountMonitor = koinInject()
+    val setupAccountUseCase: SetupAccountUseCase = koinInject()
+    val networkStateObserver: NetworkStateObserver = koinInject()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val drawerCoordinator = rememberDrawerCoordinator()
+    val drawerCoordinator: DrawerCoordinator = koinInject()
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
     val currentSettings by settingsRepository.current.collectAsState()
     val scope = rememberCoroutineScope()
     val fallbackUriHandler = LocalUriHandler.current
-    val customUriHandler = rememberCustomUriHandler(fallbackUriHandler)
+    val customUriHandler: CustomUriHandler = koinInject(parameters = { parametersOf(fallbackUriHandler) })
 
     val backStack = rememberNavBackStack(
         configuration = Destination.SavedStateConfiguration,

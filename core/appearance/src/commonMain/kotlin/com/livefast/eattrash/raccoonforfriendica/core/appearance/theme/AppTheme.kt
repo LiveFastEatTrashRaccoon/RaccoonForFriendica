@@ -7,16 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberBarColorProvider
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberColorSchemeProvider
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.rememberThemeRepository
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
+import org.koin.compose.koinInject
 
 @Composable
 fun AppTheme(useDynamicColors: Boolean, barTheme: UiBarTheme, content: @Composable () -> Unit) {
-    val repository = rememberThemeRepository()
+    val repository: ThemeRepository = koinInject()
     val themeState by repository.theme.collectAsState()
     val customSeedColor by repository.customSeedColor.collectAsState()
-    val colorSchemeProvider = rememberColorSchemeProvider()
+    val colorSchemeProvider: ColorSchemeProvider = koinInject()
     val colorScheme =
         colorSchemeProvider.getColorScheme(
             theme = themeState,
@@ -28,7 +27,7 @@ fun AppTheme(useDynamicColors: Boolean, barTheme: UiBarTheme, content: @Composab
     val fontFamily by repository.fontFamily.collectAsState()
     val typography = fontFamily.toTypography()
 
-    val barColorProvider = rememberBarColorProvider()
+    val barColorProvider: BarColorProvider = koinInject()
     barColorProvider.setBarColorAccordingToTheme(
         theme = themeState,
         barTheme = barTheme,

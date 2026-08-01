@@ -8,23 +8,21 @@ import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
-import com.livefast.eattrash.raccoonforfriendica.core.di.getByInjection
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.parameter.parametersOf
+import org.koin.java.KoinJavaComponent.inject
 import java.util.Collections.max
 
-@OptIn(DelicateDiApi::class)
 internal class CheckNotificationWorker(private val context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
-    private val inboxManager = getByInjection(InboxManager::class)
-    private val settingsRepository = getByInjection(SettingsRepository::class)
-    private val strings = getByInjection(
-        clazz = Strings::class,
+    private val inboxManager: InboxManager by inject(InboxManager::class.java)
+    private val settingsRepository: SettingsRepository by inject(SettingsRepository::class.java)
+    private val strings: Strings by inject(
+        clazz = Strings::class.java,
         parameters = { parametersOf(settingsRepository.current.value?.lang ?: "en") },
     )
 

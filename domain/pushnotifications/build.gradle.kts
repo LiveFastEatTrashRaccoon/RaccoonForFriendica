@@ -10,6 +10,8 @@ kotlin {
     sourceSets {
         androidMain {
             dependencies {
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.android)
                 implementation(
                     libs.unifiedpush.connector
                         .get()
@@ -25,7 +27,6 @@ kotlin {
 
                 implementation(projects.core.api)
                 implementation(projects.core.appearance)
-                implementation(projects.core.di)
                 implementation(projects.core.l10n)
                 implementation(projects.core.persistence)
                 implementation(projects.core.preferences)

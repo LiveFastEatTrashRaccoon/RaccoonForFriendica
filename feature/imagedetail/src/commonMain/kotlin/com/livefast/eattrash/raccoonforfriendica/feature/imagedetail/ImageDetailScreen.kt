@@ -35,13 +35,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Progre
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayer
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ZoomableImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberDrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.rememberNavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.ImageDetailViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -63,9 +64,9 @@ fun ImageDetailScreen(
     }
     val uiState by model.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val navigationCoordinator = rememberNavigationCoordinator()
+    val navigationCoordinator: NavigationCoordinator = koinInject()
     val canPopState by navigationCoordinator.canPop.collectAsState()
-    val drawerCoordinator = rememberDrawerCoordinator()
+    val drawerCoordinator: DrawerCoordinator = koinInject()
     val pagerState =
         rememberPagerState(
             initialPage = initialIndex,

@@ -4,8 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.livefast.eattrash.raccoonforfriendica.core.di.DelicateDiApi
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.rememberCoreResources
+import org.koin.compose.koinInject
 
 val LocalResources: ProvidableCompositionLocal<CoreResources> =
     staticCompositionLocalOf {
@@ -14,7 +13,7 @@ val LocalResources: ProvidableCompositionLocal<CoreResources> =
 
 @Composable
 fun ProvideResources(content: @Composable () -> Unit) {
-    val resources = rememberCoreResources()
+    val resources: CoreResources = koinInject()
     CompositionLocalProvider(
         value = LocalResources provides resources,
         content = content,

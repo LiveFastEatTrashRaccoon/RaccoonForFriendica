@@ -31,7 +31,6 @@ kotlin {
                 implementation(libs.ktor.cio)
                 implementation(libs.sentry)
 
-                implementation(projects.core.di)
                 implementation(projects.core.l10n)
                 implementation(projects.core.preferences)
             }

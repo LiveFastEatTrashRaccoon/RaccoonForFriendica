@@ -15,7 +15,6 @@ kotlin {
 
                 implementation(projects.core.api)
                 implementation(projects.core.appearance)
-                implementation(projects.core.di)
                 implementation(projects.core.persistence)
                 implementation(projects.core.preferences)
                 implementation(projects.core.utils)
@@ -25,4 +24,8 @@ kotlin {
             }
         }
     }
+}
+
+customDiExtension {
+    useCompose()
 }

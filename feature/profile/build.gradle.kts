@@ -33,7 +33,7 @@ kotlin {
 }
 
 customDiExtension {
-    useViewModels()
+    useCompose(withViewModels = true)
 }
 
 spotless {
