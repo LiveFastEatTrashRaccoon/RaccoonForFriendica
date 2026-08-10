@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Single
 import kotlin.coroutines.cancellation.CancellationException
 
+@Single
 internal class DefaultTranslationProviderConfigStore(private val keyStore: TemporaryKeyStore) :
     TranslationProviderConfigStore {
     private val valuesFlow = MutableSharedFlow<List<TranslationProviderConfig>>(replay = 1)

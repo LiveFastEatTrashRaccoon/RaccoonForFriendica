@@ -27,6 +27,8 @@ kotlin {
 
 customDiExtension {
     useCompose()
+    useCompilerPlugin()
+    useAnnotations()
 }
 
 spotless {

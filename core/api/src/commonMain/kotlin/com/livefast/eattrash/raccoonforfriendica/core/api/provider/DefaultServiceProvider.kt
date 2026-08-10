@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
-import com.livefast.eattrash.raccoonforfriendica.core.api.di.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
@@ -46,7 +45,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultServiceProvider(
     private val engine: HttpClientEngine,
     private val appInfoRepository: AppInfoRepository,

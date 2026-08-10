@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 
+import org.koin.core.annotation.Single
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
@@ -23,6 +25,7 @@ private const val MAX_CACHE_SIZE = 10
  * The original code has been modified here to work with Compose (multiplatform) ImageBitmap
  * and Color in order to be used in common source set and shared across platforms.
  */
+@Single
 internal class DefaultBlurHashDecoder(
     private val cacheCosinesX: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),
     private val cacheCosinesY: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),

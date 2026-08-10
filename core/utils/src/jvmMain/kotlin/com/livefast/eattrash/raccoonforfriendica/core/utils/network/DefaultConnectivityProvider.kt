@@ -1,9 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.network
 
+import org.koin.core.annotation.Single
 import dev.jordond.connectivity.Connectivity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
+@Single
 internal class DefaultConnectivityProvider : ConnectivityProvider {
     private val _status = MutableStateFlow(Connectivity.Status.Connected(false))
 

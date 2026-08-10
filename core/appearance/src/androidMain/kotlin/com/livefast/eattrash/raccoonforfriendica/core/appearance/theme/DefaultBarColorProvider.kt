@@ -12,8 +12,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
+import org.koin.core.annotation.Single
 
-internal class DefaultBarColorProvider : BarColorProvider {
+@Single
+internal actual  class DefaultBarColorProvider : BarColorProvider {
     override val isBarThemeSupported: Boolean
         get() = Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM
 

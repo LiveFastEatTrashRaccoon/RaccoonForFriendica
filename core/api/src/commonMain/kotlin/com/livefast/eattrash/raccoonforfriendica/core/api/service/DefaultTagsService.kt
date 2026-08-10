@@ -1,14 +1,20 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultTagsService(private val baseUrl: String, private val client: HttpClient) : TagsService {
+@Factory
+internal class DefaultTagsService(@InjectedParam args: ServiceCreationArgs) : TagsService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
+
     override suspend fun getFollowedTags(maxId: String?): Pair<List<Tag>, String?> {
         val response = client.get("$baseUrl/v1/followed_tags") {
             parameter("max_id", maxId)

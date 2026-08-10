@@ -1,22 +1,14 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.provider.SettingsProvider
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.settings.DefaultSettingsWrapper
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.settings.SettingsWrapper
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.DefaultTemporaryKeyStore
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
-import org.koin.dsl.module
+import com.russhwolf.settings.Settings
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-val preferencesModule = module {
-    includes(nativePreferencesModule)
-
-    single<SettingsWrapper> {
-        val provider = get<SettingsProvider>()
-        DefaultSettingsWrapper(settings = provider.provide())
-    }
-    single<TemporaryKeyStore> {
-        DefaultTemporaryKeyStore(
-            settings = get(),
-        )
-    }
+@Module(includes = [NativePreferencesModule::class])
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.preferences")
+class PreferencesModule {
+    @Single
+    fun provideSettings(provider: SettingsProvider): Settings = provider.provide()
 }

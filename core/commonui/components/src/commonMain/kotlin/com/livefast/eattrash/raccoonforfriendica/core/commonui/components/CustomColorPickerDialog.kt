@@ -38,7 +38,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -217,13 +217,14 @@ private fun CustomColorPickerDialogContent(
 @Composable
 @Preview
 private fun CustomColorPickerDialogContentPreview() {
-    setupPreview()
-    CustomColorPickerDialogContent(
-        initialValue = Color.Red,
-        selectedValue = Color.Red,
-        selectedValueHex = "ff0000",
-        allowManualSelection = true,
-    )
+    PreviewWrapper {
+        CustomColorPickerDialogContent(
+            initialValue = Color.Red,
+            selectedValue = Color.Red,
+            selectedValueHex = "ff0000",
+            allowManualSelection = true,
+        )
+    }
 }
 
 private fun String.toColor(): Color? {

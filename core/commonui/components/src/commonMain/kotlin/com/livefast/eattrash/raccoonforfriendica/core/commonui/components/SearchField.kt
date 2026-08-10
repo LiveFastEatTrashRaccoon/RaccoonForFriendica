@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -158,11 +158,12 @@ private class SearchFieldPreviewParameterProvider : PreviewParameterProvider<Sea
 private fun SearchFieldPreview(
     @PreviewParameter(SearchFieldPreviewParameterProvider::class) param: SearchFieldPreviewParameter,
 ) {
-    setupPreview()
-    SearchField(
-        hint = LocalStrings.current.actionSearch,
-        value = param.value,
-        onValueChange = {},
-        onClear = {},
-    )
+    PreviewWrapper {
+        SearchField(
+            hint = LocalStrings.current.actionSearch,
+            value = param.value,
+            onValueChange = {},
+            onClear = {},
+        )
+    }
 }

@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate
 
+import org.koin.core.annotation.Single
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 
+@Single
 internal class DefaultHapticFeedback(private val context: Context) : HapticFeedback {
     @SuppressLint("MissingPermission")
     override fun vibrate() {

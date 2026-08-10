@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
+import org.koin.core.annotation.Single
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.lang.management.ManagementFactory
 import java.util.Properties
 
+@Single
 internal class DefaultAppInfoRepository : AppInfoRepository {
     private val _appInfo = MutableStateFlow(getInfo())
 

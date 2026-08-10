@@ -1,9 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.share
 
+import org.koin.core.annotation.Single
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 
+@Single
 internal class DefaultShareHelper(private val context: Context) : ShareHelper {
     override val supportsShareImage = true
 

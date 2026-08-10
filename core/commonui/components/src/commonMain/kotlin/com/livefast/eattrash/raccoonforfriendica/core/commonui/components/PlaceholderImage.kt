@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 
 @Composable
 fun PlaceholderImage(size: Dp, title: String, modifier: Modifier = Modifier) {
@@ -47,9 +47,10 @@ fun PlaceholderImage(size: Dp, title: String, modifier: Modifier = Modifier) {
 @Composable
 @Preview
 private fun PlaceholderImagePreview() {
-    setupPreview()
-    PlaceholderImage(
-        size = 24.dp,
-        title = "Raccoon",
-    )
+    PreviewWrapper {
+        PlaceholderImage(
+            size = 24.dp,
+            title = "Raccoon",
+        )
+    }
 }

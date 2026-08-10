@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.encryption
 
+import org.koin.core.annotation.Single
 import java.security.KeyStore
 import java.util.Base64
 import javax.crypto.Cipher
@@ -7,6 +8,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
+@Single
 internal class DefaultEncryptionHelper : EncryptionHelper {
 
     override fun encrypt(input: String): ByteArray? {

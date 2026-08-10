@@ -2,15 +2,19 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
-import io.ktor.client.HttpClient
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.http.isSuccess
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultNotificationService(private val baseUrl: String, private val client: HttpClient) :
-    NotificationService {
+@Factory
+internal class DefaultNotificationService(@InjectedParam args: ServiceCreationArgs) : NotificationService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
     override suspend fun get(
         types: List<NotificationType>,
         excludeTypes: List<NotificationType>?,

@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.gallery
 
+import org.koin.core.annotation.Single
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileDialogHelper
@@ -8,6 +9,7 @@ import kotlinx.coroutines.withContext
 import java.awt.FileDialog
 import java.io.File
 
+@Single
 internal class DefaultGalleryHelper : GalleryHelper {
     override val supportsCustomPath = false
 

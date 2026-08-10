@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultBlurHashRepository(
     private val decoder: BlurHashDecoder,
     private val cache: LruCache<String, ImageBitmap> = LruCache.factory(CACHE_SIZE),

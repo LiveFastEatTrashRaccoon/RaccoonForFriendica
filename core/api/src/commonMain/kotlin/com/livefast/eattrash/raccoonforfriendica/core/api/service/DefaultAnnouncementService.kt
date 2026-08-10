@@ -1,15 +1,20 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Announcement
-import io.ktor.client.HttpClient
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.http.isSuccess
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultAnnouncementService(private val baseUrl: String, private val client: HttpClient) :
-    AnnouncementService {
+@Factory
+internal class DefaultAnnouncementService(@InjectedParam args: ServiceCreationArgs) : AnnouncementService {
+
+    private val baseUrl = args.baseUrl
+    private val client = args.client
 
     override suspend fun getAll(): List<Announcement> =
         client.get("$baseUrl/v1/announcements").body<List<Announcement>>()

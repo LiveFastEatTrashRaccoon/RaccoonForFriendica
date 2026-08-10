@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -195,14 +195,15 @@ private fun EditTwoTextualInfosDialogContent(
 @Composable
 @Preview
 private fun EditTwoTextualInfosDialogPreview() {
-    setupPreview()
-    EditTwoTextualInfosDialogContent(
-        title = "Change server",
-        label1 = "Protocol",
-        label2 = "Address",
-        placeHolder1 = "https",
-        placeHolder2 = "friendica.example.com",
-        value1 = "https",
-        value2 = "",
-    )
+    PreviewWrapper {
+        EditTwoTextualInfosDialogContent(
+            title = "Change server",
+            label1 = "Protocol",
+            label2 = "Address",
+            placeHolder1 = "https",
+            placeHolder2 = "friendica.example.com",
+            value1 = "https",
+            value2 = "",
+        )
+    }
 }

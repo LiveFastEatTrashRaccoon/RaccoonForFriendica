@@ -1,9 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.calendar
 
+import org.koin.core.annotation.Single
 import android.content.Intent
 import android.provider.CalendarContract
 import io.sentry.kotlin.multiplatform.Context
 
+@Single
 internal class DefaultCalendarHelper(private val context: Context) : CalendarHelper {
     override val supportsExport: Boolean = true
 

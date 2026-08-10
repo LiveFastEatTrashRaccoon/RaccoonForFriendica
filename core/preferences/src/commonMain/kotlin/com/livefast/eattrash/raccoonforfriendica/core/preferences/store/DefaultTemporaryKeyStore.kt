@@ -5,7 +5,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultTemporaryKeyStore(
     private val settings: SettingsWrapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,

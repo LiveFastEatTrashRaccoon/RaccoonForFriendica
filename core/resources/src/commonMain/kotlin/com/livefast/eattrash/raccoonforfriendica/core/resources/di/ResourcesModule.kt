@@ -1,11 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.resources.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.DefaultCoreResources
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val resourcesModule = module {
-    single<CoreResources> {
-        DefaultCoreResources()
-    }
-}
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.resources")
+class ResourcesModule

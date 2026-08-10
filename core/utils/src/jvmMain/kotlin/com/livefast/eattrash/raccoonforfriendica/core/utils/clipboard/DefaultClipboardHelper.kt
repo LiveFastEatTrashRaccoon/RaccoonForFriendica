@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard
 
+import org.koin.core.annotation.Single
 import androidx.compose.ui.platform.Clipboard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -9,7 +10,8 @@ import java.awt.datatransfer.StringSelection
 import java.awt.datatransfer.UnsupportedFlavorException
 import java.io.IOException
 
-internal class DefaultClipboardHelper(private val clipboard: Clipboard) : ClipboardHelper {
+@Single
+internal class DefaultClipboardHelper : ClipboardHelper {
     override suspend fun setText(text: String) {
         val selection = StringSelection(text)
         val systemClipboard = Toolkit.getDefaultToolkit().systemClipboard

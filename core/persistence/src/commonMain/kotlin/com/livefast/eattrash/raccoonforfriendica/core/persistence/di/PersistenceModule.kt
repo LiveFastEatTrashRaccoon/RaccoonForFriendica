@@ -1,35 +1,23 @@
 package com.livefast.eattrash.raccoonforfriendica.core.persistence.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLimitDao
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DatabaseProvider
-import com.livefast.eattrash.raccoonforfriendica.core.persistence.provider.DefaultDatabaseProvider
-import org.koin.dsl.module
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DaoFactory
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
 
-val persistenceModule = module {
-    includes(nativePersistenceModule)
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.persistence")
+class PersistenceModule {
 
-    single<DatabaseProvider> {
-        DefaultDatabaseProvider(
-            builderProvider = get(),
-        )
-    }
-    single<AccountDao> {
-        val provider = get<DatabaseProvider>()
-        provider.provideDatabase().getAccountDao()
-    }
-    single<SettingsDao> {
-        val provider = get<DatabaseProvider>()
-        provider.provideDatabase().getSettingsDao()
-    }
-    single<DraftDao> {
-        val provider = get<DatabaseProvider>()
-        provider.provideDatabase().getDraftDao()
-    }
-    single<UserRateLimitDao> {
-        val provider = get<DatabaseProvider>()
-        provider.provideDatabase().getUserRateLimitDao()
-    }
+    @Single
+    fun accountDao(factory: DaoFactory) = factory.getAccountDao()
+
+    @Single
+    fun settingsDao(factory: DaoFactory) = factory.getSettingsDao()
+
+    @Single
+    fun draftDao(factory: DaoFactory) = factory.getDraftDao()
+
+    @Single
+    fun userRateLimitDao(factory: DaoFactory) = factory.getUserRateLimitDao()
 }

@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import org.koin.core.annotation.Single
 
+@Single(binds = [LegacySharedPreferencesProvider::class])
 internal class LegacySharedPreferencesProvider(private val context: Context) : SharedPreferencesProvider {
     private val masterKeyAlias: String = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
 

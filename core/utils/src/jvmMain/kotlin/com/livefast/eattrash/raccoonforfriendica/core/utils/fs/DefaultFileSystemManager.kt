@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
+import org.koin.core.annotation.Single
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.Dispatchers
@@ -8,6 +9,7 @@ import okio.FileSystem
 import okio.Path
 import java.awt.FileDialog
 
+@Single
 internal class DefaultFileSystemManager : FileSystemManager {
     override val isSupported = true
 

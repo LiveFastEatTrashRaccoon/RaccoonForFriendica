@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
@@ -198,34 +198,36 @@ private fun AttachmentElement(
 @Composable
 @Preview
 private fun ContentVisualAttachmentsPreview() {
-    setupPreview(
-        module {
-            single {
-                object : BlurHashRepository {
-                    override suspend fun preload(params: BlurHashParams) = Unit
-                    override suspend fun get(params: BlurHashParams): ImageBitmap? = null
+    PreviewWrapper(
+        modules = listOf(
+            module {
+                single {
+                    object : BlurHashRepository {
+                        override suspend fun preload(params: BlurHashParams) = Unit
+                        override suspend fun get(params: BlurHashParams): ImageBitmap? = null
+                    }
                 }
-            }
-        },
-    )
-
-    ContentVisualAttachments(
-        attachments = listOf(
-            AttachmentModel(
-                id = "fake-id-1",
-                url = "fake-url-1",
-                type = MediaType.Image,
-            ),
-            AttachmentModel(
-                id = "fake-id-2",
-                url = "fake-url-2",
-                type = MediaType.Image,
-            ),
-            AttachmentModel(
-                id = "fake-id-3",
-                url = "fake-url-3",
-                type = MediaType.Image,
-            ),
+            },
         ),
-    )
+    ) {
+        ContentVisualAttachments(
+            attachments = listOf(
+                AttachmentModel(
+                    id = "fake-id-1",
+                    url = "fake-url-1",
+                    type = MediaType.Image,
+                ),
+                AttachmentModel(
+                    id = "fake-id-2",
+                    url = "fake-url-2",
+                    type = MediaType.Image,
+                ),
+                AttachmentModel(
+                    id = "fake-id-3",
+                    url = "fake-url-3",
+                    type = MediaType.Image,
+                ),
+            ),
+        )
+    }
 }

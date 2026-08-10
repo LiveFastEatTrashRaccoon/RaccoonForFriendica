@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import org.koin.core.annotation.Single
 
 private const val THRESHOLD = 1f
 
-internal class DefaultFabNestedScrollConnection(private val scope: CoroutineScope = CoroutineScope(SupervisorJob())) :
-    FabNestedScrollConnection {
+@Single
+internal class DefaultFabNestedScrollConnection : FabNestedScrollConnection {
+
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob())
     private val fabVisible = MutableStateFlow(true)
 
     override val isFabVisible: StateFlow<Boolean>

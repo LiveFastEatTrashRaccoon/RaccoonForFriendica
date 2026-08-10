@@ -4,22 +4,18 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.koin.core.context.GlobalContext.getKoinApplicationOrNull
 import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.context.GlobalContext.unloadKoinModules
-import org.koin.core.context.loadKoinModules
-import org.koin.core.module.Module
+import org.koin.core.context.GlobalContext.stopKoin
+import org.koin.dsl.KoinAppDeclaration
 
-class KoinTestRule(private val modules: List<Module>) : TestWatcher() {
+class KoinTestRule(private val appDeclaration: KoinAppDeclaration) : TestWatcher() {
     override fun starting(description: Description) {
-        if (getKoinApplicationOrNull() == null) {
-            startKoin {
-                modules(modules)
-            }
-        } else {
-            loadKoinModules(modules)
+        if (getKoinApplicationOrNull() != null) {
+            stopKoin()
         }
+        startKoin(appDeclaration)
     }
 
     override fun finished(description: Description) {
-        unloadKoinModules(modules)
+        stopKoin()
     }
 }

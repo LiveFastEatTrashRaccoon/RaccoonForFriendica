@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
+import org.koin.core.annotation.Single
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
@@ -7,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.coroutines.cancellation.CancellationException
 
+@Single
 internal class DefaultAppInfoRepository(private val context: Context) : AppInfoRepository {
     private val _appInfo = MutableStateFlow(geInfo())
     override val appInfo: StateFlow<AppInfo?> = _appInfo

@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -171,45 +171,46 @@ private fun CustomModalBottomSheetContent(
 @Composable
 @Preview
 private fun CustomModalBottomSheetPreview() {
-    setupPreview()
-    Box(
-        modifier =
-        Modifier
-            .fillMaxSize()
-            .background(Color.White),
-    ) {
-        CustomModalBottomSheetContent(
-            title = "UI Theme",
-            items =
-            listOf(
-                CustomModalBottomSheetItem(
-                    label = "Light",
-                    trailingContent = {
-                        Icon(
-                            imageVector = LocalResources.current.lightMode,
-                            contentDescription = null,
-                        )
-                    },
+    PreviewWrapper {
+        Box(
+            modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White),
+        ) {
+            CustomModalBottomSheetContent(
+                title = "UI Theme",
+                items =
+                listOf(
+                    CustomModalBottomSheetItem(
+                        label = "Light",
+                        trailingContent = {
+                            Icon(
+                                imageVector = LocalResources.current.lightMode,
+                                contentDescription = null,
+                            )
+                        },
+                    ),
+                    CustomModalBottomSheetItem(
+                        label = "Dark",
+                        trailingContent = {
+                            Icon(
+                                imageVector = LocalResources.current.darkMode,
+                                contentDescription = null,
+                            )
+                        },
+                    ),
+                    CustomModalBottomSheetItem(
+                        label = "Black",
+                        trailingContent = {
+                            Icon(
+                                imageVector = LocalResources.current.darkModeFill,
+                                contentDescription = null,
+                            )
+                        },
+                    ),
                 ),
-                CustomModalBottomSheetItem(
-                    label = "Dark",
-                    trailingContent = {
-                        Icon(
-                            imageVector = LocalResources.current.darkMode,
-                            contentDescription = null,
-                        )
-                    },
-                ),
-                CustomModalBottomSheetItem(
-                    label = "Black",
-                    trailingContent = {
-                        Icon(
-                            imageVector = LocalResources.current.darkModeFill,
-                            contentDescription = null,
-                        )
-                    },
-                ),
-            ),
-        )
+            )
+        }
     }
 }
