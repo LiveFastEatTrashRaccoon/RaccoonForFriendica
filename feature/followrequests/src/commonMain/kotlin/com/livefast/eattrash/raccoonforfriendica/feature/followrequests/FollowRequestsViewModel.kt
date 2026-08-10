@@ -13,7 +13,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class FollowRequestsViewModel(
     private val paginationManager: FollowRequestPaginationManager,
     private val userRepository: UserRepository,

@@ -4,7 +4,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultEventRepository(private val provider: ServiceProvider) : EventRepository {
     override suspend fun getAll(pageCursor: String?): List<EventModel>? = try {
         provider.event

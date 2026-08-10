@@ -30,6 +30,7 @@ connectivity = "2.5.0"
 espresso = "3.7.0"
 junit = "4.13.2"
 koin = "4.2.2"
+koin-plugin = "1.1.0"
 kotlin = "2.4.10"
 kotlinpoet = "2.3.0"
 kotlinx-coroutines = "1.11.0"
@@ -103,8 +104,10 @@ junit = { module = "junit:junit", version.ref = "junit" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-core = { module = "io.insert-koin:koin-core" }
+koin-annotations = { module = "io.insert-koin:koin-annotations" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-gradlePlugin = { module = "io.insert-koin:koin-compiler-gradle-plugin", version.ref="koin-plugin" }
 koin-test = { module = "io.insert-koin:koin-test" }
 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -166,6 +169,8 @@ compose-desktop-linux-deps = { id = "io.github.kdroidfilter.compose.linux.packag
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

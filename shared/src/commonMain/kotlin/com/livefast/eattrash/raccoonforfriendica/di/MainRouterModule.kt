@@ -1,20 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
-import com.livefast.eattrash.raccoonforfriendica.navigation.DefaultMainRouter
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-internal val mainRouterModule = module {
-    single<MainRouter> {
-        DefaultMainRouter(
-            navigationCoordinator = get(),
-            identityRepository = get(),
-            settingsRepository = get(),
-            userCache = get(),
-            entryCache = get(),
-            eventCache = get(),
-            circleCache = get(),
-            attachmentCache = get(),
-        )
-    }
-}
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.navigation")
+class MainRouterModule

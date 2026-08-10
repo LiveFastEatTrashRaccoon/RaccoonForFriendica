@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultGetInnerUrlUseCase(private val apiConfigurationRepository: ApiConfigurationRepository) :
     GetInnerUrlUseCase {
     override suspend fun invoke(entry: TimelineEntryModel): String? {

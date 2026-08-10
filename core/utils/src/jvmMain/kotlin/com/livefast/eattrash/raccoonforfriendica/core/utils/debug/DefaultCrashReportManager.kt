@@ -12,14 +12,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 
-internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore) : CrashReportManager {
+@Single
+internal actual class DefaultCrashReportManager actual constructor(private val keyStore: TemporaryKeyStore) : CrashReportManager {
 
     private val _enabled = MutableStateFlow(false)
-    override val enabled: StateFlow<Boolean> = _enabled.asStateFlow()
+    actual override val enabled: StateFlow<Boolean> = _enabled.asStateFlow()
 
     private val _restartRequired = MutableStateFlow(false)
-    override val restartRequired: StateFlow<Boolean> = _restartRequired.asStateFlow()
+    actual override val restartRequired: StateFlow<Boolean> = _restartRequired.asStateFlow()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -31,7 +33,7 @@ internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore
         }
     }
 
-    override fun enable() {
+    actual override fun enable() {
         scope.launch {
             keyStore.save(KEY_CRASH_REPORT_ENABLED, true)
             _enabled.update { true }
@@ -39,7 +41,7 @@ internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore
         }
     }
 
-    override fun disable() {
+    actual override fun disable() {
         scope.launch {
             keyStore.save(KEY_CRASH_REPORT_ENABLED, false)
             _enabled.update { false }
@@ -47,7 +49,7 @@ internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore
         }
     }
 
-    override fun initialize() {
+    actual override fun initialize() {
         check(enabled.value) { return }
         Sentry.init { options ->
             options.dsn = SentryConfigurationValues.DSN
@@ -61,7 +63,7 @@ internal class DefaultCrashReportManager(private val keyStore: TemporaryKeyStore
         }
     }
 
-    override fun collectUserFeedback(
+    actual override fun collectUserFeedback(
         tag: CrashReportTag,
         comment: String,
         email: String?,

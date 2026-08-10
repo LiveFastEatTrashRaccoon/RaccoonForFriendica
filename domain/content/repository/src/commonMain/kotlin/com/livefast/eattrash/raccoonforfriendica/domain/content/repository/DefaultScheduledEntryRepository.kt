@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultScheduledEntryRepository(private val provider: ServiceProvider) : ScheduledEntryRepository {
     override suspend fun getAll(pageCursor: String?): List<TimelineEntryModel>? = try {
         provider.status

@@ -28,4 +28,6 @@ kotlin {
 
 customDiExtension {
     useCompose()
+    useCompilerPlugin()
+    useAnnotations()
 }

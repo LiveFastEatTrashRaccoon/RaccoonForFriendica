@@ -11,7 +11,9 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultNodeInfoRepository(
     private val provider: ServiceProvider,
     private val client: HttpClient = HttpClient(provideHttpClientEngine()),

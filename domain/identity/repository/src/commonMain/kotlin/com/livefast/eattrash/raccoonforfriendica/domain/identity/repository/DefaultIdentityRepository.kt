@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultIdentityRepository(private val provider: ServiceProvider) : IdentityRepository {
     override val currentUser = MutableStateFlow<UserModel?>(null)
 

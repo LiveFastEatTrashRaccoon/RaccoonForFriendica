@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.url
 
+import org.koin.core.annotation.Single
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -7,6 +8,7 @@ import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 
+@Single
 internal class DefaultCustomTabsHelper(private val context: Context) : CustomTabsHelper {
     private val packageName: String?
         get() = CustomTabsClient.getPackageName(context, emptyList())

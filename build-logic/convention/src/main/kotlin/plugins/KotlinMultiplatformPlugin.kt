@@ -20,6 +20,10 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
             extensions.configure(KotlinMultiplatformExtension::class.java) {
                 configureKotlinMultiplatform(this)
 
+                compilerOptions {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
+
                 targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {
                     configureKotlinMultiplatformAndroidLibrary(this)
                 }

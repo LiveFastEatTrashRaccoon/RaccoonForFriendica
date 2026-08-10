@@ -13,9 +13,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+@Single
 internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers.Main) :
     NavigationCoordinator {
     override val currentBottomNavSection = MutableStateFlow<BottomNavigationSection?>(null)

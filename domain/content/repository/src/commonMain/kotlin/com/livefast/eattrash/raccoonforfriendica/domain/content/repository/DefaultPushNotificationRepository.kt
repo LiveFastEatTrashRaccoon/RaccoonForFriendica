@@ -7,8 +7,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
+import org.koin.core.annotation.Single
 import kotlin.coroutines.cancellation.CancellationException
 
+@Single
 internal class DefaultPushNotificationRepository(private val provider: ServiceProvider) : PushNotificationRepository {
     override suspend fun create(
         endpoint: String,

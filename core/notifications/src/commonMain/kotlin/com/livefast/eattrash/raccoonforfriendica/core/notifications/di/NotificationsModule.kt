@@ -1,11 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.notifications.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.DefaultNotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val notificationsModule = module {
-    single<NotificationCenter> {
-        DefaultNotificationCenter()
-    }
-}
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.notifications")
+class NotificationsModule

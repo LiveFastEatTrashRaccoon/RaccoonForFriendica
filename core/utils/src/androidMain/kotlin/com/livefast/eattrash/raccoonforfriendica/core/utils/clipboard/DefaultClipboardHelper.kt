@@ -1,12 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard
 
+import org.koin.core.annotation.Single
 import android.content.ClipData
 import android.content.Context
 import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.toClipEntry
+import org.koin.core.annotation.InjectedParam
 
-class DefaultClipboardHelper(
-    private val clipboard: Clipboard,
+@Single
+internal class DefaultClipboardHelper(
+    @InjectedParam private val clipboard: Clipboard,
     private val context: Context,
 ) : ClipboardHelper {
     override suspend fun setText(text: String) {

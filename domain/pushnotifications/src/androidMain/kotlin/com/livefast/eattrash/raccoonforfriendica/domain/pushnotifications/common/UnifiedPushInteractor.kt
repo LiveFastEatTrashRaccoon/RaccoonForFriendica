@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 import org.unifiedpush.android.connector.FailedReason
 import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
@@ -20,6 +21,7 @@ interface UnifiedPushInteractor {
     fun onUnregistered(context: Context, instance: String)
 }
 
+@Single
 class DefaultUnifiedPushInteractor(
     private val pullNotificationManager: PullNotificationManager,
     private val pushNotificationManager: PushNotificationManager,

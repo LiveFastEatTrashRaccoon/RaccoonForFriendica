@@ -1,0 +1,731 @@
+package com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FabNestedScrollConnection
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
+import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
+import com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard.ClipboardHelper
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
+import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
+import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
+import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
+import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
+import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
+import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
+import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.di.ForumListViewModelArgs
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+import kotlin.time.Duration
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
+    val model: ForumListMviModel = koinViewModel<ForumListViewModel> {
+        parametersOf(ForumListViewModelArgs(id))
+    }
+    val uiState by model.uiState.collectAsState()
+    val topAppBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
+    val navigationCoordinator: NavigationCoordinator = koinInject()
+    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val uriHandler = LocalUriHandler.current
+    val mainRouter: MainRouter = koinInject()
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val fabNestedScrollConnection: FabNestedScrollConnection = koinInject()
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val shareHelper: ShareHelper = koinInject()
+    val actionRepository: EntryActionRepository = koinInject()
+    val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
+    val clipboard = LocalClipboard.current
+    val clipboardHelper: ClipboardHelper = koinInject(parameters = { parametersOf(clipboard) })
+    var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+    var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var pollErrorDialogOpened by remember { mutableStateOf(false) }
+    var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    val isHomeInstance = otherInstance.isNullOrEmpty()
+
+    fun goBackToTop() {
+        runCatching {
+            scope.launch {
+                lazyListState.scrollToItem(0)
+                topAppBarState.heightOffset = 0f
+                topAppBarState.contentOffset = 0f
+            }
+        }
+    }
+
+    LaunchedEffect(model) {
+        model.effects
+            .onEach { event ->
+                when (event) {
+                    ForumListMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    is ForumListMviModel.Effect.TriggerCopy -> {
+                        clipboardHelper.setText(event.text)
+                        snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                    }
+
+                    is ForumListMviModel.Effect.OpenDetail -> {
+                        mainRouter.openThread(
+                            entry = event.entry,
+                            swipeNavigationEnabled = true,
+                            otherInstance = otherInstance,
+                        )
+                    }
+
+                    is ForumListMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                }
+            }.launchIn(this)
+    }
+
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.clickableWithoutFocus { scope.launch { goBackToTop() } },
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text =
+                        buildString {
+                            append(LocalStrings.current.topicTitle)
+                            val name = (uiState.user?.displayName ?: uiState.user?.username ?: "").ellipsize(30)
+                            if (name.isNotBlank()) {
+                                append(": ")
+                                append(name)
+                            }
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (canPopState) {
+                        IconButton(
+                            onClick = {
+                                navigationCoordinator.pop()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = LocalResources.current.arrowBack,
+                                contentDescription = LocalStrings.current.actionGoBack,
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    val options =
+                        buildList {
+                            this +=
+                                CustomOptions.SwitchToClassicMode.toOption(
+                                    label = LocalStrings.current.actionSwitchToClassicMode,
+                                )
+                            val nodeName = uiState.user?.handle.nodeName
+                            if (nodeName != null && nodeName != uiState.currentNode) {
+                                this +=
+                                    OptionId.AddShortcut.toOption(
+                                        LocalStrings.current.actionShortcut(nodeName),
+                                    )
+                            }
+                        }
+                    Box {
+                        var optionsOffset by remember { mutableStateOf(Offset.Zero) }
+                        var optionsMenuOpen by remember { mutableStateOf(false) }
+                        IconButton(
+                            modifier =
+                            Modifier.onGloballyPositioned {
+                                optionsOffset = it.positionInParent()
+                            },
+                            onClick = {
+                                optionsMenuOpen = true
+                            },
+                        ) {
+                            Icon(
+                                imageVector = LocalResources.current.moreVert,
+                                contentDescription = LocalStrings.current.actionOpenOptions,
+                            )
+                        }
+
+                        CustomDropDown(
+                            expanded = optionsMenuOpen,
+                            onDismiss = {
+                                optionsMenuOpen = false
+                            },
+                            offset =
+                            with(LocalDensity.current) {
+                                DpOffset(
+                                    x = optionsOffset.x.toDp(),
+                                    y = optionsOffset.y.toDp(),
+                                )
+                            },
+                        ) {
+                            for (option in options) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(option.label)
+                                    },
+                                    onClick = {
+                                        optionsMenuOpen = false
+                                        when (option.id) {
+                                            CustomOptions.SwitchToClassicMode -> {
+                                                uiState.user?.also { user ->
+                                                    mainRouter.switchUserDetailToClassicMode(
+                                                        user = user,
+                                                        otherInstance = otherInstance,
+                                                    )
+                                                }
+                                            }
+
+                                            OptionId.AddShortcut ->
+                                                model.reduce(
+                                                    ForumListMviModel.Intent.AddInstanceShortcut(
+                                                        uiState.user
+                                                            ?.handle.nodeName
+                                                            .orEmpty(),
+                                                    ),
+                                                )
+
+                                            else -> Unit
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
+
+                    if (isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded) &&
+                        uiState.currentUserId != null &&
+                        isHomeInstance
+                    ) {
+                        IconButton(
+                            shape = MaterialTheme.shapes.small,
+                            colors = IconButtonDefaults.filledTonalIconButtonColors(),
+                            onClick = {
+                                mainRouter.openComposer(
+                                    inReplyToUser = uiState.user,
+                                    inGroup = true,
+                                )
+                            },
+                        ) {
+                            Icon(
+                                imageVector = LocalResources.current.add,
+                                contentDescription = LocalStrings.current.actionAddNew,
+                            )
+                        }
+                    }
+                },
+            )
+        },
+        floatingActionButton = {
+            if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded) &&
+                uiState.currentUserId != null &&
+                isHomeInstance
+            ) {
+                AnimatedVisibility(
+                    visible = isFabVisible,
+                    enter =
+                    slideInVertically(
+                        initialOffsetY = { it * 2 },
+                    ),
+                    exit =
+                    slideOutVertically(
+                        targetOffsetY = { it * 2 },
+                    ),
+                ) {
+                    FloatingActionButton(
+                        onClick = {
+                            mainRouter.openComposer(
+                                inReplyToUser = uiState.user,
+                                inGroup = true,
+                            )
+                        },
+                    ) {
+                        Icon(
+                            imageVector = LocalResources.current.add,
+                            contentDescription = LocalStrings.current.actionAddNew,
+                        )
+                    }
+                }
+            }
+        },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+            ) { data ->
+                Snackbar(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    snackbarData = data,
+                )
+            }
+        },
+    ) { padding ->
+        PullToRefreshBox(
+            modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ).nestedScroll(fabNestedScrollConnection),
+            isRefreshing = uiState.refreshing,
+            onRefresh = {
+                model.reduce(ForumListMviModel.Intent.Refresh)
+            },
+        ) {
+            LazyColumn(
+                state = lazyListState,
+            ) {
+                if (uiState.initial) {
+                    val placeholderCount = 5
+                    items(placeholderCount) { idx ->
+                        TimelineItemPlaceholder(modifier = Modifier.fillMaxWidth())
+                        if (idx < placeholderCount - 1) {
+                            TimelineDivider(layout = uiState.layout)
+                        }
+                    }
+                }
+
+                itemsIndexed(
+                    items = uiState.entries,
+                    key = { _, e -> "forum-list-${e.safeKey}" },
+                ) { idx, entry ->
+                    TimelineItem(
+                        entry = entry,
+                        layout = uiState.layout,
+                        reshareAndReplyVisible = false,
+                        followedHashtagsVisible = false,
+                        blurNsfw = uiState.blurNsfw,
+                        autoloadImages = uiState.autoloadImages,
+                        maxBodyLines = uiState.maxBodyLines,
+                        pollEnabled = isHomeInstance,
+                        onClick = {
+                            model.reduce(ForumListMviModel.Intent.WillOpenDetail(entry))
+                        },
+                        onOpenUrl = { url, allowOpenInternal ->
+                            if (allowOpenInternal) {
+                                uriHandler.openUri(url)
+                            } else {
+                                uriHandler.openExternally(url)
+                            }
+                        },
+                        onOpenUser = { user ->
+                            mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
+                        },
+                        onOpenImage = { urls, imageIdx, videoIndices ->
+                            mainRouter.openImageDetail(
+                                urls = urls,
+                                initialIndex = imageIdx,
+                                videoIndices = videoIndices,
+                            )
+                        },
+                        onReblog =
+                        { e: TimelineEntryModel ->
+                            val timeSinceCreation =
+                                e.created?.run {
+                                    getDurationFromDateToNow(this)
+                                } ?: Duration.ZERO
+                            when {
+                                !e.reblogged && timeSinceCreation.isOldEntry ->
+                                    confirmReblogEntry = e
+
+                                else ->
+                                    model.reduce(
+                                        ForumListMviModel.Intent.ToggleReblog(e),
+                                    )
+                            }
+                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
+                        onBookmark =
+                        { e: TimelineEntryModel ->
+                            model.reduce(ForumListMviModel.Intent.ToggleBookmark(e))
+                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
+                        onFavorite =
+                        { e: TimelineEntryModel ->
+                            model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
+                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
+                        onDislike =
+                        { e: TimelineEntryModel ->
+                            model.reduce(ForumListMviModel.Intent.ToggleDislike(e))
+                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
+                        onReply =
+                        { e: TimelineEntryModel ->
+                            mainRouter.openComposer(
+                                inReplyTo = e,
+                                inReplyToUser = e.creator,
+                            )
+                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
+                        onPollVote =
+                        uiState.currentUserId?.let {
+                            { e, choices ->
+                                model.reduce(
+                                    ForumListMviModel.Intent.SubmitPollVote(
+                                        entry = e,
+                                        choices = choices,
+                                    ),
+                                )
+                            }
+                        },
+                        onShowOriginal = {
+                            model.reduce(
+                                ForumListMviModel.Intent.ToggleTranslation(entry.original),
+                            )
+                        },
+                        onOpenQuote = { e ->
+                            mainRouter.openEntryDetail(e)
+                        },
+                        options =
+                        buildList {
+                            if (actionRepository.canShare(entry.original) && isHomeInstance) {
+                                this += OptionId.Share.toOption()
+                                this += OptionId.CopyUrl.toOption()
+                            }
+                            if (actionRepository.canEdit(entry.original) && isHomeInstance) {
+                                this += OptionId.Edit.toOption()
+                            }
+                            if (actionRepository.canDelete(entry.original) && isHomeInstance) {
+                                this += OptionId.Delete.toOption()
+                            }
+                            if (actionRepository.canMute(entry) && isHomeInstance) {
+                                this += OptionId.Mute.toOption()
+                            }
+                            if (actionRepository.canBlock(entry) && isHomeInstance) {
+                                this += OptionId.Block.toOption()
+                            }
+                            if (actionRepository.canReport(entry.original) && isHomeInstance) {
+                                this += OptionId.ReportUser.toOption()
+                                this += OptionId.ReportEntry.toOption()
+                            }
+                            if (actionRepository.canQuote(entry.original) && isHomeInstance) {
+                                this += OptionId.Quote.toOption()
+                            }
+                            this += OptionId.ViewDetails.toOption()
+                            this += OptionId.CopyToClipboard.toOption()
+                            val currentLang = uiState.lang.orEmpty()
+                            if (currentLang.isNotEmpty() &&
+                                entry.lang != currentLang &&
+                                !entry.isShowingTranslation
+                            ) {
+                                this +=
+                                    Option(
+                                        id = OptionId.Translate,
+                                        label =
+                                        buildString {
+                                            append(
+                                                LocalStrings.current.actionTranslateTo(
+                                                    currentLang,
+                                                ),
+                                            )
+                                            append(" (")
+                                            append(LocalStrings.current.experimental)
+                                            append(")")
+                                        },
+                                    )
+                            }
+                            val nodeName = entry.nodeName
+                            if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                this +=
+                                    OptionId.AddShortcut.toOption(
+                                        LocalStrings.current.actionShortcut(nodeName),
+                                    )
+                            }
+                            this += OptionId.OpenInBrowser.toOption()
+                        },
+                        onSelectOption = { optionId ->
+                            when (optionId) {
+                                OptionId.Share -> {
+                                    val urlString = entry.url.orEmpty()
+                                    shareHelper.share(urlString)
+                                }
+
+                                OptionId.CopyUrl -> {
+                                    val urlString = entry.url.orEmpty()
+                                    scope.launch {
+                                        clipboardHelper.setText(urlString)
+                                        snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                                    }
+                                }
+
+                                OptionId.Edit -> {
+                                    mainRouter.openComposer(
+                                        inReplyToUser = entry.creator,
+                                        editedPostId = entry.reblog?.id,
+                                        inGroup = true,
+                                    )
+                                }
+
+                                OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                OptionId.Mute -> confirmMuteEntry = entry
+                                OptionId.Block -> confirmBlockEntry = entry
+                                OptionId.ReportUser ->
+                                    entry.original.creator?.also { userToReport ->
+                                        mainRouter.openCreateReport(user = userToReport)
+                                    }
+
+                                OptionId.ReportEntry ->
+                                    entry.original.also { entryToReport ->
+                                        entryToReport.creator?.also { userToReport ->
+                                            mainRouter.openCreateReport(
+                                                user = userToReport,
+                                                entry = entryToReport,
+                                            )
+                                        }
+                                    }
+
+                                OptionId.Quote -> {
+                                    entry.original.also { entryToShare ->
+                                        mainRouter.openComposer(
+                                            quoted = entryToShare,
+                                            urlToShare = entryToShare.url,
+                                        )
+                                    }
+                                }
+
+                                OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                OptionId.CopyToClipboard ->
+                                    model.reduce(ForumListMviModel.Intent.CopyToClipboard(entry.original))
+
+                                OptionId.Translate ->
+                                    model.reduce(
+                                        ForumListMviModel.Intent.ToggleTranslation(entry.original),
+                                    )
+
+                                OptionId.AddShortcut ->
+                                    model.reduce(
+                                        ForumListMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                    )
+
+                                OptionId.OpenInBrowser ->
+                                    model.reduce(
+                                        ForumListMviModel.Intent.OpenInBrowser(entry),
+                                    )
+
+                                else -> Unit
+                            }
+                        },
+                    )
+                    if (idx < uiState.entries.lastIndex) {
+                        TimelineDivider(layout = uiState.layout)
+                    }
+
+                    val canFetchMore =
+                        !uiState.initial && !uiState.loading && uiState.canFetchMore
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
+                    if (isNearTheEnd && canFetchMore) {
+                        model.reduce(ForumListMviModel.Intent.LoadNextPage)
+                    }
+                }
+
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                    item {
+                        Text(
+                            modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
+                            text = LocalStrings.current.messageEmptyList,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+
+                item {
+                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ListLoadingIndicator()
+                        }
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xxxl))
+                }
+            }
+        }
+    }
+
+    if (confirmDeleteEntryId != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDelete,
+            onClose = { confirm ->
+                val entryId = confirmDeleteEntryId
+                confirmDeleteEntryId = null
+                if (confirm && entryId != null) {
+                    model.reduce(ForumListMviModel.Intent.DeleteEntry(entryId))
+                }
+            },
+        )
+    }
+
+    if (confirmMuteEntry != null) {
+        (confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator)?.also { user ->
+            ConfirmMuteUserBottomSheet(
+                userHandle = user.handle.orEmpty(),
+                onClose = { pair ->
+                    val entryId = confirmMuteEntry?.id
+                    confirmMuteEntry = null
+                    if (pair != null) {
+                        val (duration, disableNotifications) = pair
+                        if (entryId != null) {
+                            model.reduce(
+                                ForumListMviModel.Intent.MuteUser(
+                                    userId = user.id,
+                                    entryId = entryId,
+                                    duration = duration,
+                                    disableNotifications = disableNotifications,
+                                ),
+                            )
+                        }
+                    }
+                },
+            )
+        }
+    }
+
+    if (confirmBlockEntry != null) {
+        val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+        CustomConfirmDialog(
+            title =
+            buildString {
+                append(LocalStrings.current.actionBlock)
+                val handle = creator?.handle ?: ""
+                if (handle.isNotEmpty()) {
+                    append(" @$handle")
+                }
+            },
+            onClose = { confirm ->
+                val entryId = confirmBlockEntry?.id
+                val creatorId = creator?.id
+                confirmBlockEntry = null
+                if (confirm && entryId != null && creatorId != null) {
+                    model.reduce(
+                        ForumListMviModel.Intent.BlockUser(
+                            userId = creatorId,
+                            entryId = entryId,
+                        ),
+                    )
+                }
+            },
+        )
+    }
+
+    if (pollErrorDialogOpened) {
+        PollVoteErrorDialog(
+            onDismissRequest = {
+                pollErrorDialogOpened = false
+            },
+        )
+    }
+
+    if (confirmReblogEntry != null) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.buttonConfirm,
+            body = LocalStrings.current.messageAreYouSureReblog,
+            onClose = { confirm ->
+                val e = confirmReblogEntry
+                confirmReblogEntry = null
+                if (confirm && e != null) {
+                    model.reduce(ForumListMviModel.Intent.ToggleReblog(e))
+                }
+            },
+        )
+    }
+
+    seeDetailsEntry?.let { entry ->
+        EntryDetailDialog(
+            entry = entry,
+            onClose = {
+                seeDetailsEntry = null
+            },
+        )
+    }
+}
+
+private sealed interface CustomOptions : OptionId.Custom {
+    data object SwitchToClassicMode : CustomOptions
+}

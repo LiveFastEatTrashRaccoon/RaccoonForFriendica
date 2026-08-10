@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manag
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultPushNotificationManager : PushNotificationManager {
     override val state: StateFlow<PushNotificationManagerState> =
         MutableStateFlow<PushNotificationManagerState>(PushNotificationManagerState.Unsupported)

@@ -32,3 +32,8 @@ dependencies {
     add("kspIosArm64", libs.room.ksp)
     add("kspIosSimulatorArm64", libs.room.ksp)
 }
+
+customDiExtension {
+    useCompilerPlugin()
+    useAnnotations()
+}

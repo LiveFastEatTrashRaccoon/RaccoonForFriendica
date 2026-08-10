@@ -1,15 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.di
 
-import com.livefast.eattrash.raccoonforfriendica.auth.DefaultRedirectServer
-import com.livefast.eattrash.raccoonforfriendica.auth.EmbeddedRedirectServer
-import com.livefast.eattrash.raccoonforfriendica.auth.RedirectServer
-import org.koin.dsl.module
+import org.koin.core.annotation.Module
 
-actual val nativeAuthModule = module {
-    single {
-        EmbeddedRedirectServer()
-    }
-    single<RedirectServer> {
-        DefaultRedirectServer(server = get())
-    }
-}
+@Module
+actual class NativeAuthModule

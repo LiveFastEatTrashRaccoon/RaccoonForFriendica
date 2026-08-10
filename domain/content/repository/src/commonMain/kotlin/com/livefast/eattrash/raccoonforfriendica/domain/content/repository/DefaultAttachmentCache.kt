@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import org.koin.core.annotation.Single
+
+@Single
 internal class DefaultAttachmentCache : AttachmentCache {
     private var value: ByteArray? = null
 

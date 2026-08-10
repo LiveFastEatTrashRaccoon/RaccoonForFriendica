@@ -24,7 +24,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Factory
 
+@Factory
 internal class DefaultExplorePaginationManager(
     private val trendingRepository: TrendingRepository,
     private val userRepository: UserRepository,

@@ -1,11 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard
 
+import org.koin.core.annotation.Single
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
 
+@Single
 @OptIn(ExperimentalComposeUiApi::class)
-class DefaultClipboardHelper(
+internal class DefaultClipboardHelper(
     private val clipboard: Clipboard,
 ) : ClipboardHelper {
 

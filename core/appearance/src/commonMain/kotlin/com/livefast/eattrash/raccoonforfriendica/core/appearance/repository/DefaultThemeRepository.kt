@@ -1,13 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.repository
 
 import androidx.compose.ui.graphics.Color
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultThemeRepository : ThemeRepository {
     override val theme = MutableStateFlow<UiTheme>(UiTheme.Default)
     override val fontFamily = MutableStateFlow<UiFontFamily>(UiFontFamily.Default)

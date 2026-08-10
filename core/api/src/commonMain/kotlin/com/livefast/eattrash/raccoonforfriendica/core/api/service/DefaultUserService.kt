@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
-import io.ktor.client.HttpClient
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -19,8 +19,14 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultUserService(private val baseUrl: String, private val client: HttpClient) : UserService {
+@Factory
+internal class DefaultUserService(@InjectedParam args: ServiceCreationArgs) : UserService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
+
     override suspend fun verifyCredentials(): CredentialAccount =
         client.get("$baseUrl/v1/accounts/verify_credentials").body()
 

@@ -9,7 +9,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportTag
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.isValidEmail
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) :
     ViewModel(),
     MviModelDelegate<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect>

@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class LoginIntroViewModel(private val authManager: AuthManager) :
     ViewModel(),
     MviModelDelegate<LoginIntroMviModel.Intent, LoginIntroMviModel.State, LoginIntroMviModel.Effect>

@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.preferences.provider
 
 import android.content.Context
 import android.content.SharedPreferences
+import org.koin.core.annotation.Single
 
+@Single(binds = [DefaultSharedPreferencesProvider::class])
 internal class DefaultSharedPreferencesProvider(private val context: Context) : SharedPreferencesProvider {
 
     override fun provide(): SharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)

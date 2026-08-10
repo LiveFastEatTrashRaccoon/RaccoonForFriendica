@@ -3,12 +3,18 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
-import io.ktor.client.HttpClient
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultTrendService(private val baseUrl: String, private val client: HttpClient) : TrendsService {
+@Factory
+internal class DefaultTrendService(@InjectedParam args: ServiceCreationArgs) : TrendsService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
+
     override suspend fun getHashtags(offset: Int, limit: Int): List<Tag> = client.get("$baseUrl/v1/trends/tags") {
         parameter("offset", offset)
         parameter("limit", limit)

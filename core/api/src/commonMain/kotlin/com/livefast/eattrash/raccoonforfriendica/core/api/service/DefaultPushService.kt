@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PushSubscription
-import io.ktor.client.HttpClient
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
@@ -11,8 +11,14 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultPushService(private val baseUrl: String, private val client: HttpClient) : PushService {
+@Factory
+internal class DefaultPushService(@InjectedParam args: ServiceCreationArgs) : PushService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
+
     override suspend fun get(): PushSubscription = client.get("$baseUrl/v1/push/subscription").body()
 
     override suspend fun create(data: FormDataContent): PushSubscription =

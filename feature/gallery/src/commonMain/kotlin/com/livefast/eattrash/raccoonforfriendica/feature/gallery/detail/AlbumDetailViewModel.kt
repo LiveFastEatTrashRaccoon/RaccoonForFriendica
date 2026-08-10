@@ -14,13 +14,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.di.AlbumDetailViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class AlbumDetailViewModel(
-    private val albumName: String,
+    @InjectedParam args: AlbumDetailViewModelArgs,
     private val paginationManager: AlbumPhotoPaginationManager,
     private val photoRepository: PhotoRepository,
     private val albumRepository: PhotoAlbumRepository,
@@ -31,6 +35,9 @@ class AlbumDetailViewModel(
     MviModelDelegate<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>
     by DefaultMviModelDelegate(initialState = AlbumDetailMviModel.State()),
     AlbumDetailMviModel {
+
+    private val albumName = args.albumName
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled

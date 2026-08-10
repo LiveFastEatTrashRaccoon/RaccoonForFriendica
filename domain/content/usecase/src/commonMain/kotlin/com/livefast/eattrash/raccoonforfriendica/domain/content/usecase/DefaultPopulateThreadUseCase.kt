@@ -5,9 +5,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import org.koin.core.annotation.Single
 
 private data class ConversationNode(val entry: TimelineEntryModel, var children: List<ConversationNode> = listOf())
 
+@Single
 internal class DefaultPopulateThreadUseCase(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val emojiHelper: EmojiHelper,

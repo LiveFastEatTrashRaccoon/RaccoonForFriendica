@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.toComposeImageBitmap
@@ -69,29 +69,32 @@ internal fun BlurredPreview(
 @Composable
 @Preview
 private fun BlurredPreviewPreview() {
-    setupPreview(
-        module {
-            single {
-                object : BlurHashRepository {
-                    override suspend fun preload(params: BlurHashParams) = Unit
+    PreviewWrapper(
+        modules = listOf(
+            module {
+                single {
+                    object : BlurHashRepository {
+                        override suspend fun preload(params: BlurHashParams) = Unit
 
-                    override suspend fun get(params: BlurHashParams): ImageBitmap = byteArrayOf(
-                        -119, 80, 78, 71, 13, 10, 26, 10, 0, 0,
-                        0, 13, 73, 72, 68, 82, 0, 0, 0, 2,
-                        0, 0, 0, 2, 8, 2, 0, 0, 0, -3,
-                        -44, -102, 115, 0, 0, 0, 22, 73, 68, 65,
-                        84, 120, -100, 99, -8, -49, -64, -64, -64, -16,
-                        -97, -111, -31, 63, -61, 127, 6, 6, 0, 28,
-                        -8, 3, -2, -3, 114, -27, 20, 0, 0, 0,
-                        0, 73, 69, 78, 68, -82, 66, 96, -126,
-                    ).toComposeImageBitmap()
+                        override suspend fun get(params: BlurHashParams): ImageBitmap = byteArrayOf(
+                            -119, 80, 78, 71, 13, 10, 26, 10, 0, 0,
+                            0, 13, 73, 72, 68, 82, 0, 0, 0, 2,
+                            0, 0, 0, 2, 8, 2, 0, 0, 0, -3,
+                            -44, -102, 115, 0, 0, 0, 22, 73, 68, 65,
+                            84, 120, -100, 99, -8, -49, -64, -64, -64, -16,
+                            -97, -111, -31, 63, -61, 127, 6, 6, 0, 28,
+                            -8, 3, -2, -3, 114, -27, 20, 0, 0, 0,
+                            0, 73, 69, 78, 68, -82, 66, 96, -126,
+                        ).toComposeImageBitmap()
+                    }
                 }
-            }
-        },
-    )
-    BlurredPreview(
-        originalWidth = 200,
-        originalHeight = 200,
-        blurHash = "fake",
-    )
+            },
+        ),
+    ) {
+        BlurredPreview(
+            originalWidth = 200,
+            originalHeight = 200,
+            blurHash = "fake",
+        )
+    }
 }

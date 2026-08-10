@@ -7,8 +7,10 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.CompletableDeferred
+import org.koin.core.annotation.Single
 import java.net.ServerSocket
 
+@Single
 class EmbeddedRedirectServer {
     private var embeddedServer: EmbeddedServer<*, *>? = null
     private var codeDeferred = CompletableDeferred<String>()

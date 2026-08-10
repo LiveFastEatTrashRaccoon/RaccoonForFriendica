@@ -2,15 +2,20 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultFollowRequestService(private val baseUrl: String, private val client: HttpClient) :
-    FollowRequestService {
+@Factory
+internal class DefaultFollowRequestService(@InjectedParam args: ServiceCreationArgs) : FollowRequestService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
+
     override suspend fun getAll(maxId: String?, limit: Int): Pair<List<Account>, String?> {
         val response = client.get("$baseUrl/v1/follow_requests") {
             parameter("max_id", maxId)

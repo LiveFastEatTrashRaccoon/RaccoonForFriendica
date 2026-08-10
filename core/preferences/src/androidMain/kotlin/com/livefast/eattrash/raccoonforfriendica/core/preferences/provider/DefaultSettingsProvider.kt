@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.encryption.EncryptionHelper
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultSettingsProvider(
-    private val preferencesProvider: SharedPreferencesProvider,
-    private val legacyPreferencesProvider: SharedPreferencesProvider,
+    private val preferencesProvider: DefaultSharedPreferencesProvider,
+    private val legacyPreferencesProvider: LegacySharedPreferencesProvider,
     private val encryptionHelper: EncryptionHelper,
 ) : SettingsProvider {
     override fun provide(): Settings {

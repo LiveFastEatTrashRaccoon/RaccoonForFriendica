@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appicon
 
+import org.koin.core.annotation.Single
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Single
 internal class DefaultAppIconManager(private val context: Context, private val keyStore: TemporaryKeyStore) :
     AppIconManager {
     private val _current = MutableStateFlow<AppIconVariant>(AppIconVariant.Default)

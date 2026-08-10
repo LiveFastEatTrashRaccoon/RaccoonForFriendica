@@ -11,6 +11,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.CircleMembersViewModelArgs
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -20,10 +21,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 @OptIn(FlowPreview::class)
 class CircleMembersViewModel(
-    private val id: String,
+    @InjectedParam args: CircleMembersViewModelArgs,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val settingsRepository: SettingsRepository,
@@ -34,6 +38,9 @@ class CircleMembersViewModel(
     MviModelDelegate<CircleMembersMviModel.Intent, CircleMembersMviModel.State, CircleMembersMviModel.Effect>
     by DefaultMviModelDelegate(initialState = CircleMembersMviModel.State()),
     CircleMembersMviModel {
+
+    private val id = args.id
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled

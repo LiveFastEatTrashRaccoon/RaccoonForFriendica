@@ -7,8 +7,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Translation
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.FormDataContent
@@ -21,8 +21,14 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultStatusService(private val baseUrl: String, private val client: HttpClient) : StatusService {
+@Factory
+internal class DefaultStatusService(@InjectedParam args: ServiceCreationArgs) : StatusService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
+
     override suspend fun get(id: String): Status = client.get("$baseUrl/v1/statuses/$id").body()
 
     override suspend fun getContext(id: String): StatusContext = client.get("$baseUrl/v1/statuses/$id/context").body()

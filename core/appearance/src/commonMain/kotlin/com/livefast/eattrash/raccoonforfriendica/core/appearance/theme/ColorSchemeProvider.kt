@@ -31,3 +31,4 @@ internal fun ColorScheme.blackify(): ColorScheme = copy(
     tertiaryContainer = md_theme_black_tertiaryContainer,
     onTertiaryContainer = md_theme_black_onTertiaryContainer,
 )
+

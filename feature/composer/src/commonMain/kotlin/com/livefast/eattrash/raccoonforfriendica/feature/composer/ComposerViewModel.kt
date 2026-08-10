@@ -37,7 +37,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Attac
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MediaRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
@@ -47,11 +46,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Searc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.StripMarkupUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.ComposerViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.PrepareForPreviewUseCase
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -63,13 +64,15 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+@KoinViewModel
 @OptIn(FlowPreview::class)
 class ComposerViewModel(
-    private val inReplyToId: String?,
-    private val quotedId: String?,
+    @InjectedParam args: ComposerViewModelArgs,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
@@ -96,6 +99,10 @@ class ComposerViewModel(
     MviModelDelegate<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>
     by DefaultMviModelDelegate(initialState = ComposerMviModel.State()),
     ComposerMviModel {
+
+    private val inReplyToId = args.inReplyToId
+    private val quotedId = args.quotedId
+
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
     private var draftId: String? = null

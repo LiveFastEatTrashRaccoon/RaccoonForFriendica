@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationPro
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultFallbackTranslationRepository(
     private val translationProviderFactory: TranslationProviderFactory,
 ) : FallbackTranslationRepository {

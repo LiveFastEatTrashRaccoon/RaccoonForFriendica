@@ -20,9 +20,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPrel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
@@ -34,14 +34,18 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.CircleTimelineViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
+@KoinViewModel
 class CircleTimelineViewModel(
-    id: String,
+    @InjectedParam args: CircleTimelineViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -65,6 +69,9 @@ class CircleTimelineViewModel(
     MviModelDelegate<CircleTimelineMviModel.Intent, CircleTimelineMviModel.State, CircleTimelineMviModel.Effect>
     by DefaultMviModelDelegate(initialState = CircleTimelineMviModel.State()),
     CircleTimelineMviModel {
+
+    private val id = args.id
+
     init {
         viewModelScope.launch {
             val circle = circleCache.get(id)

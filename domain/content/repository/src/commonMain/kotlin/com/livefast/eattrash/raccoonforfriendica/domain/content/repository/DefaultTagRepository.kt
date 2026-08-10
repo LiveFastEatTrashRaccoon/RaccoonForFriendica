@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultTagRepository(private val provider: ServiceProvider) : TagRepository {
     override suspend fun getFollowed(pageCursor: String?): ListWithPageCursor<TagModel>? = try {
         val (list, cursor) =

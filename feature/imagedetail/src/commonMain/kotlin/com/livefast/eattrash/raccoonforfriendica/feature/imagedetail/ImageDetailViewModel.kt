@@ -10,14 +10,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelpe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.download
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
+import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.di.ImageDetailViewModelArgs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class ImageDetailViewModel(
-    private val urls: List<String>,
-    private val initialIndex: Int = 0,
+    @InjectedParam args: ImageDetailViewModelArgs,
     private val shareHelper: ShareHelper,
     private val galleryHelper: GalleryHelper,
     private val imagePreloadManager: ImagePreloadManager,
@@ -25,6 +28,10 @@ class ImageDetailViewModel(
     MviModelDelegate<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect>
     by DefaultMviModelDelegate(initialState = ImageDetailMviModel.UiState()),
     ImageDetailMviModel {
+
+    private val urls = args.urls
+    private val initialIndex = args.initialIndex
+
     init {
         viewModelScope.launch {
             updateState {

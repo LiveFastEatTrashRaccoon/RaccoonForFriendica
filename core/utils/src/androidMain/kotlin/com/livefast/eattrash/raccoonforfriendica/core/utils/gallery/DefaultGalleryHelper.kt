@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.gallery
 
+import org.koin.core.annotation.Single
 import android.content.ContentValues
 import android.content.Context
 import android.os.Environment
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 
+@Single
 internal class DefaultGalleryHelper(private val context: Context) : GalleryHelper {
     override val supportsCustomPath: Boolean = true
 

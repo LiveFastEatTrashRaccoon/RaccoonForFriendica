@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
+import org.koin.core.annotation.Single
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,6 +11,7 @@ import okio.Path
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
+@Single
 internal class DefaultFileSystemManager(private val context: Context) : FileSystemManager {
     override val isSupported = true
 

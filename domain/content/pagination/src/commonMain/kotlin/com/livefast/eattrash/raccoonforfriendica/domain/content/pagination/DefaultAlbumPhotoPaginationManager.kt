@@ -4,7 +4,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Factory
 
+@Factory
 internal class DefaultAlbumPhotoPaginationManager(private val albumRepository: PhotoAlbumRepository) :
     AlbumPhotoPaginationManager {
     private var specification: AlbumPhotoPaginationSpecification? = null

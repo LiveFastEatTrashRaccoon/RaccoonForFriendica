@@ -23,11 +23,14 @@ import io.ktor.http.parameters
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 import kotlin.time.Duration
 
+@Single
 internal class DefaultTimelineEntryRepository(
     private val provider: ServiceProvider,
-    private val otherProvider: ServiceProvider,
+    @Named("other") private val otherProvider: ServiceProvider,
 ) : TimelineEntryRepository {
     private val mutex = Mutex()
     private val otherMutex = Mutex()

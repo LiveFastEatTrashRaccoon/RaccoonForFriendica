@@ -1,16 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.translation.di
 
-import com.livefast.eattrash.raccoonforfriendica.core.translation.DefaultTranslationProviderFactory
-import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderFactory
-import com.livefast.eattrash.raccoonforfriendica.core.translation.store.DefaultTranslationProviderConfigStore
-import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val translationModule = module {
-    single<TranslationProviderFactory> {
-        DefaultTranslationProviderFactory()
-    }
-    single<TranslationProviderConfigStore> {
-        DefaultTranslationProviderConfigStore(keyStore = get())
-    }
-}
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.translation")
+class TranslationModule

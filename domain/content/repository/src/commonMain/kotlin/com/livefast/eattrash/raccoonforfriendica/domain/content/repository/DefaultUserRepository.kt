@@ -22,10 +22,13 @@ import io.ktor.http.parameters
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultUserRepository(
     private val provider: ServiceProvider,
-    private val otherProvider: ServiceProvider,
+    @Named("other") private val otherProvider: ServiceProvider,
 ) : UserRepository {
     private val otherMutex = Mutex()
     private var cachedUser: UserModel? = null

@@ -21,9 +21,12 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.path
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultCredentialsRepository(
-    private val provider: ServiceProvider,
+    @Named("other") private val provider: ServiceProvider,
     private val json: Json,
     engine: HttpClientEngine = provideHttpClientEngine(),
 ) : CredentialsRepository {

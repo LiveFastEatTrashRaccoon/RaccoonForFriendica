@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.share
 
+import org.koin.core.annotation.Single
+
+@Single
 internal class DefaultShareHelper : ShareHelper {
     override val supportsShareImage = false
 

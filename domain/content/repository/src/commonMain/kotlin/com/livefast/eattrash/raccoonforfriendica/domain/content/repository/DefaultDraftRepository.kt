@@ -11,7 +11,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toVisibility
 import kotlinx.coroutines.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) :
     DraftRepository {
     override suspend fun getAll(page: Int): List<TimelineEntryModel>? = try {

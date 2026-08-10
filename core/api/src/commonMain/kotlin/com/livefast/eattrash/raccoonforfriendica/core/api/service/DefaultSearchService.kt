@@ -1,12 +1,18 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Search
-import io.ktor.client.HttpClient
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
-internal class DefaultSearchService(private val baseUrl: String, private val client: HttpClient) : SearchService {
+@Factory
+internal class DefaultSearchService(@InjectedParam args: ServiceCreationArgs) : SearchService {
+    private val baseUrl = args.baseUrl
+    private val client = args.client
+
     override suspend fun search(
         query: String,
         type: String,

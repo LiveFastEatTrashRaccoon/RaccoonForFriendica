@@ -301,7 +301,7 @@ class DefaultPopulateThreadUseCaseTest {
     }
 
     @Test
-    fun `given further invocation on partial tree, when invoke then result is as expected`() = runTest {
+    fun `given further invocation on partial tree when invoke then result is as expected`() = runTest {
         val root =
             TimelineEntryModel(
                 id = "P0",

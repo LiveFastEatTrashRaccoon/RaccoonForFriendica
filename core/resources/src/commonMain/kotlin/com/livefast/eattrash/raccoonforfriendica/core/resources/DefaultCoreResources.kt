@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.model.VideoPlayerConfig
+import org.koin.core.annotation.Single
 import raccoonforfriendica.core.resources.generated.resources.Res
 import raccoonforfriendica.core.resources.generated.resources.abc
 import raccoonforfriendica.core.resources.generated.resources.account_circle_fill
@@ -150,6 +151,7 @@ import raccoonforfriendica.core.resources.generated.resources.volunteer_activism
 import raccoonforfriendica.core.resources.generated.resources.wordpress_small
 import raccoonforfriendica.core.resources.generated.resources.workspaces_fill
 
+@Single
 internal class DefaultCoreResources : CoreResources {
 
     // region Fonts

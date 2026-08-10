@@ -7,7 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
 import kotlinx.coroutines.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider) : PhotoAlbumRepository {
     override suspend fun getAll(): List<MediaAlbumModel>? = try {
         provider.photo.getAll().groupBy { it.album }.map { entry ->

@@ -14,7 +14,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class AnnouncementsViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,

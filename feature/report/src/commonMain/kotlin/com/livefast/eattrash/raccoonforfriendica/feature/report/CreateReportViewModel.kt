@@ -6,17 +6,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
+import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class CreateReportViewModel(
-    private val userId: String,
-    private val entryId: String,
+    @InjectedParam args: CreateReportViewModelArgs,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
@@ -25,6 +28,10 @@ class CreateReportViewModel(
     MviModelDelegate<CreateReportMviModel.Intent, CreateReportMviModel.State, CreateReportMviModel.Effect>
     by DefaultMviModelDelegate(initialState = CreateReportMviModel.State()),
     CreateReportMviModel {
+
+    private val userId = args.userId
+    private val entryId = args.entryId
+
     init {
         viewModelScope.launch {
             supportedFeatureRepository.features

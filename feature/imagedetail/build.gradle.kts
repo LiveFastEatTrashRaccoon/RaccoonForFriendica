@@ -23,4 +23,6 @@ kotlin {
 
 customDiExtension {
     useCompose(withViewModels = true)
+    useCompilerPlugin()
+    useAnnotations()
 }

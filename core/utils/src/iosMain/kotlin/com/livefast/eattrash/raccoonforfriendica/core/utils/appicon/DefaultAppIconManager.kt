@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appicon
 
+import org.koin.core.annotation.Factory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+@Factory
 internal class DefaultAppIconManager : AppIconManager {
     override val supportsMultipleIcons = false
     override val current: StateFlow<AppIconVariant> =

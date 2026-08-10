@@ -88,6 +88,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.koin.test)
             }
         }
         jvmMain {
@@ -119,6 +120,10 @@ customKotlinMultiplatformExtension {
 
 customDiExtension {
     useCompose(withViewModels = true)
+    // validation disabled on iOS to bypass Koin compiler plugin limitations with cross-module metadata
+    val isXcodeBuild = System.getenv("SDK_NAME") != null || System.getenv("XCODE_VERSION_ACTUAL") != null
+    useCompilerPlugin(enableValidation = !isXcodeBuild)
+    useAnnotations()
 }
 
 dependencies {

@@ -10,7 +10,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class PermanentDrawerViewModel(
     private val identityRepository: IdentityRepository,
     private val inboxManager: InboxManager,

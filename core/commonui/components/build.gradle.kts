@@ -24,4 +24,7 @@ kotlin {
 
 customDiExtension {
     useCompose()
+    // validation disabled to bypass Koin compiler plugin limitations with cross-module metadata on iOS
+    useCompilerPlugin(enableValidation = false)
+    useAnnotations()
 }

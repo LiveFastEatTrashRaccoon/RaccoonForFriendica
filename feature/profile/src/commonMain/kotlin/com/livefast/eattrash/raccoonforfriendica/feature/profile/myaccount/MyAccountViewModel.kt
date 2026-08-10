@@ -37,7 +37,9 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 @OptIn(FlowPreview::class)
 class MyAccountViewModel(
     private val userRepository: UserRepository,

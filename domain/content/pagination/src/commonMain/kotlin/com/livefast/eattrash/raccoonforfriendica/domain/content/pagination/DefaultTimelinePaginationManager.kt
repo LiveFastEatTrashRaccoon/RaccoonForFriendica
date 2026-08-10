@@ -25,7 +25,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Factory
 
+@Factory
 internal class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
     private val timelineEntryRepository: TimelineEntryRepository,

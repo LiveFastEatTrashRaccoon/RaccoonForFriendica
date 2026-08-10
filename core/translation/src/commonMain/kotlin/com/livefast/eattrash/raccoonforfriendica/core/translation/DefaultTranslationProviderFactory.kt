@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.translation
 
 import com.livefast.eattrash.raccoonforfriendica.core.translation.libretranslate.LibreTranslateProvider
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultTranslationProviderFactory : TranslationProviderFactory {
     override fun create(config: TranslationProviderConfig): TranslationProvider = when (config.name) {
         TranslationProviderTypes.LibreTranslate.name -> LibreTranslateProvider(

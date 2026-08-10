@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultDirectMessageRepository(private val provider: ServiceProvider) : DirectMessageRepository {
     override suspend fun getAll(page: Int, limit: Int?): List<DirectMessageModel>? = try {
         provider.directMessage

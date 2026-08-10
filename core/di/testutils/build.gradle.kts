@@ -15,3 +15,7 @@ kotlin {
         }
     }
 }
+
+customDiExtension {
+    useCompilerPlugin()
+}

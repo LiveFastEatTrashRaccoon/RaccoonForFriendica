@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
@@ -69,9 +69,10 @@ fun FeedbackButton(
 @Composable
 @Preview
 private fun FeedbackButtonPreview() {
-    setupPreview()
-    FeedbackButton(
-        imageVector = LocalResources.current.thumbUp,
-        onClick = {},
-    )
+    PreviewWrapper {
+        FeedbackButton(
+            imageVector = LocalResources.current.thumbUp,
+            onClick = {},
+        )
+    }
 }

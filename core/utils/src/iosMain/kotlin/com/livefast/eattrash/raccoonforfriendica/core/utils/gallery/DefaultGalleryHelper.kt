@@ -2,6 +2,7 @@
 
 package com.livefast.eattrash.raccoonforfriendica.core.utils.gallery
 
+import org.koin.core.annotation.Single
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ fun ImageBytes.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toIn
     }
 }
 
+@Single
 internal class DefaultGalleryHelper : GalleryHelper {
     override val supportsCustomPath: Boolean = false
 

@@ -9,10 +9,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultTrendingRepository(
     private val provider: ServiceProvider,
-    private val otherProvider: ServiceProvider,
+    @Named("other") private val otherProvider: ServiceProvider,
 ) : TrendingRepository {
     private val mutex = Mutex()
     private val otherMutex = Mutex()
