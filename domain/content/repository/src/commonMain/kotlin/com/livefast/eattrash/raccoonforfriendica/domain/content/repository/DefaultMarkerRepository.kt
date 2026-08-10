@@ -8,7 +8,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultMarkerRepository(private val provider: ServiceProvider) : MarkerRepository {
     private val cachedValues = mutableMapOf<MarkerType, MarkerModel>()
 

@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedT
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultTranslationRepository(private val provider: ServiceProvider) : TranslationRepository {
     override suspend fun getTranslation(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel? =
         try {

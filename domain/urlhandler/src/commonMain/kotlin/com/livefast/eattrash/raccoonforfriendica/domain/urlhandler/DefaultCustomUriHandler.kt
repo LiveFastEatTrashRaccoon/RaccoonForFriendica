@@ -15,9 +15,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 
+@Factory
 internal class DefaultCustomUriHandler(
-    private val defaultHandler: UriHandler,
+    @InjectedParam private val defaultHandler: UriHandler,
     private val customTabsHelper: CustomTabsHelper,
     private val settingsRepository: SettingsRepository,
     private val mainRouter: MainRouter,

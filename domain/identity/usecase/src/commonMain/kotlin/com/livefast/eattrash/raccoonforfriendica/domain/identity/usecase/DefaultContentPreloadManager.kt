@@ -11,7 +11,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultContentPreloadManager(
     private val timelineEntryRepository: TimelineEntryRepository,
     private val trendingRepository: TrendingRepository,

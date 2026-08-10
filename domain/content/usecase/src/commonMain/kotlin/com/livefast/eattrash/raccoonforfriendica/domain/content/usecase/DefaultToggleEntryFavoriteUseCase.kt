@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultToggleEntryFavoriteUseCase(private val entryRepository: TimelineEntryRepository) :
     ToggleEntryFavoriteUseCase {
     override suspend fun invoke(entry: TimelineEntryModel): TimelineEntryModel? {

@@ -8,7 +8,9 @@ import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultPhotoRepository(private val provider: ServiceProvider) : PhotoRepository {
     override suspend fun create(bytes: ByteArray, album: String, alt: String): AttachmentModel? = try {
         val content =

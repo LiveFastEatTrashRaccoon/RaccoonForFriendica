@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.convert
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ContentRegexes
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultMarkdownConverter : MarkdownConverter {
     override fun toHtml(value: String) = value
         .run {

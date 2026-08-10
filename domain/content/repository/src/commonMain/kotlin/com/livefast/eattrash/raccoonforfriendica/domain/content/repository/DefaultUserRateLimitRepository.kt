@@ -4,7 +4,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLi
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserRateLimitEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import io.ktor.utils.io.CancellationException
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultUserRateLimitRepository(private val userRateLimitDao: UserRateLimitDao) :
     UserRateLimitRepository {
     override suspend fun getAll(accountId: Long): List<UserRateLimitModel> = try {

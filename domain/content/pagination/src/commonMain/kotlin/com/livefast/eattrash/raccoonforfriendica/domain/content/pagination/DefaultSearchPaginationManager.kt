@@ -25,7 +25,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Factory
 
+@Factory
 internal class DefaultSearchPaginationManager(
     private val searchRepository: SearchRepository,
     private val userRepository: UserRepository,

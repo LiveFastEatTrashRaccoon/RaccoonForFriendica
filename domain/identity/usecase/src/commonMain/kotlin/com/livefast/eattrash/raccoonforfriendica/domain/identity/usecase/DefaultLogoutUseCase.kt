@@ -2,7 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultLogoutUseCase(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val accountRepository: AccountRepository,

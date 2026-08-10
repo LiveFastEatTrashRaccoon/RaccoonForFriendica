@@ -6,9 +6,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.Uri
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Single
 
 internal interface HashtagProcessor : UrlProcessor
 
+@Single
 internal class DefaultHashtagProcessor(
     private val mainRouter: MainRouter,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main,

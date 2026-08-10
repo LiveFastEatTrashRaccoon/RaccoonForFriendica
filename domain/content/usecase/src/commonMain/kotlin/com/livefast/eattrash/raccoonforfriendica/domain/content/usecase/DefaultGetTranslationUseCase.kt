@@ -7,7 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Fallb
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultGetTranslationUseCase(
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val defaultRepository: TranslationRepository,

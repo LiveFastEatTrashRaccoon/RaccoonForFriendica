@@ -5,11 +5,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResul
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.core.annotation.Single
+import kotlin.time.Duration.Companion.milliseconds
 
+@Single
 internal class DefaultFetchEntryUseCase(private val searchRepository: SearchRepository) : FetchEntryUseCase {
     override suspend fun invoke(url: String): TimelineEntryModel? =
-        // wait at most SEARCH_TIMEOUT_MILLIS failing if the request takes longer
-        withTimeoutOrNull(SEARCH_TIMEOUT_MILLIS) {
+        // wait at most SEARCH_TIMEOUT millis failing if the request takes longer
+        withTimeoutOrNull(SEARCH_TIMEOUT) {
             searchRepository
                 .search(
                     query = url,
@@ -29,6 +32,6 @@ internal class DefaultFetchEntryUseCase(private val searchRepository: SearchRepo
         }
 
     companion object {
-        private const val SEARCH_TIMEOUT_MILLIS = 1500L
+        private val SEARCH_TIMEOUT = 1500.milliseconds
     }
 }

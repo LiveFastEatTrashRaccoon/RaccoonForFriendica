@@ -7,10 +7,13 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultEmojiRepository(
     private val provider: ServiceProvider,
-    private val otherProvider: ServiceProvider,
+    @Named("other") private val otherProvider: ServiceProvider,
     private val cache: LruCache<String, List<EmojiModel>> = LruCache.factory(20),
 ) : EmojiRepository {
     private val otherMutex = Mutex()

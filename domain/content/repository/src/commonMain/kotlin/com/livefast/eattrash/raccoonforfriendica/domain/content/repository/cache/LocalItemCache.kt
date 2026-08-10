@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
+package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache
 
 interface LocalItemCache<T> {
     suspend fun put(key: String, value: T)

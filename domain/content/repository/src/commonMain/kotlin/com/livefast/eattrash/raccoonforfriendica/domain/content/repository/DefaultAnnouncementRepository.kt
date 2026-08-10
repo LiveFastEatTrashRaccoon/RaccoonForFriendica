@@ -6,7 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultAnnouncementRepository(private val provider: ServiceProvider) : AnnouncementRepository {
     private val mutex = Mutex()
     private val cachedValues: MutableList<AnnouncementModel> = mutableListOf()

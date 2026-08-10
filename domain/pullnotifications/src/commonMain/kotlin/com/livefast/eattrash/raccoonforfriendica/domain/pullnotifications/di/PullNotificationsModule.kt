@@ -1,7 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.di
 
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val pullNotificationsModule = module {
-    includes(nativePullNotificationsModule)
-}
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications")
+class PullNotificationsModule

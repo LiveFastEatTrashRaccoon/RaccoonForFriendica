@@ -27,7 +27,9 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultActiveAccountMonitor(
     private val accountRepository: AccountRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,

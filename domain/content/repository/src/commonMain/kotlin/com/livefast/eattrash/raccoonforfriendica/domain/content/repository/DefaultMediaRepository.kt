@@ -12,8 +12,10 @@ import io.ktor.http.parameters
 import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
 
+@Single
 internal class DefaultMediaRepository(private val provider: ServiceProvider) : MediaRepository {
     override suspend fun getBy(id: String): AttachmentModel? = try {
         provider.media.getBy(id).toModel()

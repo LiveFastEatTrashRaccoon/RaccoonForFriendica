@@ -16,8 +16,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Single
 import org.unifiedpush.android.connector.UnifiedPush
 
+@Single
 internal class DefaultPushNotificationManager(
     private val context: Context,
     private val pushNotificationRepository: PushNotificationRepository,

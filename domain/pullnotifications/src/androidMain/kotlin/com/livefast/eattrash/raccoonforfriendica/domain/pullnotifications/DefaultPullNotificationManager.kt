@@ -14,11 +14,13 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
+import org.koin.core.annotation.Single
 import java.util.concurrent.TimeUnit
 
-internal class DefaultPullNotificationManager(private val context: Context) : PullNotificationManager {
-    override val isSupported = true
-    override val isBackgroundRestricted: Boolean
+@Single
+internal actual class DefaultPullNotificationManager(private val context: Context) : PullNotificationManager {
+    actual override val isSupported = true
+    actual override val isBackgroundRestricted: Boolean
         get() =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
                 activityManager.isBackgroundRestricted
@@ -41,11 +43,11 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
                 .setRequiresDeviceIdle(false)
                 .build()
 
-    override fun setPeriod(minutes: Long) {
+    actual override fun setPeriod(minutes: Long) {
         intervalMinutes = minutes
     }
 
-    override fun start() {
+    actual override fun start() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
 
         // check immediately with an expedited one-time request
@@ -55,7 +57,7 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
         periodicCheck()
     }
 
-    override fun oneshotCheck() {
+    actual override fun oneshotCheck() {
         createNotificationChannelIfNeeded()
         OneTimeWorkRequestBuilder<CheckNotificationWorker>()
             .addTag(TAG)
@@ -67,11 +69,11 @@ internal class DefaultPullNotificationManager(private val context: Context) : Pu
             }
     }
 
-    override fun stop() {
+    actual override fun stop() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
     }
 
-    override fun cancelAll() {
+    actual override fun cancelAll() {
         notificationManager.cancelAll()
     }
 

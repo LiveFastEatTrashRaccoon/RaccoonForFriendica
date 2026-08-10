@@ -3,7 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultFollowedHashtagCache(private val tagRepository: TagRepository) : FollowedHashtagCache {
     private var cache: List<TagModel> = emptyList()
     private val mutex = Mutex()

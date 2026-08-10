@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.MarkdownConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultStripMarkupUseCase(
     private val bbCodeConverter: BBCodeConverter,
     private val markdownConverter: MarkdownConverter,

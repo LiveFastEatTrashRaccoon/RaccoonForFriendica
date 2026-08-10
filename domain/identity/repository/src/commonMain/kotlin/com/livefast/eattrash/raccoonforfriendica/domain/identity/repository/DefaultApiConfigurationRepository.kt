@@ -6,7 +6,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultApiConfigurationRepository(
     private val provider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,

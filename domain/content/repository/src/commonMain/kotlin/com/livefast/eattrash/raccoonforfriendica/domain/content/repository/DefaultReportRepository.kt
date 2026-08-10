@@ -5,7 +5,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCateg
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultReportRepository(private val provider: ServiceProvider) : ReportRepository {
     override suspend fun create(
         userId: String,

@@ -1,7 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
+import org.koin.core.annotation.Single
 
+@Single
 internal class DefaultStopWordRepository(private val keyStore: TemporaryKeyStore) : StopWordRepository {
     override suspend fun get(accountId: Long?): List<String> {
         val key = getKey(accountId)
