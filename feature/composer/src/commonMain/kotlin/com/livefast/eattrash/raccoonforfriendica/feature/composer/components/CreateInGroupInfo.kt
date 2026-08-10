@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.setupPreview
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -54,10 +54,11 @@ internal fun CreateInGroupInfo(username: String, modifier: Modifier = Modifier) 
 @Composable
 @Preview
 private fun CreateInGroupInfoPreview() {
-    setupPreview()
-    Surface {
-        CreateInGroupInfo(
-            username = "Group name",
-        )
+    PreviewWrapper {
+        Surface {
+            CreateInGroupInfo(
+                username = "Group name",
+            )
+        }
     }
 }

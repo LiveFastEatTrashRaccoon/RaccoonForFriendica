@@ -20,10 +20,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
@@ -35,14 +35,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.EntryDetailViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
+@KoinViewModel
 class EntryDetailViewModel(
-    private val id: String,
-    private val swipeNavigationEnabled: Boolean,
+    @InjectedParam args: EntryDetailViewModelArgs,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -68,6 +71,10 @@ class EntryDetailViewModel(
     MviModelDelegate<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>
     by DefaultMviModelDelegate(initialState = EntryDetailMviModel.State()),
     EntryDetailMviModel {
+
+    private val id = args.id
+    private val swipeNavigationEnabled = args.swipeNavigationEnabled
+
     init {
         viewModelScope.launch {
             identityRepository.currentUser

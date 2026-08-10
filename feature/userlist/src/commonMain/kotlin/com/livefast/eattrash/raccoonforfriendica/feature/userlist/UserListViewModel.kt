@@ -14,22 +14,24 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificat
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUserListUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUserSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.UserListViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
-internal class UserListViewModel(
-    private val type: UserListType,
-    private val userId: String,
-    private val entryId: String,
+@KoinViewModel
+class UserListViewModel(
+    @InjectedParam args: UserListViewModelArgs,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
@@ -44,6 +46,11 @@ internal class UserListViewModel(
     MviModelDelegate<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>
     by DefaultMviModelDelegate(initialState = UserListMviModel.State()),
     UserListMviModel {
+
+    private val type = args.type
+    private val userId = args.userId
+    private val entryId = args.entryId
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled

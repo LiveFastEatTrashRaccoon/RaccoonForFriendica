@@ -17,9 +17,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashPar
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
@@ -31,15 +31,18 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.thread.di.ThreadViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.math.abs
 import kotlin.time.Duration
 
+@KoinViewModel
 class ThreadViewModel(
-    private val entryId: String,
-    private val swipeNavigationEnabled: Boolean,
+    @InjectedParam args: ThreadViewModelArgs,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -63,6 +66,10 @@ class ThreadViewModel(
     MviModelDelegate<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>
     by DefaultMviModelDelegate(initialState = ThreadMviModel.State()),
     ThreadMviModel {
+
+    private val entryId = args.entryId
+    private val swipeNavigationEnabled = args.swipeNavigationEnabled
+
     private val currentMainEntry: TimelineEntryModel?
         get() {
             val currentState = uiState.value

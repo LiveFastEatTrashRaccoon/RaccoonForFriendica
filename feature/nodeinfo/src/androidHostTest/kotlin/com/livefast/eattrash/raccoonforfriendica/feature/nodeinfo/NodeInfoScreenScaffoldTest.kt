@@ -13,11 +13,11 @@ import androidx.compose.ui.test.performScrollToNode
 import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KoinTestRule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.l10nModule
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.L10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.resourcesModule
+import com.livefast.eattrash.raccoonforfriendica.core.resources.di.ResourcesModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -30,6 +30,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.dsl.module
+import org.koin.plugin.module.dsl.modules
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -47,16 +48,15 @@ class NodeInfoScreenScaffoldTest {
 
     @get:Rule
     val diRule =
-        KoinTestRule(
-            listOf(
-                l10nModule,
-                resourcesModule,
+        KoinTestRule {
+            modules(L10nModule::class, ResourcesModule::class)
+            modules(
                 module {
                     factory { navigationCoordinator }
                     factory { mainRouter }
                 },
-            ),
-        )
+            )
+        }
 
     @Test
     fun `given all data present when displayed then content is as expected`() {

@@ -6,20 +6,30 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.manage.ManageUserCirclesMviModel.State
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.ManageUserCirclesViewModelArgs
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class ManageUserCirclesViewModel(
-    private val userId: String,
+    @InjectedParam args: ManageUserCirclesViewModelArgs,
     private val circlesRepository: CirclesRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val userRepository: UserRepository,
 ) : ViewModel(),
-    MviModelDelegate<ManageUserCirclesMviModel.Intent, State, ManageUserCirclesMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = State()),
+    MviModelDelegate<
+        ManageUserCirclesMviModel.Intent,
+        ManageUserCirclesMviModel.State,
+        ManageUserCirclesMviModel.Effect,
+        >
+    by DefaultMviModelDelegate(initialState = ManageUserCirclesMviModel.State()),
     ManageUserCirclesMviModel {
+
+    private val userId = args.userId
+
     init {
         viewModelScope.launch {
             if (uiState.value.initial) {

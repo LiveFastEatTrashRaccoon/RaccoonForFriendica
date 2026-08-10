@@ -12,16 +12,20 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Auth
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
+import com.livefast.eattrash.raccoonforfriendica.feature.login.di.LoginViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 @OptIn(FlowPreview::class)
 class LoginViewModel(
-    private val type: LoginType,
+    @InjectedParam args: LoginViewModelArgs,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val credentialsRepository: CredentialsRepository,
     private val authManager: AuthManager,
@@ -30,6 +34,9 @@ class LoginViewModel(
     MviModelDelegate<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect>
     by DefaultMviModelDelegate(initialState = LoginMviModel.State()),
     LoginMviModel {
+
+    private val type = args.type
+
     init {
         viewModelScope.launch {
             authManager.credentialFlow

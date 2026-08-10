@@ -14,7 +14,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class CalendarViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,

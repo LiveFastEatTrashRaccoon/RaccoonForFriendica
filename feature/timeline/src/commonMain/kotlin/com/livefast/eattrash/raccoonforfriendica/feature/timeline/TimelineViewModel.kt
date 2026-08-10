@@ -45,8 +45,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
+@KoinViewModel
 @OptIn(FlowPreview::class)
 class TimelineViewModel(
     private val paginationManager: TimelinePaginationManager,

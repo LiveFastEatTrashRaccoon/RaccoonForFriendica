@@ -33,14 +33,18 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.di.EntryListViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
+@KoinViewModel
 class EntryListViewModel(
-    private val type: EntryListType,
+    @InjectedParam args: EntryListViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val settingsRepository: SettingsRepository,
@@ -63,6 +67,9 @@ class EntryListViewModel(
     MviModelDelegate<EntryListMviModel.Intent, EntryListMviModel.State, EntryListMviModel.Effect>
     by DefaultMviModelDelegate(initialState = EntryListMviModel.State()),
     EntryListMviModel {
+
+    private val type = args.type
+
     init {
         viewModelScope.launch {
             settingsRepository.current

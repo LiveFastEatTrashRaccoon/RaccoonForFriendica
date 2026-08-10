@@ -22,7 +22,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class ManageBlocksViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,

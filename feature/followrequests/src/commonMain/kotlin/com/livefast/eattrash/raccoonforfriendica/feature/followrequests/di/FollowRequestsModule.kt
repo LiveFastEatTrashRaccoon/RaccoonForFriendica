@@ -1,16 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.followrequests.di
 
-import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsViewModel
-import org.koin.core.module.dsl.viewModel
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val followRequestsModule = module {
-    viewModel {
-        FollowRequestsViewModel(
-            paginationManager = get(),
-            userRepository = get(),
-            settingsRepository = get(),
-            imageAutoloadObserver = get(),
-        )
-    }
-}
+@Module
+@ComponentScan("com.livefast.eattrash.raccoonforfriendica.feature.followrequests")
+class FollowRequestsModule

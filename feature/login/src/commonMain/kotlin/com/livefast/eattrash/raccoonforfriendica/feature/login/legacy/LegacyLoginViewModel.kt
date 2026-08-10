@@ -10,7 +10,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiC
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class LegacyLoginViewModel(
     private val credentialsRepository: CredentialsRepository,
     private val apiConfigurationRepository: ApiConfigurationRepository,

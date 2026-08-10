@@ -32,14 +32,18 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.di.HashtagViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
+@KoinViewModel
 class HashtagViewModel(
-    private val tag: String,
+    @InjectedParam args: HashtagViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val tagRepository: TagRepository,
@@ -63,6 +67,9 @@ class HashtagViewModel(
     MviModelDelegate<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>
     by DefaultMviModelDelegate(initialState = HashtagMviModel.State()),
     HashtagMviModel {
+
+    private val tag = args.tag
+
     init {
         viewModelScope.launch {
             settingsRepository.current

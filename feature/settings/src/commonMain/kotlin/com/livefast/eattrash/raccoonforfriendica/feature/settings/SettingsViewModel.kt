@@ -26,7 +26,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportMan
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.DeniedAlwaysException
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.DeniedException
-import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionType
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.RequestCanceledException
@@ -50,12 +49,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportS
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.SettingsViewModelArgs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
+@KoinViewModel
 class SettingsViewModel(
+    @InjectedParam args: SettingsViewModelArgs,
     private val settingsRepository: SettingsRepository,
     private val l10nManager: L10nManager,
     private val themeRepository: ThemeRepository,
@@ -71,7 +75,6 @@ class SettingsViewModel(
     private val fileSystemManager: FileSystemManager,
     private val importSettings: ImportSettingsUseCase,
     private val exportSettings: ExportSettingsUseCase,
-    private val permissionController: PermissionControllerWrapper,
     private val barColorProvider: BarColorProvider,
     private val customTabsHelper: CustomTabsHelper,
     private val translationProviderConfigStore: TranslationProviderConfigStore,
@@ -79,6 +82,9 @@ class SettingsViewModel(
     MviModelDelegate<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>
     by DefaultMviModelDelegate(initialState = SettingsMviModel.State()),
     SettingsMviModel {
+
+    private val permissionController = args.controller
+
     init {
         viewModelScope.launch {
             val supportsPushNotifications =

@@ -30,13 +30,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.di.ShortcutTimelineViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class ShortcutTimelineViewModel(
-    private val node: String,
+    @InjectedParam args: ShortcutTimelineViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -56,6 +60,9 @@ class ShortcutTimelineViewModel(
     MviModelDelegate<ShortcutTimelineMviModel.Intent, ShortcutTimelineMviModel.State, ShortcutTimelineMviModel.Effect>
     by DefaultMviModelDelegate(initialState = ShortcutTimelineMviModel.State()),
     ShortcutTimelineMviModel {
+
+    private val node = args.name
+
     init {
         viewModelScope.launch {
             updateState { it.copy(nodeName = node) }

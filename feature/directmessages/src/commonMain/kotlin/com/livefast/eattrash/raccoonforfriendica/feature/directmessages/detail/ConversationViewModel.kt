@@ -13,10 +13,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.ConversationViewModelArgs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,13 +25,15 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration.Companion.seconds
 
 private val POLLING_INTERVAL = 1.2.seconds
 
+@KoinViewModel
 class ConversationViewModel(
-    private val otherUserId: String,
-    parentUri: String,
+    @InjectedParam args: ConversationViewModelArgs,
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
@@ -41,7 +44,9 @@ class ConversationViewModel(
     MviModelDelegate<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>
     by DefaultMviModelDelegate(initialState = ConversationMviModel.State()),
     ConversationMviModel {
-    private var parentUriToUse = parentUri
+
+    private val otherUserId = args.otherUserId
+    private var parentUriToUse = args.parentUri
     private var job: Job? = null
 
     init {

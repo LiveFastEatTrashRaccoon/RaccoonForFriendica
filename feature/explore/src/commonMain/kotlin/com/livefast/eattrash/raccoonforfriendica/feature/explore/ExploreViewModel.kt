@@ -41,8 +41,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
+@KoinViewModel
 class ExploreViewModel(
     private val paginationManager: ExplorePaginationManager,
     private val userRepository: UserRepository,

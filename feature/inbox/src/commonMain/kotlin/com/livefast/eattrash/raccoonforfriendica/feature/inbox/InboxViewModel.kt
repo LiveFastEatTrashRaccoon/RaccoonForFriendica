@@ -31,7 +31,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class InboxViewModel(
     private val paginationManager: NotificationsPaginationManager,
     private val userRepository: UserRepository,
