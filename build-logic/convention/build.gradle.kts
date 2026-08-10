@@ -16,6 +16,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.spotless.gradlePlugin)
+    compileOnly(libs.koin.gradlePlugin)
     implementation(libs.kotlinpoet)
 }
 
