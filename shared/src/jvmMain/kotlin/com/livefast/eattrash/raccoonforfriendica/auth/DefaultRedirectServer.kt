@@ -1,15 +1,17 @@
 package com.livefast.eattrash.raccoonforfriendica.auth
 
+import org.koin.core.annotation.Single
 
-internal class DefaultRedirectServer(
+@Single
+internal actual class DefaultRedirectServer(
     private val server: EmbeddedRedirectServer,
 ) : RedirectServer {
 
-    override val isLocalServerRequired = true
+    actual override val isLocalServerRequired = true
 
-    override fun start(): Int = server.start()
+    actual override fun start(): Int = server.start()
 
-    override suspend fun waitForCode(): String = server.waitForCode()
+    actual override suspend fun waitForCode(): String = server.waitForCode()
 
-    override fun stop() = server.stop()
+    actual override fun stop() = server.stop()
 }

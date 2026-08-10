@@ -6,3 +6,4 @@ interface RedirectServer {
     suspend fun waitForCode(): String
     fun stop()
 }
+

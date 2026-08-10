@@ -20,8 +20,10 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.minutes
 
+@Single
 class DefaultAuthManager(
     private val navigationCoordinator: NavigationCoordinator,
     private val credentialsRepository: CredentialsRepository,

@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.di
 
-import org.koin.core.module.Module
+import org.koin.core.annotation.Module
 
-expect val nativeAuthModule: Module
+@Module
+expect class NativeAuthModule()
