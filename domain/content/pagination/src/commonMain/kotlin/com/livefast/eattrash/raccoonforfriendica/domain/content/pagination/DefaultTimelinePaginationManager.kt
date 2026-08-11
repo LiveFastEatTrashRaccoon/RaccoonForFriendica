@@ -23,8 +23,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -39,12 +37,10 @@ internal class DefaultTimelinePaginationManager(
     private val followedHashtagCache: FollowedHashtagCache,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : TimelinePaginationManager {
-    private var specification: TimelinePaginationSpecification? = null
-    private var pageCursor: String? = null
-    override var canFetchMore: Boolean = true
-    override val history = mutableListOf<TimelineEntryModel>()
-    private val mutex = Mutex()
+) : BasePaginationManager<TimelineEntryModel, TimelinePaginationSpecification>(
+    idSelector = { it.id },
+),
+    TimelinePaginationManager {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private val userRateLimits = mutableMapOf<String, Double>()
     private var stopWords: List<String>? = null
@@ -53,29 +49,22 @@ internal class DefaultTimelinePaginationManager(
         notificationCenter
             .subscribe(TimelineEntryUpdatedEvent::class)
             .onEach { event ->
-                mutex.withLock {
-                    val idx = history.indexOfFirst { e -> e.id == event.entry.id }
-                    if (idx >= 0) {
-                        history[idx] = event.entry
-                    }
+                withPaginationLock {
+                    updateHistoryItem(event.entry.id) { event.entry }
                 }
             }.launchIn(scope)
         notificationCenter
             .subscribe(TimelineEntryDeletedEvent::class)
             .onEach { event ->
-                mutex.withLock {
-                    val idx = history.indexOfFirst { e -> e.id == event.id }
-                    if (idx >= 0) {
-                        history.removeAt(idx)
-                    }
+                withPaginationLock {
+                    removeHistoryItem(event.id)
                 }
             }.launchIn(scope)
     }
 
     override suspend fun reset(specification: TimelinePaginationSpecification) {
-        this.specification = specification
-        pageCursor = null
-        mutex.withLock {
+        super.reset(specification)
+        withPaginationLock {
             userRateLimits.clear()
             accountRepository.getActive()?.id?.also { accountId ->
                 userRateLimitRepository.getAll(accountId).forEach { limit ->
@@ -83,57 +72,57 @@ internal class DefaultTimelinePaginationManager(
                 }
                 stopWords = stopWordRepository.get(accountId)
             }
-            history.clear()
         }
-        canFetchMore = true
     }
 
     override suspend fun restoreHistory(values: List<TimelineEntryModel>) {
-        mutex.withLock {
-            history.clear()
-            history.addAll(values)
-            canFetchMore = true
+        withPaginationLock {
+            restorePaginationState(
+                specification = currentSpecification,
+                pageCursor = currentPageCursor,
+                history = values,
+            )
         }
     }
 
     override suspend fun loadNextPage(): List<TimelineEntryModel> {
-        val specification = this.specification ?: return emptyList()
+        val spec = currentSpecification ?: return emptyList()
 
-        val results =
-            when (specification) {
+        val results: ListWithPageCursor<TimelineEntryModel>? =
+            when (spec) {
                 is TimelinePaginationSpecification.Feed -> {
-                    when (specification.timelineType) {
+                    when (spec.timelineType) {
                         is TimelineType.All ->
                             timelineRepository.getPublic(
-                                pageCursor = pageCursor,
-                                refresh = specification.refresh,
+                                pageCursor = currentPageCursor,
+                                refresh = spec.refresh,
                             )
 
                         is TimelineType.Subscriptions ->
                             timelineRepository.getHome(
-                                pageCursor = pageCursor,
-                                refresh = specification.refresh,
+                                pageCursor = currentPageCursor,
+                                refresh = spec.refresh,
                             )
 
                         is TimelineType.Local ->
                             timelineRepository.getLocal(
-                                pageCursor = pageCursor,
-                                refresh = specification.refresh,
+                                pageCursor = currentPageCursor,
+                                refresh = spec.refresh,
                             )
 
                         is TimelineType.Circle ->
                             timelineRepository.getCircle(
                                 id =
-                                specification.timelineType.circle
+                                spec.timelineType.circle
                                     ?.id
                                     .orEmpty(),
-                                pageCursor = pageCursor,
+                                pageCursor = currentPageCursor,
                             )
 
                         is TimelineType.Foreign ->
                             timelineRepository.getLocal(
-                                pageCursor = pageCursor,
-                                otherInstance = specification.timelineType.otherInstance,
+                                pageCursor = currentPageCursor,
+                                otherInstance = spec.timelineType.otherInstance,
                             )
                     }?.toListWithPageCursor()
                 }
@@ -141,137 +130,128 @@ internal class DefaultTimelinePaginationManager(
                 is TimelinePaginationSpecification.Hashtag -> {
                     timelineRepository
                         .getHashtag(
-                            hashtag = specification.hashtag,
-                            pageCursor = pageCursor,
-                            otherInstance = specification.otherInstance,
+                            hashtag = spec.hashtag,
+                            pageCursor = currentPageCursor,
+                            otherInstance = spec.otherInstance,
                         )
                 }
 
                 is TimelinePaginationSpecification.User ->
                     timelineEntryRepository
                         .getByUser(
-                            userId = specification.userId,
-                            pageCursor = pageCursor,
-                            excludeReplies = specification.excludeReplies,
-                            excludeReblogs = specification.excludeReblogs,
-                            onlyMedia = specification.onlyMedia,
-                            pinned = specification.pinned,
-                            enableCache = specification.enableCache,
-                            refresh = specification.refresh,
-                            otherInstance = specification.otherInstance,
+                            userId = spec.userId,
+                            pageCursor = currentPageCursor,
+                            excludeReplies = spec.excludeReplies,
+                            excludeReblogs = spec.excludeReblogs,
+                            onlyMedia = spec.onlyMedia,
+                            pinned = spec.pinned,
+                            enableCache = spec.enableCache,
+                            refresh = spec.refresh,
+                            otherInstance = spec.otherInstance,
                         )?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Forum ->
                     timelineEntryRepository
                         .getByUser(
-                            userId = specification.userId,
-                            pageCursor = pageCursor,
+                            userId = spec.userId,
+                            pageCursor = currentPageCursor,
                             excludeReplies = true,
-                            otherInstance = specification.otherInstance,
+                            otherInstance = spec.otherInstance,
                         )?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Bookmarks ->
                     timelineEntryRepository
-                        .getBookmarks(pageCursor = pageCursor)
+                        .getBookmarks(pageCursor = currentPageCursor)
                         ?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Favorites ->
                     timelineEntryRepository
-                        .getFavorites(pageCursor = pageCursor)
+                        .getFavorites(pageCursor = currentPageCursor)
                         ?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Quotes ->
                     timelineEntryRepository
                         .getQuotes(
-                            id = specification.id,
-                            pageCursor = pageCursor,
-                            otherInstance = specification.otherInstance,
+                            id = spec.id,
+                            pageCursor = currentPageCursor,
+                            otherInstance = spec.otherInstance,
                         )
             }
-        return mutex.withLock {
-            when (specification) {
-                is TimelinePaginationSpecification.Feed ->
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filterReplies(included = !specification.excludeReplies)
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.filterWithRateLimits()
-                        ?.filterByStopWords()
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
-                        ?.fixupFollowedHashtags()
 
-                is TimelinePaginationSpecification.Hashtag ->
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.filterWithRateLimits()
-                        ?.filterByStopWords()
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
+        return updateHistory(
+            results = results,
+            distinctBy = { it.safeKey },
+            transform = { newItems ->
+                when (spec) {
+                    is TimelinePaginationSpecification.Feed ->
+                        newItems
+                            .filterReplies(included = !spec.excludeReplies)
+                            .filterNsfw(spec.includeNsfw)
+                            .filterWithRateLimits()
+                            .filterByStopWords()
+                            .fixupCreatorEmojis()
+                            .fixupInReplyTo()
+                            .fixupFollowedHashtags()
 
-                is TimelinePaginationSpecification.User ->
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.filterByStopWords()
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
+                    is TimelinePaginationSpecification.Hashtag ->
+                        newItems
+                            .filterNsfw(spec.includeNsfw)
+                            .filterWithRateLimits()
+                            .filterByStopWords()
+                            .fixupCreatorEmojis()
+                            .fixupInReplyTo()
 
-                is TimelinePaginationSpecification.Forum ->
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.filter { it.reblog != null && it.reblog?.inReplyTo == null }
-                        ?.filterByStopWords()
-                        ?.fixupCreatorEmojis()
+                    is TimelinePaginationSpecification.User ->
+                        newItems
+                            .filterNsfw(spec.includeNsfw)
+                            .filterByStopWords()
+                            .fixupCreatorEmojis()
+                            .fixupInReplyTo()
 
-                is TimelinePaginationSpecification.Bookmarks ->
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.filterByStopWords()
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
+                    is TimelinePaginationSpecification.Forum ->
+                        newItems
+                            .filterNsfw(spec.includeNsfw)
+                            .filter { it.reblog != null && it.reblog?.inReplyTo == null }
+                            .filterByStopWords()
+                            .fixupCreatorEmojis()
 
-                is TimelinePaginationSpecification.Favorites ->
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filterNsfw(specification.includeNsfw)
-                        ?.filterByStopWords()
-                        ?.fixupCreatorEmojis()
-                        ?.fixupInReplyTo()
+                    is TimelinePaginationSpecification.Bookmarks ->
+                        newItems
+                            .filterNsfw(spec.includeNsfw)
+                            .filterByStopWords()
+                            .fixupCreatorEmojis()
+                            .fixupInReplyTo()
 
-                is TimelinePaginationSpecification.Quotes ->
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-            }?.also { history.addAll(it) }
-            // return a copy
-            history.map { it }
-        }
+                    is TimelinePaginationSpecification.Favorites ->
+                        newItems
+                            .filterNsfw(spec.includeNsfw)
+                            .filterByStopWords()
+                            .fixupCreatorEmojis()
+                            .fixupInReplyTo()
+
+                    is TimelinePaginationSpecification.Quotes ->
+                        newItems
+                }
+            },
+        )
     }
 
     override fun extractState(): TimelinePaginationManagerState = DefaultTimelinePaginationManagerState(
-        specification = specification,
-        pageCursor = pageCursor,
-        history = history,
-        userRateLimits = userRateLimits,
+        specification = currentSpecification,
+        pageCursor = currentPageCursor,
+        history = history.toList(),
+        userRateLimits = userRateLimits.toMap(),
         stopWords = stopWords,
     )
 
     override fun restoreState(state: TimelinePaginationManagerState) {
         (state as? DefaultTimelinePaginationManagerState)?.also {
-            specification = it.specification
-            pageCursor = it.pageCursor
-            history.clear()
-            history.addAll(it.history)
+            restorePaginationState(
+                specification = it.specification,
+                pageCursor = it.pageCursor,
+                history = it.history,
+            )
+            userRateLimits.clear()
             userRateLimits.putAll(it.userRateLimits)
             stopWords = it.stopWords
         }
@@ -281,16 +261,6 @@ internal class DefaultTimelinePaginationManager(
         val cursor = list.lastOrNull()?.id
         ListWithPageCursor(list = list, cursor = cursor)
     }
-
-    private fun ListWithPageCursor<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> = run {
-        pageCursor = cursor
-        canFetchMore = list.isNotEmpty()
-        list
-    }
-
-    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> = filter { e1 ->
-        history.none { e2 -> e1.id == e2.id }
-    }.distinctBy { it.safeKey }
 
     private fun List<TimelineEntryModel>.filterWithRateLimits(): List<TimelineEntryModel> =
         filterIndexed { index, timelineEntryModel ->
@@ -305,14 +275,6 @@ internal class DefaultTimelinePaginationManager(
                 (entriesByThisUserInHistory + entriesByThisUserSoFar + 1).toDouble() / (total + 1)
             rate <= rateLimit
         }
-
-    private fun ListWithPageCursor<TimelineEntryModel>.deduplicate(): ListWithPageCursor<TimelineEntryModel> = run {
-        val newList = list.deduplicate()
-        ListWithPageCursor(
-            list = newList,
-            cursor = newList.lastOrNull()?.id,
-        )
-    }
 
     private fun List<TimelineEntryModel>.filterReplies(included: Boolean): List<TimelineEntryModel> = filter {
         included || it.inReplyTo == null

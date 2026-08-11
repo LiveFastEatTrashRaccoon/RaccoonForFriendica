@@ -23,8 +23,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -37,12 +35,10 @@ internal class DefaultSearchPaginationManager(
     private val stopWordRepository: StopWordRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : SearchPaginationManager {
-    private var specification: SearchPaginationSpecification? = null
-    override var canFetchMore: Boolean = true
-    private var pageCursor: String? = null
-    private val history = mutableListOf<ExploreItemModel>()
-    private val mutex = Mutex()
+) : BasePaginationManager<ExploreItemModel, SearchPaginationSpecification>(
+    idSelector = { it.id },
+),
+    SearchPaginationManager {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private var stopWords: List<String>? = null
 
@@ -51,128 +47,96 @@ internal class DefaultSearchPaginationManager(
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->
-                    mutex.withLock {
-                        val idx =
-                            history.indexOfFirst { e -> e is ExploreItemModel.User && e.user.id == event.user.id }
-                        if (idx >= 0) {
-                            (history[idx] as? ExploreItemModel.User)
-                                ?.copy(user = event.user)
-                                ?.also {
-                                    history[idx] = it
-                                }
+                    withPaginationLock {
+                        updateHistoryItem(event.user.id) { item ->
+                            (item as? ExploreItemModel.User)?.copy(user = event.user) ?: item
                         }
                     }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
-                    mutex.withLock {
-                        val idx =
-                            history.indexOfFirst { e -> e is ExploreItemModel.Entry && e.entry.id == event.entry.id }
-                        if (idx >= 0) {
-                            (history[idx] as? ExploreItemModel.Entry)
-                                ?.copy(entry = event.entry)
-                                ?.also {
-                                    history[idx] = it
-                                }
+                    withPaginationLock {
+                        updateHistoryItem(event.entry.id) { item ->
+                            (item as? ExploreItemModel.Entry)?.copy(entry = event.entry) ?: item
                         }
                     }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(TimelineEntryDeletedEvent::class)
                 .onEach { event ->
-                    mutex.withLock {
-                        val idx = history.indexOfFirst { e -> e.id == event.id }
-                        if (idx >= 0) {
-                            history.removeAt(idx)
-                        }
+                    withPaginationLock {
+                        removeHistoryItem(event.id)
                     }
-                }.launchIn(scope)
+                }.launchIn(this)
         }
     }
 
     override suspend fun reset(specification: SearchPaginationSpecification) {
-        this.specification = specification
-        pageCursor = null
-        mutex.withLock {
-            history.clear()
+        super.reset(specification)
+        withPaginationLock {
             accountRepository.getActive()?.id?.also { accountId ->
                 stopWords = stopWordRepository.get(accountId)
             }
         }
-        canFetchMore = true
     }
 
     override suspend fun loadNextPage(): List<ExploreItemModel> {
-        val specification = this.specification ?: return emptyList()
+        val spec = currentSpecification ?: return emptyList()
         val results =
-            when (specification) {
+            when (spec) {
                 is SearchPaginationSpecification.Entries ->
                     searchRepository
                         .search(
-                            query = specification.query,
-                            pageCursor = pageCursor,
+                            query = spec.query,
+                            pageCursor = currentPageCursor,
                             type = SearchResultType.Entries,
-                            resolve = guessResolveEntry(specification.query),
+                            resolve = guessResolveEntry(spec.query),
                         )
 
                 is SearchPaginationSpecification.Hashtags ->
                     searchRepository
                         .search(
-                            query = specification.query,
-                            pageCursor = pageCursor,
+                            query = spec.query,
+                            pageCursor = currentPageCursor,
                             type = SearchResultType.Hashtags,
                         )
 
                 is SearchPaginationSpecification.Users ->
                     searchRepository
                         .search(
-                            query = specification.query,
-                            pageCursor = pageCursor,
+                            query = spec.query,
+                            pageCursor = currentPageCursor,
                             type = SearchResultType.Users,
-                            resolve = guessResolveUser(specification.query),
+                            resolve = guessResolveUser(spec.query),
                         )?.determineUserRelationshipStatus()
 
                 is SearchPaginationSpecification.Groups ->
                     searchRepository.search(
-                        query = specification.query,
-                        pageCursor = pageCursor,
+                        query = spec.query,
+                        pageCursor = currentPageCursor,
                         type = SearchResultType.Users,
-                        resolve = guessResolveUser(specification.query),
+                        resolve = guessResolveUser(spec.query),
                     )
             }
-                ?.deduplicate()
 
-                ?.filterByStopWords()
-                ?.let { list ->
-                    when (specification) {
-                        is SearchPaginationSpecification.Entries -> list.filterNsfw(specification.includeNsfw)
-                        is SearchPaginationSpecification.Groups -> list.filterGroups()
-                        else -> list
+        return updateHistory(
+            items = results,
+            transform = { newItems ->
+                newItems
+                    .filterByStopWords()
+                    .let { list ->
+                        when (spec) {
+                            is SearchPaginationSpecification.Entries -> list.filterNsfw(spec.includeNsfw)
+                            is SearchPaginationSpecification.Groups -> list.filterGroups()
+                            else -> list
+                        }
                     }
-                }
-                ?.updatePaginationData()
-                ?.fixupCreatorEmojis()
-                ?.fixupInReplyTo()
-                .orEmpty()
-        mutex.withLock {
-            history.addAll(results)
-        }
-
-        // return an object containing copies
-        return history.map { it }
+                    .fixupCreatorEmojis()
+                    .fixupInReplyTo()
+            },
+        )
     }
-
-    private fun List<ExploreItemModel>.updatePaginationData(): List<ExploreItemModel> = apply {
-        lastOrNull()?.also {
-            pageCursor = it.id
-        }
-        canFetchMore = isNotEmpty()
-    }
-
-    private fun List<ExploreItemModel>.deduplicate(): List<ExploreItemModel> = filter { e1 ->
-        history.none { e2 -> e1.id == e2.id }
-    }.distinctBy { it.id }
 
     private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter {
         included ||
