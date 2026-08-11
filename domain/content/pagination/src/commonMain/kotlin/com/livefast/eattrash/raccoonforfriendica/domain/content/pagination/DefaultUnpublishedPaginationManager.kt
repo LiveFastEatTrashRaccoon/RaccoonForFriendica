@@ -13,8 +13,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -23,81 +21,57 @@ internal class DefaultUnpublishedPaginationManager(
     private val draftRepository: DraftRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : UnpublishedPaginationManager {
-    private var specification: UnpublishedPaginationSpecification? = null
-    private var pageCursor: String? = null
+) : BasePaginationManager<TimelineEntryModel, UnpublishedPaginationSpecification>(
+    idSelector = { it.id },
+),
+    UnpublishedPaginationManager {
     private var page: Int = 0
-    override var canFetchMore: Boolean = true
-    override val history = mutableListOf<TimelineEntryModel>()
-    private val mutex = Mutex()
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
     init {
         notificationCenter
             .subscribe(TimelineEntryDeletedEvent::class)
             .onEach { event ->
-                mutex.withLock {
-                    val idx = history.indexOfFirst { e -> e.id == event.id }
-                    if (idx >= 0) {
-                        history.removeAt(idx)
-                    }
+                withPaginationLock {
+                    removeHistoryItem(event.id)
                 }
             }.launchIn(scope)
         notificationCenter
             .subscribe(TimelineEntryUpdatedEvent::class)
             .onEach { event ->
-                mutex.withLock {
-                    val idx = history.indexOfFirst { e -> e.id == event.entry.id }
-                    if (idx >= 0) {
-                        history[idx] = event.entry
-                    }
+                withPaginationLock {
+                    updateHistoryItem(event.entry.id) { event.entry }
                 }
             }.launchIn(scope)
     }
 
     override suspend fun reset(specification: UnpublishedPaginationSpecification) {
-        this.specification = specification
-        pageCursor = null
-        page = 0
-        mutex.withLock {
-            history.clear()
+        super.reset(specification)
+        withPaginationLock {
+            page = 0
         }
-        canFetchMore = true
     }
 
     override suspend fun loadNextPage(): List<TimelineEntryModel> {
-        val specification = this.specification ?: return emptyList()
+        val spec = currentSpecification ?: return emptyList()
 
         val results =
-            when (specification) {
+            when (spec) {
                 UnpublishedPaginationSpecification.Scheduled ->
-                    scheduledEntryRepository.getAll(pageCursor)
+                    scheduledEntryRepository.getAll(currentPageCursor)
 
                 UnpublishedPaginationSpecification.Drafts ->
                     draftRepository.getAll(page = page)
-            }.orEmpty()
+            }
 
-        return mutex.withLock {
-            results
-                .deduplicate()
-                .updatePaginationData()
-                .also { history.addAll(it) }
-            // return a copy
-            history.map { it }
-        }
+        return updateHistory(
+            items = results,
+            transform = { newItems ->
+                if (newItems.isNotEmpty()) {
+                    page++
+                }
+                newItems
+            },
+        )
     }
-
-    private fun List<TimelineEntryModel>.updatePaginationData(): List<TimelineEntryModel> = apply {
-        lastOrNull()?.also {
-            pageCursor = it.id
-        }
-        if (isNotEmpty()) {
-            page++
-        }
-        canFetchMore = isNotEmpty()
-    }
-
-    private fun List<TimelineEntryModel>.deduplicate(): List<TimelineEntryModel> = filter { e1 ->
-        history.none { e2 -> e1.id == e2.id }
-    }.distinctBy { it.id }
 }

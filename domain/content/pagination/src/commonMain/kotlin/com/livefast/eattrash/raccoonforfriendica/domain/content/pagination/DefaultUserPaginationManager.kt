@@ -10,6 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -18,8 +19,6 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -32,107 +31,86 @@ internal class DefaultUserPaginationManager(
     private val emojiHelper: EmojiHelper,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : UserPaginationManager {
-    private var specification: UserPaginationSpecification? = null
-    private var pageCursor: String? = null
-    override var canFetchMore: Boolean = true
-    private val history = mutableListOf<UserModel>()
-    private val mutex = Mutex()
+) : BasePaginationManager<UserModel, UserPaginationSpecification>(
+    idSelector = { it.id },
+),
+    UserPaginationManager {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
     init {
         notificationCenter
             .subscribe(UserUpdatedEvent::class)
             .onEach { event ->
-                mutex.withLock {
-                    val idx = history.indexOfFirst { u -> u.id == event.user.id }
-                    if (idx >= 0) {
-                        history[idx] = event.user
-                    }
+                withPaginationLock {
+                    updateHistoryItem(event.user.id) { event.user }
                 }
             }.launchIn(scope)
     }
 
-    override suspend fun reset(specification: UserPaginationSpecification) {
-        this.specification = specification
-        pageCursor = null
-        mutex.withLock {
-            history.clear()
-        }
-        canFetchMore = true
-    }
-
     override suspend fun loadNextPage(): List<UserModel> {
-        val specification = this.specification ?: return emptyList()
+        val spec = currentSpecification ?: return emptyList()
 
-        val results =
-            when (specification) {
+        val results: ListWithPageCursor<UserModel>? =
+            when (spec) {
                 is UserPaginationSpecification.Follower ->
                     userRepository
                         .getFollowers(
-                            id = specification.userId,
-                            pageCursor = pageCursor,
-                        )
+                            id = spec.userId,
+                            pageCursor = currentPageCursor,
+                        )?.toListWithPageCursor()
 
                 is UserPaginationSpecification.Following ->
                     userRepository
                         .getFollowing(
-                            id = specification.userId,
-                            pageCursor = pageCursor,
-                        )
+                            id = spec.userId,
+                            pageCursor = currentPageCursor,
+                        )?.toListWithPageCursor()
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
                     timelineEntryRepository
                         .getUsersWhoFavorited(
-                            id = specification.entryId,
-                            pageCursor = pageCursor,
-                        )
+                            id = spec.entryId,
+                            pageCursor = currentPageCursor,
+                        )?.toListWithPageCursor()
 
                 is UserPaginationSpecification.EntryUsersReblog ->
                     timelineEntryRepository
                         .getUsersWhoReblogged(
-                            id = specification.entryId,
-                            pageCursor = pageCursor,
-                        )
+                            id = spec.entryId,
+                            pageCursor = currentPageCursor,
+                        )?.toListWithPageCursor()
 
                 is UserPaginationSpecification.Search ->
                     userRepository
                         .search(
-                            query = specification.query,
-                            offset =
-                            history
-                                .indexOfLast { it.id == pageCursor }
-                                .takeIf { it >= 0 }
-                                ?.let {
-                                    // offset is count, not index
-                                    it + 1
-                                } ?: 0,
-                        )
+                            query = spec.query,
+                            offset = history.size,
+                        )?.toListWithPageCursor()
 
                 UserPaginationSpecification.Blocked ->
-                    userRepository.getBlocked(pageCursor = pageCursor)
+                    userRepository.getBlocked(pageCursor = currentPageCursor)?.toListWithPageCursor()
 
                 UserPaginationSpecification.Muted ->
-                    userRepository.getMuted(pageCursor = pageCursor)
+                    userRepository.getMuted(pageCursor = currentPageCursor)?.toListWithPageCursor()
 
                 is UserPaginationSpecification.CircleMembers ->
                     circlesRepository
                         .getMembers(
-                            id = specification.id,
-                            pageCursor = pageCursor,
-                        )
+                            id = spec.id,
+                            pageCursor = currentPageCursor,
+                        )?.toListWithPageCursor()
 
                 is UserPaginationSpecification.SearchFollowing ->
                     userRepository
                         .searchMyFollowing(
-                            query = specification.query,
-                            pageCursor = pageCursor,
-                        )
+                            query = spec.query,
+                            pageCursor = currentPageCursor,
+                        )?.toListWithPageCursor()
 
                 UserPaginationSpecification.Limited -> {
                     val accountId = accountRepository.getActive()?.id ?: 0
                     val rates = userRateLimitRepository.getAll(accountId)
-                    rates.map {
+                    val list = rates.map {
                         UserModel(
                             id = it.handle,
                             handle = it.handle,
@@ -140,109 +118,65 @@ internal class DefaultUserPaginationManager(
                             username = "${it.rate}",
                         )
                     }
+                    ListWithPageCursor(list = list, cursor = null)
                 }
             }
 
-        return mutex.withLock {
-            // result post-processing
-            when (specification) {
-                is UserPaginationSpecification.Follower -> {
-                    results
-                        ?.deduplicate()
-                        ?.determineRelationshipStatus()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                }
+        return updateHistory(
+            results = results,
+            transform = { newItems ->
+                when (spec) {
+                    is UserPaginationSpecification.Follower,
+                    is UserPaginationSpecification.Following,
+                    is UserPaginationSpecification.EntryUsersFavorite,
+                    is UserPaginationSpecification.EntryUsersReblog,
+                    UserPaginationSpecification.Blocked,
+                    UserPaginationSpecification.Muted,
+                    -> {
+                        newItems
+                            .determineRelationshipStatus()
+                            .fixupCreatorEmojis()
+                    }
 
-                is UserPaginationSpecification.Following -> {
-                    results
-                        ?.deduplicate()
-                        ?.determineRelationshipStatus()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                }
-
-                is UserPaginationSpecification.EntryUsersFavorite -> {
-                    results
-                        ?.determineRelationshipStatus()
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                }
-
-                is UserPaginationSpecification.EntryUsersReblog -> {
-                    results
-                        ?.deduplicate()
-                        ?.determineRelationshipStatus()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                }
-
-                is UserPaginationSpecification.Search -> {
-                    results
-                        ?.deduplicate()
-                        ?.let {
-                            if (specification.withRelationship) {
+                    is UserPaginationSpecification.Search -> {
+                        newItems.let {
+                            if (spec.withRelationship) {
                                 it.determineRelationshipStatus()
                             } else {
                                 it
                             }
-                        }?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                }
+                        }.fixupCreatorEmojis()
+                    }
 
-                UserPaginationSpecification.Blocked -> {
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                }
+                    is UserPaginationSpecification.CircleMembers -> {
+                        newItems
+                            .filter(spec.query)
+                            .fixupCreatorEmojis()
+                    }
 
-                UserPaginationSpecification.Muted -> {
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.fixupCreatorEmojis()
-                }
-
-                is UserPaginationSpecification.CircleMembers -> {
-                    results
-                        ?.deduplicate()
-                        ?.updatePaginationData()
-                        ?.filter(specification.query)
-                        ?.fixupCreatorEmojis()
-                }
-
-                is UserPaginationSpecification.SearchFollowing -> {
-                    results
-                        ?.deduplicate()
-                        ?.let {
-                            if (specification.withRelationship) {
+                    is UserPaginationSpecification.SearchFollowing -> {
+                        newItems.let {
+                            if (spec.withRelationship) {
                                 it.determineRelationshipStatus()
                             } else {
                                 it
                             }
-                        }?.updatePaginationData()
-                        ?.filter {
-                            it.id !in specification.excludeIds
-                        }?.fixupCreatorEmojis()
-                }
+                        }.filter {
+                            it.id !in spec.excludeIds
+                        }.fixupCreatorEmojis()
+                    }
 
-                UserPaginationSpecification.Limited -> {
-                    canFetchMore = false
-                    results
+                    UserPaginationSpecification.Limited -> {
+                        newItems
+                    }
                 }
-            }.orEmpty().also { history.addAll(it) }
-            // return a copy
-            history.map { it }
-        }
+            },
+        )
     }
 
-    private fun List<UserModel>.updatePaginationData(): List<UserModel> = apply {
-        lastOrNull()?.also {
-            pageCursor = it.id
-        }
-        canFetchMore = isNotEmpty()
+    private fun List<UserModel>.toListWithPageCursor(): ListWithPageCursor<UserModel> = let { list ->
+        val cursor = list.lastOrNull()?.id
+        ListWithPageCursor(list = list, cursor = cursor)
     }
 
     private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> = run {
@@ -256,10 +190,6 @@ internal class DefaultUserPaginationManager(
             )
         }
     }
-
-    private fun List<UserModel>.deduplicate(): List<UserModel> = filter { e1 ->
-        history.none { e2 -> e1.id == e2.id }
-    }.distinctBy { it.id }
 
     private fun List<UserModel>.filter(query: String): List<UserModel> = filter {
         query.isEmpty() ||

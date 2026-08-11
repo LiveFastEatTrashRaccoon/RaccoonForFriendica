@@ -22,8 +22,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -36,12 +34,10 @@ internal class DefaultExplorePaginationManager(
     private val stopWordRepository: StopWordRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : ExplorePaginationManager {
-    private var specification: ExplorePaginationSpecification? = null
-    private var offset = 0
-    override var canFetchMore: Boolean = true
-    private val history = mutableListOf<ExploreItemModel>()
-    private val mutex = Mutex()
+) : BasePaginationManager<ExploreItemModel, ExplorePaginationSpecification>(
+    idSelector = { it.id },
+),
+    ExplorePaginationManager {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private var stopWords: List<String>? = null
 
@@ -50,77 +46,59 @@ internal class DefaultExplorePaginationManager(
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->
-                    mutex.withLock {
-                        val idx =
-                            history.indexOfFirst { e -> e is ExploreItemModel.User && e.user.id == event.user.id }
-                        if (idx >= 0) {
-                            (history[idx] as? ExploreItemModel.User)
-                                ?.copy(user = event.user)
-                                ?.also {
-                                    history[idx] = it
-                                }
+                    withPaginationLock {
+                        updateHistoryItem(event.user.id) { item ->
+                            (item as? ExploreItemModel.User)?.copy(user = event.user) ?: item
                         }
                     }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(TimelineEntryUpdatedEvent::class)
                 .onEach { event ->
-                    mutex.withLock {
-                        val idx =
-                            history.indexOfFirst { e -> e is ExploreItemModel.Entry && e.entry.id == event.entry.id }
-                        if (idx >= 0) {
-                            (history[idx] as? ExploreItemModel.Entry)
-                                ?.copy(entry = event.entry)
-                                ?.also {
-                                    history[idx] = it
-                                }
+                    withPaginationLock {
+                        updateHistoryItem(event.entry.id) { item ->
+                            (item as? ExploreItemModel.Entry)?.copy(entry = event.entry) ?: item
                         }
                     }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(TimelineEntryDeletedEvent::class)
                 .onEach { event ->
-                    mutex.withLock {
-                        val idx = history.indexOfFirst { e -> e.id == event.id }
-                        if (idx >= 0) {
-                            history.removeAt(idx)
-                        }
+                    withPaginationLock {
+                        removeHistoryItem(event.id)
                     }
-                }.launchIn(scope)
+                }.launchIn(this)
         }
     }
 
     override suspend fun reset(specification: ExplorePaginationSpecification) {
-        this.specification = specification
-        offset = 0
-        mutex.withLock {
-            history.clear()
+        super.reset(specification)
+        withPaginationLock {
             accountRepository.getActive()?.id?.also { accountId ->
                 stopWords = stopWordRepository.get(accountId)
             }
         }
-        canFetchMore = true
     }
 
     override suspend fun loadNextPage(): List<ExploreItemModel> {
-        val specification = this.specification ?: return emptyList()
+        val spec = currentSpecification ?: return emptyList()
 
         val results =
-            when (specification) {
+            when (spec) {
                 is ExplorePaginationSpecification.Hashtags ->
                     trendingRepository
                         .getHashtags(
-                            offset = offset,
-                            refresh = specification.refresh,
-                            otherInstance = specification.otherInstance,
+                            offset = history.size,
+                            refresh = spec.refresh,
+                            otherInstance = spec.otherInstance,
                         )?.map {
                             ExploreItemModel.HashTag(it)
                         }
 
                 is ExplorePaginationSpecification.Links ->
                     trendingRepository.getLinks(
-                        offset = offset,
-                        otherInstance = specification.otherInstance,
+                        offset = history.size,
+                        otherInstance = spec.otherInstance,
                     )?.mapNotNull {
                         if (it.url.isBlank()) {
                             null
@@ -132,12 +110,12 @@ internal class DefaultExplorePaginationManager(
                 is ExplorePaginationSpecification.Posts ->
                     trendingRepository
                         .getEntries(
-                            offset = offset,
-                            otherInstance = specification.otherInstance,
+                            offset = history.size,
+                            otherInstance = spec.otherInstance,
                         )
                         ?.map {
                             ExploreItemModel.Entry(it)
-                        }?.filterNsfw(specification.includeNsfw)
+                        }
 
                 ExplorePaginationSpecification.Suggestions ->
                     userRepository
@@ -145,29 +123,25 @@ internal class DefaultExplorePaginationManager(
                         ?.map {
                             ExploreItemModel.User(it)
                         }?.determineUserRelationshipStatus()
-            }.orEmpty()
+            }
 
-        return mutex.withLock {
-            results
-                .filterByStopWords()
-                .deduplicate()
-                .updatePaginationData()
-                .fixupCreatorEmojis()
-                .fixupInReplyTo()
-                .also { history.addAll(it) }
-            // return a copy
-            history.map { it }
-        }
+        return updateHistory(
+            items = results,
+            transform = { newItems ->
+                newItems
+                    .filterByStopWords()
+                    .let { list ->
+                        if (spec is ExplorePaginationSpecification.Posts) {
+                            list.filterNsfw(spec.includeNsfw)
+                        } else {
+                            list
+                        }
+                    }
+                    .fixupCreatorEmojis()
+                    .fixupInReplyTo()
+            },
+        )
     }
-
-    private fun List<ExploreItemModel>.updatePaginationData(): List<ExploreItemModel> = apply {
-        offset = size
-        canFetchMore = isNotEmpty()
-    }
-
-    private fun List<ExploreItemModel>.deduplicate(): List<ExploreItemModel> = filter { e1 ->
-        history.none { e2 -> e1.id == e2.id }
-    }.distinctBy { it.id }
 
     private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter {
         included ||

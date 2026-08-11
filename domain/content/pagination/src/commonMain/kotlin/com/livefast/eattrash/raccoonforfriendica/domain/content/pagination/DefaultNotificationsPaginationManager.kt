@@ -8,8 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -18,55 +16,35 @@ internal class DefaultNotificationsPaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
-) : NotificationsPaginationManager {
-    private var specification: NotificationsPaginationSpecification? = null
-    private var pageCursor: String? = null
-    override var canFetchMore: Boolean = true
-    private val history = mutableListOf<NotificationModel>()
-    private val mutex = Mutex()
-
-    override suspend fun reset(specification: NotificationsPaginationSpecification) {
-        this.specification = specification
-        pageCursor = null
-        mutex.withLock {
-            history.clear()
-        }
-        canFetchMore = true
-    }
+) : BasePaginationManager<NotificationModel, NotificationsPaginationSpecification>(
+    idSelector = { it.id },
+),
+    NotificationsPaginationManager {
 
     override suspend fun loadNextPage(): List<NotificationModel> {
-        val specification = this.specification ?: return emptyList()
+        val spec = currentSpecification ?: return emptyList()
 
         val results =
-            when (specification) {
+            when (spec) {
                 is NotificationsPaginationSpecification.Default ->
                     notificationRepository
                         .getAll(
-                            pageCursor = pageCursor,
-                            types = specification.types,
-                            refresh = specification.refresh,
+                            pageCursor = currentPageCursor,
+                            types = spec.types,
+                            refresh = spec.refresh,
                         )
-            }.orEmpty()
+            }
 
-        return mutex.withLock {
-            results
-                .determineRelationshipStatus()
-                .deduplicate()
-                .updatePaginationData()
-                .filterNsfw(specification.includeNsfw)
-                .fixupCreatorEmojis()
-                .fixupInReplyTo()
-                .also { history.addAll(it) }
-            // return a copy
-            history.map { it }
-        }
-    }
-
-    private fun List<NotificationModel>.updatePaginationData(): List<NotificationModel> = apply {
-        lastOrNull()?.also {
-            pageCursor = it.id
-        }
-        canFetchMore = isNotEmpty()
+        return updateHistory(
+            items = results,
+            transform = { newItems ->
+                newItems
+                    .determineRelationshipStatus()
+                    .filterNsfw(spec.includeNsfw)
+                    .fixupCreatorEmojis()
+                    .fixupInReplyTo()
+            },
+        )
     }
 
     private suspend fun List<NotificationModel>.determineRelationshipStatus(): List<NotificationModel> = run {
@@ -84,10 +62,6 @@ internal class DefaultNotificationsPaginationManager(
             )
         }
     }
-
-    private fun List<NotificationModel>.deduplicate(): List<NotificationModel> = filter { e1 ->
-        history.none { e2 -> e1.id == e2.id }
-    }.distinctBy { it.id }
 
     private fun List<NotificationModel>.filterNsfw(included: Boolean): List<NotificationModel> =
         filter { included || it.entry?.isNsfw != true }
