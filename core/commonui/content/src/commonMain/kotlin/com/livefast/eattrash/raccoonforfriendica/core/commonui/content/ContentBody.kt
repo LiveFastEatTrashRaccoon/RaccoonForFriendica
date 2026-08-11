@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,55 +37,77 @@ fun ContentBody(
     onOpenImage: ((String) -> Unit)? = null,
     onOpenUrl: ((String) -> Unit)? = null,
 ) {
+    val chunks = remember(content) { content.splitTextAndImages() }
+    // track the line count and truncation state for each chunk, using chunk indices as keys
+    val lineCounts = remember(content, maxLines) { mutableStateMapOf<Int, Int>() }
+    val isTruncated = remember(content, maxLines) { mutableStateMapOf<Int, Boolean>() }
+
     Box(modifier = modifier) {
-        val chunks = content.splitTextAndImages()
         Column {
-            for (chunk in chunks) {
+            var linesUsedSoFar = 0
+            chunks.forEachIndexed { index, chunk ->
                 if (IMAGE_REGEX.matches(chunk)) {
-                    extractImageData(chunk)?.also { data ->
-                        CustomImage(
-                            modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(vertical = Spacing.s)
-                                .clip(RoundedCornerShape(CornerSize.xl))
-                                .clickable {
-                                    onOpenImage?.invoke(data.url)
-                                },
-                            url = data.url,
-                            contentDescription = data.description,
-                        )
+                    if (maxLines == Int.MAX_VALUE || linesUsedSoFar < maxLines) {
+                        extractImageData(chunk)?.also { data ->
+                            CustomImage(
+                                modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(vertical = Spacing.s)
+                                    .clip(RoundedCornerShape(CornerSize.xl))
+                                    .clickable {
+                                        onOpenImage?.invoke(data.url)
+                                    },
+                                url = data.url,
+                                contentDescription = data.description,
+                            )
+                        }
+                    } else {
+                        return@forEachIndexed
                     }
                 } else {
-                    val annotatedContent =
-                        chunk.parseHtml(
-                            linkColor = MaterialTheme.colorScheme.primary,
-                            hideInlineQuotes = hideInlineQuotes,
-                            quoteColor =
-                            MaterialTheme.colorScheme.onBackground.copy(
-                                ancillaryTextAlpha,
-                            ),
+                    val remainingLines = (maxLines - linesUsedSoFar).coerceAtLeast(0)
+                    if (remainingLines > 0 || maxLines == Int.MAX_VALUE) {
+                        val annotatedContent =
+                            chunk.parseHtml(
+                                linkColor = MaterialTheme.colorScheme.primary,
+                                hideInlineQuotes = hideInlineQuotes,
+                                quoteColor =
+                                MaterialTheme.colorScheme.onBackground.copy(
+                                    ancillaryTextAlpha,
+                                ),
+                            )
+                        TextWithCustomEmojis(
+                            style = MaterialTheme.typography.bodyMedium.copy(color = color),
+                            text = annotatedContent,
+                            maxLines = remainingLines,
+                            overflow = TextOverflow.Ellipsis,
+                            emojis = emojis,
+                            autoloadImages = autoloadImages,
+                            onTextLayout = { layoutResult ->
+                                lineCounts[index] = layoutResult.lineCount
+                                isTruncated[index] = layoutResult.hasVisualOverflow
+                            },
+                            onClick = { offset ->
+                                val url =
+                                    annotatedContent
+                                        .getStringAnnotations(start = offset, end = offset)
+                                        .firstOrNull()
+                                        ?.item
+                                if (!url.isNullOrBlank()) {
+                                    onOpenUrl?.invoke(url)
+                                } else {
+                                    onClick?.invoke()
+                                }
+                            },
                         )
-                    TextWithCustomEmojis(
-                        style = MaterialTheme.typography.bodyMedium.copy(color = color),
-                        text = annotatedContent,
-                        maxLines = maxLines,
-                        overflow = TextOverflow.Ellipsis,
-                        emojis = emojis,
-                        autoloadImages = autoloadImages,
-                        onClick = { offset ->
-                            val url =
-                                annotatedContent
-                                    .getStringAnnotations(start = offset, end = offset)
-                                    .firstOrNull()
-                                    ?.item
-                            if (!url.isNullOrBlank()) {
-                                onOpenUrl?.invoke(url)
-                            } else {
-                                onClick?.invoke()
-                            }
-                        },
-                    )
+
+                        val usedInThisChunk = lineCounts[index] ?: 0
+                        linesUsedSoFar += usedInThisChunk
+                        if (isTruncated[index] == true || (maxLines != Int.MAX_VALUE && linesUsedSoFar >= maxLines)) {
+                            return@forEachIndexed
+                        }
+                    }
                 }
             }
         }
