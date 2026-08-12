@@ -10,21 +10,18 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.parameter.parametersOf
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.android.annotation.KoinWorker
 import java.util.Collections.max
 
-internal class CheckNotificationWorker(private val context: Context, parameters: WorkerParameters) :
-    CoroutineWorker(context, parameters) {
-    private val inboxManager: InboxManager by inject(InboxManager::class.java)
-    private val settingsRepository: SettingsRepository by inject(SettingsRepository::class.java)
-    private val strings: Strings by inject(
-        clazz = Strings::class.java,
-        parameters = { parametersOf(settingsRepository.current.value?.lang ?: "en") },
-    )
+@KoinWorker
+internal class CheckNotificationWorker(
+    private val context: Context,
+    parameters: WorkerParameters,
+    private val inboxManager: InboxManager,
+    private val strings: Strings,
+) : CoroutineWorker(context, parameters) {
 
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
