@@ -1,0 +1,5 @@
+- fix: solved crash when scrolling timelines quickly
+- fix: ensure max body lines limit is enforced with inline elements
+- fix: solved bug leading to early pagination ends
+- refactor: cleanup dependency structure and add compile-time checks
+- chore: update dependencies
