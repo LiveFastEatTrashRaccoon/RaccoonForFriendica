@@ -9,6 +9,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.androidx.work.runtime)
+                implementation(libs.koin.androidx.workmanager)
             }
         }
         commonMain {
