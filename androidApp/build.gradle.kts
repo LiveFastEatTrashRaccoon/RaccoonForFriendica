@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.androidx.splashscreen)
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.android)
+    implementation(libs.koin.androidx.workmanager)
 
     implementation(projects.shared)
     implementation(projects.core.appearance)
