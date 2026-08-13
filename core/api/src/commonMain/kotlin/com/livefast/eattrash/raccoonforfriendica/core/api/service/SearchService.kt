@@ -6,8 +6,7 @@ interface SearchService {
     suspend fun search(
         query: String = "",
         type: String,
-        maxId: String? = null,
-        minId: String? = null,
+        offset: Int? = null,
         following: Boolean = false,
         limit: Int = 20,
         resolve: Boolean = false,
