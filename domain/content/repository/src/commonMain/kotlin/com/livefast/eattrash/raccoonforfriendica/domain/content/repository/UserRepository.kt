@@ -19,9 +19,17 @@ interface UserRepository {
 
     suspend fun getSuggestions(): List<UserModel>?
 
-    suspend fun getFollowers(id: String, pageCursor: String? = null, otherInstance: String? = null): List<UserModel>?
+    suspend fun getFollowers(
+        id: String,
+        pageCursor: String? = null,
+        otherInstance: String? = null,
+    ): ListWithPageCursor<UserModel>?
 
-    suspend fun getFollowing(id: String, pageCursor: String? = null, otherInstance: String? = null): List<UserModel>?
+    suspend fun getFollowing(
+        id: String,
+        pageCursor: String? = null,
+        otherInstance: String? = null,
+    ): ListWithPageCursor<UserModel>?
 
     suspend fun getListsContaining(id: String): List<CircleModel>?
 
@@ -45,9 +53,9 @@ interface UserRepository {
 
     suspend fun unblock(id: String): RelationshipModel?
 
-    suspend fun getMuted(pageCursor: String? = null): List<UserModel>?
+    suspend fun getMuted(pageCursor: String? = null): ListWithPageCursor<UserModel>?
 
-    suspend fun getBlocked(pageCursor: String? = null): List<UserModel>?
+    suspend fun getBlocked(pageCursor: String? = null): ListWithPageCursor<UserModel>?
 
     suspend fun updateProfile(
         note: String? = null,

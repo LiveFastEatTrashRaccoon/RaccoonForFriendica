@@ -164,13 +164,13 @@ class DefaultUserRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns listOf(Account(id = "2", username = "following", acct = "following@node"))
+        } returns (listOf(Account(id = "2", username = "following", acct = "following@node")) to null)
 
         val res = sut.getFollowing(id = "1", pageCursor = null, otherInstance = otherInstance)
 
         assertNotNull(res)
-        assertEquals(1, res.size)
-        assertEquals("2", res.first().id)
+        assertEquals(1, res.list.size)
+        assertEquals("2", res.list.first().id)
         verifySuspend {
             userService.getFollowing(
                 id = "1",
@@ -193,13 +193,13 @@ class DefaultUserRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns listOf(Account(id = "2", username = "follower", acct = "follower@node"))
+        } returns (listOf(Account(id = "2", username = "follower", acct = "follower@node")) to null)
 
         val res = sut.getFollowers(id = "1", pageCursor = null, otherInstance = otherInstance)
 
         assertNotNull(res)
-        assertEquals(1, res.size)
-        assertEquals("2", res.first().id)
+        assertEquals(1, res.list.size)
+        assertEquals("2", res.list.first().id)
         verifySuspend {
             userService.getFollowers(
                 id = "1",
@@ -294,19 +294,19 @@ class DefaultUserRepositoryTest {
     @Test
     fun `given results when getMuted then result is expected`() = runTest {
         everySuspend { userService.getMuted(any(), any()) } returns
-            listOf(Account(id = "1", username = "u", acct = "a"))
+            (listOf(Account(id = "1", username = "u", acct = "a")) to null)
         val res = sut.getMuted(null)
         assertNotNull(res)
-        assertEquals(1, res.size)
+        assertEquals(1, res?.list?.size)
     }
 
     @Test
     fun `given results when getBlocked then result is expected`() = runTest {
         everySuspend { userService.getBlocked(any(), any()) } returns
-            listOf(Account(id = "1", username = "u", acct = "a"))
+            (listOf(Account(id = "1", username = "u", acct = "a")) to null)
         val res = sut.getBlocked(null)
         assertNotNull(res)
-        assertEquals(1, res.size)
+        assertEquals(1, res.list.size)
     }
     // endregion
 
