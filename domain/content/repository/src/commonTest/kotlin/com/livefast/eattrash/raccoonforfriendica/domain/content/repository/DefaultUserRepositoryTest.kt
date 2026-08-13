@@ -126,7 +126,7 @@ class DefaultUserRepositoryTest {
             searchService.search(
                 query = any(),
                 type = any(),
-                maxId = any(),
+                offset = any(),
                 following = any(),
                 limit = any(),
             )
