@@ -139,7 +139,7 @@ internal class DefaultUserRepository(
         provider.search
             .search(
                 query = query,
-                maxId = pageCursor,
+                offset = pageCursor?.toIntOrNull(),
                 type = SearchResultType.Users.toDto(),
                 following = true,
                 limit = DEFAULT_PAGE_SIZE,

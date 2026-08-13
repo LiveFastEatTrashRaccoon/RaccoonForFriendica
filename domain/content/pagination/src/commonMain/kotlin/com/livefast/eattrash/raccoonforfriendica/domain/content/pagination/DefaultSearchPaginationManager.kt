@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -120,8 +121,14 @@ internal class DefaultSearchPaginationManager(
                     )
             }
 
+        // use the calculated offset as cursor
+        val cursor = if (results.isNullOrEmpty()) null else (history.size + results.size).toString()
+
         return updateHistory(
-            items = results,
+            results = ListWithPageCursor(
+                list = results.orEmpty(),
+                cursor = cursor,
+            ),
             transform = { newItems ->
                 newItems
                     .filterByStopWords()

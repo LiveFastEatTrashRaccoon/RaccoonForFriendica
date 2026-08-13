@@ -52,8 +52,6 @@ internal abstract class BasePaginationManager<T, S>(private val idSelector: (T) 
         historyIds.clear()
         _history.addAll(history)
         history.forEach { historyIds.add(idSelector(it)) }
-        // We assume that if we are restoring history, we should enable fetching more
-        // if the cursor is present, or just default to true if unsure.
         _canFetchMore = true
     }
 
