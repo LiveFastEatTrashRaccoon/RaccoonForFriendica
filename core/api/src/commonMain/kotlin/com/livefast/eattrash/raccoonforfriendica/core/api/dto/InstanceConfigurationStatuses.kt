@@ -7,4 +7,5 @@ import kotlinx.serialization.Serializable
 data class InstanceConfigurationStatuses(
     @SerialName("max_characters") val maxCharacters: Int? = null,
     @SerialName("max_media_attachments") val maxMediaAttachments: Int? = null,
+    @SerialName("characters_reserved_per_url") val charactersReservedPerUrl: Int? = null,
 )
