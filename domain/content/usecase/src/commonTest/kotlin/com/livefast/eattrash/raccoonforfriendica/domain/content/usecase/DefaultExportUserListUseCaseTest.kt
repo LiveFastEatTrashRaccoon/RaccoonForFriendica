@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import dev.mokkery.answering.sequentiallyReturns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
@@ -36,7 +37,11 @@ class DefaultExportUserListUseCaseTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } sequentiallyReturns listOf(chunk1, chunk2, emptyList())
+        } sequentiallyReturns listOf(
+            ListWithPageCursor(chunk1, "2"),
+            ListWithPageCursor(chunk2, "4"),
+            ListWithPageCursor(emptyList(), null),
+        )
 
         val expected =
             buildList {
@@ -81,7 +86,11 @@ class DefaultExportUserListUseCaseTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } sequentiallyReturns listOf(chunk1, chunk2, emptyList())
+        } sequentiallyReturns listOf(
+            ListWithPageCursor(chunk1, "2"),
+            ListWithPageCursor(chunk2, "4"),
+            ListWithPageCursor(emptyList(), null),
+        )
 
         val expected =
             buildList {

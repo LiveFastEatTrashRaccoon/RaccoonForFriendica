@@ -18,7 +18,7 @@ internal class DefaultExportUserListUseCase(private val userRepository: UserRepo
         var canFetchMore = true
         val result = mutableListOf<UserModel>()
         while (canFetchMore) {
-            val list =
+            val response =
                 when (specification) {
                     is ExportUserSpecification.Follower ->
                         userRepository.getFollowers(
@@ -31,9 +31,10 @@ internal class DefaultExportUserListUseCase(private val userRepository: UserRepo
                             id = specification.userId,
                             pageCursor = cursor,
                         )
-                }.orEmpty()
-            canFetchMore = list.isNotEmpty()
-            cursor = list.lastOrNull()?.id
+                }
+            val list = response?.list.orEmpty()
+            canFetchMore = response?.cursor != null && list.isNotEmpty()
+            cursor = response?.cursor
             result += list
         }
         return result
