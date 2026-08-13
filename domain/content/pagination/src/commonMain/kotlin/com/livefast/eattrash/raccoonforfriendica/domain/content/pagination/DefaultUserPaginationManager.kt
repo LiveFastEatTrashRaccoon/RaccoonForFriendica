@@ -57,14 +57,14 @@ internal class DefaultUserPaginationManager(
                         .getFollowers(
                             id = spec.userId,
                             pageCursor = currentPageCursor,
-                        )?.toListWithPageCursor()
+                        )
 
                 is UserPaginationSpecification.Following ->
                     userRepository
                         .getFollowing(
                             id = spec.userId,
                             pageCursor = currentPageCursor,
-                        )?.toListWithPageCursor()
+                        )
 
                 is UserPaginationSpecification.EntryUsersFavorite ->
                     timelineEntryRepository
@@ -85,13 +85,13 @@ internal class DefaultUserPaginationManager(
                         .search(
                             query = spec.query,
                             offset = history.size,
-                        )?.toListWithPageCursor()
+                        )?.toListWithPageCursor(useOffset = true)
 
                 UserPaginationSpecification.Blocked ->
-                    userRepository.getBlocked(pageCursor = currentPageCursor)?.toListWithPageCursor()
+                    userRepository.getBlocked(pageCursor = currentPageCursor)
 
                 UserPaginationSpecification.Muted ->
-                    userRepository.getMuted(pageCursor = currentPageCursor)?.toListWithPageCursor()
+                    userRepository.getMuted(pageCursor = currentPageCursor)
 
                 is UserPaginationSpecification.CircleMembers ->
                     circlesRepository
@@ -105,7 +105,7 @@ internal class DefaultUserPaginationManager(
                         .searchMyFollowing(
                             query = spec.query,
                             pageCursor = currentPageCursor,
-                        )?.toListWithPageCursor()
+                        )?.toListWithPageCursor(useOffset = true)
 
                 UserPaginationSpecification.Limited -> {
                     val accountId = accountRepository.getActive()?.id ?: 0
@@ -174,10 +174,15 @@ internal class DefaultUserPaginationManager(
         )
     }
 
-    private fun List<UserModel>.toListWithPageCursor(): ListWithPageCursor<UserModel> = let { list ->
-        val cursor = list.lastOrNull()?.id
-        ListWithPageCursor(list = list, cursor = cursor)
-    }
+    private fun List<UserModel>.toListWithPageCursor(useOffset: Boolean = false): ListWithPageCursor<UserModel> =
+        let { list ->
+            val cursor = if (useOffset) {
+                if (list.isEmpty()) null else (history.size + list.size).toString()
+            } else {
+                list.lastOrNull()?.id
+            }
+            ListWithPageCursor(list = list, cursor = cursor)
+        }
 
     private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> = run {
         val userIds = map { user -> user.id }
