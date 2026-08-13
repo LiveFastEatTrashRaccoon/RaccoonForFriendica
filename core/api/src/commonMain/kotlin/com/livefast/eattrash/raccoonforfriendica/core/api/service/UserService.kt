@@ -38,9 +38,19 @@ interface UserService {
 
     suspend fun getSuggestions(limit: Int): List<Suggestion>
 
-    suspend fun getFollowers(id: String, maxId: String? = null, minId: String? = null, limit: Int = 20): List<Account>
+    suspend fun getFollowers(
+        id: String,
+        maxId: String? = null,
+        minId: String? = null,
+        limit: Int = 20,
+    ): Pair<List<Account>, String?>
 
-    suspend fun getFollowing(id: String, maxId: String? = null, minId: String? = null, limit: Int = 20): List<Account>
+    suspend fun getFollowing(
+        id: String,
+        maxId: String? = null,
+        minId: String? = null,
+        limit: Int = 20,
+    ): Pair<List<Account>, String?>
 
     suspend fun follow(id: String, data: FollowUserForm): Relationship
 
@@ -60,9 +70,9 @@ interface UserService {
 
     suspend fun unblock(id: String): Relationship
 
-    suspend fun getMuted(maxId: String? = null, limit: Int = 20): List<Account>
+    suspend fun getMuted(maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
 
-    suspend fun getBlocked(maxId: String? = null, limit: Int = 20): List<Account>
+    suspend fun getBlocked(maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
 
     suspend fun updateProfile(content: FormDataContent): Account
 
