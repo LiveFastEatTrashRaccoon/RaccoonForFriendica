@@ -21,7 +21,7 @@ internal class DefaultSearchRepository(private val provider: ServiceProvider) : 
             provider.search
                 .search(
                     query = query,
-                    maxId = pageCursor,
+                    offset = pageCursor?.toIntOrNull(),
                     limit = DEFAULT_PAGE_SIZE,
                     type = type.toDto(),
                     resolve = resolve,

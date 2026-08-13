@@ -35,7 +35,7 @@ class DefaultSearchRepositoryTest {
         everySuspend {
             searchService.search(
                 query = any(),
-                maxId = any(),
+                offset = any(),
                 limit = any(),
                 type = any(),
                 resolve = any(),
@@ -52,7 +52,7 @@ class DefaultSearchRepositoryTest {
         everySuspend {
             searchService.search(
                 query = any(),
-                maxId = any(),
+                offset = any(),
                 limit = any(),
                 type = any(),
                 resolve = any(),
@@ -70,7 +70,7 @@ class DefaultSearchRepositoryTest {
         verifySuspend {
             searchService.search(
                 query = "query",
-                maxId = null,
+                offset = null,
                 limit = 20,
                 type = "statuses",
                 resolve = false,
@@ -83,7 +83,7 @@ class DefaultSearchRepositoryTest {
         everySuspend {
             searchService.search(
                 query = any(),
-                maxId = any(),
+                offset = any(),
                 limit = any(),
                 type = any(),
                 resolve = any(),
@@ -101,7 +101,7 @@ class DefaultSearchRepositoryTest {
         verifySuspend {
             searchService.search(
                 query = "query",
-                maxId = null,
+                offset = null,
                 limit = 20,
                 type = "hashtags",
                 resolve = false,
@@ -114,7 +114,7 @@ class DefaultSearchRepositoryTest {
         everySuspend {
             searchService.search(
                 query = any(),
-                maxId = any(),
+                offset = any(),
                 limit = any(),
                 type = any(),
                 resolve = any(),
@@ -132,7 +132,7 @@ class DefaultSearchRepositoryTest {
         verifySuspend {
             searchService.search(
                 query = "query",
-                maxId = null,
+                offset = null,
                 limit = 20,
                 type = "accounts",
                 resolve = false,
