@@ -125,18 +125,15 @@ internal class DefaultExplorePaginationManager(
                         }?.determineUserRelationshipStatus()
             }
 
+        // for follow suggestions there is no pagination, just the first page
+        val stopPagination = spec == ExplorePaginationSpecification.Suggestions && !currentPageCursor.isNullOrEmpty()
+
         return updateHistory(
-            items = results,
+            items = if (stopPagination) emptyList() else results,
             transform = { newItems ->
                 newItems
                     .filterByStopWords()
-                    .let { list ->
-                        if (spec is ExplorePaginationSpecification.Posts) {
-                            list.filterNsfw(spec.includeNsfw)
-                        } else {
-                            list
-                        }
-                    }
+                    .filterNsfw(included = if (spec is ExplorePaginationSpecification.Posts) spec.includeNsfw else true)
                     .fixupCreatorEmojis()
                     .fixupInReplyTo()
             },
@@ -144,8 +141,7 @@ internal class DefaultExplorePaginationManager(
     }
 
     private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter {
-        included ||
-            !it.isNsfw
+        included || !it.isNsfw
     }
 
     private suspend fun List<ExploreItemModel>.determineUserRelationshipStatus(): List<ExploreItemModel> = run {
