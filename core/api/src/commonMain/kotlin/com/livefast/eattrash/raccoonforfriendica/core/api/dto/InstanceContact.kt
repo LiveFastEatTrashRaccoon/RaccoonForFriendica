@@ -4,4 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class InstanceIcon(@SerialName("size") val size: String? = null, @SerialName("src") val url: String? = null)
+data class InstanceContact(
+    @SerialName("email") val email: String? = null,
+    @SerialName("account") val account: Account? = null,
+)
