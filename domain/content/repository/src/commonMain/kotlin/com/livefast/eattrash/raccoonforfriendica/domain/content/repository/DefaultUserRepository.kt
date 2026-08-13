@@ -100,28 +100,38 @@ internal class DefaultUserRepository(
         null
     }
 
-    override suspend fun getFollowers(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? = try {
+    override suspend fun getFollowers(
+        id: String,
+        pageCursor: String?,
+        otherInstance: String?,
+    ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            provider.user
+            val (list, cursor) = provider.user
                 .getFollowers(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModel() }
+                )
+            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
-    override suspend fun getFollowing(id: String, pageCursor: String?, otherInstance: String?): List<UserModel>? = try {
+    override suspend fun getFollowing(
+        id: String,
+        pageCursor: String?,
+        otherInstance: String?,
+    ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            provider.user
+            val (list, cursor) = provider.user
                 .getFollowing(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModel() }
+                )
+            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -238,23 +248,27 @@ internal class DefaultUserRepository(
         null
     }
 
-    override suspend fun getMuted(pageCursor: String?): List<UserModel>? = try {
-        provider.user
-            .getMuted(
-                maxId = pageCursor,
-                limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModel() }
+    override suspend fun getMuted(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
+        val (list, cursor) =
+            provider.user
+                .getMuted(
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                )
+        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
-    override suspend fun getBlocked(pageCursor: String?): List<UserModel>? = try {
-        provider.user
-            .getBlocked(
-                maxId = pageCursor,
-                limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModel() }
+    override suspend fun getBlocked(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
+        val (list, cursor) =
+            provider.user
+                .getBlocked(
+                    maxId = pageCursor,
+                    limit = DEFAULT_PAGE_SIZE,
+                )
+        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

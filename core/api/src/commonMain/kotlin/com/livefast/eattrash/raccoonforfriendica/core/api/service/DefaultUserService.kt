@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -71,21 +72,39 @@ internal class DefaultUserService(@InjectedParam args: ServiceCreationArgs) : Us
         parameter("limit", limit)
     }.body()
 
-    override suspend fun getFollowers(id: String, maxId: String?, minId: String?, limit: Int): List<Account> =
-        client.get("$baseUrl/v1/accounts/$id/followers") {
+    override suspend fun getFollowers(
+        id: String,
+        maxId: String?,
+        minId: String?,
+        limit: Int,
+    ): Pair<List<Account>, String?> {
+        val response = client.get("$baseUrl/v1/accounts/$id/followers") {
             parameter("id", id)
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
-        }.body()
+        }
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        val data: List<Account> = response.body()
+        return data to cursor
+    }
 
-    override suspend fun getFollowing(id: String, maxId: String?, minId: String?, limit: Int): List<Account> =
-        client.get("$baseUrl/v1/accounts/$id/following") {
+    override suspend fun getFollowing(
+        id: String,
+        maxId: String?,
+        minId: String?,
+        limit: Int,
+    ): Pair<List<Account>, String?> {
+        val response = client.get("$baseUrl/v1/accounts/$id/following") {
             parameter("id", id)
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
-        }.body()
+        }
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        val data: List<Account> = response.body()
+        return data to cursor
+    }
 
     override suspend fun follow(id: String, data: FollowUserForm): Relationship =
         client.post("$baseUrl/v1/accounts/$id/follow") {
@@ -124,15 +143,25 @@ internal class DefaultUserService(@InjectedParam args: ServiceCreationArgs) : Us
 
     override suspend fun unblock(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/unblock").body()
 
-    override suspend fun getMuted(maxId: String?, limit: Int): List<Account> = client.get("$baseUrl/v1/mutes") {
-        parameter("max_id", maxId)
-        parameter("limit", limit)
-    }.body()
+    override suspend fun getMuted(maxId: String?, limit: Int): Pair<List<Account>, String?> {
+        val response = client.get("$baseUrl/v1/mutes") {
+            parameter("max_id", maxId)
+            parameter("limit", limit)
+        }
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        val data: List<Account> = response.body()
+        return data to cursor
+    }
 
-    override suspend fun getBlocked(maxId: String?, limit: Int): List<Account> = client.get("$baseUrl/v1/blocks") {
-        parameter("max_id", maxId)
-        parameter("limit", limit)
-    }.body()
+    override suspend fun getBlocked(maxId: String?, limit: Int): Pair<List<Account>, String?> {
+        val response = client.get("$baseUrl/v1/blocks") {
+            parameter("max_id", maxId)
+            parameter("limit", limit)
+        }
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        val data: List<Account> = response.body()
+        return data to cursor
+    }
 
     override suspend fun updateProfile(content: FormDataContent): Account =
         client.patch("$baseUrl/v1/accounts/update_credentials") {
