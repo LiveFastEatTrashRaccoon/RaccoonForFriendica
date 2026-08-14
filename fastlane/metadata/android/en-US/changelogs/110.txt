@@ -1,0 +1,2 @@
+- fix: pagination issues in suggestions, search, favorites, bookmarks, followers, following, muted, blocked, notifications, list members, post favorites, post reblogs
+- chore: update instance configuration response mapping for Mastodon 4.6
