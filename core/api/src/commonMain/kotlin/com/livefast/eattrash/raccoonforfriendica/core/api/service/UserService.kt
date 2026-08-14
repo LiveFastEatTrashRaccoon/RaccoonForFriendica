@@ -56,9 +56,9 @@ interface UserService {
 
     suspend fun unfollow(id: String): Relationship
 
-    suspend fun getFavorites(maxId: String? = null, minId: String? = null, limit: Int = 20): List<Status>
+    suspend fun getFavorites(maxId: String? = null, minId: String? = null, limit: Int = 20): Pair<List<Status>, String?>
 
-    suspend fun getBookmarks(maxId: String? = null, minId: String? = null, limit: Int = 20): List<Status>
+    suspend fun getBookmarks(maxId: String? = null, minId: String? = null, limit: Int = 20): Pair<List<Status>, String?>
 
     suspend fun getListsContaining(id: String): List<UserList>
 
