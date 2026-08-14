@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.utils.io.CancellationException
@@ -19,31 +20,29 @@ internal class DefaultNotificationRepository(private val provider: ServiceProvid
         types: List<NotificationType>,
         pageCursor: String?,
         refresh: Boolean,
-    ): List<NotificationModel>? {
+    ): ListWithPageCursor<NotificationModel>? {
         if (refresh) {
             mutex.withLock {
                 cachedValues.clear()
             }
         }
         if (pageCursor == null && cachedValues.isNotEmpty()) {
-            return cachedValues
+            return ListWithPageCursor(list = cachedValues, cursor = null) // Simplified for cache
         }
         return try {
-            val response =
+            val (list, cursor) =
                 provider.notification.get(
                     types = types.mapNotNull { it.toDto() },
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            response
-                .map { it.toModel() }
-                .also {
-                    if (pageCursor == null) {
-                        mutex.withLock {
-                            cachedValues.addAll(it)
-                        }
-                    }
+            val models = list.map { it.toModel() }
+            if (pageCursor == null) {
+                mutex.withLock {
+                    cachedValues.addAll(models)
                 }
+            }
+            ListWithPageCursor(list = models, cursor = cursor)
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             null

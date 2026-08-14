@@ -45,21 +45,21 @@ interface TimelineEntryRepository {
 
     suspend fun unbookmark(id: String): TimelineEntryModel?
 
-    suspend fun getFavorites(pageCursor: String? = null): List<TimelineEntryModel>?
+    suspend fun getFavorites(pageCursor: String? = null): ListWithPageCursor<TimelineEntryModel>?
 
-    suspend fun getBookmarks(pageCursor: String? = null): List<TimelineEntryModel>?
+    suspend fun getBookmarks(pageCursor: String? = null): ListWithPageCursor<TimelineEntryModel>?
 
     suspend fun getUsersWhoFavorited(
         id: String,
         pageCursor: String? = null,
         otherInstance: String? = null,
-    ): List<UserModel>?
+    ): ListWithPageCursor<UserModel>?
 
     suspend fun getUsersWhoReblogged(
         id: String,
         pageCursor: String? = null,
         otherInstance: String? = null,
-    ): List<UserModel>?
+    ): ListWithPageCursor<UserModel>?
 
     suspend fun create(
         localId: String,

@@ -175,23 +175,25 @@ internal class DefaultTimelineEntryRepository(
         null
     }
 
-    override suspend fun getFavorites(pageCursor: String?): List<TimelineEntryModel>? = try {
-        provider.user
+    override suspend fun getFavorites(pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? = try {
+        val (list, cursor) = provider.user
             .getFavorites(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModelWithReply() }
+            )
+        return ListWithPageCursor(list.map { it.toModelWithReply() }, cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
-    override suspend fun getBookmarks(pageCursor: String?): List<TimelineEntryModel>? = try {
-        provider.user
+    override suspend fun getBookmarks(pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? = try {
+        val (list, cursor) = provider.user
             .getBookmarks(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
-            ).map { it.toModelWithReply() }
+            )
+        return ListWithPageCursor(list.map { it.toModelWithReply() }, cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
@@ -201,14 +203,15 @@ internal class DefaultTimelineEntryRepository(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): List<UserModel>? = try {
+    ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            provider.status
+            val (list, cursor) = provider.status
                 .getFavoritedBy(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModel() }
+                )
+            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -219,14 +222,15 @@ internal class DefaultTimelineEntryRepository(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): List<UserModel>? = try {
+    ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            provider.status
+            val (list, cursor) = provider.status
                 .getRebloggedBy(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
-                ).map { it.toModel() }
+                )
+            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e

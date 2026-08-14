@@ -3,13 +3,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 
 interface CirclesRepository {
     suspend fun getAll(): List<CircleModel>?
 
     suspend fun get(id: String): CircleModel?
 
-    suspend fun getMembers(id: String, pageCursor: String? = null): List<UserModel>?
+    suspend fun getMembers(id: String, pageCursor: String? = null): ListWithPageCursor<UserModel>?
 
     suspend fun create(
         title: String,

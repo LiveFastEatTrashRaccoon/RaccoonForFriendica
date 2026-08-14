@@ -114,19 +114,27 @@ internal class DefaultUserService(@InjectedParam args: ServiceCreationArgs) : Us
 
     override suspend fun unfollow(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/unfollow").body()
 
-    override suspend fun getFavorites(maxId: String?, minId: String?, limit: Int): List<Status> =
-        client.get("$baseUrl/v1/favourites") {
+    override suspend fun getFavorites(maxId: String?, minId: String?, limit: Int): Pair<List<Status>, String?> {
+        val response = client.get("$baseUrl/v1/favourites") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
-        }.body()
+        }
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        val data: List<Status> = response.body()
+        return data to cursor
+    }
 
-    override suspend fun getBookmarks(maxId: String?, minId: String?, limit: Int): List<Status> =
-        client.get("$baseUrl/v1/bookmarks") {
+    override suspend fun getBookmarks(maxId: String?, minId: String?, limit: Int): Pair<List<Status>, String?> {
+        val response = client.get("$baseUrl/v1/bookmarks") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
-        }.body()
+        }
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        val data: List<Status> = response.body()
+        return data to cursor
+    }
 
     override suspend fun getListsContaining(id: String): List<UserList> =
         client.get("$baseUrl/v1/accounts/$id/lists").body()

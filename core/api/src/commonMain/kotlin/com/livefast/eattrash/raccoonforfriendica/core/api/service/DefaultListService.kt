@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListMembersFor
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -30,11 +31,15 @@ internal class DefaultListService(@InjectedParam args: ServiceCreationArgs) : Li
 
     override suspend fun getBy(id: String): UserList = client.get("$baseUrl/v1/lists/$id").body()
 
-    override suspend fun getMembers(id: String, maxId: String?, limit: Int): List<Account> =
-        client.get("$baseUrl/v1/lists/$id/accounts") {
+    override suspend fun getMembers(id: String, maxId: String?, limit: Int): Pair<List<Account>, String?> {
+        val response = client.get("$baseUrl/v1/lists/$id/accounts") {
             parameter("max_id", maxId)
             parameter("limit", limit)
-        }.body()
+        }
+        val data: List<Account> = response.body()
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        return data to cursor
+    }
 
     override suspend fun create(data: EditListForm): UserList = client.post("$baseUrl/v1/lists") {
         contentType(ContentType.Application.Json)

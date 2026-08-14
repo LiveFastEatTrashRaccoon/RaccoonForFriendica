@@ -7,6 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -57,11 +58,11 @@ class DefaultCirclesRepositoryTest {
     @Test
     fun `when getMembers then result is as expected`() = runTest {
         val list = listOf(Account(acct = "", id = "", username = ""))
-        everySuspend { listService.getMembers(id = any(), maxId = any()) } returns list
+        everySuspend { listService.getMembers(id = any(), maxId = any()) } returns Pair(list, null)
 
         val res = sut.getMembers("1")
 
-        assertEquals(list.map { it.toModel() }, res)
+        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
         verifySuspend {
             listService.getMembers(id = "1", maxId = null)
         }

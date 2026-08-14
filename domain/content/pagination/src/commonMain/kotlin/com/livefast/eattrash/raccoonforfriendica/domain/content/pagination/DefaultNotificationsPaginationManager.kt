@@ -36,7 +36,7 @@ internal class DefaultNotificationsPaginationManager(
             }
 
         return updateHistory(
-            items = results,
+            results = results,
             transform = { newItems ->
                 newItems
                     .determineRelationshipStatus()

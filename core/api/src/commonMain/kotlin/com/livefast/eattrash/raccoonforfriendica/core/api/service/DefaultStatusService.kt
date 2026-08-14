@@ -55,17 +55,25 @@ internal class DefaultStatusService(@InjectedParam args: ServiceCreationArgs) : 
 
     override suspend fun unfavorite(id: String): Status = client.post("$baseUrl/v1/statuses/$id/unfavourite").body()
 
-    override suspend fun getFavoritedBy(id: String, maxId: String?, limit: Int): List<Account> =
-        client.get("$baseUrl/v1/statuses/$id/favourited_by") {
+    override suspend fun getFavoritedBy(id: String, maxId: String?, limit: Int): Pair<List<Account>, String?> {
+        val response = client.get("$baseUrl/v1/statuses/$id/favourited_by") {
             parameter("max_id", maxId)
             parameter("limit", limit)
-        }.body()
+        }
+        val data: List<Account> = response.body()
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        return data to cursor
+    }
 
-    override suspend fun getRebloggedBy(id: String, maxId: String?, limit: Int): List<Account> =
-        client.get("$baseUrl/v1/statuses/$id/reblogged_by") {
+    override suspend fun getRebloggedBy(id: String, maxId: String?, limit: Int): Pair<List<Account>, String?> {
+        val response = client.get("$baseUrl/v1/statuses/$id/reblogged_by") {
             parameter("max_id", maxId)
             parameter("limit", limit)
-        }.body()
+        }
+        val data: List<Account> = response.body()
+        val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
+        return data to cursor
+    }
 
     override suspend fun create(key: String, data: CreateStatusForm): Status = client.post("$baseUrl/v1/statuses") {
         header("Idempotency-Key", key)

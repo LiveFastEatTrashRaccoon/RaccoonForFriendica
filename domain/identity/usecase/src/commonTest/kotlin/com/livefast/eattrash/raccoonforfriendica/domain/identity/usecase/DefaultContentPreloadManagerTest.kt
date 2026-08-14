@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
@@ -47,7 +48,7 @@ class DefaultContentPreloadManagerTest {
                     pageCursor = any(),
                     refresh = any(),
                 )
-            } returns listOf()
+            } returns ListWithPageCursor()
         }
     private val sut =
         DefaultContentPreloadManager(

@@ -32,9 +32,9 @@ interface StatusService {
 
     suspend fun unfavorite(id: String): Status
 
-    suspend fun getFavoritedBy(id: String, maxId: String? = null, limit: Int = 20): List<Account>
+    suspend fun getFavoritedBy(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
 
-    suspend fun getRebloggedBy(id: String, maxId: String? = null, limit: Int = 20): List<Account>
+    suspend fun getRebloggedBy(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
 
     suspend fun create(key: String, data: CreateStatusForm): Status
 
