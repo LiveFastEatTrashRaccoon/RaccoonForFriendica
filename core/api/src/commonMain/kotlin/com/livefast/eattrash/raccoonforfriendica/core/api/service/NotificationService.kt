@@ -11,7 +11,7 @@ interface NotificationService {
         minId: String? = null,
         includeAll: Boolean = false,
         limit: Int = 20,
-    ): List<Notification>
+    ): Pair<List<Notification>, String?>
 
     suspend fun dismiss(id: String): Boolean
 
