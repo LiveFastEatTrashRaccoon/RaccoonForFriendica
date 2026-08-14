@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.answering.sequentiallyReturns
@@ -52,7 +53,7 @@ class DefaultNotificationsPaginationManagerTest {
                 pageCursor = any(),
                 refresh = any(),
             )
-        } returns emptyList()
+        } returns ListWithPageCursor(emptyList(), null)
 
         sut.reset(
             NotificationsPaginationSpecification.Default(
@@ -82,7 +83,7 @@ class DefaultNotificationsPaginationManagerTest {
                 pageCursor = any(),
                 refresh = any(),
             )
-        } returns elements
+        } returns ListWithPageCursor(elements, "1")
 
         sut.reset(
             NotificationsPaginationSpecification.Default(
@@ -112,7 +113,7 @@ class DefaultNotificationsPaginationManagerTest {
                 pageCursor = any(),
                 refresh = any(),
             )
-        } returns elements
+        } returns ListWithPageCursor(elements, "1")
 
         sut.reset(
             NotificationsPaginationSpecification.Default(
@@ -150,7 +151,7 @@ class DefaultNotificationsPaginationManagerTest {
                 pageCursor = any(),
                 refresh = any(),
             )
-        } returns elements
+        } returns ListWithPageCursor(elements, "2")
 
         sut.reset(
             NotificationsPaginationSpecification.Default(
@@ -188,7 +189,7 @@ class DefaultNotificationsPaginationManagerTest {
                 pageCursor = any(),
                 refresh = any(),
             )
-        } returns elements
+        } returns ListWithPageCursor(elements, "2")
 
         sut.reset(
             NotificationsPaginationSpecification.Default(
@@ -221,8 +222,8 @@ class DefaultNotificationsPaginationManagerTest {
             )
         } sequentiallyReturns
             listOf(
-                elements,
-                emptyList(),
+                ListWithPageCursor(elements, "1"),
+                ListWithPageCursor(emptyList(), null),
             )
 
         sut.reset(
