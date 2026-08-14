@@ -162,12 +162,10 @@ internal class DefaultTimelinePaginationManager(
                 is TimelinePaginationSpecification.Bookmarks ->
                     timelineEntryRepository
                         .getBookmarks(pageCursor = currentPageCursor)
-                        ?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Favorites ->
                     timelineEntryRepository
                         .getFavorites(pageCursor = currentPageCursor)
-                        ?.toListWithPageCursor()
 
                 is TimelinePaginationSpecification.Quotes ->
                     timelineEntryRepository

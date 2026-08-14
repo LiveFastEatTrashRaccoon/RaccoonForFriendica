@@ -1110,7 +1110,7 @@ class DefaultTimelinePaginationManagerTest {
     fun `given no results when loadNextPage with Bookmarks specification then result is as expected`() = runTest {
         everySuspend {
             timelineEntryRepository.getBookmarks(pageCursor = any())
-        } returns emptyList()
+        } returns ListWithPageCursor()
 
         sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1130,7 +1130,7 @@ class DefaultTimelinePaginationManagerTest {
             )
         everySuspend {
             timelineEntryRepository.getBookmarks(pageCursor = any())
-        } returns list
+        } returns ListWithPageCursor(list = list, cursor = "1")
 
         sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1157,7 +1157,7 @@ class DefaultTimelinePaginationManagerTest {
                 )
             everySuspend {
                 timelineEntryRepository.getBookmarks(pageCursor = any())
-            } returns list
+            } returns ListWithPageCursor(list = list, cursor = "3")
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
             val res = sut.loadNextPage()
@@ -1184,7 +1184,7 @@ class DefaultTimelinePaginationManagerTest {
                 )
             everySuspend {
                 timelineEntryRepository.getBookmarks(pageCursor = any())
-            } returns list
+            } returns ListWithPageCursor(list = list, cursor = "3")
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = true))
             val res = sut.loadNextPage()
@@ -1205,7 +1205,11 @@ class DefaultTimelinePaginationManagerTest {
                 )
             everySuspend {
                 timelineEntryRepository.getBookmarks(pageCursor = any())
-            } sequentiallyReturns listOf(list, emptyList())
+            } sequentiallyReturns
+                listOf(
+                    ListWithPageCursor(list = list, cursor = "1"),
+                    ListWithPageCursor(),
+                )
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
             sut.loadNextPage()
@@ -1225,7 +1229,7 @@ class DefaultTimelinePaginationManagerTest {
     fun `given no results when loadNextPage with Favorites specification then result is as expected`() = runTest {
         everySuspend {
             timelineEntryRepository.getFavorites(pageCursor = any())
-        } returns emptyList()
+        } returns ListWithPageCursor()
 
         sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1245,7 +1249,7 @@ class DefaultTimelinePaginationManagerTest {
             )
         everySuspend {
             timelineEntryRepository.getFavorites(pageCursor = any())
-        } returns list
+        } returns ListWithPageCursor(list = list, cursor = "1")
 
         sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1266,7 +1270,11 @@ class DefaultTimelinePaginationManagerTest {
                 )
             everySuspend {
                 timelineEntryRepository.getFavorites(pageCursor = any())
-            } sequentiallyReturns listOf(list, emptyList())
+            } sequentiallyReturns
+                listOf(
+                    ListWithPageCursor(list = list, cursor = "1"),
+                    ListWithPageCursor(),
+                )
 
             sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
             sut.loadNextPage()
