@@ -532,20 +532,22 @@ class DefaultTimelineEntryRepositoryTest {
     // region Favorites and Bookmarks
     @Test
     fun `given results when getFavorites then result is expected`() = runTest {
-        everySuspend { userService.getFavorites(maxId = any(), limit = any()) } returns listOf(Status(id = "1"))
+        everySuspend { userService.getFavorites(maxId = any(), limit = any()) } returns
+            (listOf(Status(id = "1")) to null)
         val res = sut.getFavorites(null)
         assertNotNull(res)
-        assertEquals(1, res.size)
-        assertEquals("1", res[0].id)
+        assertEquals(1, res.list.size)
+        assertEquals("1", res.list[0].id)
     }
 
     @Test
     fun `given results when getBookmarks then result is expected`() = runTest {
-        everySuspend { userService.getBookmarks(maxId = any(), limit = any()) } returns listOf(Status(id = "1"))
+        everySuspend { userService.getBookmarks(maxId = any(), limit = any()) } returns
+            (listOf(Status(id = "1")) to null)
         val res = sut.getBookmarks(null)
         assertNotNull(res)
-        assertEquals(1, res.size)
-        assertEquals("1", res[0].id)
+        assertEquals(1, res.list.size)
+        assertEquals("1", res.list[0].id)
     }
     // endregion
 
@@ -558,11 +560,11 @@ class DefaultTimelineEntryRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns listOf(Account(id = "1", acct = "user", username = "user"))
+        } returns (listOf(Account(id = "1", acct = "user", username = "user")) to null)
         val res = sut.getUsersWhoFavorited("1", null)
         assertNotNull(res)
-        assertEquals(1, res.size)
-        assertEquals("1", res[0].id)
+        assertEquals(1, res.list.size)
+        assertEquals("1", res.list[0].id)
     }
 
     @Test
@@ -573,11 +575,11 @@ class DefaultTimelineEntryRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns listOf(Account(id = "1", acct = "user", username = "user"))
+        } returns (listOf(Account(id = "1", acct = "user", username = "user")) to null)
         val res = sut.getUsersWhoReblogged("1", null)
         assertNotNull(res)
-        assertEquals(1, res.size)
-        assertEquals("1", res[0].id)
+        assertEquals(1, res.list.size)
+        assertEquals("1", res.list[0].id)
     }
     // endregion
 
