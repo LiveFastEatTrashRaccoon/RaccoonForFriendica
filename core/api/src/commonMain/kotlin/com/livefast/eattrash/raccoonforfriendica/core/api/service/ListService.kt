@@ -13,7 +13,7 @@ interface ListService {
 
     suspend fun getBy(id: String): UserList
 
-    suspend fun getMembers(id: String, maxId: String? = null, limit: Int = 20): List<Account>
+    suspend fun getMembers(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
 
     suspend fun create(data: EditListForm): UserList
 
