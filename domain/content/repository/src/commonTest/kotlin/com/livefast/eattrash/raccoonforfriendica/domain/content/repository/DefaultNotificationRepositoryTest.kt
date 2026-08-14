@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -37,11 +38,11 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns emptyList()
+        } returns Pair(emptyList(), null)
 
         val res = sut.getAll(types = NotificationType.ALL)
 
-        assertEquals(emptyList(), res)
+        assertEquals(ListWithPageCursor(), res)
         verifySuspend {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -66,11 +67,11 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns list
+        } returns Pair(list, null)
 
         val res = sut.getAll(types = NotificationType.ALL)
 
-        assertEquals(list.map { it.toModel() }, res)
+        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
         verifySuspend {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -95,11 +96,11 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns list
+        } returns Pair(list, null)
 
         val res = sut.getAll(types = NotificationType.ALL, pageCursor = "0")
 
-        assertEquals(list.map { it.toModel() }, res)
+        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
         verifySuspend {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -124,12 +125,12 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns list
+        } returns Pair(list, null)
 
         sut.getAll(types = NotificationType.ALL)
         val res = sut.getAll(types = NotificationType.ALL)
 
-        assertEquals(list.map { it.toModel() }, res)
+        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
         verifySuspend(VerifyMode.exactly(1)) {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -154,12 +155,12 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns list
+        } returns Pair(list, null)
 
         sut.getAll(types = NotificationType.ALL)
         val res = sut.getAll(types = NotificationType.ALL, refresh = true)
 
-        assertEquals(list.map { it.toModel() }, res)
+        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
         verifySuspend(VerifyMode.exactly(2)) {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
