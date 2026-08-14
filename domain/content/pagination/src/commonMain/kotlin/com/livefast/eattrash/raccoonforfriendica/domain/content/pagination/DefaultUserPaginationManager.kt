@@ -71,14 +71,14 @@ internal class DefaultUserPaginationManager(
                         .getUsersWhoFavorited(
                             id = spec.entryId,
                             pageCursor = currentPageCursor,
-                        )?.toListWithPageCursor()
+                        )
 
                 is UserPaginationSpecification.EntryUsersReblog ->
                     timelineEntryRepository
                         .getUsersWhoReblogged(
                             id = spec.entryId,
                             pageCursor = currentPageCursor,
-                        )?.toListWithPageCursor()
+                        )
 
                 is UserPaginationSpecification.Search ->
                     userRepository
@@ -98,7 +98,7 @@ internal class DefaultUserPaginationManager(
                         .getMembers(
                             id = spec.id,
                             pageCursor = currentPageCursor,
-                        )?.toListWithPageCursor()
+                        )
 
                 is UserPaginationSpecification.SearchFollowing ->
                     userRepository
