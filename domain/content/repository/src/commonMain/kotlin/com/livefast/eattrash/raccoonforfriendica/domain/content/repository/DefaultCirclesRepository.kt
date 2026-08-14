@@ -6,6 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import io.ktor.utils.io.CancellationException
@@ -27,8 +28,9 @@ internal class DefaultCirclesRepository(private val provider: ServiceProvider) :
         null
     }
 
-    override suspend fun getMembers(id: String, pageCursor: String?): List<UserModel>? = try {
-        provider.list.getMembers(id = id, maxId = pageCursor).map { it.toModel() }
+    override suspend fun getMembers(id: String, pageCursor: String?): ListWithPageCursor<UserModel>? = try {
+        val (list, cursor) = provider.list.getMembers(id = id, maxId = pageCursor)
+        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
