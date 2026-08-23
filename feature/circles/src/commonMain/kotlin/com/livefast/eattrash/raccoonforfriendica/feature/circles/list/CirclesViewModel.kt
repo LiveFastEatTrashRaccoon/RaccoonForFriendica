@@ -111,14 +111,10 @@ class CirclesViewModel(
     }
 
     private fun Map<CircleType, List<CircleModel>>.generateSection(type: CircleType) = buildList<CircleListItem> {
-        val items =
-            get(type)
-                .orEmpty()
-                .sortedBy { it.name }
-                .map { CircleListItem.Circle(circle = it) }
+        val items = get(type).orEmpty()
         if (items.isNotEmpty()) {
             this += CircleListItem.Header(type = type)
-            this += get(type).orEmpty().map { CircleListItem.Circle(circle = it) }
+            this += items.map { CircleListItem.Circle(circle = it) }.sortedBy { it.circle.name }
         }
     }
 
