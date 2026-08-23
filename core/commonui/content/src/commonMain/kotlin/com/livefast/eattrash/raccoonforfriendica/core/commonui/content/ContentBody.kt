@@ -114,28 +114,41 @@ fun ContentBody(
     }
 }
 
-private fun String.splitTextAndImages(): List<String> = buildList {
+internal fun String.splitTextAndImages(): List<String> = buildList {
     val original = this@splitTextAndImages
     val matches = IMAGE_REGEX.findAll(original).toList()
     var index = 0
+    val currentText = StringBuilder()
+
     for (match in matches) {
         val range = match.range
-        val chunkBefore =
-            original
-                .substring(index, range.first)
-                .trim()
-                // remove empty paragraph at the end
-                .replace(Regex("<p( /)?>\$"), "")
-        add(chunkBefore)
+        val before = original.substring(index, range.first)
+        currentText.append(before)
+
         val htmlImage = original.substring(range)
         val data = extractImageData(htmlImage)
         if (data != null && data.description?.looksLikeAnEmoji != true) {
+            // it's a real image, flush current text and add image chunk
+            val text =
+                currentText
+                    .toString()
+                    .trim()
+                    // remove empty paragraph at the end
+                    .replace(Regex("<p( /)?>$"), "")
+            if (text.isNotEmpty()) add(text)
+            currentText.clear()
             add(htmlImage.trim())
+        } else {
+            // it's an emoji or something else, keep it in the text
+            currentText.append(htmlImage)
         }
         index = range.last + 1
     }
     if (index < original.length) {
-        val chunkAfter = original.substring(index, original.length).trim()
-        add(chunkAfter)
+        currentText.append(original.substring(index))
+    }
+    val finalRow = currentText.toString().trim()
+    if (finalRow.isNotEmpty()) {
+        add(finalRow)
     }
 }
