@@ -18,8 +18,11 @@ internal fun extractImageData(html: String): ImageData? {
             .onOpenTag { name, attributes, _ ->
                 when (name) {
                     "img" -> {
-                        url = attributes["src"]
-                        description = attributes["alt"]
+                        // only take the first one if multiple are somehow matched
+                        if (url == null) {
+                            url = attributes["src"]
+                            description = attributes["alt"]
+                        }
                     }
 
                     else -> Unit
