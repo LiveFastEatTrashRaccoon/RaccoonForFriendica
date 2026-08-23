@@ -25,7 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
-private val EMOJI_REGEX = Regex(":(\\w+):")
+private val EMOJI_REGEX = Regex(":([\\w-]+):")
 private val EMOJI_SIZE = 1.15.em
 
 internal val String.looksLikeAnEmoji: Boolean get() = EMOJI_REGEX.matches(this)
