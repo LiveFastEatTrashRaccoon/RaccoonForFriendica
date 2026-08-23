@@ -25,7 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
-private val EMOJI_REGEX = Regex(":(\\w+):")
+private val EMOJI_REGEX = Regex(":([\\w-]+):")
 private val EMOJI_SIZE = 1.15.em
 
 internal val String.looksLikeAnEmoji: Boolean get() = EMOJI_REGEX.matches(this)
@@ -51,14 +51,12 @@ fun TextWithCustomEmojis(
                 EMOJI_REGEX.substituteAllOccurrences(this) { occurrence ->
                     val emojiCode = occurrence.groups[1]?.value.orEmpty()
                     val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
-                    if (foundEmoji != null) {
-                        if (autoloadImages) {
-                            appendInlineContent(
-                                id = emojiCode,
-                                alternateText = occurrence.value,
-                            )
-                            foundEmojis += foundEmoji
-                        }
+                    if (foundEmoji != null && autoloadImages) {
+                        appendInlineContent(
+                            id = emojiCode,
+                            alternateText = occurrence.value,
+                        )
+                        foundEmojis += foundEmoji
                     } else {
                         append(occurrence.value)
                     }
@@ -76,15 +74,17 @@ fun TextWithCustomEmojis(
                     if (looksLikeAnEmoji) {
                         val emojiCode = alternateText.replace(":", "")
                         val foundEmoji = emojis.firstOrNull { it.code == emojiCode }
-                        if (foundEmoji != null) {
-                            if (autoloadImages) {
-                                appendInlineContent(
-                                    id = emojiCode,
-                                    alternateText = occurrence.value,
-                                )
-                                foundEmojis += foundEmoji
-                            }
+                        if (foundEmoji != null && autoloadImages) {
+                            appendInlineContent(
+                                id = emojiCode,
+                                alternateText = occurrence.value,
+                            )
+                            foundEmojis += foundEmoji
+                        } else {
+                            append(occurrence.value)
                         }
+                    } else {
+                        append(occurrence.value)
                     }
                 }
             }
