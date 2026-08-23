@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
 import io.ktor.client.call.body
@@ -16,6 +17,7 @@ import org.koin.core.annotation.InjectedParam
 internal class DefaultNotificationService(@InjectedParam args: ServiceCreationArgs) : NotificationService {
     private val baseUrl = args.baseUrl
     private val client = args.client
+
     override suspend fun get(
         types: List<NotificationType>,
         excludeTypes: List<NotificationType>?,
@@ -25,15 +27,18 @@ internal class DefaultNotificationService(@InjectedParam args: ServiceCreationAr
         limit: Int,
     ): Pair<List<Notification>, String?> {
         val response = client.get("$baseUrl/v1/notifications") {
-            types.forEach { value ->
-                parameter("types[]", value)
+            if (types.isNotEmpty()) {
+                types.forEach { value ->
+                    parameter("types[]", value.serialName)
+                }
             }
             excludeTypes?.forEach { value ->
-                parameter("exclude_types[]", value)
+                parameter("exclude_types[]", value.serialName)
             }
             parameter("max_id", maxId)
-            parameter("minId", minId)
-            parameter("include_all", includeAll)
+            parameter("min_id", minId)
+
+            parameter("include_filtered", includeAll)
             parameter("limit", limit)
         }
         val data: List<Notification> = response.body()

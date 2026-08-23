@@ -38,6 +38,8 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
@@ -55,9 +57,6 @@ internal class DefaultServiceProvider(
     private val requestTimeout: Long = 600_000,
     private val connectTimeout: Long = 30_000,
 ) : ServiceProvider {
-    companion object {
-        private const val REAM_NAME = "Friendica"
-    }
 
     override var currentNode: String = ""
     private val _events = MutableSharedFlow<ServiceProviderEvent>()
@@ -120,6 +119,10 @@ internal class DefaultServiceProvider(
                                 protocol = URLProtocol.HTTPS
                                 host = currentNode
                             }
+                            header(
+                                HttpHeaders.UserAgent,
+                                "$CLIENT_NAME/${appInfoRepository.appInfo.value?.versionCode ?: "1.0"}",
+                            )
                         }
                         if (requestTimeout > 0 && connectTimeout > 0) {
                             install(HttpTimeout) {
@@ -213,5 +216,10 @@ internal class DefaultServiceProvider(
         timeline = factory.create(clazz = TimelineService::class, args = creationArgs)
         trend = factory.create(clazz = TrendsService::class, args = creationArgs)
         user = factory.create(clazz = UserService::class, args = creationArgs)
+    }
+
+    companion object {
+        private const val REAM_NAME = "Friendica"
+        private const val CLIENT_NAME = "RaccoonForFriendica"
     }
 }
