@@ -1,8 +1,0 @@
-- feat: support for expanded size devices with adaptive navigation
-- feat: add desktop target
-- feat: support translation via LibreTranslate
-- feat: add possibility to explore other instances
-- feat: display quoted posts
-- feat: add reply bar color themes
-- enh: new loading indicator
-- enh: update l10n and add new languages (pt_BR, et)

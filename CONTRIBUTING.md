@@ -70,13 +70,11 @@ In order to create version `α.β.γ`
 
 - [ ] checkout the `master` branch
 - [ ] increment `buildNumber` (ε) and `versionName` (α.β.γ-betaδ) in `gradle.properties`
-- [ ] increment `Version:` in `distribution/deb/DEBIAN/control`
 - [ ] update `distribution/changelog.txt` with a detailed change list, remembering:
     - to include PR (with author) and issue references (if possible)
     - to update the version comparison for GitHub diff view
 - [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
   changes you want to display on the stores (remember: 500-character limit)
-- [ ] copy the content of `ε.txt` in `distribution/deb/DEBIAN/changelog` for dpkg
 - [ ] add everything to stage and create a commit with the message "version α.β.γ"
 - [ ] tag the commit with the label "α.β.γ"
 - [ ] push both the commit and tag to `origin` and wait for the workflows to finish

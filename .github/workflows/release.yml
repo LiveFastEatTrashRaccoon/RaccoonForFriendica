@@ -56,6 +56,32 @@ jobs:
           mv $filename $filename.bak
           cp -r distribution/deb/usr $tmpDir
           cp -r distribution/deb/DEBIAN $tmpDir
+
+          # Automate changelog selection based on buildNumber
+          BUILD_NUMBER=$(grep "buildNumber=" gradle.properties | cut -d'=' -f2 | tr -d '\r')
+          CHANGELOG_SRC="fastlane/metadata/android/en-US/changelogs/${BUILD_NUMBER}.txt"
+          mkdir -p $tmpDir/usr/share/doc/raccoon
+
+          if [ -f "$CHANGELOG_SRC" ]; then
+            echo "Using changelog from $CHANGELOG_SRC"
+            cp "$CHANGELOG_SRC" $tmpDir/usr/share/doc/raccoon/changelog
+          elif [ -f "$tmpDir/DEBIAN/changelog" ]; then
+            echo "Using fallback changelog from DEBIAN/changelog"
+            mv $tmpDir/DEBIAN/changelog $tmpDir/usr/share/doc/raccoon/changelog
+          fi
+
+          if [ -f "$tmpDir/usr/share/doc/raccoon/changelog" ]; then
+            gzip -9 $tmpDir/usr/share/doc/raccoon/changelog
+            chmod 644 $tmpDir/usr/share/doc/raccoon/changelog.gz
+          fi
+          rm -f $tmpDir/DEBIAN/changelog
+
+          # Update version in control file from tag
+          VERSION=${{ github.ref_name }}
+          VERSION=${VERSION#v}
+          sed -i "s/^Version: .*/Version: $VERSION/" $tmpDir/DEBIAN/control
+
+          # Build the package
           dpkg -b $tmpDir $filename
           rm -r $tmpDir
 
