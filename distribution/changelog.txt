@@ -1,14 +1,15 @@
 ## What's Changed
 
-This is a major version leap, so we'll skip minor fixes, chores & refactorings and focus on new features.
+- feat: quote posts, set quote policies, display quote notifications and revoke quotes (on Mastodon)
+- fix: restore search bar focusability
+- fix: ensure max body line limit is enforced (even with inline elements)
+- fix: improve stability while scrolling
+- fix: avoid duplicate attachments (when inline images are present)
+- fix: gallery access (on Friendica)
+- fix: solved pagination early termination
+- enh: improve conversation thread loading
+- refactor: migrate to Navigation 3 with better support for tablets and foldables
+- chore: update l10n
+- chore: update dependencies
 
-- feat: support for expanded size devices with adaptive navigation
-- feat: add desktop target
-- feat: support translation via LibreTranslate
-- feat: add possibility to explore other instances
-- feat: display quoted posts
-- feat: add reply bar color themes
-- enh: new loading indicator
-- enh: update l10n and add new languages (pt_BR, et)
-
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/0.4.2...1.0.0
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.0.0...1.1.0

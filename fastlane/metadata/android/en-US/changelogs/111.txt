@@ -1,0 +1,11 @@
+- feat: quote posts, policies and notifications (Mastodon)
+- fix: restore search bar focusability
+- fix: ensure line limit is enforced with inline elements
+- fix: improve stability while scrolling
+- fix: avoid duplicate attachments
+- fix: gallery access (Friendica)
+- fix: solved pagination early termination
+- enh: improve conversation thread loading
+- refactor: migrate to Navigation 3, better support for tablets and foldables
+- chore: update l10n
+- chore: update dependencies
