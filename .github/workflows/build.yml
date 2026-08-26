@@ -23,7 +23,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v6.3.0
         with:
           gradle-version: 9.5.0
-          cache-disabled: true
+
+      - name: Spotless check
+        run: ./gradlew spotlessCheck
 
       - name: Create Sentry config file
         env:
@@ -38,9 +40,28 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > androidApp/keystore.jks
 
+      - name: Run unit tests
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: ./gradlew test
+
       - name: Build
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: ./gradlew :androidApp:assembleDebug :desktopApp:assemble
+
+      - name: Generate code coverage
+        run: ./gradlew koverXmlReport
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: false
+          files: ./shared/build/reports/kover/report.xml
+          flags: unittests
+          name: raccoon4friendica
+          token: ${{ secrets.CODECOV_TOKEN }}
