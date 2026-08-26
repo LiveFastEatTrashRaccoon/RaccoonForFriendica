@@ -24,6 +24,14 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6.3.0
+        with:
+          gradle-version: 9.5.0
+
+      - name: Spotless check
+        run: ./gradlew spotlessCheck
+
       - name: Create Sentry config file
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -36,6 +44,13 @@ jobs:
         run: |
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > androidApp/keystore.jks
+
+      - name: Run unit tests
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: ./gradlew test
 
       - name: Build Android package
         env:
