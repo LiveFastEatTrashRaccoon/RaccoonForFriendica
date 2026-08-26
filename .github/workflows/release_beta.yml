@@ -28,6 +28,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6.3.0
         with:
           gradle-version: 9.5.0
+          cache-provider: basic
 
       - name: Spotless check
         run: ./gradlew spotlessCheck
