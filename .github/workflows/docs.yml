@@ -3,10 +3,12 @@ on:
   push:
     branches:
       - master
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 jobs:
   deploy:
     environment:
@@ -14,15 +16,28 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/configure-pages@v6
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Checkout project
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
           python-version: 3.x
-      - run: pip install zensical
-      - run: zensical build --clean
-      - uses: actions/upload-pages-artifact@v5
+
+      - name: Install Zensical
+        run: pip install zensical
+
+      - name: Build documentation
+        run: zensical build --clean
+
+      - name: Upload artifacts
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site
-      - uses: actions/deploy-pages@v5
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v5
         id: deployment

@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
@@ -25,6 +25,15 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6.3.0
+        with:
+          gradle-version: 9.5.0
+          cache-provider: basic
+
+      - name: Spotless check
+        run: ./gradlew spotlessCheck
+
       - name: Create Sentry config file
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -38,6 +47,13 @@ jobs:
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > androidApp/keystore.jks
 
+      - name: Run unit tests
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: ./gradlew test
+
       - name: Build Android package
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -49,41 +65,7 @@ jobs:
         run: ./gradlew :desktopApp:packageDeb --stacktrace
 
       - name: Repackage Debian distributable
-        run: |
-          tmpDir=distribution/tmp
-          for f in desktopApp/build/compose/binaries/main/deb/*.deb; do filename=$f; done
-          dpkg -x $filename $tmpDir
-          mv $filename $filename.bak
-          cp -r distribution/deb/usr $tmpDir
-          cp -r distribution/deb/DEBIAN $tmpDir
-
-          # Automate changelog selection based on buildNumber
-          BUILD_NUMBER=$(grep "buildNumber=" gradle.properties | cut -d'=' -f2 | tr -d '\r')
-          CHANGELOG_SRC="fastlane/metadata/android/en-US/changelogs/${BUILD_NUMBER}.txt"
-          mkdir -p $tmpDir/usr/share/doc/raccoon
-
-          if [ -f "$CHANGELOG_SRC" ]; then
-            echo "Using changelog from $CHANGELOG_SRC"
-            cp "$CHANGELOG_SRC" $tmpDir/usr/share/doc/raccoon/changelog
-          elif [ -f "$tmpDir/DEBIAN/changelog" ]; then
-            echo "Using fallback changelog from DEBIAN/changelog"
-            mv $tmpDir/DEBIAN/changelog $tmpDir/usr/share/doc/raccoon/changelog
-          fi
-
-          if [ -f "$tmpDir/usr/share/doc/raccoon/changelog" ]; then
-            gzip -9 $tmpDir/usr/share/doc/raccoon/changelog
-            chmod 644 $tmpDir/usr/share/doc/raccoon/changelog.gz
-          fi
-          rm -f $tmpDir/DEBIAN/changelog
-
-          # Update version in control file from tag
-          VERSION=${{ github.ref_name }}
-          VERSION=${VERSION#v}
-          sed -i "s/^Version: .*/Version: $VERSION/" $tmpDir/DEBIAN/control
-
-          # Build the package
-          dpkg -b $tmpDir $filename
-          rm -r $tmpDir
+        run: ./scripts/package_deb.sh ${{ github.ref_name }}
 
       - name: Upload release build to artifacts
         uses: actions/upload-artifact@v7
