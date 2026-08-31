@@ -39,11 +39,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import com.livefast.eattrash.raccoonforfriendica.core.utils.calendar.CalendarHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
@@ -54,7 +52,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.Ca
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarRow
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarRowPlaceholder
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,13 +60,13 @@ fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val uriHandler = LocalUriHandler.current
-    val mainRouter: MainRouter = koinInject()
-    val navigationCoordinator: NavigationCoordinator = koinInject()
+    val mainRouter = LocalUiDeps.current.mainRouter
+    val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val calendarHelper: CalendarHelper = koinInject()
+    val calendarHelper = LocalUiDeps.current.calendarHelper
 
     fun goBackToTop() {
         runCatching {

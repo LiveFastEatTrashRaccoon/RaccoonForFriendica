@@ -33,11 +33,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.AboutDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ChangeInstanceDialog
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerShortcut
@@ -45,7 +43,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -54,9 +51,9 @@ import kotlin.time.Duration.Companion.milliseconds
 fun DrawerContent(modifier: Modifier = Modifier) {
     val model: DrawerMviModel = koinViewModel<DrawerViewModel>()
     val uiState by model.uiState.collectAsState()
-    val navigationCoordinator: NavigationCoordinator = koinInject()
-    val drawerCoordinator: DrawerCoordinator = koinInject()
-    val mainRouter: MainRouter = koinInject()
+    val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
+    val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
+    val mainRouter = LocalUiDeps.current.mainRouter
     val scope = rememberCoroutineScope()
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }
