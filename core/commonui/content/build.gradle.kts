@@ -16,6 +16,7 @@ kotlin {
                 implementation(projects.core.appearance)
                 implementation(projects.core.commonui.components)
                 implementation(projects.core.htmlparse)
+                implementation(projects.core.di.utils)
                 implementation(projects.core.l10n)
                 implementation(projects.core.navigation)
                 implementation(projects.core.resources)

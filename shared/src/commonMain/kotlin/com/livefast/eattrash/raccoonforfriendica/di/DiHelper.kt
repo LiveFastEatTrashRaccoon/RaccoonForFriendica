@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.di
 import com.livefast.eattrash.raccoonforfriendica.core.api.di.ApiModule
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.di.AppearanceModule
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.CommonUiComponentsModule
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.di.UiDepsModule
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.L10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.di.NavigationModule
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.di.NotificationsModule
@@ -72,6 +73,7 @@ fun setupDi(config: KoinAppDeclaration? = null): KoinApplication = startKoin {
         PreferencesModule::class,
         ResourcesModule::class,
         TranslationModule::class,
+        UiDepsModule::class,
         UtilsModule::class,
     )
 

@@ -14,7 +14,9 @@ kotlin {
                 implementation(libs.compose.multiplatform.media.player)
 
                 implementation(projects.core.appearance)
+                implementation(projects.core.di.utils)
                 implementation(projects.core.l10n)
+                implementation(projects.core.navigation)
                 implementation(projects.core.resources)
                 implementation(projects.core.utils)
             }

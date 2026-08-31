@@ -1,7 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
-import kotlin.String
-
 sealed interface ExplorePaginationSpecification {
     data class Posts(val includeNsfw: Boolean = true, val otherInstance: String? = null) :
         ExplorePaginationSpecification

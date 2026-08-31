@@ -1,13 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard
 
-import org.koin.core.annotation.Single
 import android.content.ClipData
 import android.content.Context
 import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.toClipEntry
+import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 
-@Single
+@Factory
 internal class DefaultClipboardHelper(
     @InjectedParam private val clipboard: Clipboard,
     private val context: Context,

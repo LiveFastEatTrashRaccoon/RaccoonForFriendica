@@ -24,13 +24,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
-import org.koin.compose.koinInject
 
 @Composable
 fun TimelineReplyItem(
@@ -61,7 +60,7 @@ fun TimelineReplyItem(
 ) {
     val entryToDisplay = entry.original
     val depthZeroBased = (entry.depth - 1).coerceAtLeast(0)
-    val themeRepository: ThemeRepository = koinInject()
+    val themeRepository = LocalUiDeps.current.themeRepository
     val barWidth = 3.dp
     val barColor = themeRepository.getCommentBarColor(depthZeroBased)
     var barHeight by remember { mutableStateOf(0.dp) }

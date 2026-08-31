@@ -1,8 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appicon
 
-import org.koin.core.annotation.Single
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.koin.core.annotation.Single
 
 @Single
 internal class DefaultAppIconManager : AppIconManager {

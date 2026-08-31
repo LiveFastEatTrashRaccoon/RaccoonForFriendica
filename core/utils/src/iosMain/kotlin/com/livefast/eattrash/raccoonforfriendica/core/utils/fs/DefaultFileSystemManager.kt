@@ -1,9 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
-import org.koin.core.annotation.Single
 import androidx.compose.runtime.Composable
 import okio.FileSystem
 import okio.Path
+import org.koin.core.annotation.Single
 
 @Single
 internal class DefaultFileSystemManager : FileSystemManager {

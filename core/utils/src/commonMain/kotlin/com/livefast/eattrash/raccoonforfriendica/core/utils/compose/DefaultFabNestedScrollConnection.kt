@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.core.commonui.components
+package com.livefast.eattrash.raccoonforfriendica.core.utils.compose
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
