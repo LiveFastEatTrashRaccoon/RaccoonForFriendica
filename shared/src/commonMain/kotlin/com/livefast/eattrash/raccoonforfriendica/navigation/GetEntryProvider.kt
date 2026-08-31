@@ -6,15 +6,12 @@ import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.classic.UserDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewScreen
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.main.AcknowledgementsScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.licences.LicencesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
@@ -50,6 +47,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.Follow
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.licences.LicencesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksScreen
@@ -72,6 +70,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviMod
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.classic.UserDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum.ForumListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
