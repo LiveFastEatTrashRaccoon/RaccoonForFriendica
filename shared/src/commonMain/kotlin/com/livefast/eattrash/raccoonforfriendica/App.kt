@@ -25,9 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
@@ -38,26 +38,18 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.ProvideUiDeps
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.UiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultNavigationAdapter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
-import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
-import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
@@ -93,10 +85,11 @@ import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviMod
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
+import com.livefast.eattrash.raccoonforfriendica.main.RootMviModel
+import com.livefast.eattrash.raccoonforfriendica.main.RootViewModel
 import com.livefast.eattrash.raccoonforfriendica.navigation.getEntryProvider
 import com.livefast.eattrash.raccoonforfriendica.navigation.isDetailDestination
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -105,32 +98,24 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(FlowPreview::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun App(onLoadingFinished: (() -> Unit)? = null) {
-    // initialize crash reporting as soon as possible
-    val crashReportManager: CrashReportManager = koinInject()
-    LaunchedEffect(crashReportManager) {
-        crashReportManager.initialize()
-    }
+    val model: RootMviModel = koinViewModel<RootViewModel>()
+    val uiState by model.uiState.collectAsState()
+    val uiDeps: UiDeps = koinInject()
+    val barColorProvider = uiDeps.barColorProvider
+    val colorSchemeProvider = uiDeps.colorSchemeProvider
+    val customUriHandler = uiDeps.getCustomUriHandler(LocalUriHandler.current)
+    val drawerCoordinator = uiDeps.drawerCoordinator
+    val navigationCoordinator = uiDeps.navigationCoordinator
+    val networkStateObserver = uiDeps.networkStateObserver
+    val themeRepository = uiDeps.themeRepository
 
-    val navigationCoordinator: NavigationCoordinator = koinInject()
-    val l10nManager: L10nManager = koinInject()
-    val themeRepository: ThemeRepository = koinInject()
-    val settingsRepository: SettingsRepository = koinInject()
-    val activeAccountMonitor: ActiveAccountMonitor = koinInject()
-    val setupAccountUseCase: SetupAccountUseCase = koinInject()
-    val networkStateObserver: NetworkStateObserver = koinInject()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val drawerCoordinator: DrawerCoordinator = koinInject()
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
-    val currentSettings by settingsRepository.current.collectAsState()
     val scope = rememberCoroutineScope()
-    val fallbackUriHandler = LocalUriHandler.current
-    val customUriHandler: CustomUriHandler = koinInject(parameters = { parametersOf(fallbackUriHandler) })
-
     val backStack = rememberNavBackStack(
         configuration = Destination.SavedStateConfiguration,
         Destination.Main,
@@ -144,77 +129,48 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
         shouldHandleSinglePaneLayout = true,
     )
 
-    LaunchedEffect(settingsRepository) {
-        var isInitialized = false
-
-        fun finishInitialization() {
-            if (!isInitialized) {
-                isInitialized = true
-                onLoadingFinished?.invoke()
+    LaunchedEffect(model) {
+        model.effects.onEach { effect ->
+            when (effect) {
+                RootMviModel.Effect.InitializationFinished -> onLoadingFinished?.invoke()
             }
-        }
-
-        launch {
-            // set a timeout on the initialization
-            delay(1.5.seconds)
-            finishInitialization()
-        }
-
-        settingsRepository.current
-            .onEach { settings ->
-                if (settings != null) {
-                    l10nManager.changeLanguage(settings.lang)
-                    themeRepository.changeTheme(settings.theme)
-                    themeRepository.changeCommentBarTheme(settings.commentBarTheme)
-                    themeRepository.changeFontFamily(settings.fontFamily)
-                    themeRepository.changeFontScale(settings.fontScale)
-                    themeRepository.changeCustomSeedColor(
-                        color = settings.customSeedColor?.let { c -> Color(color = c) },
-                    )
-                    finishInitialization()
-                }
-            }.launchIn(this)
-
-        activeAccountMonitor.start()
-        setupAccountUseCase()
+        }.launchIn(this)
     }
 
-    LaunchedEffect(drawerState.isOpen) {
-        // centralizes the information about drawer opening
-        drawerCoordinator.changeDrawerOpened(drawerState.isOpen)
-    }
     LaunchedEffect(drawerCoordinator) {
-        drawerCoordinator.events
-            .onEach { evt ->
-                when (evt) {
-                    DrawerEvent.Toggle -> {
-                        if (drawerState.isClosed) {
-                            drawerState.open()
-                        } else {
-                            drawerState.close()
-                        }
-                    }
+        snapshotFlow { drawerState.isOpen }.onEach { isDrawerOpen ->
+            // centralizes the information about drawer opening
+            drawerCoordinator.changeDrawerOpened(isDrawerOpen)
+        }.launchIn(this)
 
-                    DrawerEvent.Close -> {
-                        if (drawerState.isOpen) {
-                            drawerState.close()
-                        }
+        drawerCoordinator.events.onEach { evt ->
+            when (evt) {
+                DrawerEvent.Toggle -> {
+                    if (drawerState.isClosed) {
+                        drawerState.open()
+                    } else {
+                        drawerState.close()
                     }
                 }
-            }.launchIn(this)
-    }
 
-    LaunchedEffect(navigationCoordinator) {
-        navigationCoordinator.deepLinkUrl
-            .debounce(750.milliseconds)
-            .onEach { url ->
-                customUriHandler.openInternally(url)
-            }.launchIn(this)
+                DrawerEvent.Close -> {
+                    if (drawerState.isOpen) {
+                        drawerState.close()
+                    }
+                }
+            }
+        }.launchIn(this)
     }
 
     LaunchedEffect(navigationCoordinator) {
         val adapter = DefaultNavigationAdapter(backStack)
         navigationCoordinator.setRootNavigator(adapter)
+
+        navigationCoordinator.deepLinkUrl
+            .debounce(750.milliseconds)
+            .onEach { url ->
+                customUriHandler.openInternally(url)
+            }.launchIn(this)
     }
 
     DisposableEffect(networkStateObserver) {
@@ -224,162 +180,174 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
         }
     }
 
-    ProvideResources {
-        ProvideCustomUriHandler {
-            ProvideStrings(lang = currentSettings?.lang ?: Locales.EN) {
-                AppTheme(
-                    useDynamicColors = currentSettings?.dynamicColors == true,
-                    barTheme = currentSettings?.barTheme ?: UiBarTheme.Transparent,
-                ) {
-                    if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-                        ModalNavigationDrawer(
-                            drawerState = drawerState,
-                            gesturesEnabled = drawerGesturesEnabled,
-                            drawerContent = {
-                                ProvideCustomFontScale {
-                                    DrawerContent()
-                                }
-                            },
-                        ) {
-                            val canPop by drawerCoordinator.drawerOpened.collectAsState()
-                            val navState = rememberNavigationEventState(NavigationEventInfo.None)
-                            NavigationBackHandler(
-                                state = navState,
-                                isBackEnabled = canPop,
-                                onBackCompleted = {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
+    ProvideUiDeps(uiDeps) {
+        ProvideResources(resources = uiDeps.resources) {
+            ProvideCustomUriHandler(uriHandler = customUriHandler) {
+                ProvideStrings(lang = uiState.currentSettings?.lang ?: Locales.EN, strings = uiDeps.strings) {
+                    AppTheme(
+                        repository = themeRepository,
+                        barColorProvider = barColorProvider,
+                        colorSchemeProvider = colorSchemeProvider,
+                        useDynamicColors = uiState.currentSettings?.dynamicColors == true,
+                        barTheme = uiState.currentSettings?.barTheme ?: UiBarTheme.Transparent,
+                    ) {
+                        if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                            ModalNavigationDrawer(
+                                drawerState = drawerState,
+                                gesturesEnabled = drawerGesturesEnabled,
+                                drawerContent = {
+                                    ProvideCustomFontScale(currentSettings = uiState.currentSettings) {
+                                        DrawerContent()
                                     }
                                 },
-                            )
-                            ProvideCustomFontScale {
-                                // preload ViewModels for all top-level sections
-                                val timelineModel: TimelineMviModel = koinViewModel<TimelineViewModel>()
-                                val exploreModel: ExploreMviModel = koinViewModel<ExploreViewModel>()
-                                val inboxModel: InboxMviModel = koinViewModel<InboxViewModel>()
-                                val profileModel: ProfileMviModel = koinViewModel<ProfileViewModel>()
-                                val myAccountModel: MyAccountMviModel = koinViewModel<MyAccountViewModel>()
-                                val timelineLazyListState = rememberLazyListState()
-                                val exploreLazyListState = rememberLazyListState()
-                                val inboxLazyListState = rememberLazyListState()
-                                val myAccountLazyListState = rememberLazyListState()
-                                Surface(color = MaterialTheme.colorScheme.background) {
-                                    NavDisplay(
-                                        backStack = backStack,
-                                        onBack = { navigationCoordinator.pop() },
-                                        entryDecorators = listOf(
-                                            rememberSaveableStateHolderNavEntryDecorator(),
-                                            rememberViewModelStoreNavEntryDecorator(),
-                                        ),
-                                        sceneStrategies = listOf(listDetailStrategy),
-                                        entryProvider = getEntryProvider(
-                                            timelineViewModel = timelineModel,
-                                            timelineLazyListState = timelineLazyListState,
-                                            exploreViewModel = exploreModel,
-                                            exploreLazyListState = exploreLazyListState,
-                                            inboxViewModel = inboxModel,
-                                            inboxLazyListState = inboxLazyListState,
-                                            profileViewModel = profileModel,
-                                            myAccountViewModel = myAccountModel,
-                                            myAccountLazyListState = myAccountLazyListState,
-                                        ),
-                                    )
+                            ) {
+                                val canPop by drawerCoordinator.drawerOpened.collectAsState()
+                                val navState = rememberNavigationEventState(NavigationEventInfo.None)
+                                NavigationBackHandler(
+                                    state = navState,
+                                    isBackEnabled = canPop,
+                                    onBackCompleted = {
+                                        scope.launch {
+                                            drawerCoordinator.toggleDrawer()
+                                        }
+                                    },
+                                )
+                                ProvideCustomFontScale(currentSettings = uiState.currentSettings) {
+                                    // preload ViewModels for all top-level sections
+                                    val timelineModel: TimelineMviModel = koinViewModel<TimelineViewModel>()
+                                    val exploreModel: ExploreMviModel = koinViewModel<ExploreViewModel>()
+                                    val inboxModel: InboxMviModel = koinViewModel<InboxViewModel>()
+                                    val profileModel: ProfileMviModel = koinViewModel<ProfileViewModel>()
+                                    val myAccountModel: MyAccountMviModel = koinViewModel<MyAccountViewModel>()
+                                    val timelineLazyListState = rememberLazyListState()
+                                    val exploreLazyListState = rememberLazyListState()
+                                    val inboxLazyListState = rememberLazyListState()
+                                    val myAccountLazyListState = rememberLazyListState()
+                                    Surface(color = MaterialTheme.colorScheme.background) {
+                                        NavDisplay(
+                                            backStack = backStack,
+                                            onBack = { navigationCoordinator.pop() },
+                                            entryDecorators = listOf(
+                                                rememberSaveableStateHolderNavEntryDecorator(),
+                                                rememberViewModelStoreNavEntryDecorator(),
+                                            ),
+                                            sceneStrategies = listOf(listDetailStrategy),
+                                            entryProvider = getEntryProvider(
+                                                timelineViewModel = timelineModel,
+                                                timelineLazyListState = timelineLazyListState,
+                                                exploreViewModel = exploreModel,
+                                                exploreLazyListState = exploreLazyListState,
+                                                inboxViewModel = inboxModel,
+                                                inboxLazyListState = inboxLazyListState,
+                                                profileViewModel = profileModel,
+                                                myAccountViewModel = myAccountModel,
+                                                myAccountLazyListState = myAccountLazyListState,
+                                            ),
+                                        )
+                                    }
                                 }
                             }
-                        }
-                    } else {
-                        ProvideCustomFontScale {
-                            Scaffold(
-                                content = { paddingValues ->
-                                    var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
-                                        mutableStateOf(Destination.Main)
-                                    }
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(paddingValues),
-                                    ) {
-                                        PermanentNavigationDrawer(
-                                            drawerContent = {
-                                                PermanentDrawerContent(
-                                                    currentDestination = selectedDestination,
-                                                    onSelectDestination = { destination ->
-                                                        selectedDestination = destination
-                                                        backStack[backStack.lastIndex] = destination
-                                                    },
-                                                )
-                                            },
+                        } else {
+                            ProvideCustomFontScale(currentSettings = uiState.currentSettings) {
+                                Scaffold(
+                                    content = { paddingValues ->
+                                        var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
+                                            mutableStateOf(Destination.Main)
+                                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(paddingValues),
                                         ) {
-                                            // preload ViewModels for all top-level sections
-                                            val timelineViewModel: TimelineMviModel = koinViewModel<TimelineViewModel>()
-                                            val exploreViewModel: ExploreMviModel = koinViewModel<ExploreViewModel>()
-                                            val inboxViewModel: InboxMviModel = koinViewModel<InboxViewModel>()
-                                            val profileViewModel: ProfileMviModel = koinViewModel<ProfileViewModel>()
-                                            val myAccountViewModel: MyAccountMviModel =
-                                                koinViewModel<MyAccountViewModel>()
-                                            val favoritesViewModel: EntryListMviModel =
-                                                koinViewModel<EntryListViewModel> {
-                                                    parametersOf(EntryListViewModelArgs(type = EntryListType.Favorites))
+                                            PermanentNavigationDrawer(
+                                                drawerContent = {
+                                                    PermanentDrawerContent(
+                                                        currentDestination = selectedDestination,
+                                                        onSelectDestination = { destination ->
+                                                            selectedDestination = destination
+                                                            backStack[backStack.lastIndex] = destination
+                                                        },
+                                                    )
+                                                },
+                                            ) {
+                                                // preload ViewModels for all top-level sections
+                                                val timelineViewModel: TimelineMviModel =
+                                                    koinViewModel<TimelineViewModel>()
+                                                val exploreViewModel: ExploreMviModel =
+                                                    koinViewModel<ExploreViewModel>()
+                                                val inboxViewModel: InboxMviModel = koinViewModel<InboxViewModel>()
+                                                val profileViewModel: ProfileMviModel =
+                                                    koinViewModel<ProfileViewModel>()
+                                                val myAccountViewModel: MyAccountMviModel =
+                                                    koinViewModel<MyAccountViewModel>()
+                                                val favoritesViewModel: EntryListMviModel =
+                                                    koinViewModel<EntryListViewModel> {
+                                                        parametersOf(EntryListViewModelArgs(type = EntryListType.Favorites))
+                                                    }
+                                                val bookmarksViewModel: EntryListMviModel =
+                                                    koinViewModel<EntryListViewModel> {
+                                                        parametersOf(EntryListViewModelArgs(type = EntryListType.Bookmarks))
+                                                    }
+                                                val followedHashtagsViewModel: FollowedHashtagsMviModel =
+                                                    koinViewModel<FollowedHashtagsViewModel>()
+                                                val followRequestsViewModel: FollowRequestsMviModel =
+                                                    koinViewModel<FollowRequestsViewModel>()
+                                                val circlesViewModel: CirclesMviModel =
+                                                    koinViewModel<CirclesViewModel>()
+                                                val conversationListViewModel: ConversationListMviModel =
+                                                    koinViewModel<ConversationListViewModel>()
+                                                val galleryViewModel: GalleryMviModel =
+                                                    koinViewModel<GalleryViewModel>()
+                                                val unpublishedViewModel: UnpublishedMviModel =
+                                                    koinViewModel<UnpublishedViewModel>()
+                                                val calendarViewModel: CalendarMviModel =
+                                                    koinViewModel<CalendarViewModel>()
+                                                val shortcutListViewModel: ShortcutListMviModel =
+                                                    koinViewModel<ShortcutListViewModel>()
+                                                val nodeInfoViewModel: NodeInfoMviModel =
+                                                    koinViewModel<NodeInfoViewModel>()
+                                                val timelineLazyListState = rememberLazyListState()
+                                                val exploreLazyListState = rememberLazyListState()
+                                                val inboxLazyListState = rememberLazyListState()
+                                                val myAccountLazyListState = rememberLazyListState()
+                                                Surface(color = MaterialTheme.colorScheme.background) {
+                                                    NavDisplay(
+                                                        backStack = backStack,
+                                                        onBack = { navigationCoordinator.pop() },
+                                                        entryDecorators = listOf(
+                                                            rememberSaveableStateHolderNavEntryDecorator(),
+                                                            rememberViewModelStoreNavEntryDecorator(),
+                                                        ),
+                                                        sceneStrategies = listOf(listDetailStrategy),
+                                                        entryProvider = getEntryProvider(
+                                                            timelineViewModel = timelineViewModel,
+                                                            timelineLazyListState = timelineLazyListState,
+                                                            exploreViewModel = exploreViewModel,
+                                                            exploreLazyListState = exploreLazyListState,
+                                                            inboxViewModel = inboxViewModel,
+                                                            inboxLazyListState = inboxLazyListState,
+                                                            profileViewModel = profileViewModel,
+                                                            myAccountViewModel = myAccountViewModel,
+                                                            myAccountLazyListState = myAccountLazyListState,
+                                                            favoritesViewModel = favoritesViewModel,
+                                                            bookmarksViewModel = bookmarksViewModel,
+                                                            followedHashtagsViewModel = followedHashtagsViewModel,
+                                                            followRequestsViewModel = followRequestsViewModel,
+                                                            circlesViewModel = circlesViewModel,
+                                                            conversationListViewModel = conversationListViewModel,
+                                                            galleryViewModel = galleryViewModel,
+                                                            unpublishedViewModel = unpublishedViewModel,
+                                                            calendarViewModel = calendarViewModel,
+                                                            shortcutListViewModel = shortcutListViewModel,
+                                                            nodeInfoViewModel = nodeInfoViewModel,
+                                                        ),
+                                                    )
                                                 }
-                                            val bookmarksViewModel: EntryListMviModel =
-                                                koinViewModel<EntryListViewModel> {
-                                                    parametersOf(EntryListViewModelArgs(type = EntryListType.Bookmarks))
-                                                }
-                                            val followedHashtagsViewModel: FollowedHashtagsMviModel =
-                                                koinViewModel<FollowedHashtagsViewModel>()
-                                            val followRequestsViewModel: FollowRequestsMviModel =
-                                                koinViewModel<FollowRequestsViewModel>()
-                                            val circlesViewModel: CirclesMviModel = koinViewModel<CirclesViewModel>()
-                                            val conversationListViewModel: ConversationListMviModel =
-                                                koinViewModel<ConversationListViewModel>()
-                                            val galleryViewModel: GalleryMviModel = koinViewModel<GalleryViewModel>()
-                                            val unpublishedViewModel: UnpublishedMviModel =
-                                                koinViewModel<UnpublishedViewModel>()
-                                            val calendarViewModel: CalendarMviModel = koinViewModel<CalendarViewModel>()
-                                            val shortcutListViewModel: ShortcutListMviModel =
-                                                koinViewModel<ShortcutListViewModel>()
-                                            val nodeInfoViewModel: NodeInfoMviModel = koinViewModel<NodeInfoViewModel>()
-                                            val timelineLazyListState = rememberLazyListState()
-                                            val exploreLazyListState = rememberLazyListState()
-                                            val inboxLazyListState = rememberLazyListState()
-                                            val myAccountLazyListState = rememberLazyListState()
-                                            Surface(color = MaterialTheme.colorScheme.background) {
-                                                NavDisplay(
-                                                    backStack = backStack,
-                                                    onBack = { navigationCoordinator.pop() },
-                                                    entryDecorators = listOf(
-                                                        rememberSaveableStateHolderNavEntryDecorator(),
-                                                        rememberViewModelStoreNavEntryDecorator(),
-                                                    ),
-                                                    sceneStrategies = listOf(listDetailStrategy),
-                                                    entryProvider = getEntryProvider(
-                                                        timelineViewModel = timelineViewModel,
-                                                        timelineLazyListState = timelineLazyListState,
-                                                        exploreViewModel = exploreViewModel,
-                                                        exploreLazyListState = exploreLazyListState,
-                                                        inboxViewModel = inboxViewModel,
-                                                        inboxLazyListState = inboxLazyListState,
-                                                        profileViewModel = profileViewModel,
-                                                        myAccountViewModel = myAccountViewModel,
-                                                        myAccountLazyListState = myAccountLazyListState,
-                                                        favoritesViewModel = favoritesViewModel,
-                                                        bookmarksViewModel = bookmarksViewModel,
-                                                        followedHashtagsViewModel = followedHashtagsViewModel,
-                                                        followRequestsViewModel = followRequestsViewModel,
-                                                        circlesViewModel = circlesViewModel,
-                                                        conversationListViewModel = conversationListViewModel,
-                                                        galleryViewModel = galleryViewModel,
-                                                        unpublishedViewModel = unpublishedViewModel,
-                                                        calendarViewModel = calendarViewModel,
-                                                        shortcutListViewModel = shortcutListViewModel,
-                                                        nodeInfoViewModel = nodeInfoViewModel,
-                                                    ),
-                                                )
                                             }
                                         }
-                                    }
-                                },
-                            )
+                                    },
+                                )
+                            }
                         }
                     }
                 }
