@@ -2,18 +2,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.toScaleFactor
-import org.koin.compose.koinInject
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 
 @Composable
-fun ProvideCustomFontScale(content: @Composable () -> Unit) {
+fun ProvideCustomFontScale(currentSettings: SettingsModel?, content: @Composable () -> Unit) {
     val defaultDensity = LocalDensity.current
-    val settingsRepository: SettingsRepository = koinInject()
-    val currentSettings by settingsRepository.current.collectAsState()
     val scaleFactor = currentSettings?.fontScale?.toScaleFactor() ?: 1f
     CompositionLocalProvider(
         value =

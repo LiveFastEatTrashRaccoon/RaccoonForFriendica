@@ -8,6 +8,10 @@ interface CustomUriHandler : UriHandler {
     fun openUri(uri: String, allowOpenExternal: Boolean = true, allowOpenInternal: Boolean = true)
 }
 
+interface CustomUriHandlerFactory {
+    fun create(fallbackHandler: UriHandler): CustomUriHandler
+}
+
 fun UriHandler.openExternally(uri: String) {
     if (this is CustomUriHandler) {
         openUri(uri = uri, allowOpenInternal = false)
