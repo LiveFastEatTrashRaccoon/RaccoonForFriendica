@@ -30,10 +30,9 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
-import org.koin.compose.koinInject
 
 @Composable
 fun CustomImage(
@@ -72,7 +71,6 @@ fun CustomImage(
         return
     }
 
-    val imageLoaderProvider: ImageLoaderProvider = koinInject()
     var painterState: AsyncImagePainter.State by remember {
         mutableStateOf(AsyncImagePainter.State.Empty)
     }
@@ -98,7 +96,7 @@ fun CustomImage(
                 onState = {
                     painterState = it
                 },
-                imageLoader = imageLoaderProvider.provideImageLoader(),
+                imageLoader = LocalUiDeps.current.imageLoaderProvider.provideImageLoader(),
             )
         } else {
             Box(

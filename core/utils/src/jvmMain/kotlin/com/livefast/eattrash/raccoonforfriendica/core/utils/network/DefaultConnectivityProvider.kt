@@ -1,9 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.network
 
-import org.koin.core.annotation.Single
 import dev.jordond.connectivity.Connectivity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.koin.core.annotation.Single
 
 @Single
 internal class DefaultConnectivityProvider : ConnectivityProvider {

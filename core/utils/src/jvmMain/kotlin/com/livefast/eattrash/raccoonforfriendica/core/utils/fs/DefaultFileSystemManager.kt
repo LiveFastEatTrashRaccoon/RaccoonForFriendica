@@ -1,12 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
-import org.koin.core.annotation.Single
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.Path
+import org.koin.core.annotation.Single
 import java.awt.FileDialog
 
 @Single

@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
-import org.koin.core.annotation.Single
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -8,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import okio.FileSystem
 import okio.Path
+import org.koin.core.annotation.Single
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 

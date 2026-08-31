@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.gallery
 
-import org.koin.core.annotation.Single
 import android.content.ContentValues
 import android.content.Context
 import android.os.Environment
@@ -14,6 +13,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 
 private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 

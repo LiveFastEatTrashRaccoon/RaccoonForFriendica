@@ -1,9 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
-import org.koin.core.annotation.Single
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.koin.core.annotation.Single
 import java.lang.management.ManagementFactory
 import java.util.Properties
 

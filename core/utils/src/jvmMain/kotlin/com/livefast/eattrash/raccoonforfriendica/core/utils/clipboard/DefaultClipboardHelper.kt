@@ -1,9 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard
 
-import org.koin.core.annotation.Single
-import androidx.compose.ui.platform.Clipboard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Single
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection

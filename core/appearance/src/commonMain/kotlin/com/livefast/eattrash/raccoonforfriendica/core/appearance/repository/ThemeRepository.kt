@@ -2,10 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.repository
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable

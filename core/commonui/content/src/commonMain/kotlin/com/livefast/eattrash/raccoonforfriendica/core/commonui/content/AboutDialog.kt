@@ -39,18 +39,17 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfo
-import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
-import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
-    val mainRouter: MainRouter = koinInject()
-    val appInfoRepository: AppInfoRepository = koinInject()
+    val mainRouter = LocalUiDeps.current.mainRouter
+    val appInfoRepository = LocalUiDeps.current.appInfoRepository
     val appInfo by appInfoRepository.appInfo.collectAsState()
 
     BasicAlertDialog(

@@ -1,8 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
-import org.koin.core.annotation.Single
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.koin.core.annotation.Single
 import platform.Foundation.NSBundle
 import kotlin.experimental.ExperimentalNativeApi
 

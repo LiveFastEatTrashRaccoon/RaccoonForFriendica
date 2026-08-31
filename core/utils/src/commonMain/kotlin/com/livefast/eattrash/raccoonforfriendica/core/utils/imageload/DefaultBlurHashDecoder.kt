@@ -1,7 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 
-import org.koin.core.annotation.Single
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
@@ -10,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import org.koin.core.annotation.Single
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.PI
 import kotlin.math.cos

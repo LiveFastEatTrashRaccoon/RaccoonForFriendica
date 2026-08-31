@@ -2,7 +2,6 @@
 
 package com.livefast.eattrash.raccoonforfriendica.core.utils.gallery
 
-import org.koin.core.annotation.Single
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
@@ -13,6 +12,7 @@ import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
+import org.koin.core.annotation.Single
 import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.PhotosUI.PHPickerConfiguration
