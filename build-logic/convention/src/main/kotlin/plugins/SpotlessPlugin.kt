@@ -1,8 +1,8 @@
 package plugins
 
+import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import com.diffplug.gradle.spotless.SpotlessExtension
 import utils.dependency
 import utils.libs
 import utils.pluginId
