@@ -15,7 +15,7 @@ kotlin {
                 implementation(projects.core.resources)
                 implementation(projects.core.utils)
 
-                implementation(projects.domain.identity.usecase)
+                implementation(projects.domain.content.usecase)
                 implementation(projects.domain.urlhandler)
             }
         }

@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
+package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel

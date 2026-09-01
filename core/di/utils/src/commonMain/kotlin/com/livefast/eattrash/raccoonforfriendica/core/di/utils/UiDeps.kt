@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.di.utils
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.UriHandler
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
@@ -22,7 +21,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.EntryActionRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 
 interface UiDeps {

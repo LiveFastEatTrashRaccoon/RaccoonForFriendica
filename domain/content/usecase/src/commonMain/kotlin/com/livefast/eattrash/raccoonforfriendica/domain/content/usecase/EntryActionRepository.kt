@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
+package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
