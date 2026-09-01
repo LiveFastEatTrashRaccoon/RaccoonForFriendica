@@ -17,6 +17,7 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,7 +51,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.ProvideCustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarViewModel
@@ -182,7 +182,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
 
     ProvideUiDeps(uiDeps) {
         ProvideResources(resources = uiDeps.resources) {
-            ProvideCustomUriHandler(uriHandler = customUriHandler) {
+            CompositionLocalProvider(LocalUriHandler provides customUriHandler) {
                 ProvideStrings(lang = uiState.currentSettings?.lang ?: Locales.EN, strings = uiDeps.strings) {
                     AppTheme(
                         repository = themeRepository,
