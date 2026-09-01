@@ -147,7 +147,7 @@ class DefaultEntryActionRepositoryTest {
     @Test
     fun `given logged and dislike supported when canDislike then result is as expected`() {
         every { supportedFeatureRepository.features } returns
-                MutableStateFlow(NodeFeatures(supportsDislike = true))
+            MutableStateFlow(NodeFeatures(supportsDislike = true))
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -375,7 +375,7 @@ class DefaultEntryActionRepositoryTest {
     @Test
     fun `given share supported when canQuote then result is as expected`() {
         every { supportedFeatureRepository.features } returns
-                MutableStateFlow(NodeFeatures(supportsEntryShare = true))
+            MutableStateFlow(NodeFeatures(supportsEntryShare = true))
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -391,7 +391,7 @@ class DefaultEntryActionRepositoryTest {
     @Test
     fun `given share unsupported and allow policy when canQuote then result is as expected`() {
         every { supportedFeatureRepository.features } returns
-                MutableStateFlow(NodeFeatures())
+            MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -408,7 +408,7 @@ class DefaultEntryActionRepositoryTest {
     @Test
     fun `given share unsupported and deny policy when canQuote then result is as expected`() {
         every { supportedFeatureRepository.features } returns
-                MutableStateFlow(NodeFeatures())
+            MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -425,7 +425,7 @@ class DefaultEntryActionRepositoryTest {
     @Test
     fun `given share unsupported and unknown policy when canQuote then result is as expected`() {
         every { supportedFeatureRepository.features } returns
-                MutableStateFlow(NodeFeatures())
+            MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
