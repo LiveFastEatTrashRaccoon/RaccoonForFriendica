@@ -50,7 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ProvideCustomFontScale
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarViewModel
@@ -196,7 +196,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                                 drawerState = drawerState,
                                 gesturesEnabled = drawerGesturesEnabled,
                                 drawerContent = {
-                                    ProvideCustomFontScale(currentSettings = uiState.currentSettings) {
+                                    ProvideCustomFontScale(fontScale = uiState.currentSettings?.fontScale) {
                                         DrawerContent()
                                     }
                                 },
@@ -212,7 +212,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                                         }
                                     },
                                 )
-                                ProvideCustomFontScale(currentSettings = uiState.currentSettings) {
+                                ProvideCustomFontScale(fontScale = uiState.currentSettings?.fontScale) {
                                     // preload ViewModels for all top-level sections
                                     val timelineModel: TimelineMviModel = koinViewModel<TimelineViewModel>()
                                     val exploreModel: ExploreMviModel = koinViewModel<ExploreViewModel>()
@@ -248,7 +248,7 @@ fun App(onLoadingFinished: (() -> Unit)? = null) {
                                 }
                             }
                         } else {
-                            ProvideCustomFontScale(currentSettings = uiState.currentSettings) {
+                            ProvideCustomFontScale(fontScale = uiState.currentSettings?.fontScale) {
                                 Scaffold(
                                     content = { paddingValues ->
                                         var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
