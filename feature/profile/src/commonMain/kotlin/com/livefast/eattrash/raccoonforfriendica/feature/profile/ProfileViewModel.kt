@@ -13,12 +13,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(ProfileViewModel::class) ViewModel>())
+@Inject
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,
     private val accountRepository: AccountRepository,

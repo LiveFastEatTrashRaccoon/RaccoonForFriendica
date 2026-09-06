@@ -4,13 +4,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationPro
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.utils.io.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultFallbackTranslationRepository(
-    private val translationProviderFactory: TranslationProviderFactory,
-) : FallbackTranslationRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultFallbackTranslationRepository(private val translationProviderFactory: TranslationProviderFactory) :
+    FallbackTranslationRepository {
     override suspend fun getTranslation(
         entry: TimelineEntryModel,
         targetLang: String,

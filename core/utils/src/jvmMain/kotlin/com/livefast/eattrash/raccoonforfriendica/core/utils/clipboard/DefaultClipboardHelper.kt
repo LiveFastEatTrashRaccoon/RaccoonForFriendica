@@ -1,16 +1,26 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard
 
+import androidx.compose.ui.platform.Clipboard
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Single
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
 import java.awt.datatransfer.UnsupportedFlavorException
 import java.io.IOException
 
-@Single
-internal class DefaultClipboardHelper : ClipboardHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultClipboardHelperFactory : ClipboardHelperFactory {
+    override fun create(clipboard: Clipboard): ClipboardHelper = DefaultClipboardHelper()
+}
+
+class DefaultClipboardHelper : ClipboardHelper {
     override suspend fun setText(text: String) {
         val selection = StringSelection(text)
         val systemClipboard = Toolkit.getDefaultToolkit().systemClipboard
@@ -29,10 +39,8 @@ internal class DefaultClipboardHelper : ClipboardHelper {
             null
         }
     } catch (_: UnsupportedFlavorException) {
-        // clipboard does not contain text
         null
     } catch (_: IOException) {
-        // general I/O error (rare for clipboard)
         null
     } catch (_: Exception) {
         null

@@ -1,6 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.encryption
 
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.security.KeyStore
 import java.util.Base64
 import javax.crypto.Cipher
@@ -8,8 +11,10 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-@Single
-internal class DefaultEncryptionHelper : EncryptionHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultEncryptionHelper : EncryptionHelper {
 
     override fun encrypt(input: String): ByteArray? {
         val secretKey = getOrCreateMasterKey() ?: return null

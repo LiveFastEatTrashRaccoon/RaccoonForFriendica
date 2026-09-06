@@ -1,15 +1,19 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.logDebug
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.common.PushNotificationComponent
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.common.UnifiedPushInteractor
-import org.koin.android.ext.android.inject
+import dev.zacsweers.metrox.android.MetroApplication
 import org.unifiedpush.android.connector.FailedReason
 import org.unifiedpush.android.connector.PushService
 import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
 
 class DefaultPushService : PushService() {
-    private val interactor: UnifiedPushInteractor by inject()
+    private val interactor: UnifiedPushInteractor by lazy {
+        val component = (applicationContext as? MetroApplication)?.appComponentProviders as? PushNotificationComponent
+        component?.unifiedPushInteractor ?: error("PushNotificationComponent not found in MetroApplication")
+    }
 
     override fun onCreate() {
         super.onCreate()

@@ -47,9 +47,9 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAcc
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.navigation.bottomGetEntryProvider
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
 
 @Composable
@@ -66,7 +66,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     lockedSection: BottomNavigationSection = BottomNavigationSection.Home,
 ) {
-    val model: MainMviModel = koinViewModel<MainViewModel>()
+    val model: MainMviModel = metroViewModel<MainViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()

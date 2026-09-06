@@ -1,10 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 
-@Single
-internal class DefaultThemeColorRepository : ThemeColorRepository {
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultThemeColorRepository : ThemeColorRepository {
     override fun getColors(): List<ThemeColor> = listOf(
         ThemeColor.Purple,
         ThemeColor.Blue,

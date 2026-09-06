@@ -3,10 +3,15 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 import coil3.PlatformContext
 import coil3.memory.MemoryCache
 import coil3.request.ImageRequest
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultImagePreloadManager(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultImagePreloadManager(
     private val context: PlatformContext,
     private val imageLoaderProvider: ImageLoaderProvider,
 ) : ImagePreloadManager {

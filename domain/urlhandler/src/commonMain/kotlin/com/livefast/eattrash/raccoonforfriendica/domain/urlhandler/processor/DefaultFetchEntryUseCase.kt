@@ -4,12 +4,17 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItem
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.withTimeoutOrNull
-import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.milliseconds
 
-@Single
-internal class DefaultFetchEntryUseCase(private val searchRepository: SearchRepository) : FetchEntryUseCase {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultFetchEntryUseCase(private val searchRepository: SearchRepository) : FetchEntryUseCase {
     override suspend fun invoke(url: String): TimelineEntryModel? =
         // wait at most SEARCH_TIMEOUT millis failing if the request takes longer
         withTimeoutOrNull(SEARCH_TIMEOUT) {

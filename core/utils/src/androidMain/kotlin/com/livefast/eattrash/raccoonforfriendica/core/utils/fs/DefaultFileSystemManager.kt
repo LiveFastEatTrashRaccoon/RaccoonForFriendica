@@ -7,12 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import okio.FileSystem
 import okio.Path
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
-@Single
-internal class DefaultFileSystemManager(private val context: Context) : FileSystemManager {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultFileSystemManager(private val context: Context) : FileSystemManager {
     override val isSupported = true
 
     @Composable

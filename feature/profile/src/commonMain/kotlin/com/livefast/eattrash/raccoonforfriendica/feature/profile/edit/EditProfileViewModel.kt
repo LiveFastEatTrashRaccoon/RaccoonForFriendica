@@ -14,12 +14,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
 sealed interface EditProfilerFieldType {
     data object DisplayName : EditProfilerFieldType
@@ -27,7 +31,8 @@ sealed interface EditProfilerFieldType {
     data object Bio : EditProfilerFieldType
 }
 
-@KoinViewModel
+@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(EditProfileViewModel::class) ViewModel>())
+@Inject
 class EditProfileViewModel(
     private val userRepository: UserRepository,
     private val emojiRepository: EmojiRepository,

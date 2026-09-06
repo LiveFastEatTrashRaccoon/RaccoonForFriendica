@@ -1,51 +1,33 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.CircleLocalItemCache
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.EventLocalItemCache
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.DefaultLocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.ScheduledEntryLocalItemCache
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.TimelineEntryLocalItemCache
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.UserLocalItemCache
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 
-@Module
-internal class UserCacheModule {
-    @Single(binds = [LocalItemCache::class])
-    fun userCache() = UserLocalItemCache()
+@BindingContainer
+@ContributesTo(AppScope::class)
+class CacheModule {
+    @Provides
+    @SingleIn(AppScope::class)
+    fun userCache(): LocalItemCache<UserModel> = DefaultLocalItemCache()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun timelineEntryCache(): LocalItemCache<TimelineEntryModel> = DefaultLocalItemCache()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun eventCache(): LocalItemCache<EventModel> = DefaultLocalItemCache()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun circleCache(): LocalItemCache<CircleModel> = DefaultLocalItemCache()
 }
-
-@Module
-internal class TimelineEntryCacheModule {
-    @Single(binds = [LocalItemCache::class])
-    fun timelineEntryCache() = TimelineEntryLocalItemCache()
-}
-
-@Module
-internal class EventCacheModule {
-    @Single(binds = [LocalItemCache::class])
-    fun eventCache() = EventLocalItemCache()
-}
-
-@Module
-internal class CircleCacheModule {
-    @Single(binds = [LocalItemCache::class])
-    fun circleCache() = CircleLocalItemCache()
-}
-
-@Module
-internal class ScheduledEntryCacheModule {
-    @Single(binds = [LocalItemCache::class])
-    fun scheduledEntryCache() = ScheduledEntryLocalItemCache()
-}
-
-@Module(
-    includes = [
-        UserCacheModule::class,
-        TimelineEntryCacheModule::class,
-        EventCacheModule::class,
-        CircleCacheModule::class,
-        ScheduledEntryCacheModule::class,
-    ],
-)
-class CacheModule

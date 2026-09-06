@@ -1,17 +1,27 @@
 package com.livefast.eattrash.raccoonforfriendica
 
 import android.app.Application
-import com.livefast.eattrash.raccoonforfriendica.di.setupDi
-import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.workmanager.koin.workManagerFactory
+import dev.zacsweers.metro.createGraph
+import dev.zacsweers.metrox.android.MetroAppComponentProviders
+import dev.zacsweers.metrox.android.MetroApplication
 
-class MainApplication : Application() {
+class MainApplication :
+    Application(),
+    MetroApplication {
+
+    lateinit var rootGraph: AndroidRootGraph
+        private set
 
     override fun onCreate() {
         super.onCreate()
-        setupDi {
-            androidContext(applicationContext)
-            workManagerFactory()
-        }
+        instance = this
+        rootGraph = createGraph<AndroidRootGraph>()
+    }
+
+    override val appComponentProviders: MetroAppComponentProviders get() = rootGraph
+
+    companion object {
+        lateinit var instance: MainApplication
+            private set
     }
 }

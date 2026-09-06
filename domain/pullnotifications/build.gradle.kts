@@ -9,7 +9,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.androidx.work.runtime)
-                implementation(libs.koin.androidx.workmanager)
+                implementation(libs.metrox.android)
             }
         }
         commonMain {
@@ -28,9 +28,4 @@ kotlin {
             }
         }
     }
-}
-
-customDiExtension {
-    useCompilerPlugin()
-    useAnnotations()
 }

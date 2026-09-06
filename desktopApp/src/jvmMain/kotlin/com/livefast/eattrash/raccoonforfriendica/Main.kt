@@ -7,14 +7,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.livefast.eattrash.raccoonforfriendica.di.setupDi
+import dev.zacsweers.metro.createGraph
 
 fun main() {
     Thread.setDefaultUncaughtExceptionHandler { _, e ->
         e.printStackTrace()
     }
 
-    setupDi()
+    val rootGraph = createGraph<DesktopRootGraph>()
 
     application {
         val windowState = rememberWindowState(size = DpSize(1024.dp, 768.dp))
@@ -25,7 +25,7 @@ fun main() {
             title = "🦝 Raccoon",
             state = windowState,
         ) {
-            App()
+            App(graph = rootGraph)
         }
     }
 }

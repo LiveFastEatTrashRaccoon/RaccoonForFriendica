@@ -1,17 +1,21 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.datasource
 
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.request
 import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.Single
 import kotlin.coroutines.cancellation.CancellationException
 
-@Single
-internal class DefaultAcknowledgementsRemoteDataSource(engine: HttpClientEngine) :
-    AcknowledgementsRemoteDataSource {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultAcknowledgementsRemoteDataSource(engine: HttpClientEngine) : AcknowledgementsRemoteDataSource {
     private val client: HttpClient =
         HttpClient(engine) {
             install(HttpTimeout) {

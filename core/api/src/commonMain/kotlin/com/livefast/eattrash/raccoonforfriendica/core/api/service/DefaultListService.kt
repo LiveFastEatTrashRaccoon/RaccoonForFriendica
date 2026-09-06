@@ -7,6 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -17,13 +20,12 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultListService(@InjectedParam args: ServiceCreationArgs) : ListService {
+@AssistedInject
+class DefaultListService(@Assisted args: ServiceCreationArgs) : ListService {
     private val baseUrl = args.baseUrl
     private val client = args.client
+
     override suspend fun getAll(): List<UserList> = client.get("$baseUrl/v1/lists").body()
 
     override suspend fun getFriendicaCircles(): List<FriendicaCircle> =
@@ -64,4 +66,9 @@ internal class DefaultListService(@InjectedParam args: ServiceCreationArgs) : Li
             contentType(ContentType.Application.Json)
             setBody(data)
         }.status.isSuccess()
+}
+
+@AssistedFactory
+fun interface ListServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultListService
 }

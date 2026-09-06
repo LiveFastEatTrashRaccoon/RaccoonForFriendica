@@ -1,17 +1,20 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import org.koin.core.annotation.Single
 import java.lang.management.ManagementFactory
 import java.util.Properties
 
-@Single
-internal class DefaultAppInfoRepository : AppInfoRepository {
-    private val _appInfo = MutableStateFlow(getInfo())
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultAppInfoRepository : AppInfoRepository {
 
-    override val appInfo: StateFlow<AppInfo> = _appInfo.asStateFlow()
+    override val appInfo: StateFlow<AppInfo> field = MutableStateFlow(getInfo())
 
     private fun getInfo(): AppInfo {
         return AppInfo(

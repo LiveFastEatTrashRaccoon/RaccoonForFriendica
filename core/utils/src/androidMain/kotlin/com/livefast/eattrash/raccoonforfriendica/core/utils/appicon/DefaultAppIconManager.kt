@@ -4,6 +4,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -11,13 +15,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultAppIconManager(private val context: Context, private val keyStore: TemporaryKeyStore) :
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultAppIconManager(private val context: Context, private val keyStore: TemporaryKeyStore) :
     AppIconManager {
-    private val _current = MutableStateFlow<AppIconVariant>(AppIconVariant.Default)
-    override val current: StateFlow<AppIconVariant> = _current
+    override val current: StateFlow<AppIconVariant> field = MutableStateFlow<AppIconVariant>(AppIconVariant.Default)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private val allComponentNames =
@@ -31,7 +35,7 @@ internal class DefaultAppIconManager(private val context: Context, private val k
     init {
         scope.launch {
             val lastUsedVariant = keyStore.get(KEY_APP_ICON_VARIANT, 0).toAppIconVariant()
-            _current.update { lastUsedVariant }
+            current.update { lastUsedVariant }
         }
     }
 
@@ -55,7 +59,7 @@ internal class DefaultAppIconManager(private val context: Context, private val k
         scope.launch {
             keyStore.save(KEY_APP_ICON_VARIANT, variant.toInt())
         }
-        _current.update { variant }
+        current.update { variant }
     }
 
     companion object {

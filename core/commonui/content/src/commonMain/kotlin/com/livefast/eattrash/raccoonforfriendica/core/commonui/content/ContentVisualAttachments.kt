@@ -29,13 +29,13 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.DummyUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.aspectRatio
-import org.koin.dsl.module
 
 @Composable
 fun ContentVisualAttachments(
@@ -199,16 +199,12 @@ private fun AttachmentElement(
 @Preview
 private fun ContentVisualAttachmentsPreview() {
     PreviewWrapper(
-        modules = listOf(
-            module {
-                single {
-                    object : BlurHashRepository {
-                        override suspend fun preload(params: BlurHashParams) = Unit
-                        override suspend fun get(params: BlurHashParams): ImageBitmap? = null
-                    }
-                }
-            },
-        ),
+        uiDeps = object : DummyUiDeps() {
+            override val blurHashRepository: BlurHashRepository = object : BlurHashRepository {
+                override suspend fun preload(params: BlurHashParams) = Unit
+                override suspend fun get(params: BlurHashParams): ImageBitmap? = null
+            }
+        },
     ) {
         ContentVisualAttachments(
             attachments = listOf(

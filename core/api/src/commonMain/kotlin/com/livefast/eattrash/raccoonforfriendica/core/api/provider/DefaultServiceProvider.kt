@@ -23,6 +23,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.ClientRequestException
@@ -45,22 +49,22 @@ import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultServiceProvider(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultServiceProvider(
     private val engine: HttpClientEngine,
     private val appInfoRepository: AppInfoRepository,
     private val factory: ServiceFactory,
-    private val requestTimeout: Long = 600_000,
-    private val connectTimeout: Long = 30_000,
 ) : ServiceProvider {
 
+    private val requestTimeout: Long = 600_000
+    private val connectTimeout: Long = 30_000
+
     override var currentNode: String = ""
-    private val _events = MutableSharedFlow<ServiceProviderEvent>()
-    override val events: Flow<ServiceProviderEvent> = _events.asSharedFlow()
+    override val events: Flow<ServiceProviderEvent> field = MutableSharedFlow<ServiceProviderEvent>()
 
     override lateinit var announcement: AnnouncementService
     override lateinit var app: AppService
@@ -185,7 +189,7 @@ internal class DefaultServiceProvider(
                                 if (exception is ClientRequestException &&
                                     exception.response.status == HttpStatusCode.Unauthorized
                                 ) {
-                                    _events.tryEmit(ServiceProviderEvent.Unauthorized)
+                                    events.tryEmit(ServiceProviderEvent.Unauthorized)
                                 }
                             }
                         }

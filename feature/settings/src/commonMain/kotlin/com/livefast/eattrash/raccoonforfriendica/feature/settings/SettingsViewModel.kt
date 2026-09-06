@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
@@ -26,6 +27,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportMan
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.DeniedAlwaysException
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.DeniedException
+import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionControllerWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionType
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.RequestCanceledException
@@ -49,17 +51,23 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportS
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.SettingsViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
-@KoinViewModel
+@AssistedInject
 class SettingsViewModel(
-    @InjectedParam args: SettingsViewModelArgs,
+    @Assisted args: SettingsViewModelArgs,
     private val settingsRepository: SettingsRepository,
     private val l10nManager: L10nManager,
     private val themeRepository: ThemeRepository,
@@ -647,4 +655,21 @@ class SettingsViewModel(
         settingsRepository.update(newSettings)
         settingsRepository.changeCurrent(newSettings)
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<SettingsViewModelArgs>()
+    }
+}
+
+@Serializable
+data class SettingsViewModelArgs(val controller: PermissionControllerWrapper)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(SettingsViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface Factory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): SettingsViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: SettingsViewModelArgs): SettingsViewModel
 }

@@ -26,15 +26,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import org.koin.compose.viewmodel.koinViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @Composable
 fun PermanentDrawerContent(
     currentDestination: Destination,
     onSelectDestination: (Destination) -> Unit,
     modifier: Modifier = Modifier,
+    model: PermanentDrawerMviModel = metroViewModel<PermanentDrawerViewModel>(),
 ) {
-    val model: PermanentDrawerMviModel = koinViewModel<PermanentDrawerViewModel>()
     val uiState by model.uiState.collectAsState()
     val destinations = buildList {
         add(Destination.Main)

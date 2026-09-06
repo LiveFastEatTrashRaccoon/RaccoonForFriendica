@@ -8,10 +8,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converte
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.MarkdownConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultPrepareForPreviewUseCase(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultPrepareForPreviewUseCase(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val bbCodeConverter: BBCodeConverter,
     private val markdownConverter: MarkdownConverter,

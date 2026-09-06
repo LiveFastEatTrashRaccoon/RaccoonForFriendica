@@ -2,10 +2,15 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.convert
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurrences
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ContentRegexes
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultMarkdownConverter : MarkdownConverter {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultMarkdownConverter : MarkdownConverter {
     override fun toHtml(value: String) = value
         .run {
             Regex("~~(?<content>.*?)~~").substituteAllOccurrences(this) { match ->

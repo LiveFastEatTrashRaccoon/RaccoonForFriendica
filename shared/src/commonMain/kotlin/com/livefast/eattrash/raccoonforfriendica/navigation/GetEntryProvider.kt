@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.navigation
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -32,7 +33,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetail
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.di.EntryListViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
@@ -75,8 +76,8 @@ import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum.ForumL
 import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListScreen
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.SearchScreen
 import com.livefast.eattrash.raccoonforfriendica.main.MainScreen
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 internal val NavKey.isDetailDestination: Boolean
     get() =
@@ -162,31 +163,35 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.Favorites>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMviModel = favoritesViewModel ?: koinViewModel<EntryListViewModel> {
-            parametersOf(EntryListViewModelArgs(type = EntryListType.Favorites))
-        }
+        val model: EntryListMviModel = favoritesViewModel ?: assistedMetroViewModel<EntryListViewModel>(
+            extras = CreationExtras {
+                this[EntryListViewModel.KEY_ARGS] = EntryListViewModelArgs(type = EntryListType.Favorites)
+            }
+        )
         EntryListScreen(
             model = model,
             title = LocalStrings.current.favoritesTitle,
         )
     }
     entry<Destination.Bookmarks>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMviModel = bookmarksViewModel ?: koinViewModel<EntryListViewModel> {
-            parametersOf(EntryListViewModelArgs(EntryListType.Bookmarks))
-        }
+        val model: EntryListMviModel = bookmarksViewModel ?: assistedMetroViewModel<EntryListViewModel>(
+            extras = CreationExtras {
+                this[EntryListViewModel.KEY_ARGS] = EntryListViewModelArgs(type = EntryListType.Bookmarks)
+            }
+        )
         EntryListScreen(
             model = model,
             title = LocalStrings.current.bookmarksTitle,
         )
     }
     entry<Destination.QuotingEntries>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMviModel = koinViewModel<EntryListViewModel> {
-            parametersOf(
-                EntryListViewModelArgs(
+        val model: EntryListMviModel = assistedMetroViewModel<EntryListViewModel>(
+            extras = CreationExtras {
+                this[EntryListViewModel.KEY_ARGS] = EntryListViewModelArgs(
                     type = EntryListType.Quoting(entryId = it.entryId, otherInstance = it.otherInstance),
-                ),
-            )
-        }
+                )
+            }
+        )
         EntryListScreen(
             model = model,
             title = LocalStrings.current.extendedSocialInfoQuotes(it.count),
@@ -194,7 +199,7 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.FollowedHashtags> {
-        val model: FollowedHashtagsMviModel = followedHashtagsViewModel ?: koinViewModel<FollowedHashtagsViewModel>()
+        val model: FollowedHashtagsMviModel = followedHashtagsViewModel ?: metroViewModel<FollowedHashtagsViewModel>()
         FollowedHashtagsScreen(model = model)
     }
     entry<Destination.Composer> {
@@ -234,7 +239,7 @@ internal fun getEntryProvider(
         ManageBlocksScreen()
     }
     entry<Destination.Circles>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: CirclesMviModel = circlesViewModel ?: koinViewModel<CirclesViewModel>()
+        val model: CirclesMviModel = circlesViewModel ?: metroViewModel<CirclesViewModel>()
         CirclesScreen(model = model)
     }
     entry<Destination.CircleMembers>(metadata = ListDetailSceneStrategy.detailPane()) {
@@ -244,18 +249,18 @@ internal fun getEntryProvider(
         CircleTimelineScreen(id = it.circleId)
     }
     entry<Destination.FollowRequests> {
-        val model: FollowRequestsMviModel = followRequestsViewModel ?: koinViewModel<FollowRequestsViewModel>()
+        val model: FollowRequestsMviModel = followRequestsViewModel ?: metroViewModel<FollowRequestsViewModel>()
         FollowRequestsScreen(model = model)
     }
     entry<Destination.EditProfile> {
         EditProfileScreen()
     }
     entry<Destination.NodeInfo> {
-        val model: NodeInfoMviModel = nodeInfoViewModel ?: koinViewModel<NodeInfoViewModel>()
+        val model: NodeInfoMviModel = nodeInfoViewModel ?: metroViewModel<NodeInfoViewModel>()
         NodeInfoScreen(model = model)
     }
     entry<Destination.ConversationList>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: ConversationListMviModel = conversationListViewModel ?: koinViewModel<ConversationListViewModel>()
+        val model: ConversationListMviModel = conversationListViewModel ?: metroViewModel<ConversationListViewModel>()
         ConversationListScreen(model = model)
     }
     entry<Destination.Conversation>(metadata = ListDetailSceneStrategy.detailPane()) {
@@ -265,14 +270,14 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.Gallery>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: GalleryMviModel = galleryViewModel ?: koinViewModel<GalleryViewModel>()
+        val model: GalleryMviModel = galleryViewModel ?: metroViewModel<GalleryViewModel>()
         GalleryScreen(model = model)
     }
     entry<Destination.AlbumDetail>(metadata = ListDetailSceneStrategy.detailPane()) {
         AlbumDetailScreen(name = it.name)
     }
     entry<Destination.Unpublished> {
-        val model: UnpublishedMviModel = unpublishedViewModel ?: koinViewModel<UnpublishedViewModel>()
+        val model: UnpublishedMviModel = unpublishedViewModel ?: metroViewModel<UnpublishedViewModel>()
         UnpublishedScreen(model = model)
     }
     entry<Destination.CreateReport> {
@@ -285,7 +290,7 @@ internal fun getEntryProvider(
         UserFeedbackScreen()
     }
     entry<Destination.Calendar>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: CalendarMviModel = calendarViewModel ?: koinViewModel<CalendarViewModel>()
+        val model: CalendarMviModel = calendarViewModel ?: metroViewModel<CalendarViewModel>()
         CalendarScreen(model = model)
     }
     entry<Destination.EventDetail>(metadata = ListDetailSceneStrategy.detailPane()) {
@@ -304,7 +309,7 @@ internal fun getEntryProvider(
         AcknowledgementsScreen()
     }
     entry<Destination.ShortcutList> {
-        val model: ShortcutListMviModel = shortcutListViewModel ?: koinViewModel<ShortcutListViewModel>()
+        val model: ShortcutListMviModel = shortcutListViewModel ?: metroViewModel<ShortcutListViewModel>()
         ShortcutListScreen(model = model)
     }
     entry<Destination.ShortcutTimeline>(metadata = ListDetailSceneStrategy.listPane()) {

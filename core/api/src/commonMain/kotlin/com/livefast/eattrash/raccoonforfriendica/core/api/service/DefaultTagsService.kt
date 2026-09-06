@@ -3,15 +3,16 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultTagsService(@InjectedParam args: ServiceCreationArgs) : TagsService {
+@AssistedInject
+class DefaultTagsService(@Assisted args: ServiceCreationArgs) : TagsService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -29,4 +30,9 @@ internal class DefaultTagsService(@InjectedParam args: ServiceCreationArgs) : Ta
     override suspend fun unfollow(name: String): Tag = client.post("$baseUrl/v1/tags/$name/unfollow").body()
 
     override suspend fun get(name: String): Tag = client.get("$baseUrl/v1/tags/$name").body()
+}
+
+@AssistedFactory
+fun interface TagsServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultTagsService
 }

@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -59,12 +60,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toUserListType
-import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.UserListViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,15 +76,15 @@ fun UserListScreen(
     enableExport: Boolean = false,
     otherInstance: String? = null,
 ) {
-    val model: UserListMviModel = koinViewModel<UserListViewModel> {
-        parametersOf(
-            UserListViewModelArgs(
+    val model: UserListMviModel = assistedMetroViewModel<UserListViewModel>(
+        extras = CreationExtras {
+            this[UserListViewModel.KEY_ARGS] = UserListViewModelArgs(
                 type.toUserListType(),
                 userId.orEmpty(),
                 entryId.orEmpty(),
-            ),
-        )
-    }
+            )
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

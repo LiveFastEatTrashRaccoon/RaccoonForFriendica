@@ -2,10 +2,15 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultBlurHashRepository(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultBlurHashRepository(
     private val decoder: BlurHashDecoder,
     private val cache: LruCache<String, ImageBitmap> = LruCache.factory(CACHE_SIZE),
 ) : BlurHashRepository {

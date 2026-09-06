@@ -3,12 +3,16 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLimitDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserRateLimitEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.utils.io.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultUserRateLimitRepository(private val userRateLimitDao: UserRateLimitDao) :
-    UserRateLimitRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultUserRateLimitRepository(private val userRateLimitDao: UserRateLimitDao) : UserRateLimitRepository {
     override suspend fun getAll(accountId: Long): List<UserRateLimitModel> = try {
         userRateLimitDao.getAll(accountId).map { it.toModel() }
     } catch (e: Exception) {

@@ -4,15 +4,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultFollowRequestService(@InjectedParam args: ServiceCreationArgs) : FollowRequestService {
+@AssistedInject
+class DefaultFollowRequestService(@Assisted args: ServiceCreationArgs) : FollowRequestService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -30,4 +31,9 @@ internal class DefaultFollowRequestService(@InjectedParam args: ServiceCreationA
         client.post("$baseUrl/v1/follow_requests/$id/authorize").body()
 
     override suspend fun reject(id: String): Relationship = client.post("$baseUrl/v1/follow_requests/$id/reject").body()
+}
+
+@AssistedFactory
+fun interface FollowRequestServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultFollowRequestService
 }

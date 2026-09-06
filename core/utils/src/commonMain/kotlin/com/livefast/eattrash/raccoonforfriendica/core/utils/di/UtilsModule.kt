@@ -2,13 +2,17 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.di
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.ConnectivityProvider
 import dev.jordond.connectivity.Connectivity
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 
-@Module(includes = [NativeUtilsModule::class])
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.utils")
+@BindingContainer
+@ContributesTo(AppScope::class)
 class UtilsModule {
-    @Single
-    fun connectivity(provider: ConnectivityProvider): Connectivity = provider.provide()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideConnectivity(provider: ConnectivityProvider): Connectivity = provider.provide()
 }

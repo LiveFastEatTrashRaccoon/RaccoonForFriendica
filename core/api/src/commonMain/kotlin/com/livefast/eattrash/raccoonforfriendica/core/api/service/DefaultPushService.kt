@@ -2,6 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PushSubscription
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
@@ -11,11 +14,9 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultPushService(@InjectedParam args: ServiceCreationArgs) : PushService {
+@AssistedInject
+class DefaultPushService(@Assisted args: ServiceCreationArgs) : PushService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -33,4 +34,9 @@ internal class DefaultPushService(@InjectedParam args: ServiceCreationArgs) : Pu
     }.body()
 
     override suspend fun delete() = client.post("$baseUrl/").status.isSuccess()
+}
+
+@AssistedFactory
+fun interface PushServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultPushService
 }

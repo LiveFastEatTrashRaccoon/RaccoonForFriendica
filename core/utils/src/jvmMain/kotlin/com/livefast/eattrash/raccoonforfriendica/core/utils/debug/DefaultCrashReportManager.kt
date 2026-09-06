@@ -12,44 +12,49 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal actual class DefaultCrashReportManager actual constructor(private val keyStore: TemporaryKeyStore) : CrashReportManager {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultCrashReportManager(
+    private val keyStore: TemporaryKeyStore,
+) : CrashReportManager {
 
-    private val _enabled = MutableStateFlow(false)
-    actual override val enabled: StateFlow<Boolean> = _enabled.asStateFlow()
+    override val enabled: StateFlow<Boolean> field = MutableStateFlow(false)
 
-    private val _restartRequired = MutableStateFlow(false)
-    actual override val restartRequired: StateFlow<Boolean> = _restartRequired.asStateFlow()
+    override val restartRequired: StateFlow<Boolean> field = MutableStateFlow(false)
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     init {
         scope.launch {
-            _enabled.update {
+            enabled.update {
                 keyStore.get(KEY_CRASH_REPORT_ENABLED, false)
             }
         }
     }
 
-    actual override fun enable() {
+    override fun enable() {
         scope.launch {
             keyStore.save(KEY_CRASH_REPORT_ENABLED, true)
-            _enabled.update { true }
-            _restartRequired.update { true }
+            enabled.update { true }
+            restartRequired.update { true }
         }
     }
 
-    actual override fun disable() {
+    override fun disable() {
         scope.launch {
             keyStore.save(KEY_CRASH_REPORT_ENABLED, false)
-            _enabled.update { false }
-            _restartRequired.update { true }
+            enabled.update { false }
+            restartRequired.update { true }
         }
     }
 
-    actual override fun initialize() {
+    override fun initialize() {
         check(enabled.value) { return }
         Sentry.init { options ->
             options.dsn = SentryConfigurationValues.DSN
@@ -63,7 +68,7 @@ internal actual class DefaultCrashReportManager actual constructor(private val k
         }
     }
 
-    actual override fun collectUserFeedback(
+    override fun collectUserFeedback(
         tag: CrashReportTag,
         comment: String,
         email: String?,

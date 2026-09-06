@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
@@ -33,7 +34,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Album
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
@@ -46,14 +46,22 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Searc
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.AttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.StripMarkupUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.ComposerViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerViewModel.Companion.KEY_ARGS
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.PrepareForPreviewUseCase
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -64,15 +72,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-@KoinViewModel
 @OptIn(FlowPreview::class)
+@AssistedInject
 class ComposerViewModel(
-    @InjectedParam args: ComposerViewModelArgs,
+    @Assisted args: ComposerViewModelArgs,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
@@ -1851,5 +1858,19 @@ class ComposerViewModel(
     companion object {
         private const val PLACEHOLDER_ID = "placeholder"
         private val SUGGESTION_DELAY = 750.milliseconds
+        val KEY_ARGS = CreationExtras.Key<ComposerViewModelArgs>()
     }
+}
+
+@Serializable
+data class ComposerViewModelArgs(val inReplyToId: String?, val quotedId: String?)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(ComposerViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface ComposerViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): ComposerViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: ComposerViewModelArgs): ComposerViewModel
 }

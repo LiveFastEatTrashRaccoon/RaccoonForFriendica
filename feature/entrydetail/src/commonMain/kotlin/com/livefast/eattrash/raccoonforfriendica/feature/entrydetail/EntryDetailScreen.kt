@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -84,12 +85,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.EntryDetailViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,10 +100,13 @@ fun EntryDetailScreen(
     otherInstance: String? = null,
     customBackAction: (() -> Unit)? = null,
 ) {
-    val model: EntryDetailMviModel = koinViewModel<EntryDetailViewModel>(
+    val model: EntryDetailMviModel = assistedMetroViewModel<EntryDetailViewModel>(
         key = id,
-        parameters = {
-            parametersOf(EntryDetailViewModelArgs(id = id, swipeNavigationEnabled = swipeNavigationEnabled))
+        extras = CreationExtras {
+            this[EntryDetailViewModel.KEY_ARGS] = EntryDetailViewModelArgs(
+                id = id,
+                swipeNavigationEnabled = swipeNavigationEnabled,
+            )
         },
     )
     val uiState by model.uiState.collectAsState()

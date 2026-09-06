@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.DefaultAttachmentCache
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertNull

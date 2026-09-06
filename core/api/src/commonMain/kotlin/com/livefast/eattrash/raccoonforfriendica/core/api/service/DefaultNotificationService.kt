@@ -5,16 +5,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.http.isSuccess
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultNotificationService(@InjectedParam args: ServiceCreationArgs) : NotificationService {
+@AssistedInject
+class DefaultNotificationService(@Assisted args: ServiceCreationArgs) : NotificationService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -50,4 +51,9 @@ internal class DefaultNotificationService(@InjectedParam args: ServiceCreationAr
         client.post("$baseUrl/v1/notifications/$id/dismiss").status.isSuccess()
 
     override suspend fun clear(): Boolean = client.post("$baseUrl/v1/notifications/clear").status.isSuccess()
+}
+
+@AssistedFactory
+fun interface NotificationServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultNotificationService
 }

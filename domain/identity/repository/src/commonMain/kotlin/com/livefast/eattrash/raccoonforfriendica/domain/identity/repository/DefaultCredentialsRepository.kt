@@ -8,6 +8,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ClientApplicationModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Named
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
@@ -21,11 +26,11 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.path
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultCredentialsRepository(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultCredentialsRepository(
     @Named("other") private val provider: ServiceProvider,
     private val json: Json,
     engine: HttpClientEngine = provideHttpClientEngine(),

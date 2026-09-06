@@ -60,12 +60,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import org.koin.compose.viewmodel.koinViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginIntroScreen(modifier: Modifier = Modifier) {
-    val model: LoginIntroMviModel = koinViewModel<LoginIntroViewModel>()
+    val model: LoginIntroMviModel = metroViewModel<LoginIntroViewModel>()
     val uriHandler = LocalUriHandler.current
     val fullColor = MaterialTheme.colorScheme.onBackground
     var moreInfoBottomSheetOpened by remember { mutableStateOf(false) }

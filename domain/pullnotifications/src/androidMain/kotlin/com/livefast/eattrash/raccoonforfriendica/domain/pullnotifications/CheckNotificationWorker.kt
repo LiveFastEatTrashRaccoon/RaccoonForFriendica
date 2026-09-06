@@ -10,18 +10,22 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
+import dev.zacsweers.metrox.android.MetroApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.android.annotation.KoinWorker
 import java.util.Collections.max
 
-@KoinWorker
-internal class CheckNotificationWorker(
-    private val context: Context,
-    parameters: WorkerParameters,
-    private val inboxManager: InboxManager,
-    private val strings: Strings,
-) : CoroutineWorker(context, parameters) {
+internal class CheckNotificationWorker(private val context: Context, parameters: WorkerParameters) :
+    CoroutineWorker(context, parameters) {
+
+    private val inboxManager: InboxManager by lazy {
+        val component = (applicationContext as? MetroApplication)?.appComponentProviders as? PullNotificationComponent
+        component?.inboxManager ?: error("PullNotificationComponent not found in MetroApplication")
+    }
+    private val strings: Strings by lazy {
+        val component = (applicationContext as? MetroApplication)?.appComponentProviders as? PullNotificationComponent
+        component?.strings ?: error("PullNotificationComponent not found in MetroApplication")
+    }
 
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

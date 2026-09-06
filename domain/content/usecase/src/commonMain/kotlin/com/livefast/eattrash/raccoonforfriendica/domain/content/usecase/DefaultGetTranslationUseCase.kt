@@ -7,10 +7,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Fallb
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultGetTranslationUseCase(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultGetTranslationUseCase(
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val defaultRepository: TranslationRepository,
     private val fallbackRepository: FallbackTranslationRepository,

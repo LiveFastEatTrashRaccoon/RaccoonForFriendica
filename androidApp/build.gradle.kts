@@ -1,9 +1,8 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.metro)
     id("com.livefast.eattrash.spotless")
 }
 
@@ -82,19 +81,10 @@ android {
 dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.splashscreen)
-    implementation(project.dependencies.platform(libs.koin.bom))
-    implementation(libs.koin.android)
-    implementation(libs.koin.androidx.workmanager)
+    implementation(libs.metrox.android)
+    implementation(libs.metrox.viewmodel.compose)
 
     implementation(projects.shared)
-    implementation(projects.core.appearance)
-    implementation(projects.core.utils)
-    implementation(projects.core.navigation)
-    implementation(projects.core.persistence)
-    implementation(projects.core.resources)
-    implementation(projects.domain.content.repository)
-    implementation(projects.domain.identity.repository)
-    implementation(projects.domain.pushnotifications)
 
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)

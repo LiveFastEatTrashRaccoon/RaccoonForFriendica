@@ -11,14 +11,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 
 private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 
-@Single
-internal class DefaultGalleryHelper(private val context: Context) : GalleryHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultGalleryHelper(private val context: Context) : GalleryHelper {
     override val supportsCustomPath: Boolean = true
 
     override fun saveToGallery(bytes: ByteArray, name: String, additionalPathSegment: String?): Any? {

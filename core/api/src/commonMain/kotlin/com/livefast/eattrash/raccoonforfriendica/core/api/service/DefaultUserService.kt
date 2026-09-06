@@ -10,6 +10,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -20,11 +23,9 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultUserService(@InjectedParam args: ServiceCreationArgs) : UserService {
+@AssistedInject
+class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -188,4 +189,9 @@ internal class DefaultUserService(@InjectedParam args: ServiceCreationArgs) : Us
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
+}
+
+@AssistedFactory
+fun interface UserServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultUserService
 }

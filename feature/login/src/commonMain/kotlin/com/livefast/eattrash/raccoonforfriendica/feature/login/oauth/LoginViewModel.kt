@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.login.oauth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
@@ -12,20 +13,26 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Auth
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
-import com.livefast.eattrash.raccoonforfriendica.feature.login.di.LoginViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
+import kotlinx.serialization.Serializable
 
-@KoinViewModel
 @OptIn(FlowPreview::class)
+@AssistedInject
 class LoginViewModel(
-    @InjectedParam args: LoginViewModelArgs,
+    @Assisted args: LoginViewModelArgs,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val credentialsRepository: CredentialsRepository,
     private val authManager: AuthManager,
@@ -154,6 +161,10 @@ class LoginViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<LoginViewModelArgs>()
+    }
 }
 
 private fun getSignupUrl(node: String, type: LoginType) = buildString {
@@ -172,4 +183,17 @@ private fun getSignupUrl(node: String, type: LoginType) = buildString {
 
         else -> Unit
     }
+}
+
+@Serializable
+data class LoginViewModelArgs(val type: LoginType)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(LoginViewModel::class)
+@ContributesIntoMap(AppScope::class)
+interface LoginViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): LoginViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: LoginViewModelArgs): LoginViewModel
 }

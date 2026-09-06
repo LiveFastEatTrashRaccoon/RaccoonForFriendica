@@ -2,10 +2,15 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultToggleEntryDislikeUseCase(private val entryRepository: TimelineEntryRepository) :
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultToggleEntryDislikeUseCase(private val entryRepository: TimelineEntryRepository) :
     ToggleEntryDislikeUseCase {
     override suspend fun invoke(entry: TimelineEntryModel): TimelineEntryModel? {
         val newValue = !entry.disliked

@@ -16,15 +16,26 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksItem
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@ContributesIntoMap(
+    AppScope::class,
+    binding = binding<
+        @ViewModelKey(ManageBlocksViewModel::class)
+        ViewModel,
+        >(),
+)
+@Inject
 class ManageBlocksViewModel(
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,

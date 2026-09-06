@@ -5,10 +5,15 @@ import android.content.Intent
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultCustomTabsHelper(private val context: Context) : CustomTabsHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultCustomTabsHelper(private val context: Context) : CustomTabsHelper {
     private val packageName: String?
         get() = CustomTabsClient.getPackageName(context, emptyList())
 

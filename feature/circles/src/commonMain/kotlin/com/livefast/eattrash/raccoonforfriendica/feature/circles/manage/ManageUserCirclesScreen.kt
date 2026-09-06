@@ -30,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -41,19 +42,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.ManageCircleItem
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.ManageUserCirclesViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
-    val model: ManageUserCirclesMviModel = koinViewModel<ManageUserCirclesViewModel> {
-        parametersOf(ManageUserCirclesViewModelArgs(userId = userId))
-    }
+    val model: ManageUserCirclesMviModel = assistedMetroViewModel<ManageUserCirclesViewModel>(
+        extras = CreationExtras {
+            this[ManageUserCirclesViewModel.KEY_ARGS] = ManageUserCirclesViewModelArgs(userId = userId)
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

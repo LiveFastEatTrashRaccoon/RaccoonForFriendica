@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
@@ -17,7 +18,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.ConversationViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -25,15 +33,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.seconds
 
 private val POLLING_INTERVAL = 1.2.seconds
 
-@KoinViewModel
+@AssistedInject
 class ConversationViewModel(
-    @InjectedParam args: ConversationViewModelArgs,
+    @Assisted args: ConversationViewModelArgs,
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
@@ -256,4 +263,21 @@ class ConversationViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<ConversationViewModelArgs>()
+    }
+}
+
+@Serializable
+data class ConversationViewModelArgs(val otherUserId: String, val parentUri: String)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(ConversationViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface ConversationViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): ConversationViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: ConversationViewModelArgs): ConversationViewModel
 }

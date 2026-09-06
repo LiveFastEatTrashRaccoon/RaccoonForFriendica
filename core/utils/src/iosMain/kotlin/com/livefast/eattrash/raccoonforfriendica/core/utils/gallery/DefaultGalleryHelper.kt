@@ -6,13 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.uikit.LocalUIViewController
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
-import org.koin.core.annotation.Single
 import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.PhotosUI.PHPickerConfiguration
@@ -42,8 +45,10 @@ fun ImageBytes.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toIn
     }
 }
 
-@Single
-internal class DefaultGalleryHelper : GalleryHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultGalleryHelper : GalleryHelper {
     override val supportsCustomPath: Boolean = false
 
     @OptIn(ExperimentalForeignApi::class)

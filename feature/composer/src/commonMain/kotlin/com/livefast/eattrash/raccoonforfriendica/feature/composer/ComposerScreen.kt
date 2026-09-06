@@ -53,6 +53,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
@@ -98,11 +99,9 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Pol
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.QuotedInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SuggestionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.di.ComposerViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -121,9 +120,11 @@ fun ComposerScreen(
     initialText: String? = null,
     hasInitialAttachment: Boolean = false,
 ) {
-    val model: ComposerMviModel = koinViewModel<ComposerViewModel> {
-        parametersOf(ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId))
-    }
+    val model: ComposerMviModel = assistedMetroViewModel<ComposerViewModel>(
+        extras = CreationExtras {
+            this[ComposerViewModel.KEY_ARGS] = ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId)
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

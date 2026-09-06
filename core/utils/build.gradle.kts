@@ -21,11 +21,6 @@ val generateVersionProperties by tasks.registering {
     }
 }
 
-customDiExtension {
-    useCompilerPlugin()
-    useAnnotations()
-}
-
 kotlin {
     sourceSets {
         commonMain {

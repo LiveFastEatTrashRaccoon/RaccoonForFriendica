@@ -5,7 +5,6 @@ import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.core.annotation.Factory
 import raccoonforfriendica.core.l10n.generated.resources.Res
 import raccoonforfriendica.core.l10n.generated.resources.account_age
 import raccoonforfriendica.core.l10n.generated.resources.account_follower
@@ -488,8 +487,13 @@ import raccoonforfriendica.core.l10n.generated.resources.visibility_private
 import raccoonforfriendica.core.l10n.generated.resources.visibility_public
 import raccoonforfriendica.core.l10n.generated.resources.visibility_unlisted
 
-@Factory
-internal class DefaultStrings : Strings {
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultStrings : Strings {
     override val accountAge: String
         @Composable get() = stringResource(Res.string.account_age)
     override val accountSectionAll: String

@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.datas
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class Acknowledgement(
+data class Acknowledgement(
     val title: String? = null,
     val subtitle: String? = null,
     val avatar: String? = null,

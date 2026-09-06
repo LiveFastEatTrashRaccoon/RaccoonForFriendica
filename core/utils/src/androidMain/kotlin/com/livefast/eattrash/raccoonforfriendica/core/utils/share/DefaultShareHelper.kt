@@ -3,10 +3,15 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.share
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultShareHelper(private val context: Context) : ShareHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultShareHelper(private val context: Context) : ShareHelper {
     override val supportsShareImage = true
 
     override fun share(url: String, mimeType: String) {

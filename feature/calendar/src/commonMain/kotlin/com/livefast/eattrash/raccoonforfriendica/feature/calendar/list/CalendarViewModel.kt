@@ -10,13 +10,24 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Event
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventsPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@ContributesIntoMap(
+    AppScope::class,
+    binding = binding<
+        @ViewModelKey(CalendarViewModel::class)
+        ViewModel,
+        >(),
+)
+@Inject
 class CalendarViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,

@@ -3,10 +3,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DirectMessageRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
-import org.koin.core.annotation.Factory
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 
-@Factory
-internal class DefaultDirectMessagesPaginationManager(
+@ContributesBinding(scope = AppScope::class, binding = binding<DirectMessagesPaginationManager>())
+@Inject
+class DefaultDirectMessagesPaginationManager(
     private val directMessageRepository: DirectMessageRepository,
     private val emojiHelper: EmojiHelper,
 ) : BasePaginationManager<DirectMessageModel, DirectMessagesPaginationSpecification>(

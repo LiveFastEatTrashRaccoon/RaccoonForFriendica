@@ -1,17 +1,22 @@
 package com.livefast.eattrash.raccoonforfriendica.auth
 
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal actual class DefaultRedirectServer(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultRedirectServer(
     private val server: EmbeddedRedirectServer,
 ) : RedirectServer {
 
-    actual override val isLocalServerRequired = true
+    override val isLocalServerRequired = true
 
-    actual override fun start(): Int = server.start()
+    override fun start(): Int = server.start()
 
-    actual override suspend fun waitForCode(): String = server.waitForCode()
+    override suspend fun waitForCode(): String = server.waitForCode()
 
-    actual override fun stop() = server.stop()
+    override fun stop() = server.stop()
 }

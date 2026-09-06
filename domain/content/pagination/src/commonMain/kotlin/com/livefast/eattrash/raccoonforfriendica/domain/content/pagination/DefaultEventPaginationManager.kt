@@ -2,10 +2,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EventRepository
-import org.koin.core.annotation.Factory
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 
-@Factory
-internal class DefaultEventPaginationManager(private val eventRepository: EventRepository) :
+@ContributesBinding(scope = AppScope::class, binding = binding<EventPaginationManager>())
+@Inject
+class DefaultEventPaginationManager(private val eventRepository: EventRepository) :
     BasePaginationManager<EventModel, EventsPaginationSpecification>(
         idSelector = { it.id },
     ),

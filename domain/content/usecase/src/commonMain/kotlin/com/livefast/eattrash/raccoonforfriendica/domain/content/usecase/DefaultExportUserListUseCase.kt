@@ -2,10 +2,15 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultExportUserListUseCase(private val userRepository: UserRepository) : ExportUserListUseCase {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultExportUserListUseCase(private val userRepository: UserRepository) : ExportUserListUseCase {
     override suspend fun invoke(specification: ExportUserSpecification): String {
         val users = retrieveUsers(specification)
         return users.mapNotNull { it.toExportData() }.joinToString("\n")

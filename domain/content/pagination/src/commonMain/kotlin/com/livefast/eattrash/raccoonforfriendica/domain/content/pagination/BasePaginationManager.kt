@@ -4,7 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-internal abstract class BasePaginationManager<T, S>(private val idSelector: (T) -> String) {
+abstract class BasePaginationManager<T, S>(private val idSelector: (T) -> String) {
     private var specification: S? = null
     private var pageCursor: String? = null
     private var _canFetchMore: Boolean = true

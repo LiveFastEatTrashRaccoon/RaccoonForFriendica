@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.permissions
 
-internal class DefaultPermissionControllerWrapper() : PermissionControllerWrapper {
+class DefaultPermissionControllerWrapper() : PermissionControllerWrapper {
 
     override suspend fun getPermissionState(permission: PermissionType): PermissionState {
         return PermissionState.NotDetermined
