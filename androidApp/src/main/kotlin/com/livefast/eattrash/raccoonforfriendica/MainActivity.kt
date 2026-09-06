@@ -21,14 +21,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : ComponentActivity() {
-    private val authManager: AuthManager by inject()
-    private val mainRouter: MainRouter by inject()
-    private val navigationCoordinator: NavigationCoordinator by inject()
+    private val rootGraph: AndroidRootGraph get() = (application as MainApplication).rootGraph
+    private val authManager: AuthManager get() = rootGraph.authManager
+    private val mainRouter: MainRouter get() = rootGraph.mainRouter
+    private val navigationCoordinator: NavigationCoordinator get() = rootGraph.navigationCoordinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var loadingFinished = false
@@ -78,9 +78,10 @@ class MainActivity : ComponentActivity() {
             addCallback(backPressedCallback)
             addCallback(finishBackPressedCallback)
         }
-
+        val rootGraph = (application as MainApplication).rootGraph
         setContent {
             App(
+                graph = rootGraph,
                 onLoadingFinished = {
                     loadingFinished = true
                 },
