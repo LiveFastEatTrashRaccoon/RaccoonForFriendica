@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Collections
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
@@ -79,4 +80,8 @@ interface UserService {
     suspend fun updateProfileImage(content: MultiPartFormDataContent): Account
 
     suspend fun updatePersonalNote(id: String, data: FormDataContent): Relationship
+
+    suspend fun getCollections(id: String, offset: Int = 0, limit: Int = 20): Collections
+
+    suspend fun getCollectionsContaining(id: String, offset: Int = 0, limit: Int = 20): Collections
 }
