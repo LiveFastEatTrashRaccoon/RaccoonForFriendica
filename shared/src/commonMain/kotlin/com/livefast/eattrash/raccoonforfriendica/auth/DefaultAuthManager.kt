@@ -6,8 +6,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.Temporar
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IosAuthHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toInt
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
@@ -20,10 +25,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
-import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.minutes
 
-@Single
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
 class DefaultAuthManager(
     private val navigationCoordinator: NavigationCoordinator,
     private val credentialsRepository: CredentialsRepository,
@@ -34,6 +40,10 @@ class DefaultAuthManager(
 
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private var localServerPort: Int? = null
+
+    init {
+        IosAuthHelper.authManager = this
+    }
 
     override val credentialFlow = MutableSharedFlow<ApiCredentials>()
 

@@ -1,5 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica
 
 import androidx.compose.ui.window.ComposeUIViewController
+import dev.zacsweers.metro.createGraph
 
-fun MainViewController() = ComposeUIViewController { App() }
+val iosRootGraph: IosRootGraph by lazy { createGraph<IosRootGraph>() }
+
+fun MainViewController() = ComposeUIViewController {
+    App(graph = iosRootGraph)
+}
