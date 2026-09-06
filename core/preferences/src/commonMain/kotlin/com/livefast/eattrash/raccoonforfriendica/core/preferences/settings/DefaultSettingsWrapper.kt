@@ -3,10 +3,15 @@ package com.livefast.eattrash.raccoonforfriendica.core.preferences.settings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultSettingsWrapper(private val settings: Settings) : SettingsWrapper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultSettingsWrapper(private val settings: Settings) : SettingsWrapper {
     override val keys: Set<String> = settings.keys
 
     override fun hasKey(key: String): Boolean = settings.hasKey(key)

@@ -5,10 +5,15 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultHapticFeedback(private val context: Context) : HapticFeedback {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultHapticFeedback(private val context: Context) : HapticFeedback {
     @SuppressLint("MissingPermission")
     override fun vibrate() {
         val vibrator = context.getSystemService(Vibrator::class.java)

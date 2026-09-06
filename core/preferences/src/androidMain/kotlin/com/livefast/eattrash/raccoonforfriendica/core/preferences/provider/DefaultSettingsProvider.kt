@@ -4,12 +4,18 @@ import android.annotation.SuppressLint
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.encryption.EncryptionHelper
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Named
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultSettingsProvider(
-    private val preferencesProvider: DefaultSharedPreferencesProvider,
-    private val legacyPreferencesProvider: LegacySharedPreferencesProvider,
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultSettingsProvider(
+    @Named("default") private val preferencesProvider: SharedPreferencesProvider,
+    @Named("legacy") private val legacyPreferencesProvider: SharedPreferencesProvider,
     private val encryptionHelper: EncryptionHelper,
 ) : SettingsProvider {
     override fun provide(): Settings {

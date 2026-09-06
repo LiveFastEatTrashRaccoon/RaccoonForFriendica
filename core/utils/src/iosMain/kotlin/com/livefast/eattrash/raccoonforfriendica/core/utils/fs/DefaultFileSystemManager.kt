@@ -1,12 +1,17 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.fs
 
 import androidx.compose.runtime.Composable
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import okio.FileSystem
 import okio.Path
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultFileSystemManager : FileSystemManager {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultFileSystemManager : FileSystemManager {
     override val isSupported = false
 
     @Composable

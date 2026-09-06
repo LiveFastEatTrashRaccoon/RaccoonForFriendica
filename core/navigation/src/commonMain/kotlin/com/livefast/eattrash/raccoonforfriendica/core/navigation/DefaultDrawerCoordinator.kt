@@ -1,11 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultDrawerCoordinator : DrawerCoordinator {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultDrawerCoordinator : DrawerCoordinator {
     override val events = MutableSharedFlow<DrawerEvent>()
     override val gesturesEnabled = MutableStateFlow(true)
     override val drawerOpened = MutableStateFlow(false)

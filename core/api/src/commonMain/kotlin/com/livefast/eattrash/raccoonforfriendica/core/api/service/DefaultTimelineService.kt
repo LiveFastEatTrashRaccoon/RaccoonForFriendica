@@ -3,14 +3,15 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultTimelineService(@InjectedParam args: ServiceCreationArgs) : TimelineService {
+@AssistedInject
+class DefaultTimelineService(@Assisted args: ServiceCreationArgs) : TimelineService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -51,4 +52,9 @@ internal class DefaultTimelineService(@InjectedParam args: ServiceCreationArgs) 
             parameter("min_id", minId)
             parameter("limit", limit)
         }.body()
+}
+
+@AssistedFactory
+fun interface TimelineServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultTimelineService
 }

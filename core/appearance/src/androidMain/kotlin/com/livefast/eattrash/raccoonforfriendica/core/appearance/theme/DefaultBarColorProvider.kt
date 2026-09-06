@@ -12,12 +12,14 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 
-@Single
-internal actual  class DefaultBarColorProvider : BarColorProvider {
-    override val isBarThemeSupported: Boolean
-        get() = Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultBarColorProvider : BarColorProvider {
+    override val isBarThemeSupported: Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM
 
     @Composable
     override fun setBarColorAccordingToTheme(theme: UiTheme, barTheme: UiBarTheme) {

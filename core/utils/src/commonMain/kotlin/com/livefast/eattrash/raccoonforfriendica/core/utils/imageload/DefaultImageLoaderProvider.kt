@@ -6,10 +6,15 @@ import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.request.crossfade
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileSystemManager
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultImageLoaderProvider(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultImageLoaderProvider(
     private val context: PlatformContext,
     private val fileSystemManager: FileSystemManager,
 ) : ImageLoaderProvider {

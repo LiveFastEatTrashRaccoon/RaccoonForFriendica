@@ -5,12 +5,17 @@ import androidx.compose.runtime.LaunchedEffect
 import com.livefast.eattrash.raccoonforfriendica.core.utils.fs.FileDialogHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.awt.FileDialog
 import java.io.File
 
-@Single
-internal class DefaultGalleryHelper : GalleryHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultGalleryHelper : GalleryHelper {
     override val supportsCustomPath = false
 
     override fun saveToGallery(

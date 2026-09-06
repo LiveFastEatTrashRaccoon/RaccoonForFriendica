@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.settings
 
-internal interface SettingsWrapper {
+interface SettingsWrapper {
     val keys: Set<String>
 
     fun hasKey(key: String): Boolean

@@ -25,10 +25,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandlerFactory
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultUiDeps(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultUiDeps(
     override val appInfoRepository: AppInfoRepository,
     override val barColorProvider: BarColorProvider,
     override val blurHashRepository: BlurHashRepository,

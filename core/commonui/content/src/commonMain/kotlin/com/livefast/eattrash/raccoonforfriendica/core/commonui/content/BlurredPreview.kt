@@ -15,11 +15,11 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.DummyUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.toComposeImageBitmap
-import org.koin.dsl.module
 
 @Composable
 internal fun BlurredPreview(
@@ -31,22 +31,26 @@ internal fun BlurredPreview(
 ) {
     val repository = LocalUiDeps.current.blurHashRepository
 
-    if (originalWidth > 0 && originalHeight > 0) {
-        var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    if (blurHash == null) {
+        Box(
+            modifier = modifier.aspectRatio(originalWidth / originalHeight.toFloat()),
+        )
+    } else {
+        var imageBitmap by remember(blurHash, originalWidth, originalHeight) {
+            mutableStateOf<ImageBitmap?>(null)
+        }
 
-        LaunchedEffect(blurHash) {
-            if (blurHash != null) {
-                // limit the size of the decoded blur hash to avoid memory issues
-                // (blurred preview is intended to be decoded at low resolution and scaled up)
-                val ratio = originalWidth.toFloat() / originalHeight
-                val targetWidth = if (ratio > 1) 32 else (32 * ratio).toInt().coerceAtLeast(1)
-                val targetHeight = if (ratio > 1) (32 / ratio).toInt().coerceAtLeast(1) else 32
-                val params =
-                    BlurHashParams(
-                        hash = blurHash,
-                        width = targetWidth,
-                        height = targetHeight,
-                    )
+        LaunchedEffect(blurHash, originalWidth, originalHeight) {
+            val params =
+                BlurHashParams(
+                    hash = blurHash,
+                    width = originalWidth,
+                    height = originalHeight,
+                )
+            if (repository.get(params) == null) {
+                repository.preload(params)
+                imageBitmap = repository.get(params)
+            } else {
                 imageBitmap = repository.get(params)
             }
         }
@@ -70,26 +74,22 @@ internal fun BlurredPreview(
 @Preview
 private fun BlurredPreviewPreview() {
     PreviewWrapper(
-        modules = listOf(
-            module {
-                single {
-                    object : BlurHashRepository {
-                        override suspend fun preload(params: BlurHashParams) = Unit
+        uiDeps = object : DummyUiDeps() {
+            override val blurHashRepository: BlurHashRepository = object : BlurHashRepository {
+                override suspend fun preload(params: BlurHashParams) = Unit
 
-                        override suspend fun get(params: BlurHashParams): ImageBitmap = byteArrayOf(
-                            -119, 80, 78, 71, 13, 10, 26, 10, 0, 0,
-                            0, 13, 73, 72, 68, 82, 0, 0, 0, 2,
-                            0, 0, 0, 2, 8, 2, 0, 0, 0, -3,
-                            -44, -102, 115, 0, 0, 0, 22, 73, 68, 65,
-                            84, 120, -100, 99, -8, -49, -64, -64, -64, -16,
-                            -97, -111, -31, 63, -61, 127, 6, 6, 0, 28,
-                            -8, 3, -2, -3, 114, -27, 20, 0, 0, 0,
-                            0, 73, 69, 78, 68, -82, 66, 96, -126,
-                        ).toComposeImageBitmap()
-                    }
-                }
-            },
-        ),
+                override suspend fun get(params: BlurHashParams): ImageBitmap = byteArrayOf(
+                    -119, 80, 78, 71, 13, 10, 26, 10, 0, 0,
+                    0, 13, 73, 72, 68, 82, 0, 0, 0, 2,
+                    0, 0, 0, 2, 8, 2, 0, 0, 0, -3,
+                    -44, -102, 115, 0, 0, 0, 22, 73, 68, 65,
+                    84, 120, -100, 99, -8, -49, -64, -64, -64, -16,
+                    -97, -111, -31, 63, -61, 127, 6, 6, 0, 28,
+                    -8, 3, -2, -3, 114, -27, 20, 0, 0, 0,
+                    0, 73, 69, 78, 68, -82, 66, 96, -126,
+                ).toComposeImageBitmap()
+            }
+        },
     ) {
         BlurredPreview(
             originalWidth = 200,

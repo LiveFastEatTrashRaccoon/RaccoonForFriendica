@@ -4,12 +4,15 @@ import android.content.ClipData
 import android.content.Context
 import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.toClipEntry
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 
-@Factory
-internal class DefaultClipboardHelper(
-    @InjectedParam private val clipboard: Clipboard,
+@AssistedInject
+class DefaultClipboardHelper(
+    @Assisted private val clipboard: Clipboard,
     private val context: Context,
 ) : ClipboardHelper {
     override suspend fun setText(text: String) {
@@ -25,4 +28,10 @@ internal class DefaultClipboardHelper(
         val item = data.getItemAt(count - 1)
         return item.coerceToText(context).toString()
     }
+}
+
+@AssistedFactory
+@ContributesBinding(AppScope::class)
+interface DefaultClipboardHelperFactory : ClipboardHelperFactory {
+    override fun create(@Assisted clipboard: Clipboard): DefaultClipboardHelper
 }

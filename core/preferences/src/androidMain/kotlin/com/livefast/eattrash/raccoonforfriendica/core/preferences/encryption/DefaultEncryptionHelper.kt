@@ -2,7 +2,10 @@ package com.livefast.eattrash.raccoonforfriendica.core.preferences.encryption
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -10,8 +13,10 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import kotlin.io.encoding.Base64
 
-@Single
-internal class DefaultEncryptionHelper : EncryptionHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultEncryptionHelper : EncryptionHelper {
 
     private val store by lazy {
         KeyStore.getInstance(STORE_NAME).apply { load(null) }

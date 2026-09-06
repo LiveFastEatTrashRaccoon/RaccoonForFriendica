@@ -2,6 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.FormDataContent
@@ -13,11 +16,9 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultMediaService(@InjectedParam args: ServiceCreationArgs) : MediaService {
+@AssistedInject
+class DefaultMediaService(@Assisted args: ServiceCreationArgs) : MediaService {
     private val baseUrl = args.baseUrl
     private val client = args.client
     override suspend fun getBy(id: String): MediaAttachment = client.get("$baseUrl/v1/media/$id").body()
@@ -34,4 +35,9 @@ internal class DefaultMediaService(@InjectedParam args: ServiceCreationArgs) : M
         }.body()
 
     override suspend fun delete(id: String): Boolean = client.delete("$baseUrl/v1/media/$id").status.isSuccess()
+}
+
+@AssistedFactory
+fun interface MediaServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultMediaService
 }

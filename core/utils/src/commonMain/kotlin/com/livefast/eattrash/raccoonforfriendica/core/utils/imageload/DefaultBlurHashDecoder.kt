@@ -8,7 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.PI
 import kotlin.math.cos
@@ -24,8 +27,10 @@ private const val MAX_CACHE_SIZE = 10
  * The original code has been modified here to work with Compose (multiplatform) ImageBitmap
  * and Color in order to be used in common source set and shared across platforms.
  */
-@Single
-internal class DefaultBlurHashDecoder(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultBlurHashDecoder(
     private val cacheCosinesX: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),
     private val cacheCosinesY: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),
 ) : BlurHashDecoder {

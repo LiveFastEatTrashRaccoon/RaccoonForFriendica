@@ -4,10 +4,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Named
+import dev.zacsweers.metro.SingleIn
 
-@Single(binds = [LegacySharedPreferencesProvider::class])
-internal class LegacySharedPreferencesProvider(private val context: Context) : SharedPreferencesProvider {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Named("legacy")
+@Inject
+class LegacySharedPreferencesProvider(private val context: Context) : SharedPreferencesProvider {
     private val masterKeyAlias: String = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
 
     override fun provide(): SharedPreferences = EncryptedSharedPreferences.create(

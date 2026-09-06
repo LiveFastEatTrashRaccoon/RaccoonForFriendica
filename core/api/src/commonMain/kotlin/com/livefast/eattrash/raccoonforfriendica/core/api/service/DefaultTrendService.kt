@@ -4,14 +4,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultTrendService(@InjectedParam args: ServiceCreationArgs) : TrendsService {
+@AssistedInject
+class DefaultTrendsService(@Assisted args: ServiceCreationArgs) : TrendsService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -30,4 +31,9 @@ internal class DefaultTrendService(@InjectedParam args: ServiceCreationArgs) : T
         parameter("offset", offset)
         parameter("limit", limit)
     }.body()
+}
+
+@AssistedFactory
+fun interface TrendsServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultTrendsService
 }

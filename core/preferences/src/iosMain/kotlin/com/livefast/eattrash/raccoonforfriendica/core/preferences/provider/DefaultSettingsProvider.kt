@@ -3,10 +3,15 @@ package com.livefast.eattrash.raccoonforfriendica.core.preferences.provider
 import com.russhwolf.settings.ExperimentalSettingsImplementation
 import com.russhwolf.settings.KeychainSettings
 import com.russhwolf.settings.Settings
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultSettingsProvider : SettingsProvider {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultSettingsProvider : SettingsProvider {
     @OptIn(ExperimentalSettingsImplementation::class)
     override fun provide(): Settings = KeychainSettings(service = DEFAULT_NAME)
 

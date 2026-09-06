@@ -5,26 +5,29 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceFactor
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Named
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.Module
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Single
 
-@Module
-@ComponentScan("com.livefast.eattrash.raccoonforfriendica.core.api")
-class ApiModule {
-
-    @Single
+@BindingContainer
+@ContributesTo(AppScope::class)
+object ApiModule {
+    @Provides
+    @SingleIn(AppScope::class)
     fun json(): Json = Json { ignoreUnknownKeys = true }
 
-    @Single
+    @Provides
+    @SingleIn(AppScope::class)
     fun httpClientEngine(): HttpClientEngine = provideHttpClientEngine()
 
-    @Factory
+    @Provides
     @Named("other")
+    @SingleIn(AppScope::class)
     fun otherServiceProvider(
         engine: HttpClientEngine,
         appInfoRepository: AppInfoRepository,

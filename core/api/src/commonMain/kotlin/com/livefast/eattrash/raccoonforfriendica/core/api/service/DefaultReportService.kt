@@ -1,17 +1,18 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultReportService(@InjectedParam args: ServiceCreationArgs) : ReportService {
+@AssistedInject
+class DefaultReportService(@Assisted args: ServiceCreationArgs) : ReportService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
@@ -19,4 +20,9 @@ internal class DefaultReportService(@InjectedParam args: ServiceCreationArgs) : 
         contentType(ContentType.Application.Json)
         setBody(data)
     }.status.isSuccess()
+}
+
+@AssistedFactory
+fun interface ReportServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): DefaultReportService
 }

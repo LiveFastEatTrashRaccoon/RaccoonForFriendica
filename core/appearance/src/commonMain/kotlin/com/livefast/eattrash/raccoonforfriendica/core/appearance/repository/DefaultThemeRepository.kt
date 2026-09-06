@@ -5,12 +5,17 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBar
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultThemeRepository : ThemeRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultThemeRepository : ThemeRepository {
     override val theme = MutableStateFlow<UiTheme>(UiTheme.Default)
     override val fontFamily = MutableStateFlow<UiFontFamily>(UiFontFamily.Default)
     override val fontScale = MutableStateFlow<UiFontScale>(UiFontScale.Normal)

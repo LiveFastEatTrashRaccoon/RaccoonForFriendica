@@ -1,10 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.core.translation
 
 import com.livefast.eattrash.raccoonforfriendica.core.translation.libretranslate.LibreTranslateProvider
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultTranslationProviderFactory : TranslationProviderFactory {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultTranslationProviderFactory : TranslationProviderFactory {
     override fun create(config: TranslationProviderConfig): TranslationProvider = when (config.name) {
         TranslationProviderTypes.LibreTranslate.name -> LibreTranslateProvider(
             apiKey = config.apiKey,

@@ -1,6 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.notifications
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.NotificationCenterEvent
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,12 +13,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
-@Single
-internal class DefaultNotificationCenter(dispatcher: CoroutineDispatcher = Dispatchers.Main) : NotificationCenter {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultNotificationCenter(dispatcher: CoroutineDispatcher = Dispatchers.Main) : NotificationCenter {
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 
     private val events = MutableSharedFlow<NotificationCenterEvent>()

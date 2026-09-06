@@ -3,13 +3,16 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.clipboard
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 
-@Factory
+@AssistedInject
 @OptIn(ExperimentalComposeUiApi::class)
-internal class DefaultClipboardHelper(
-    @InjectedParam private val clipboard: Clipboard,
+class DefaultClipboardHelper(
+    @Assisted private val clipboard: Clipboard,
 ) : ClipboardHelper {
 
     override suspend fun setText(text: String) {
@@ -19,4 +22,10 @@ internal class DefaultClipboardHelper(
 
     override suspend fun getText(): String? =
         clipboard.getClipEntry()?.getPlainText()
+}
+
+@AssistedFactory
+@ContributesBinding(AppScope::class)
+fun interface DefaultClipboardHelperFactory : ClipboardHelperFactory {
+    override fun create(@Assisted clipboard: Clipboard): DefaultClipboardHelper
 }

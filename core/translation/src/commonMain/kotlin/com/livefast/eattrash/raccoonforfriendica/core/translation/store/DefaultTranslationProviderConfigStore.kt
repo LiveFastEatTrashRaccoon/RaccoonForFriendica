@@ -3,16 +3,21 @@ package com.livefast.eattrash.raccoonforfriendica.core.translation.store
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.Single
 import kotlin.coroutines.cancellation.CancellationException
 
-@Single
-internal class DefaultTranslationProviderConfigStore(private val keyStore: TemporaryKeyStore) :
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultTranslationProviderConfigStore(private val keyStore: TemporaryKeyStore) :
     TranslationProviderConfigStore {
     private val valuesFlow = MutableSharedFlow<List<TranslationProviderConfig>>(replay = 1)
 

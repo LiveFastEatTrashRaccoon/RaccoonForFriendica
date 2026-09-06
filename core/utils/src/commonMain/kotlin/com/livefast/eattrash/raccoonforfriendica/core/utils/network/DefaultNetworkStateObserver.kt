@@ -1,6 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.network
 
 import dev.jordond.connectivity.Connectivity
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,10 +13,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultNetworkStateObserver(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultNetworkStateObserver(
     private val connectivity: Connectivity,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : NetworkStateObserver {

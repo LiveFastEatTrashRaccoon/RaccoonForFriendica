@@ -8,7 +8,7 @@ import dev.icerock.moko.permissions.DeniedException as LibDeniedException
 import dev.icerock.moko.permissions.PermissionState as LibPermissionState
 import dev.icerock.moko.permissions.RequestCanceledException as LibDRequestCanceledException
 
-internal class DefaultPermissionControllerWrapper(override val controller: PermissionsController) :
+class DefaultPermissionControllerWrapper(override val controller: PermissionsController) :
     PermissionControllerWrapper, InnerPermissionControllerWrapper {
 
     override suspend fun getPermissionState(permission: PermissionType): PermissionState {

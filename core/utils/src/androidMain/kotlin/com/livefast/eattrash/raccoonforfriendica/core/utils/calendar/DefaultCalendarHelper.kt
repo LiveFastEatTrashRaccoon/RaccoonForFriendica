@@ -1,12 +1,17 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.calendar
 
+import android.content.Context
 import android.content.Intent
 import android.provider.CalendarContract
-import io.sentry.kotlin.multiplatform.Context
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultCalendarHelper(private val context: Context) : CalendarHelper {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultCalendarHelper(private val context: Context) : CalendarHelper {
     override val supportsExport: Boolean = true
 
     override fun export(title: String, startDate: Long, endDate: Long?, location: String?) {

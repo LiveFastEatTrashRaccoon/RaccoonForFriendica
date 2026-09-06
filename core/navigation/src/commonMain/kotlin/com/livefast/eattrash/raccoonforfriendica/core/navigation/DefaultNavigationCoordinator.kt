@@ -1,6 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,13 +17,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-@Single
-internal class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers.Main) :
-    NavigationCoordinator {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers.Main) : NavigationCoordinator {
     override val currentBottomNavSection = MutableStateFlow<BottomNavigationSection?>(null)
     override val onDoubleTabSelection = MutableSharedFlow<BottomNavigationSection>()
     override val canPop = MutableStateFlow(false)
