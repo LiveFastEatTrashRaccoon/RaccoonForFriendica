@@ -14,13 +14,18 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.util.concurrent.TimeUnit
 
-@Single
-internal actual class DefaultPullNotificationManager(private val context: Context) : PullNotificationManager {
-    actual override val isSupported = true
-    actual override val isBackgroundRestricted: Boolean
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultPullNotificationManager(private val context: Context) : PullNotificationManager {
+    override val isSupported = true
+    override val isBackgroundRestricted: Boolean
         get() =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
                 activityManager.isBackgroundRestricted
@@ -43,11 +48,11 @@ internal actual class DefaultPullNotificationManager(private val context: Contex
                 .setRequiresDeviceIdle(false)
                 .build()
 
-    actual override fun setPeriod(minutes: Long) {
+    override fun setPeriod(minutes: Long) {
         intervalMinutes = minutes
     }
 
-    actual override fun start() {
+    override fun start() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
 
         // check immediately with an expedited one-time request
@@ -57,7 +62,7 @@ internal actual class DefaultPullNotificationManager(private val context: Contex
         periodicCheck()
     }
 
-    actual override fun oneshotCheck() {
+    override fun oneshotCheck() {
         createNotificationChannelIfNeeded()
         OneTimeWorkRequestBuilder<CheckNotificationWorker>()
             .addTag(TAG)
@@ -69,11 +74,11 @@ internal actual class DefaultPullNotificationManager(private val context: Contex
             }
     }
 
-    actual override fun stop() {
+    override fun stop() {
         WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
     }
 
-    actual override fun cancelAll() {
+    override fun cancelAll() {
         notificationManager.cancelAll()
     }
 

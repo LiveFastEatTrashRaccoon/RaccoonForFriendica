@@ -1,10 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultAccountCredentialsCache(private val keyStore: TemporaryKeyStore) : AccountCredentialsCache {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultAccountCredentialsCache(private val keyStore: TemporaryKeyStore) : AccountCredentialsCache {
     override suspend fun get(accountId: Long): ApiCredentials? {
         val type = keyStore.get(getKeyForType(accountId), "")
         val part1 = keyStore.get(getKeyForPart1(accountId), "")

@@ -3,11 +3,16 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.utils.io.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultEventRepository(private val provider: ServiceProvider) : EventRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultEventRepository(private val provider: ServiceProvider) : EventRepository {
     override suspend fun getAll(pageCursor: String?): List<EventModel>? = try {
         provider.event
             .getAll(

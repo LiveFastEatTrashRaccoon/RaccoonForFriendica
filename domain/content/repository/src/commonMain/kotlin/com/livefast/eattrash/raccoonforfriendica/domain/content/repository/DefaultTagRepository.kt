@@ -4,11 +4,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.utils.io.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultTagRepository(private val provider: ServiceProvider) : TagRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultTagRepository(private val provider: ServiceProvider) : TagRepository {
     override suspend fun getFollowed(pageCursor: String?): ListWithPageCursor<TagModel>? = try {
         val (list, cursor) =
             provider.tag.getFollowedTags(

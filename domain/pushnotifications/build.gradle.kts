@@ -10,8 +10,7 @@ kotlin {
     sourceSets {
         androidMain {
             dependencies {
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.android)
+                implementation(libs.metrox.android)
                 implementation(
                     libs.unifiedpush.connector
                         .get()
@@ -40,9 +39,4 @@ kotlin {
             }
         }
     }
-}
-
-customDiExtension {
-    useCompilerPlugin()
-    useAnnotations()
 }

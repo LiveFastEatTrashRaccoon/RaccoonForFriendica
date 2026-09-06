@@ -1,12 +1,17 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultFollowedHashtagCache(private val tagRepository: TagRepository) : FollowedHashtagCache {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultFollowedHashtagCache(private val tagRepository: TagRepository) : FollowedHashtagCache {
     private var cache: List<TagModel> = emptyList()
     private val mutex = Mutex()
 

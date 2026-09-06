@@ -10,12 +10,16 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toVisibility
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) :
-    DraftRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) : DraftRepository {
     override suspend fun getAll(page: Int): List<TimelineEntryModel>? = try {
         draftDao
             .getAll(

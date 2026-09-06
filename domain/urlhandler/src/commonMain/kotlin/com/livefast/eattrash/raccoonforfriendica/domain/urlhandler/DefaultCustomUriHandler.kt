@@ -8,6 +8,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Sett
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.EntryProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -15,12 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.InjectedParam
 
-@Factory
-internal class DefaultCustomUriHandler(
-    @InjectedParam private val defaultHandler: UriHandler,
+@AssistedInject
+class DefaultCustomUriHandler(
+    @Assisted private val fallbackHandler: UriHandler,
     private val customTabsHelper: CustomTabsHelper,
     private val settingsRepository: SettingsRepository,
     private val mainRouter: MainRouter,
@@ -71,11 +74,17 @@ internal class DefaultCustomUriHandler(
 
             else ->
                 try {
-                    defaultHandler.openUri(url)
+                    fallbackHandler.openUri(url)
                 } catch (e: Exception) {
                     if (e is CancellationException) throw e
                     e.printStackTrace()
                 }
         }
     }
+}
+
+@AssistedFactory
+@ContributesBinding(AppScope::class)
+interface DefaultCustomUriHandlerFactory : CustomUriHandlerFactory {
+    override fun create(@Assisted fallbackHandler: UriHandler): DefaultCustomUriHandler
 }

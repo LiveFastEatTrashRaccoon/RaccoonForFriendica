@@ -2,10 +2,15 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultReplyHelper(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultReplyHelper(
     private val entryRepository: TimelineEntryRepository,
     private val entryCache: LruCache<String, TimelineEntryModel> = LruCache.factory(100),
 ) : ReplyHelper {

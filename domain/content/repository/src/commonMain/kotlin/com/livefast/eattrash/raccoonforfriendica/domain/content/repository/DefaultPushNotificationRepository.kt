@@ -5,13 +5,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.parameters
-import org.koin.core.annotation.Single
 import kotlin.coroutines.cancellation.CancellationException
 
-@Single
-internal class DefaultPushNotificationRepository(private val provider: ServiceProvider) : PushNotificationRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultPushNotificationRepository(private val provider: ServiceProvider) : PushNotificationRepository {
     override suspend fun create(
         endpoint: String,
         pubKey: String,

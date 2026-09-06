@@ -1,10 +1,10 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
+package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 
-internal open class DefaultLocalItemCache<T>(private val cache: LruCache<String, T> = LruCache.factory(MAX_SIZE)) :
-    LocalItemCache<T> {
+internal open class DefaultLocalItemCache<T>(
+    private val cache: LruCache<String, T> = LruCache.Companion.factory(MAX_SIZE),
+) : LocalItemCache<T> {
 
     override suspend fun put(key: String, value: T) {
         cache.put(key, value)

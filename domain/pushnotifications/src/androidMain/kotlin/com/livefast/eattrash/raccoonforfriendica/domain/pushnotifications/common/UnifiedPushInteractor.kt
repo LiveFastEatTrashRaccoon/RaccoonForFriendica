@@ -5,11 +5,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.logDebug
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 import org.unifiedpush.android.connector.FailedReason
 import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
@@ -21,7 +24,9 @@ interface UnifiedPushInteractor {
     fun onUnregistered(context: Context, instance: String)
 }
 
-@Single
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
 class DefaultUnifiedPushInteractor(
     private val pullNotificationManager: PullNotificationManager,
     private val pushNotificationManager: PushNotificationManager,

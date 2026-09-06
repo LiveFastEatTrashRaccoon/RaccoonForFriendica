@@ -1,11 +1,15 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultInstanceShortcutRepository(private val keyStore: TemporaryKeyStore) :
-    InstanceShortcutRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultInstanceShortcutRepository(private val keyStore: TemporaryKeyStore) : InstanceShortcutRepository {
     override suspend fun getAll(accountId: Long): List<String> {
         val key = getKey(accountId)
         return keyStore.get(key = key, default = emptyList())

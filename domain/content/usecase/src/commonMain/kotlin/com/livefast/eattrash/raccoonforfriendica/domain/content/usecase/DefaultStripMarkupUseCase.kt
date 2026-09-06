@@ -5,10 +5,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.BBCodeConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converters.MarkdownConverter
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultStripMarkupUseCase(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultStripMarkupUseCase(
     private val bbCodeConverter: BBCodeConverter,
     private val markdownConverter: MarkdownConverter,
 ) : StripMarkupUseCase {

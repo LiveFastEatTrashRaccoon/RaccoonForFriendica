@@ -4,13 +4,18 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
 import kotlinx.coroutines.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultPhotoAlbumRepository(private val provider: ServiceProvider) : PhotoAlbumRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultPhotoAlbumRepository(private val provider: ServiceProvider) : PhotoAlbumRepository {
     override suspend fun getAll(): List<MediaAlbumModel>? = try {
         provider.photo.getAll().groupBy { it.album }.map { entry ->
             MediaAlbumModel(name = entry.key.orEmpty(), items = entry.value.size)

@@ -3,10 +3,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import org.koin.core.annotation.Factory
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 
-@Factory
-internal class DefaultFollowRequestPaginationManager(
+@ContributesBinding(scope = AppScope::class, binding = binding<FollowRequestPaginationManager>())
+@Inject
+class DefaultFollowRequestPaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
 ) : BasePaginationManager<UserModel, Unit>(

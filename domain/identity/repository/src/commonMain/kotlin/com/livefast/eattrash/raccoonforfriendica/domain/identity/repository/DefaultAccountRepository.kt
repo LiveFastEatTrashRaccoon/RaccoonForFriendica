@@ -3,12 +3,17 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.AccountEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultAccountRepository(private val accountDao: AccountDao) : AccountRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultAccountRepository(private val accountDao: AccountDao) : AccountRepository {
     override suspend fun getAll(): List<AccountModel> = accountDao.getAll().map { it.toModel() }
 
     override fun getAllAsFlow(): Flow<List<AccountModel>> = accountDao.getAllAsFlow().map { list ->

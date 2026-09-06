@@ -2,10 +2,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
-import org.koin.core.annotation.Factory
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 
-@Factory
-internal class DefaultFollowedHashtagsPaginationManager(private val tagRepository: TagRepository) :
+@ContributesBinding(scope = AppScope::class, binding = binding<FollowedHashtagsPaginationManager>())
+@Inject
+class DefaultFollowedHashtagsPaginationManager(private val tagRepository: TagRepository) :
     BasePaginationManager<TagModel, Unit>(
         idSelector = { it.name },
     ),

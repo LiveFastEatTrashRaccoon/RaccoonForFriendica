@@ -4,10 +4,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.substituteAllOccurre
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ContentRegexes
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
-import org.koin.core.annotation.Single
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
-@Single
-internal class DefaultBBCodeConverter : BBCodeConverter {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultBBCodeConverter : BBCodeConverter {
     override fun toHtml(value: String) = value
         .replace("[h1]", "<h1>")
         .replace("[/h1]", "</h1>")

@@ -3,12 +3,17 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultReportRepository(private val provider: ServiceProvider) : ReportRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultReportRepository(private val provider: ServiceProvider) : ReportRepository {
     override suspend fun create(
         userId: String,
         entryIds: List<String>?,

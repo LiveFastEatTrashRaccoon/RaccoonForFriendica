@@ -17,13 +17,18 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toMarkupMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toNotificationMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toSerialMaxLines
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toUrlOpeningMode
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
 
-@Single
-internal class DefaultSettingsRepository(private val settingsDao: SettingsDao) : SettingsRepository {
+@SingleIn(scope = AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultSettingsRepository(private val settingsDao: SettingsDao) : SettingsRepository {
     override val current = MutableStateFlow<SettingsModel?>(null)
 
     override fun changeCurrent(settings: SettingsModel) {

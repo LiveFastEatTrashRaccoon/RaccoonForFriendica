@@ -50,7 +50,7 @@ class DefaultCustomUriHandlerTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val sut =
         DefaultCustomUriHandler(
-            defaultHandler = defaultHandler,
+            fallbackHandler = defaultHandler,
             customTabsHelper = customTabsHelper,
             settingsRepository = settingsRepository,
             mainRouter = mainRouter,

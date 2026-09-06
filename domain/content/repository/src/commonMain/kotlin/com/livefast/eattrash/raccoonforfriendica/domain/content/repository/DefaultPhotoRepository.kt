@@ -3,15 +3,20 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.utils.io.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultPhotoRepository(private val provider: ServiceProvider) : PhotoRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultPhotoRepository(private val provider: ServiceProvider) : PhotoRepository {
     override suspend fun create(bytes: ByteArray, album: String, alt: String): AttachmentModel? = try {
         val content =
             MultiPartFormDataContent(

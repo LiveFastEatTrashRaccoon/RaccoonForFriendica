@@ -1,11 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultTimelineNavigationManager(private val paginationManager: TimelinePaginationManager) :
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultTimelineNavigationManager(private val paginationManager: TimelinePaginationManager) :
     TimelineNavigationManager {
     override val canNavigate = MutableStateFlow(false)
     private var states: MutableList<TimelinePaginationManagerState> = mutableListOf()

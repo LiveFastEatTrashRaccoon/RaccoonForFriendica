@@ -5,13 +5,18 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
 import io.ktor.utils.io.CancellationException
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultMarkerRepository(private val provider: ServiceProvider) : MarkerRepository {
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultMarkerRepository(private val provider: ServiceProvider) : MarkerRepository {
     private val cachedValues = mutableMapOf<MarkerType, MarkerModel>()
 
     override suspend fun get(type: MarkerType, refresh: Boolean): MarkerModel? =

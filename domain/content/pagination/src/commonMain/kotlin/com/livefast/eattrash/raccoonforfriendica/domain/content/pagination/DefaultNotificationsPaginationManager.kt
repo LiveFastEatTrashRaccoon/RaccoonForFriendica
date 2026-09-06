@@ -8,10 +8,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import org.koin.core.annotation.Factory
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 
-@Factory
-internal class DefaultNotificationsPaginationManager(
+@ContributesBinding(scope = AppScope::class, binding = binding<NotificationsPaginationManager>())
+@Inject
+class DefaultNotificationsPaginationManager(
     private val notificationRepository: NotificationRepository,
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,

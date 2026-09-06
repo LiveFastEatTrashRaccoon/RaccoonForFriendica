@@ -6,15 +6,20 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpC
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.Single
 
-@Single
-internal class DefaultNodeInfoRepository(
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
+class DefaultNodeInfoRepository(
     private val provider: ServiceProvider,
     private val client: HttpClient = HttpClient(provideHttpClientEngine()),
     private val json: Json,

@@ -2,10 +2,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
-import org.koin.core.annotation.Factory
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
 
-@Factory
-internal class DefaultAlbumPhotoPaginationManager(private val albumRepository: PhotoAlbumRepository) :
+@ContributesBinding(scope = AppScope::class, binding = binding<AlbumPhotoPaginationManager>())
+@Inject
+class DefaultAlbumPhotoPaginationManager(private val albumRepository: PhotoAlbumRepository) :
     BasePaginationManager<AttachmentModel, AlbumPhotoPaginationSpecification>(
         idSelector = { it.id },
     ),
