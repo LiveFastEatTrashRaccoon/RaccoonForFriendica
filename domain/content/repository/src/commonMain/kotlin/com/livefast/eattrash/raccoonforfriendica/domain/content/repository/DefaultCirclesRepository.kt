@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListMembersForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
