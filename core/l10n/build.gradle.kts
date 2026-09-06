@@ -18,7 +18,7 @@ kotlin {
 
 spotless {
     kotlin {
-        target("**/ProvideStrings.kt")
+        target("**/LocalStrings.kt")
         suppressLintsFor {
             step = "ktlint"
             shortCode = "compose:compositionlocal-allowlist"

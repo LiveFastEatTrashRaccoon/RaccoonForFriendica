@@ -24,7 +24,7 @@ kotlin {
 
 spotless {
     kotlin {
-        target("**/ProvideUiDeps.kt")
+        target("**/LocalUiDeps.kt")
         suppressLintsFor {
             step = "ktlint"
             shortCode = "compose:compositionlocal-allowlist"
