@@ -194,7 +194,6 @@ class DefaultCoreResources : CoreResources {
     override val appIconAlt: Painter
         @Composable get() = painterResource(Res.drawable.ic_alt)
 
-
     override val loadingIcon: ImageVector
         @Composable get() = vectorResource(Res.drawable.ic_loading)
     // endregion

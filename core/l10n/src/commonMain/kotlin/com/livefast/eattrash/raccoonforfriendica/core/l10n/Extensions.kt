@@ -21,7 +21,7 @@ fun String?.toLanguageName(): String? = when (this) {
     else -> null
 }
 
-internal fun String.toLanguageDirection(): LayoutDirection = when (this) {
+fun String.toLanguageDirection(): LayoutDirection = when (this) {
     "ar" -> LayoutDirection.Rtl
     else -> LayoutDirection.Ltr
 }

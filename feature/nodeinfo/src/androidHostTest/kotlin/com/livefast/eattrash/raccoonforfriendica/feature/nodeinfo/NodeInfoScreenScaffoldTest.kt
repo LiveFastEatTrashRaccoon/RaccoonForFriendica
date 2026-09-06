@@ -1,7 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
@@ -11,13 +9,10 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.DummyUiDeps
-import com.livefast.eattrash.raccoonforfriendica.core.di.utils.ProvideUiDeps
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.ProvideAppCompositionLocals
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.UiDeps
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -152,14 +147,11 @@ class NodeInfoScreenScaffoldTest {
 
     private fun ComposeContentTestRule.setup(state: NodeInfoMviModel.State) {
         setContent {
-            ProvideUiDeps(uiDeps) {
-                ProvideResources(resources = uiDeps.resources) {
-                    ProvideStrings(lang = Locales.EN, strings = uiDeps.strings) {
-                        CompositionLocalProvider(LocalUriHandler provides uriHandler) {
-                            NodeInfoScreenScaffold(state)
-                        }
-                    }
-                }
+            ProvideAppCompositionLocals(
+                uiDeps = uiDeps,
+                uriHandler = uriHandler,
+            ) {
+                NodeInfoScreenScaffold(state)
             }
         }
     }
