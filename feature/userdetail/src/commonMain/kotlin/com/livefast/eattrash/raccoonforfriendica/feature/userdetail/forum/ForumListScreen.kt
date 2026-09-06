@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -79,20 +80,20 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.di.ForumListViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
-    val model: ForumListMviModel = koinViewModel<ForumListViewModel> {
-        parametersOf(ForumListViewModelArgs(id))
-    }
+    val model: ForumListMviModel = assistedMetroViewModel<ForumListViewModel>(
+        extras = CreationExtras {
+            this[ForumListViewModel.KEY_ARGS] = ForumListViewModelArgs(id)
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

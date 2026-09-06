@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
@@ -14,17 +15,22 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.di.AlbumDetailViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@AssistedInject
 class AlbumDetailViewModel(
-    @InjectedParam args: AlbumDetailViewModelArgs,
+    @Assisted args: AlbumDetailViewModelArgs,
     private val paginationManager: AlbumPhotoPaginationManager,
     private val photoRepository: PhotoRepository,
     private val albumRepository: PhotoAlbumRepository,
@@ -225,4 +231,20 @@ class AlbumDetailViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<AlbumDetailViewModelArgs>()
+    }
+}
+
+data class AlbumDetailViewModelArgs(val albumName: String)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(AlbumDetailViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface AlbumDetailViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): AlbumDetailViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: AlbumDetailViewModelArgs): AlbumDetailViewModel
 }

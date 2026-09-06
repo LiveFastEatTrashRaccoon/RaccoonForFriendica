@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
@@ -30,17 +31,22 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.di.ShortcutTimelineViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline.ShortcutTimelineViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@AssistedInject
 class ShortcutTimelineViewModel(
-    @InjectedParam args: ShortcutTimelineViewModelArgs,
+    @Assisted args: ShortcutTimelineViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -426,4 +432,20 @@ class ShortcutTimelineViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<ShortcutTimelineViewModelArgs>()
+    }
+}
+
+data class ShortcutTimelineViewModelArgs(val name: String)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(ShortcutTimelineViewModel::class)
+@ContributesIntoMap(AppScope::class)
+interface ShortcutTimelineViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): ShortcutTimelineViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: ShortcutTimelineViewModelArgs): ShortcutTimelineViewModel
 }

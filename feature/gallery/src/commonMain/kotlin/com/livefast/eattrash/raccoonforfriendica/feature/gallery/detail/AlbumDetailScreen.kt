@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -65,19 +66,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.di.AlbumDetailViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
-    val model: AlbumDetailMviModel = koinViewModel<AlbumDetailViewModel> {
-        parametersOf(AlbumDetailViewModelArgs(name))
-    }
+    val model: AlbumDetailMviModel = assistedMetroViewModel<AlbumDetailViewModel>(
+        extras = CreationExtras {
+            this[AlbumDetailViewModel.KEY_ARGS] = AlbumDetailViewModelArgs(name)
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()

@@ -45,6 +45,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
@@ -100,12 +101,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.Notificati
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.di.SettingsViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -117,9 +116,11 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         remember(factory) {
             factory.create()
         }
-    val model: SettingsMviModel = koinViewModel<SettingsViewModel> {
-        parametersOf(SettingsViewModelArgs(controller))
-    }
+    val model: SettingsMviModel = assistedMetroViewModel<SettingsViewModel>(
+        extras = CreationExtras {
+            this[SettingsViewModel.KEY_ARGS] = SettingsViewModelArgs(controller)
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

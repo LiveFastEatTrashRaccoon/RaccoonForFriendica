@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.report
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReportCategory
@@ -10,16 +11,21 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeI
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
-import com.livefast.eattrash.raccoonforfriendica.feature.report.di.CreateReportViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@AssistedInject
 class CreateReportViewModel(
-    @InjectedParam args: CreateReportViewModelArgs,
+    @Assisted args: CreateReportViewModelArgs,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
@@ -117,4 +123,20 @@ class CreateReportViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<CreateReportViewModelArgs>()
+    }
+}
+
+data class CreateReportViewModelArgs(val userId: String, val entryId: String)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(CreateReportViewModel::class)
+@ContributesIntoMap(AppScope::class)
+interface CreateReportViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): CreateReportViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: CreateReportViewModelArgs): CreateReportViewModel
 }

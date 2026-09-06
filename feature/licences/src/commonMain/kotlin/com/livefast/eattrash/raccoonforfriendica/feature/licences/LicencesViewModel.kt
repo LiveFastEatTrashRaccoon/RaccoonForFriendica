@@ -7,12 +7,23 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDeleg
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItem
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItemType
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@ContributesIntoMap(
+    AppScope::class,
+    binding = binding<
+        @ViewModelKey(LicencesViewModel::class)
+        ViewModel,
+        >(),
+)
+@Inject
 class LicencesViewModel(private val settingsRepository: SettingsRepository) :
     ViewModel(),
     MviModelDelegate<LicencesMviModel.Intent, LicencesMviModel.State, LicencesMviModel.Effect>
@@ -44,8 +55,7 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                             type = LicenceItemType.Library,
                             title = "Android Jetpack",
                             subtitle = """
-                                    A suite of libraries, tools, and guidance to help developers write high-quality
-                                    apps easier
+                                    A suite of libraries, tools, and guidance to help developers write high-quality apps easier
                             """.trimIndent(),
                             url = LicenceUrls.ANDROIDX,
                         )
@@ -61,8 +71,7 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                             type = LicenceItemType.Library,
                             title = "Calf webview",
                             subtitle = """
-                                    Calf is a library that allows you to easily create adaptive UIs and access platform
-                                    specific APIs from your Compose Multiplatform apps
+                                    Calf is a library that allows you to easily create adaptive UIs and access platform-specific APIs from your Compose Multiplatform apps
                             """.trimIndent(),
                             url = LicenceUrls.CALF,
                         )
@@ -85,8 +94,7 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                             type = LicenceItemType.Library,
                             title = "Compose Multiplatform Media Player",
                             subtitle = """
-                                    Compose Multiplatform Media Player is a powerful media player library designed for
-                                    Compose Multiplatform projects
+                                    Compose Multiplatform Media Player is a powerful media player library designed for Compose Multiplatform projects
                             """.trimIndent(),
                             url = LicenceUrls.COMPOSE_MULTIPLATFORM_MEDIA_PLAYER,
                         )
@@ -94,8 +102,9 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                         LicenceItem(
                             type = LicenceItemType.Library,
                             title = "Connectivity",
-                            subtitle =
-                            "Connectivity provides network monitoring capabilities for multiplatform projects",
+                            subtitle = """
+                                Connectivity provides network monitoring capabilities for multiplatform projects
+                            """.trimIndent(),
                             url = LicenceUrls.CONNECTIVITY,
                         )
                     this +=
@@ -104,13 +113,6 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                             title = "Friendica logo",
                             subtitle = "Logo of the Friendica project",
                             url = LicenceUrls.FRIENDICA,
-                        )
-                    this +=
-                        LicenceItem(
-                            type = LicenceItemType.Library,
-                            title = "Koin",
-                            subtitle = "The pragmatic Kotlin & Kotlin Multiplatform Dependency Injection framework",
-                            url = LicenceUrls.KOIN,
                         )
                     this +=
                         LicenceItem(
@@ -147,10 +149,18 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                             type = LicenceItemType.Library,
                             title = "MaterialKolor",
                             subtitle = """
-                                    A Compose Multiplatform library for creating dynamic Material Design 3 color
-                                    palettes
+                                    A Compose Multiplatform library for creating dynamic Material Design 3 color palettes
                             """.trimIndent(),
                             url = LicenceUrls.MATERIAL_KOLOR,
+                        )
+                    this +=
+                        LicenceItem(
+                            type = LicenceItemType.Library,
+                            title = "Metro",
+                            subtitle = """
+                                A compile-time dependency injection framework for Kotlin Multiplatform, powered by a Kotlin compiler plugin
+                            """.trimIndent(),
+                            url = LicenceUrls.METRO,
                         )
                     this +=
                         LicenceItem(
@@ -183,8 +193,7 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                             type = LicenceItemType.Library,
                             title = "UnifiedPush",
                             subtitle = """
-                                    This is a library that can be used by an end user application to receive
-                                    notifications from any unified push provider
+                                    This is a library that can be used by an end user application to receive notifications from any unified push provider
                             """.trimIndent(),
                             url = LicenceUrls.UNIFIED_PUSH,
                         )

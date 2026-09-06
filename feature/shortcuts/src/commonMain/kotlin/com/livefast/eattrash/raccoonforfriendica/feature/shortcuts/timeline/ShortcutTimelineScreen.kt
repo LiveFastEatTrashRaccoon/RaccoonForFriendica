@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -58,19 +59,19 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.di.ShortcutTimelineViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
-    val model: ShortcutTimelineMviModel = koinViewModel<ShortcutTimelineViewModel> {
-        parametersOf(ShortcutTimelineViewModelArgs(node))
-    }
+    val model: ShortcutTimelineMviModel = assistedMetroViewModel<ShortcutTimelineViewModel>(
+        extras = CreationExtras {
+            this[ShortcutTimelineViewModel.KEY_ARGS] = ShortcutTimelineViewModelArgs(node)
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()

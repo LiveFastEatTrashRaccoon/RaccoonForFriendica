@@ -8,10 +8,21 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportMan
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportTag
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.isValidEmail
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@ContributesIntoMap(
+    AppScope::class,
+    binding = binding<
+        @ViewModelKey(UserFeedbackViewModel::class)
+        ViewModel,
+        >(),
+)
+@Inject
 class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) :
     ViewModel(),
     MviModelDelegate<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect>

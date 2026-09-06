@@ -31,15 +31,21 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LogoutUseCase
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
+import kotlin.time.Duration.Companion.milliseconds
 
-@KoinViewModel
+@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(MyAccountViewModel::class) ViewModel>())
+@Inject
 @OptIn(FlowPreview::class)
 class MyAccountViewModel(
     private val userRepository: UserRepository,
@@ -66,7 +72,7 @@ class MyAccountViewModel(
         viewModelScope.launch {
             identityRepository
                 .currentUser
-                .debounce(750)
+                .debounce(750.milliseconds)
                 .onEach { user ->
                     val currentUser =
                         user?.let {

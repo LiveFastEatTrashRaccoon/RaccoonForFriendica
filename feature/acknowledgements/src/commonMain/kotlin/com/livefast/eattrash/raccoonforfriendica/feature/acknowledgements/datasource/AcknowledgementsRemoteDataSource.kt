@@ -1,5 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.datasource
 
-internal interface AcknowledgementsRemoteDataSource {
+interface AcknowledgementsRemoteDataSource {
     suspend fun getAcknowledgements(): List<Acknowledgement>?
 }

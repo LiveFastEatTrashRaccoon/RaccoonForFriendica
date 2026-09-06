@@ -4,9 +4,14 @@ import androidx.lifecycle.ViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
-import org.koin.core.annotation.KoinViewModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 
-@KoinViewModel
+@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(LoginIntroViewModel::class) ViewModel>())
+@Inject
 class LoginIntroViewModel(private val authManager: AuthManager) :
     ViewModel(),
     MviModelDelegate<LoginIntroMviModel.Intent, LoginIntroMviModel.State, LoginIntroMviModel.Effect>

@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.entrydetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
@@ -35,17 +36,23 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.di.EntryDetailViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
-@KoinViewModel
+@AssistedInject
 class EntryDetailViewModel(
-    @InjectedParam args: EntryDetailViewModelArgs,
+    @Assisted args: EntryDetailViewModelArgs,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -753,4 +760,21 @@ class EntryDetailViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<EntryDetailViewModelArgs>()
+    }
+}
+
+@Serializable
+data class EntryDetailViewModelArgs(val id: String, val swipeNavigationEnabled: Boolean)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(EntryDetailViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface EntryDetailViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): EntryDetailViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: EntryDetailViewModelArgs): EntryDetailViewModel
 }

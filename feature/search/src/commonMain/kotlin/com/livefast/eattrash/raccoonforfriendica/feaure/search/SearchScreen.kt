@@ -75,16 +75,15 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.toReadableName
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
-    val model: SearchMviModel = koinViewModel<SearchViewModel>()
+fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroViewModel<SearchViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()

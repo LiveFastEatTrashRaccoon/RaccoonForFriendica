@@ -37,6 +37,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Imag
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
@@ -45,10 +50,16 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 import kotlin.time.Duration
 
-@KoinViewModel
+@ContributesIntoMap(
+    AppScope::class,
+    binding = binding<
+        @ViewModelKey(TimelineViewModel::class)
+        ViewModel,
+        >(),
+)
+@Inject
 @OptIn(FlowPreview::class)
 class TimelineViewModel(
     private val paginationManager: TimelinePaginationManager,

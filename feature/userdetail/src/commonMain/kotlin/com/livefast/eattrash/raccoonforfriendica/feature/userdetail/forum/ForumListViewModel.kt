@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
@@ -32,18 +33,24 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.di.ForumListViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum.ForumListViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
-@KoinViewModel
+@AssistedInject
 class ForumListViewModel(
-    @InjectedParam args: ForumListViewModelArgs,
+    @Assisted args: ForumListViewModelArgs,
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -493,4 +500,21 @@ class ForumListViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<ForumListViewModelArgs>()
+    }
+}
+
+@Serializable
+data class ForumListViewModelArgs(val id: String)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(ForumListViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface ForumListViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): ForumListViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: ForumListViewModelArgs): ForumListViewModel
 }

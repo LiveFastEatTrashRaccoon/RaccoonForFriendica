@@ -44,14 +44,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserFeedbackScreen(modifier: Modifier = Modifier) {
-    val model: UserFeedbackMviModel = koinViewModel<UserFeedbackViewModel>()
+fun UserFeedbackScreen(
+    modifier: Modifier = Modifier,
+    model: UserFeedbackMviModel = metroViewModel<UserFeedbackViewModel>(),
+) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

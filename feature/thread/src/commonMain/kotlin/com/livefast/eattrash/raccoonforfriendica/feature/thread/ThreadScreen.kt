@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -84,12 +85,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import com.livefast.eattrash.raccoonforfriendica.feature.thread.di.ThreadViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,14 +99,14 @@ fun ThreadScreen(
     modifier: Modifier = Modifier,
     otherInstance: String? = null,
 ) {
-    val model: ThreadMviModel = koinViewModel<ThreadViewModel> {
-        parametersOf(
-            ThreadViewModelArgs(
+    val model: ThreadMviModel = assistedMetroViewModel<ThreadViewModel>(
+        extras = CreationExtras {
+            this[ThreadViewModel.KEY_ARGS] = ThreadViewModelArgs(
                 entryId = entryId,
                 swipeNavigationEnabled = swipeNavigationEnabled,
-            ),
-        )
-    }
+            )
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

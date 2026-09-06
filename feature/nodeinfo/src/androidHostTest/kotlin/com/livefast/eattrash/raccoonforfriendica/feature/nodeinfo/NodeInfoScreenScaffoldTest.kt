@@ -10,19 +10,14 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
-import com.livefast.eattrash.raccoonforfriendica.core.di.testutils.KoinTestRule
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.DummyUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.ProvideUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.UiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.ProvideStrings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
-import com.livefast.eattrash.raccoonforfriendica.core.l10n.di.L10nModule
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.ProvideResources
-import com.livefast.eattrash.raccoonforfriendica.core.resources.di.ResourcesModule
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeInfoModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -34,12 +29,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.compose.koinInject
-import org.koin.dsl.module
-import org.koin.plugin.module.dsl.modules
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [35])
 class NodeInfoScreenScaffoldTest {
     private val uriHandler = mock<UriHandler>()
 
@@ -48,27 +42,14 @@ class NodeInfoScreenScaffoldTest {
             every { canPop } returns MutableStateFlow(true)
         }
     private val mainRouter = mock<MainRouter>(MockMode.autoUnit)
+    private val uiDeps: UiDeps =
+        object : DummyUiDeps() {
+            override val mainRouter = this@NodeInfoScreenScaffoldTest.mainRouter
+            override val navigationCoordinator = this@NodeInfoScreenScaffoldTest.navigationCoordinator
+        }
 
     @get:Rule
     val composeTestRule = createComposeRule()
-
-    @get:Rule
-    val diRule =
-        KoinTestRule {
-            modules(L10nModule::class, ResourcesModule::class)
-            modules(
-                module {
-                    single<UiDeps> {
-                        object : DummyUiDeps() {
-                            override val resources: CoreResources = get()
-                            override val strings: Strings = get()
-                            override val mainRouter = this@NodeInfoScreenScaffoldTest.mainRouter
-                            override val navigationCoordinator = this@NodeInfoScreenScaffoldTest.navigationCoordinator
-                        }
-                    }
-                },
-            )
-        }
 
     @Test
     fun `given all data present when displayed then content is as expected`() {
@@ -171,7 +152,6 @@ class NodeInfoScreenScaffoldTest {
 
     private fun ComposeContentTestRule.setup(state: NodeInfoMviModel.State) {
         setContent {
-            val uiDeps: UiDeps = koinInject()
             ProvideUiDeps(uiDeps) {
                 ProvideResources(resources = uiDeps.resources) {
                     ProvideStrings(lang = Locales.EN, strings = uiDeps.strings) {

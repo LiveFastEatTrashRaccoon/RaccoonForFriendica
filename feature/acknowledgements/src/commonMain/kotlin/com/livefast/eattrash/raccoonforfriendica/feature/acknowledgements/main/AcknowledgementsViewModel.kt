@@ -5,11 +5,22 @@ import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.repository.AcknowledgementsRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
-internal class AcknowledgementsViewModel(private val acknowledgementsRepository: AcknowledgementsRepository) :
+@ContributesIntoMap(
+    AppScope::class,
+    binding = binding<
+        @ViewModelKey(AcknowledgementsViewModel::class)
+        ViewModel,
+        >(),
+)
+@Inject
+class AcknowledgementsViewModel(private val acknowledgementsRepository: AcknowledgementsRepository) :
     ViewModel(),
     MviModelDelegate<AcknowledgementsMviModel.Intent, AcknowledgementsMviModel.State, AcknowledgementsMviModel.Effect>
     by DefaultMviModelDelegate(initialState = AcknowledgementsMviModel.State()),

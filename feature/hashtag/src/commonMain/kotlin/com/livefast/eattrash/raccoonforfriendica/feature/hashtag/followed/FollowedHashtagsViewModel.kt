@@ -12,13 +12,24 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Follo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
+@ContributesIntoMap(
+    AppScope::class,
+    binding = binding<
+        @ViewModelKey(FollowedHashtagsViewModel::class)
+        ViewModel,
+        >(),
+)
+@Inject
 class FollowedHashtagsViewModel(
     private val cache: FollowedHashtagCache,
     private val paginationManager: FollowedHashtagsPaginationManager,

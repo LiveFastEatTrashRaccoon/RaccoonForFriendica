@@ -2,6 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.repos
 
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.models.AcknowledgementModel
 
-internal interface AcknowledgementsRepository {
+interface AcknowledgementsRepository {
     suspend fun getAll(): List<AcknowledgementModel>?
 }

@@ -47,6 +47,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -65,20 +66,23 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItem
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.MessageItemPlaceholder
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.di.ConversationViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifier = Modifier) {
-    val model: ConversationMviModel = koinViewModel<ConversationViewModel> {
-        parametersOf(ConversationViewModelArgs(otherUserId = otherUserId, parentUri = parentUri))
-    }
+    val model: ConversationMviModel = assistedMetroViewModel<ConversationViewModel>(
+        extras = CreationExtras {
+            this[ConversationViewModel.KEY_ARGS] = ConversationViewModelArgs(
+                otherUserId = otherUserId,
+                parentUri = parentUri,
+            )
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()

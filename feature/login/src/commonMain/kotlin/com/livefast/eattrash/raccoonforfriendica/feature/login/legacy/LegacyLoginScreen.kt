@@ -60,14 +60,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePadding
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LegacyLoginScreen(modifier: Modifier = Modifier) {
-    val model: LegacyLoginMviModel = koinViewModel<LegacyLoginViewModel>()
+fun LegacyLoginScreen(
+    modifier: Modifier = Modifier,
+    model: LegacyLoginMviModel = metroViewModel<LegacyLoginViewModel>(),
+) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

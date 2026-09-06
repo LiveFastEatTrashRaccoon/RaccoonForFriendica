@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
@@ -11,7 +12,14 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.CircleMembersViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,13 +29,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
 
-@KoinViewModel
 @OptIn(FlowPreview::class)
+@AssistedInject
 class CircleMembersViewModel(
-    @InjectedParam args: CircleMembersViewModelArgs,
+    @Assisted args: CircleMembersViewModelArgs,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val settingsRepository: SettingsRepository,
@@ -215,4 +221,20 @@ class CircleMembersViewModel(
             }
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<CircleMembersViewModelArgs>()
+    }
+}
+
+data class CircleMembersViewModelArgs(val id: String)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(CircleMembersViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface CircleMembersViewModelFactory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): CircleMembersViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: CircleMembersViewModelArgs): CircleMembersViewModel
 }

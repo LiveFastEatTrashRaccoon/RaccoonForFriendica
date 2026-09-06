@@ -66,15 +66,17 @@ import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.Manag
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.ManageBlocksSection
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.data.toReadableName
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ManageBlocksScreen(modifier: Modifier = Modifier) {
-    val model: ManageBlocksMviModel = koinViewModel<ManageBlocksViewModel>()
+fun ManageBlocksScreen(
+    modifier: Modifier = Modifier,
+    model: ManageBlocksMviModel = metroViewModel<ManageBlocksViewModel>(),
+) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()

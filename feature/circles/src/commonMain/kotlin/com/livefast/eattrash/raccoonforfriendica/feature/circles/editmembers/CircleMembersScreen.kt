@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -56,19 +57,19 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleAddUserDialog
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.di.CircleMembersViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAction: (() -> Unit)? = null) {
-    val model: CircleMembersMviModel = koinViewModel<CircleMembersViewModel> {
-        parametersOf(CircleMembersViewModelArgs(id))
-    }
+    val model: CircleMembersMviModel = assistedMetroViewModel<CircleMembersViewModel>(
+        extras = CreationExtras {
+            this[CircleMembersViewModel.KEY_ARGS] = CircleMembersViewModelArgs(id)
+        },
+    )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)

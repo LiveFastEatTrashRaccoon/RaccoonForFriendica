@@ -31,12 +31,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.components.LicenceItem
-import org.koin.compose.viewmodel.koinViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LicencesScreen(modifier: Modifier = Modifier) {
-    val model: LicencesMviModel = koinViewModel<LicencesViewModel>()
+fun LicencesScreen(modifier: Modifier = Modifier, model: LicencesMviModel = metroViewModel<LicencesViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()

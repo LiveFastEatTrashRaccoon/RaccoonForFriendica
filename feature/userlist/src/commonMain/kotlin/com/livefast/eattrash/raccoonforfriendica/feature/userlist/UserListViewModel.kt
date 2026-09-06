@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.userlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
@@ -21,17 +22,23 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUs
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.userlist.di.UserListViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListViewModel.Companion.KEY_ARGS
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.KoinViewModel
+import kotlinx.serialization.Serializable
 
-@KoinViewModel
+@AssistedInject
 class UserListViewModel(
-    @InjectedParam args: UserListViewModelArgs,
+    @Assisted args: UserListViewModelArgs,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
@@ -262,4 +269,21 @@ class UserListViewModel(
             emitEffect(UserListMviModel.Effect.SaveList(content))
         }
     }
+
+    companion object {
+        val KEY_ARGS = CreationExtras.Key<UserListViewModelArgs>()
+    }
+}
+
+@Serializable
+data class UserListViewModelArgs(val type: UserListType, val userId: String, val entryId: String)
+
+@AssistedFactory
+@ViewModelAssistedFactoryKey(UserListViewModel::class)
+@ContributesIntoMap(AppScope::class)
+fun interface Factory : ViewModelAssistedFactory {
+    override fun create(extras: CreationExtras): UserListViewModel =
+        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+
+    fun create(@Assisted args: UserListViewModelArgs): UserListViewModel
 }

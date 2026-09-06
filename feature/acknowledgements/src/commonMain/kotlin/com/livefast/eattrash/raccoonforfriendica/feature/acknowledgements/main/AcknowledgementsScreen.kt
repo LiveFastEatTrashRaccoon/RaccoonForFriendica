@@ -35,12 +35,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.components.AcknowledgementItem
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.components.AcknowledgementItemPlaceholder
-import org.koin.compose.viewmodel.koinViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AcknowledgementsScreen(modifier: Modifier = Modifier) {
-    val model: AcknowledgementsMviModel = koinViewModel<AcknowledgementsViewModel>()
+fun AcknowledgementsScreen(
+    modifier: Modifier = Modifier,
+    model: AcknowledgementsMviModel = metroViewModel<AcknowledgementsViewModel>(),
+) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
