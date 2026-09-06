@@ -5,12 +5,6 @@ import os
 @main
 struct iOSApp: App {
 
-    private let koinApp: shared.Koin_coreKoinApplication
-
-    init() {
-        koinApp = DiHelperKt.setupDi(config: nil)
-    }
-
     var body: some Scene {
         WindowGroup {
              ZStack {
@@ -41,9 +35,8 @@ struct iOSApp: App {
         }
 
         Task {
-            let authManager = koinApp.getAuthManager()
             do {
-                try await authManager.performTokenExchange(url: url.absoluteString)
+                try await IosAuthHelper.shared.performTokenExchange(url: url.absoluteString)
             } catch {
                 logger.log("Auth error: \(error)")
             }
