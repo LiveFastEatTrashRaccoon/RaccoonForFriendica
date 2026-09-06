@@ -16,16 +16,6 @@ internal fun Project.configureTest(extension: KotlinMultiplatformExtension) =
                     implementation(libs.findLibrary("turbine").dependency)
                 }
             }
-
-            configureEach {
-                when (name) {
-                    "androidHostTest", "androidDeviceTest" -> {
-                        dependencies {
-                            implementation(project(":core:di:testutils"))
-                        }
-                    }
-                }
-            }
         }
     }
 
