@@ -25,12 +25,6 @@ kotlin {
     }
 }
 
-customDiExtension {
-    useCompose()
-    useCompilerPlugin()
-    useAnnotations()
-}
-
 spotless {
     kotlin {
         target("**/BarColorProvider.kt")

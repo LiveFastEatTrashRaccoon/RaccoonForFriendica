@@ -22,12 +22,6 @@ kotlin {
     }
 }
 
-customDiExtension {
-    useCompose()
-    useCompilerPlugin()
-    useAnnotations()
-}
-
 spotless {
     kotlin {
         target("**/ProvideUiDeps.kt")

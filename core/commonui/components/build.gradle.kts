@@ -1,7 +1,6 @@
 plugins {
     id("com.livefast.eattrash.kotlinMultiplatform")
     id("com.livefast.eattrash.composeMultiplatform")
-    id("com.livefast.eattrash.di")
     id("com.livefast.eattrash.spotless")
 }
 
@@ -22,11 +21,4 @@ kotlin {
             }
         }
     }
-}
-
-customDiExtension {
-    useCompose()
-    // validation disabled to bypass Koin compiler plugin limitations with cross-module metadata on iOS
-    useCompilerPlugin(enableValidation = false)
-    useAnnotations()
 }

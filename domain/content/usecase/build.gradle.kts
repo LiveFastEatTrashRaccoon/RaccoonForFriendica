@@ -25,8 +25,3 @@ kotlin {
         }
     }
 }
-
-customDiExtension {
-    useCompilerPlugin()
-    useAnnotations()
-}

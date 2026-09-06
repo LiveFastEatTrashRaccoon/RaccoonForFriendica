@@ -6,14 +6,14 @@ plugins {
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
     alias(libs.plugins.compose.desktop.linux.deps)
+    alias(libs.plugins.metro)
 }
 
 kotlin {
     sourceSets {
         jvmMain {
             dependencies {
-                implementation(project.dependencies.platform(libs.koin.bom))
-                implementation(libs.koin.core)
+                implementation(libs.metrox.viewmodel.compose)
 
                 implementation(projects.shared)
             }

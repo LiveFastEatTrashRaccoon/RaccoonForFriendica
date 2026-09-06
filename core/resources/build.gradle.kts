@@ -16,12 +16,6 @@ kotlin {
     }
 }
 
-customDiExtension {
-    useCompose()
-    useCompilerPlugin()
-    useAnnotations()
-}
-
 spotless {
     kotlin {
         target("**/ProvideResources.kt")
