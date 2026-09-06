@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.core.api.dto
+package com.livefast.eattrash.raccoonforfriendica.core.api.form
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

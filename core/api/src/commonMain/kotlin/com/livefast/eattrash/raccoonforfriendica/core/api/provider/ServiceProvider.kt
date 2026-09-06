@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.CollectionService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
@@ -31,6 +32,7 @@ interface ServiceProvider {
     val currentNode: String
     val announcement: AnnouncementService
     val app: AppService
+    val collection: CollectionService
     val directMessage: DirectMessageService
     val event: EventService
     val followRequest: FollowRequestService

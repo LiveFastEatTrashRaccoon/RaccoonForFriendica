@@ -1,10 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.dto.EditListMembersForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
 
 interface ListService {
     suspend fun getAll(): List<UserList>

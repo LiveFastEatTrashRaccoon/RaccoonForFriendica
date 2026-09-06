@@ -4,6 +4,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementSe
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementServiceFactory
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppServiceFactory
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.CollectionService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.CollectionServiceFactory
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageServiceFactory
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
@@ -46,12 +48,14 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import kotlin.reflect.KClass
+import kotlin.reflect.cast
 
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultServiceFactory(
     private val announcementServiceFactory: AnnouncementServiceFactory,
     private val appServiceFactory: AppServiceFactory,
+    private val collectionServiceFactory: CollectionServiceFactory,
     private val directMessageServiceFactory: DirectMessageServiceFactory,
     private val eventServiceFactory: EventServiceFactory,
     private val followRequestServiceFactory: FollowRequestServiceFactory,
@@ -77,6 +81,7 @@ class DefaultServiceFactory(
         val service = when (clazz) {
             AnnouncementService::class -> announcementServiceFactory.create(args)
             AppService::class -> appServiceFactory.create(args)
+            CollectionService::class -> collectionServiceFactory.create(args)
             DirectMessageService::class -> directMessageServiceFactory.create(args)
             EventService::class -> eventServiceFactory.create(args)
             FollowRequestService::class -> followRequestServiceFactory.create(args)
@@ -98,7 +103,6 @@ class DefaultServiceFactory(
             UserService::class -> userServiceFactory.create(args)
             else -> throw IllegalArgumentException("Unknown service class: ${clazz.simpleName}")
         }
-        @Suppress("UNCHECKED_CAST")
-        return service as T
+        return clazz.cast(service)
     }
 }

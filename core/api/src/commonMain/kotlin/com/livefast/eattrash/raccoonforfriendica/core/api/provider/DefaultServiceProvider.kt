@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.provider
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AnnouncementService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.AppService
+import com.livefast.eattrash.raccoonforfriendica.core.api.service.CollectionService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.DirectMessageService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.EventService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.FollowRequestService
@@ -68,6 +69,7 @@ class DefaultServiceProvider(
 
     override lateinit var announcement: AnnouncementService
     override lateinit var app: AppService
+    override lateinit var collection: CollectionService
     override lateinit var directMessage: DirectMessageService
     override lateinit var event: EventService
     override lateinit var followRequest: FollowRequestService
@@ -201,6 +203,7 @@ class DefaultServiceProvider(
         val creationArgs = ServiceCreationArgs(baseUrl = baseUrl, client = currentClient)
         announcement = factory.create(clazz = AnnouncementService::class, args = creationArgs)
         app = factory.create(clazz = AppService::class, args = creationArgs)
+        collection = factory.create(clazz = CollectionService::class, args = creationArgs)
         directMessage = factory.create(clazz = DirectMessageService::class, args = creationArgs)
         event = factory.create(clazz = EventService::class, args = creationArgs)
         followRequest = factory.create(clazz = FollowRequestService::class, args = creationArgs)

@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Collections
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
@@ -189,6 +190,22 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
+
+    override suspend fun getCollections(id: String, offset: Int, limit: Int): Collections {
+        val response = client.get("$baseUrl/v1/accounts/$id/collections") {
+            parameter("offset", offset)
+            parameter("limit", limit)
+        }
+        return response.body<Collections>()
+    }
+
+    override suspend fun getCollectionsContaining(id: String, offset: Int, limit: Int): Collections {
+        val response = client.get("$baseUrl/v1/accounts/$id/in_collections") {
+            parameter("offset", offset)
+            parameter("limit", limit)
+        }
+        return response.body<Collections>()
+    }
 }
 
 @AssistedFactory
