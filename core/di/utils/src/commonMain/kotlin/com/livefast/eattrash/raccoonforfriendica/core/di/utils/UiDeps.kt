@@ -25,7 +25,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.EntryAct
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 
 interface UiDeps {
-    // core
     val appInfoRepository: AppInfoRepository
     val barColorProvider: BarColorProvider
     val blurHashRepository: BlurHashRepository
@@ -44,8 +43,6 @@ interface UiDeps {
     val shareHelper: ShareHelper
     val strings: Strings
     val themeRepository: ThemeRepository
-
-    // domain
     val entryActionRepository: EntryActionRepository
 
     fun getCustomUriHandler(uriHandler: UriHandler): CustomUriHandler

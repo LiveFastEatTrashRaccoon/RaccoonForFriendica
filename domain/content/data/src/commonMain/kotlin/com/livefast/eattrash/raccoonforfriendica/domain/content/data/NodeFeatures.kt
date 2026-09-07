@@ -17,4 +17,5 @@ data class NodeFeatures(
     val supportsInlineImages: Boolean = false,
     val supportsLocalVisibility: Boolean = false,
     val supportsQuotePolicies: Boolean = false,
+    val supportsCollections: Boolean = false,
 )

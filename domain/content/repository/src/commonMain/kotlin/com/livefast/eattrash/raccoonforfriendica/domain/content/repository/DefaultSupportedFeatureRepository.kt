@@ -18,24 +18,28 @@ class DefaultSupportedFeatureRepository(private val nodeInfoRepository: NodeInfo
 
     override suspend fun refresh() {
         val info = nodeInfoRepository.getInfo()
+        val isFriendica = info.isFriendica
+        val isMastodonOrDerivative = !info.isFriendica
+        val isMastodonExperimental = info.isGoToSocial || info.isHomeTown
         features.update {
             it.copy(
-                supportsPhotoGallery = info.isFriendica,
-                supportsDirectMessages = info.isFriendica,
-                supportsEntryTitles = info.isFriendica,
-                supportsCustomCircles = info.isFriendica,
-                supportReportCategoryRuleViolation = !info.isFriendica,
-                supportsPolls = !info.isFriendica,
-                supportsBBCode = info.isFriendica,
+                supportsPhotoGallery = isFriendica,
+                supportsDirectMessages = isFriendica,
+                supportsEntryTitles = isFriendica,
+                supportsCustomCircles = isFriendica,
+                supportReportCategoryRuleViolation = isMastodonOrDerivative,
+                supportsPolls = isMastodonOrDerivative,
+                supportsBBCode = isFriendica,
                 supportsMarkdown = true,
-                supportsEntryShare = info.isFriendica,
-                supportsCalendar = info.isFriendica,
-                supportsAnnouncements = !info.isFriendica,
-                supportsDislike = info.isFriendica,
-                supportsTranslation = !info.isFriendica,
-                supportsInlineImages = info.isFriendica,
-                supportsLocalVisibility = info.isGoToSocial || info.isHomeTown,
-                supportsQuotePolicies = !info.isFriendica,
+                supportsEntryShare = isFriendica,
+                supportsCalendar = isFriendica,
+                supportsAnnouncements = isMastodonOrDerivative,
+                supportsDislike = isFriendica,
+                supportsTranslation = isMastodonOrDerivative,
+                supportsInlineImages = isFriendica,
+                supportsLocalVisibility = isMastodonExperimental,
+                supportsQuotePolicies = isMastodonOrDerivative,
+                supportsCollections = isMastodonOrDerivative,
             )
         }
     }
