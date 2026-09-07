@@ -31,7 +31,3 @@ spotless {
         }
     }
 }
-
-customDiExtension {
-    useCompose(withViewModels = true)
-}

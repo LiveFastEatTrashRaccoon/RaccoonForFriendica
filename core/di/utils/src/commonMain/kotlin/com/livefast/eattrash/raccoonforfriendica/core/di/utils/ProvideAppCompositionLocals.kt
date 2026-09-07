@@ -10,14 +10,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.toLanguageDirection
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
-import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
-import dev.zacsweers.metrox.viewmodel.MetroViewModelFactory
 
 @Composable
 fun ProvideAppCompositionLocals(
     uiDeps: UiDeps,
     lang: String = Locales.EN,
-    metroViewModelFactory: MetroViewModelFactory? = null,
     uriHandler: UriHandler? = null,
     content: @Composable () -> Unit,
 ) {
@@ -26,7 +23,6 @@ fun ProvideAppCompositionLocals(
         add(LocalResources provides uiDeps.resources)
         add(LocalStrings provides uiDeps.strings)
         add(LocalLayoutDirection provides lang.toLanguageDirection())
-        metroViewModelFactory?.let { add(LocalMetroViewModelFactory provides it) }
         uriHandler?.let { add(LocalUriHandler provides it) }
     }
 

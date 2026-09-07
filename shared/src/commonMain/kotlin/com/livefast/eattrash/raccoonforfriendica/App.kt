@@ -17,6 +17,7 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -88,6 +89,7 @@ import com.livefast.eattrash.raccoonforfriendica.main.RootMviModel
 import com.livefast.eattrash.raccoonforfriendica.main.RootViewModel
 import com.livefast.eattrash.raccoonforfriendica.navigation.getEntryProvider
 import com.livefast.eattrash.raccoonforfriendica.navigation.isDetailDestination
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.FlowPreview
@@ -101,14 +103,10 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
     val uiDeps: UiDeps = graph.uiDeps
-    val barColorProvider = uiDeps.barColorProvider
-    val colorSchemeProvider = uiDeps.colorSchemeProvider
     val customUriHandler = uiDeps.getCustomUriHandler(LocalUriHandler.current)
     val drawerCoordinator = uiDeps.drawerCoordinator
     val navigationCoordinator = uiDeps.navigationCoordinator
     val networkStateObserver = uiDeps.networkStateObserver
-    val themeRepository = uiDeps.themeRepository
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
     val scope = rememberCoroutineScope()
@@ -168,10 +166,8 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
         }
     }
 
-    ProvideAppCompositionLocals(
-        uiDeps = uiDeps,
-        metroViewModelFactory = graph.metroViewModelFactory,
-        uriHandler = customUriHandler,
+    CompositionLocalProvider(
+        LocalMetroViewModelFactory provides graph.metroViewModelFactory
     ) {
         val model: RootMviModel = metroViewModel<RootViewModel>()
         val uiState by model.uiState.collectAsState()
@@ -187,13 +183,12 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
         ProvideAppCompositionLocals(
             uiDeps = uiDeps,
             lang = uiState.currentSettings?.lang ?: Locales.EN,
-            metroViewModelFactory = graph.metroViewModelFactory,
             uriHandler = customUriHandler,
         ) {
             AppTheme(
-                repository = themeRepository,
-                barColorProvider = barColorProvider,
-                colorSchemeProvider = colorSchemeProvider,
+                repository = uiDeps.themeRepository,
+                barColorProvider = uiDeps.barColorProvider,
+                colorSchemeProvider = uiDeps.colorSchemeProvider,
                 useDynamicColors = uiState.currentSettings?.dynamicColors == true,
                 barTheme = uiState.currentSettings?.barTheme ?: UiBarTheme.Transparent,
             ) {
