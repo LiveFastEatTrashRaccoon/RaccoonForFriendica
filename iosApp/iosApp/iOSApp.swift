@@ -36,7 +36,8 @@ struct iOSApp: App {
 
         Task {
             do {
-                try await IosAuthHelper.shared.performTokenExchange(url: url.absoluteString)
+                let authManager = MainViewControllerKt.iosRootGraph.authManager
+                try await authManager.performTokenExchange(url: url.absoluteString)
             } catch {
                 logger.log("Auth error: \(error)")
             }

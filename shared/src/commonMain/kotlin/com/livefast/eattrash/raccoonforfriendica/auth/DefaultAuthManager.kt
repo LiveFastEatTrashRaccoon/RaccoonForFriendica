@@ -6,7 +6,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.Temporar
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IosAuthHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toInt
 import dev.zacsweers.metro.AppScope
@@ -40,10 +39,6 @@ class DefaultAuthManager(
 
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private var localServerPort: Int? = null
-
-    init {
-        IosAuthHelper.authManager = this
-    }
 
     override val credentialFlow = MutableSharedFlow<ApiCredentials>()
 

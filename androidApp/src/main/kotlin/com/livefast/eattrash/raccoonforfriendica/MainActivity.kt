@@ -27,8 +27,8 @@ import kotlin.time.Duration.Companion.seconds
 class MainActivity : ComponentActivity() {
     private val rootGraph: AndroidRootGraph get() = (application as MainApplication).rootGraph
     private val authManager: AuthManager get() = rootGraph.authManager
-    private val mainRouter: MainRouter get() = rootGraph.mainRouter
-    private val navigationCoordinator: NavigationCoordinator get() = rootGraph.navigationCoordinator
+    private val mainRouter: MainRouter get() = rootGraph.uiDeps.mainRouter
+    private val navigationCoordinator: NavigationCoordinator get() = rootGraph.uiDeps.navigationCoordinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var loadingFinished = false
@@ -78,7 +78,6 @@ class MainActivity : ComponentActivity() {
             addCallback(backPressedCallback)
             addCallback(finishBackPressedCallback)
         }
-        val rootGraph = (application as MainApplication).rootGraph
         setContent {
             App(
                 graph = rootGraph,

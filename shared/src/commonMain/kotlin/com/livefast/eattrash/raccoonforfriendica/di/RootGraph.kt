@@ -8,7 +8,5 @@ import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 
 interface RootGraph : ViewModelGraph {
     val authManager: AuthManager
-    val mainRouter: MainRouter
-    val navigationCoordinator: NavigationCoordinator
     val uiDeps: UiDeps
 }
