@@ -17,15 +17,11 @@ import java.util.Collections.max
 
 internal class CheckNotificationWorker(private val context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
-
-    private val inboxManager: InboxManager by lazy {
-        val component = (applicationContext as? MetroApplication)?.appComponentProviders as? PullNotificationComponent
-        component?.inboxManager ?: error("PullNotificationComponent not found in MetroApplication")
-    }
-    private val strings: Strings by lazy {
-        val component = (applicationContext as? MetroApplication)?.appComponentProviders as? PullNotificationComponent
-        component?.strings ?: error("PullNotificationComponent not found in MetroApplication")
-    }
+    private val component: PullNotificationComponent get() =
+        (applicationContext as? MetroApplication)?.appComponentProviders as? PullNotificationComponent
+            ?: error("PullNotificationComponent not found in MetroApplication")
+    private val inboxManager: InboxManager by lazy { component.inboxManager }
+    private val strings: Strings by lazy { component.strings }
 
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
