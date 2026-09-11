@@ -1,6 +1,5 @@
 <div align="center">
-  <a href="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/build.yml"><img alt="badge for build status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/build.yml/badge.svg" /></a>
-  <a href="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml"><img alt="badge for unit test status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/unit_tests.yml/badge.svg" /></a>
+  <a href="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/build.yml"><img alt="badge for CI status" src="https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/actions/workflows/build.yml/badge.svg" /></a>
   <a href="https://hosted.weblate.org/engage/raccoonforfriendica/"><img src="https://hosted.weblate.org/widget/raccoonforfriendica/svg-badge.svg" alt="translation status" /></a>
   <a href="https://codecov.io/gh/LiveFastEatTrashRaccoon/RaccoonForFriendica" ><img alt="badge for code coverage" src="https://codecov.io/gh/LiveFastEatTrashRaccoon/RaccoonForFriendica/branch/master/graph/badge.svg?token=VADFKJC8DF"/></a>
   <a href="https://play.google.com/store/apps/details?id=com.livefast.eattrash.raccoonforfriendica" target="_blank"><img alt="Play Store badge" src="https://img.shields.io/badge/Google%20Play-1.0.0-34A853?logo=google-play" /></a>
