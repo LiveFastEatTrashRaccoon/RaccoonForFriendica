@@ -190,7 +190,7 @@ class UserListViewModel(
     private fun List<UserModel>.preloadImages() {
         mapNotNull { user ->
             user.avatar?.takeIf { it.isNotEmpty() }
-        }.onEach { url ->
+        }.forEach { url ->
             imagePreloadManager.preload(url)
         }
     }
