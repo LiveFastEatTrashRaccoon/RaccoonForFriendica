@@ -13,6 +13,7 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(
@@ -77,7 +78,8 @@ class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) 
                     comment = comment,
                 )
                 emitEffect(UserFeedbackMviModel.Effect.Success)
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
                 emitEffect(UserFeedbackMviModel.Effect.Failure(e.message))
             }

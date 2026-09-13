@@ -66,7 +66,7 @@ class DefaultBlurHashDecoder(
             }
         try {
             composeBitmap(width, height, numCompX, numCompY, colors, useCache)
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             if (e is CancellationException) throw e
             null
         }
