@@ -73,6 +73,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.LocalProfileTop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +108,7 @@ fun MyAccountScreen(
     var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
 
     suspend fun goBackToTop() {
-        runCatching {
+        try {
             if (lazyListState.firstVisibleItemIndex > 0) {
                 if (uiState.entries.isEmpty()) {
                     lazyListState.scrollToItem(1)
@@ -119,6 +120,8 @@ fun MyAccountScreen(
                 topAppBarState.heightOffset = 0f
                 topAppBarState.contentOffset = 0f
             }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

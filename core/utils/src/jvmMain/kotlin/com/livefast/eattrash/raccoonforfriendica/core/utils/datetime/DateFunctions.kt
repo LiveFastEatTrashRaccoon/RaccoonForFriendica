@@ -35,9 +35,9 @@ private val backupFormatter = getDateTimeFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 
 private fun String.tryParse(): TemporalAccessor? {
     var res: TemporalAccessor? =
-        runCatching { defaultFormatter.parse(this) }.getOrNull()
+        try { defaultFormatter.parse(this) } catch (_: Exception) { null }
     if (res == null) {
-        res = runCatching { backupFormatter.parse(this) }.getOrNull()
+        res = try { backupFormatter.parse(this) } catch (_: Exception) { null }
     }
     return res
 }
@@ -101,14 +101,16 @@ actual fun getFormattedDate(iso8601Timestamp: String, format: String, withLocalT
     return date.format(formatter)
 }
 
-actual fun parseDate(value: String, format: String, withLocalTimezone: Boolean): String = getDateTimeFormatter(
-    pattern = format,
-    withLocalTimezone = withLocalTimezone,
-).runCatching {
-    parse(value)
-}.getOrNull()
-    ?.let { defaultFormatter.format(it) }
-    .orEmpty()
+actual fun parseDate(value: String, format: String, withLocalTimezone: Boolean): String {
+    val formatter = getDateTimeFormatter(
+        pattern = format,
+        withLocalTimezone = withLocalTimezone,
+    )
+    return try {
+        val date = formatter.parse(value)
+        defaultFormatter.format(date)
+    } catch (_: Exception) { "" }
+}
 
 actual fun getPrettyDate(
     iso8601Timestamp: String,
@@ -189,19 +191,19 @@ actual fun getPrettyDate(
     }
 }
 
-actual fun getDurationFromNowToDate(iso8601Timestamp: String): Duration? = runCatching {
+actual fun getDurationFromNowToDate(iso8601Timestamp: String): Duration? = try {
     val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
     val now = ZonedDateTime.now()
     val duration = JavaDuration.between(now, date)
     duration.toKotlinDuration()
-}.getOrNull()
+} catch (_: Exception) { null }
 
-actual fun getDurationFromDateToNow(iso8601Timestamp: String): Duration? = runCatching {
+actual fun getDurationFromDateToNow(iso8601Timestamp: String): Duration? = try {
     val date = getDateFromIso8601Timestamp(iso8601Timestamp).toOffsetDateTime()
     val now = ZonedDateTime.now()
     val duration = JavaDuration.between(date, now)
     duration.toKotlinDuration()
-}.getOrNull()
+} catch (_: Exception) { null }
 
 actual fun isToday(iso8601Timestamp: String): Boolean {
     val millis = iso8601Timestamp.toEpochMillis()

@@ -84,6 +84,7 @@ import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,12 +120,14 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
-        runCatching {
+        try {
             scope.launch {
                 lazyListState.scrollToItem(0)
                 topAppBarState.heightOffset = 0f
                 topAppBarState.contentOffset = 0f
             }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

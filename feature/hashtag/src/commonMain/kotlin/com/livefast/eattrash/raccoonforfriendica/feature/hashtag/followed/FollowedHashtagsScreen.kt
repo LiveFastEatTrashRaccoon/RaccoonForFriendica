@@ -44,6 +44,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,12 +60,14 @@ fun FollowedHashtagsScreen(model: FollowedHashtagsMviModel, modifier: Modifier =
     var confirmUnfollowHashtagName by remember { mutableStateOf<String?>(null) }
 
     fun goBackToTop() {
-        runCatching {
+        try {
             scope.launch {
                 lazyListState.scrollToItem(0)
                 topAppBarState.heightOffset = 0f
                 topAppBarState.contentOffset = 0f
             }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

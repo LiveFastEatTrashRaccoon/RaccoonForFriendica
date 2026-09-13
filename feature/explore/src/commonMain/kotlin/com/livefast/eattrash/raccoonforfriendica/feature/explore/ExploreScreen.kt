@@ -87,6 +87,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.explore.data.toReadable
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -122,10 +123,12 @@ fun ExploreScreen(
     var selectForeignInstanceOpened by remember { mutableStateOf(false) }
 
     suspend fun goBackToTop() {
-        runCatching {
+        try {
             lazyListState.scrollToItem(0)
             topAppBarState.heightOffset = 0f
             topAppBarState.contentOffset = 0f
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

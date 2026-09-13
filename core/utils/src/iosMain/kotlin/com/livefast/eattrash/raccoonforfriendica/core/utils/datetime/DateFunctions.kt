@@ -40,9 +40,9 @@ private val defaultFormatter = getDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'
 private val backupFormatter = getDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
 private fun String.tryParse(): NSDate? {
-    var res = runCatching { defaultFormatter.dateFromString(this) }.getOrNull()
+    var res = try { defaultFormatter.dateFromString(this) } catch (_: Exception) { null }
     if (res == null) {
-        res = runCatching { backupFormatter.dateFromString(this) }.getOrNull()
+        res = try { backupFormatter.dateFromString(this) } catch (_: Exception) { null }
     }
     return res
 }
@@ -131,16 +131,14 @@ actual fun getFormattedDate(iso8601Timestamp: String, format: String, withLocalT
 }
 
 actual fun parseDate(value: String, format: String, withLocalTimezone: Boolean): String {
-    val dateFormatter =
-        getDateFormatter(
-            format = format,
-            withLocalTimezone = withLocalTimezone,
-        )
-    val date =
-        runCatching {
-            dateFormatter.dateFromString(value)
-        }.getOrNull() ?: return ""
-    return NSISO8601DateFormatter().stringFromDate(date)
+    val dateFormatter = getDateFormatter(
+        format = format,
+        withLocalTimezone = withLocalTimezone,
+    )
+    return try {
+        val date = dateFormatter.dateFromString(value) ?: return ""
+        NSISO8601DateFormatter().stringFromDate(date)
+    } catch (_: Exception) { "" }
 }
 
 actual fun getPrettyDate(

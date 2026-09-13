@@ -43,6 +43,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.composables.CalendarEventFooter
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,12 +64,14 @@ fun EventDetailScreen(eventId: String, modifier: Modifier = Modifier) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun goBackToTop() {
-        runCatching {
+        try {
             scope.launch {
                 lazyListState.scrollToItem(0)
                 topAppBarState.heightOffset = 0f
                 topAppBarState.contentOffset = 0f
             }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 
