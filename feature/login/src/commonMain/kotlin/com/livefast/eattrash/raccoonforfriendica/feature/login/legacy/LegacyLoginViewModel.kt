@@ -17,11 +17,8 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(
-    AppScope::class,
-    binding = binding<
-        @ViewModelKey(LegacyLoginViewModel::class)
-        ViewModel,
-        >(),
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
 class LegacyLoginViewModel(

@@ -24,7 +24,10 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration.Companion.seconds
 
-@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(RootViewModel::class) ViewModel>())
+@ContributesIntoMap(
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
+)
 @Inject
 class RootViewModel(
     private val settingsRepository: SettingsRepository,

@@ -53,11 +53,8 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 @ContributesIntoMap(
-    AppScope::class,
-    binding = binding<
-        @ViewModelKey(TimelineViewModel::class)
-        ViewModel,
-        >(),
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
 @OptIn(FlowPreview::class)

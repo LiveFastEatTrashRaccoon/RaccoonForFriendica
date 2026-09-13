@@ -35,11 +35,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(
-    AppScope::class,
-    binding = binding<
-        @ViewModelKey(UnpublishedViewModel::class)
-        ViewModel,
-        >(),
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
 class UnpublishedViewModel(

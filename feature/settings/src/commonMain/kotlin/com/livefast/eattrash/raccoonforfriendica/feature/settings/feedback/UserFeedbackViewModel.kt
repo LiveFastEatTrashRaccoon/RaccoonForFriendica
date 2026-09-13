@@ -16,11 +16,8 @@ import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(
-    AppScope::class,
-    binding = binding<
-        @ViewModelKey(UserFeedbackViewModel::class)
-        ViewModel,
-        >(),
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
 class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) :

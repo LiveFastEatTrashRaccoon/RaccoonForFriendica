@@ -44,7 +44,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(MyAccountViewModel::class) ViewModel>())
+@ContributesIntoMap(
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
+)
 @Inject
 @OptIn(FlowPreview::class)
 class MyAccountViewModel(

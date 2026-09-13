@@ -23,11 +23,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @ContributesIntoMap(
-    AppScope::class,
-    binding = binding<
-        @ViewModelKey(NodeInfoViewModel::class)
-        ViewModel,
-        >(),
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
 class NodeInfoViewModel(

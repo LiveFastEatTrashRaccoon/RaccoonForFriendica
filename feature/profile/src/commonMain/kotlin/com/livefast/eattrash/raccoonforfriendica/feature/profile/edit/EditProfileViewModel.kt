@@ -31,7 +31,10 @@ sealed interface EditProfilerFieldType {
     data object Bio : EditProfilerFieldType
 }
 
-@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(EditProfileViewModel::class) ViewModel>())
+@ContributesIntoMap(
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
+)
 @Inject
 class EditProfileViewModel(
     private val userRepository: UserRepository,

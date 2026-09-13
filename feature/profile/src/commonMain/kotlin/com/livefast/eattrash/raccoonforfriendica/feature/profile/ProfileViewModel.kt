@@ -22,7 +22,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(ProfileViewModel::class) ViewModel>())
+@ContributesIntoMap(
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
+)
 @Inject
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,

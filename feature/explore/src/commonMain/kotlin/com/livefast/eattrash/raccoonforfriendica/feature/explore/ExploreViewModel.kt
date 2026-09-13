@@ -49,11 +49,8 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
 @ContributesIntoMap(
-    AppScope::class,
-    binding = binding<
-        @ViewModelKey(ExploreViewModel::class)
-        ViewModel,
-        >(),
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
 class ExploreViewModel(

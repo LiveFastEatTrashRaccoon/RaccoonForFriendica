@@ -15,7 +15,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-@ContributesIntoMap(AppScope::class, binding = binding<@ViewModelKey(MainViewModel::class) ViewModel>())
+@ContributesIntoMap(
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
+)
 @Inject
 class MainViewModel(private val inboxManager: InboxManager) :
     ViewModel(),
