@@ -62,6 +62,7 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -1848,7 +1849,8 @@ class ComposerViewModel(
                 } else {
                     emitEffect(ComposerMviModel.Effect.Failure(null))
                 }
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
                 emitEffect(ComposerMviModel.Effect.Failure(message = e.message))
             }

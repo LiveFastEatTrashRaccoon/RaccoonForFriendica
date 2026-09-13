@@ -51,6 +51,7 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,10 +72,12 @@ fun AnnouncementsScreen(
     var chooseReactionAnnouncementIdBottomSheetOpened by remember { mutableStateOf<String?>(null) }
 
     suspend fun goBackToTop() {
-        runCatching {
+        try {
             lazyListState.scrollToItem(0)
             topAppBarState.heightOffset = 0f
             topAppBarState.contentOffset = 0f
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

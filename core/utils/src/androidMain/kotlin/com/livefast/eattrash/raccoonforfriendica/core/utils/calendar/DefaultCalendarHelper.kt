@@ -7,6 +7,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlin.coroutines.cancellation.CancellationException
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
@@ -30,8 +31,10 @@ class DefaultCalendarHelper(private val context: Context) : CalendarHelper {
                     putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, true)
                 }
             }
-        runCatching {
+        try {
             context.startActivity(intent)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 }

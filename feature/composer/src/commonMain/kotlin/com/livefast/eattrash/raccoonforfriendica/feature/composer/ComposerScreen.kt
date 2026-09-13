@@ -898,9 +898,11 @@ fun ComposerScreen(
             InsertLinkDialog(
                 initialAnchor =
                 uiState.bodyValue.selection.takeIf { it.length > 0 }?.let { range ->
-                    runCatching {
+                    try {
                         uiState.bodyValue.text.substring(range.start, range.end)
-                    }.getOrNull()
+                    } catch (_: Exception) {
+                        null
+                    }
                 },
                 onClose = { link ->
                     linkDialogOpen = false

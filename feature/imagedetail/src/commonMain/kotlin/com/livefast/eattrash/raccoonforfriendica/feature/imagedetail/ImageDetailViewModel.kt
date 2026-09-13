@@ -24,6 +24,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
+import kotlin.coroutines.cancellation.CancellationException
 
 @AssistedInject
 class ImageDetailViewModel(
@@ -91,8 +92,8 @@ class ImageDetailViewModel(
                 }
                 updateState { it.copy(loading = false) }
                 emitEffect(ImageDetailMviModel.Effect.ShareSuccess)
-            } catch (e: Throwable) {
-                e.printStackTrace()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
                 emitEffect(ImageDetailMviModel.Effect.ShareFailure)
             }
@@ -102,8 +103,10 @@ class ImageDetailViewModel(
     private fun shareAsUrl() {
         val currentState = uiState.value
         val url = urls[currentState.currentIndex]
-        runCatching {
+        try {
             shareHelper.share(url)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 
@@ -130,8 +133,8 @@ class ImageDetailViewModel(
                 } else {
                     emitEffect(ImageDetailMviModel.Effect.ShareFailure)
                 }
-            } catch (e: Throwable) {
-                e.printStackTrace()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
                 emitEffect(ImageDetailMviModel.Effect.ShareFailure)
             }

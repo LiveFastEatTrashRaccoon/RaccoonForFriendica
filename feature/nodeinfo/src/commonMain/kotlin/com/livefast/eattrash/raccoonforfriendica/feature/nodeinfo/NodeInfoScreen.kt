@@ -70,6 +70,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun NodeInfoScreen(model: NodeInfoMviModel, modifier: Modifier = Modifier) {
@@ -134,10 +135,12 @@ fun NodeInfoScreenScaffold(
     val scope = rememberCoroutineScope()
 
     suspend fun goBackToTop() {
-        runCatching {
+        try {
             lazyListState.scrollToItem(0)
             topAppBarState.heightOffset = 0f
             topAppBarState.contentOffset = 0f
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

@@ -105,6 +105,7 @@ import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,7 +153,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
     suspend fun goBackToTop() {
-        runCatching {
+        try {
             if (lazyListState.firstVisibleItemIndex > 0) {
                 if (uiState.entries.isEmpty()) {
                     lazyListState.scrollToItem(1)
@@ -164,6 +165,8 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                 topAppBarState.heightOffset = 0f
                 topAppBarState.contentOffset = 0f
             }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

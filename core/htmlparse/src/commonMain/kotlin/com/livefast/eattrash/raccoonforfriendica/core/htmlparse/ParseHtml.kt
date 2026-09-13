@@ -114,14 +114,18 @@ fun String.parseHtml(
                     }
                     "span", "br", "img" -> Unit
                     "b", "strong", "u", "i", "em", "s", "code" ->
-                        runCatching {
+                        try {
                             builder.pop()
+                        } catch (_: Exception) {
+                            // no-op
                         }
 
                     "a" ->
-                        runCatching {
+                        try {
                             builder.pop() // corresponds to pushStyle
                             builder.pop() // corresponds to pushStringAnnotation
+                        } catch (_: Exception) {
+                            // no-op
                         }
 
                     "h1", "h2", "h3", "h4", "h5", "h6" -> {
@@ -136,9 +140,11 @@ fun String.parseHtml(
 
                     "li" -> builder.appendLine()
                     "blockquote" ->
-                        runCatching {
+                        try {
                             builder.pop() // corresponds to pushStyle (ParagraphStyle)
                             builder.pop() // corresponds to pushStyle (SpanStyle)
+                        } catch (_: Exception) {
+                            // no-op
                         }
 
                     else -> println("onCloseTag: Unhandled tag $name")
@@ -157,9 +163,9 @@ fun String.parseHtml(
         end()
     }
 
-    return runCatching {
+    return try {
         builder.toAnnotatedString()
-    }.getOrElse {
+    } catch (_: Exception) {
         AnnotatedString(text = "")
     }
 }

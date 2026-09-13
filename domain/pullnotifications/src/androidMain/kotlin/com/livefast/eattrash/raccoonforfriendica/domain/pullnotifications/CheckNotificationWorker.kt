@@ -62,7 +62,7 @@ internal class CheckNotificationWorker(private val context: Context, parameters:
                 notificationId,
                 notification,
             )
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

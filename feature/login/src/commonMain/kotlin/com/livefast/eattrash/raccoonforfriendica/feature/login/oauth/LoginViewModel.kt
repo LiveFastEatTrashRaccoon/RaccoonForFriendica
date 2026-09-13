@@ -138,7 +138,8 @@ class LoginViewModel(
             try {
                 val url = authManager.startOAuthFlow(node)
                 emitEffect(LoginMviModel.Effect.OpenUrl(url))
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 emitEffect(LoginMviModel.Effect.Failure(e.message))
                 updateState { it.copy(loading = false) }
             }
@@ -154,7 +155,7 @@ class LoginViewModel(
                     credentials = credentials,
                 )
                 emitEffect(LoginMviModel.Effect.Success)
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
                 emitEffect(LoginMviModel.Effect.Failure(e.message))

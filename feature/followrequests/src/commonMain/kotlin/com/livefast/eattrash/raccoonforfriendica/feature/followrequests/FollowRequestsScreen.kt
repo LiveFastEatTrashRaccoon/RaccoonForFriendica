@@ -41,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.components.FollowRequestItem
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,12 +56,14 @@ fun FollowRequestsScreen(model: FollowRequestsMviModel, modifier: Modifier = Mod
     val scope = rememberCoroutineScope()
 
     fun goBackToTop() {
-        runCatching {
+        try {
             scope.launch {
                 lazyListState.scrollToItem(0)
                 topAppBarState.heightOffset = 0f
                 topAppBarState.contentOffset = 0f
             }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 

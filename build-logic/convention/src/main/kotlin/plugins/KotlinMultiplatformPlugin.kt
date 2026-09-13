@@ -21,7 +21,12 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
                 configureKotlinMultiplatform(this)
 
                 compilerOptions {
-                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                    freeCompilerArgs.addAll(
+                        buildList {
+                            this += "-Xexpect-actual-classes"
+                            this += "-Xreturn-value-checker=check"
+                        }
+                    )
                 }
 
                 targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java).configureEach {

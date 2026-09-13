@@ -70,6 +70,7 @@ import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,12 +97,14 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
     val followRequiredMessage = LocalStrings.current.followRequiredMessage
 
     fun goBackToTop() {
-        runCatching {
+        try {
             scope.launch {
                 lazyListState.scrollToItem(0)
                 topAppBarState.heightOffset = 0f
                 topAppBarState.contentOffset = 0f
             }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
         }
     }
 
