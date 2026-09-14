@@ -25,6 +25,7 @@ class KotlinMultiplatformPlugin : Plugin<Project> {
                         buildList {
                             this += "-Xexpect-actual-classes"
                             this += "-Xreturn-value-checker=check"
+                            this += "-Xname-based-destructuring=only-syntax"
                         }
                     )
                 }
