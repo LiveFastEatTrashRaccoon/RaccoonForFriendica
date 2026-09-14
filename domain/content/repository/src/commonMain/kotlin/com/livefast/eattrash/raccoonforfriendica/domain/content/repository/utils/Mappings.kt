@@ -605,7 +605,7 @@ internal fun Event.toModel() = EventModel(
             withLocalTimezone = true,
         ).takeIf {
             val t = it.toEpochMillis()
-            val (year, _) = t.extractDatePart()
+            val year = t.extractDatePart().year
             year > 1970
         }
     },

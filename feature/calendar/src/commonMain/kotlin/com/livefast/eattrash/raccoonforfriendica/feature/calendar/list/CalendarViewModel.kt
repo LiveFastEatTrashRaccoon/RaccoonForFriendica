@@ -84,7 +84,7 @@ class CalendarViewModel(
             val eventsGrouped =
                 events.groupBy {
                     val timestamp = it.startTime.toEpochMillis()
-                    val (year, month) = timestamp.extractDatePart()
+                    val (month, year) = timestamp.extractDatePart()
                     CalendarItem.Header(year = year, month = month)
                 }
             val keys =
