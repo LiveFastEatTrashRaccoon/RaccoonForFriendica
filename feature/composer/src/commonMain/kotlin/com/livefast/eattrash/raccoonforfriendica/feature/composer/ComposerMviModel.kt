@@ -13,6 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.LinkInfo
 
 sealed interface ComposerFieldType {
     data object Spoiler : ComposerFieldType
@@ -82,7 +83,7 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
 
         data class RemoveAttachment(val attachment: AttachmentModel) : Intent
 
-        data class AddLink(val link: Pair<String, String>) : Intent
+        data class AddLink(val link: LinkInfo) : Intent
 
         data object UserSearchLoadNextPage : Intent
 

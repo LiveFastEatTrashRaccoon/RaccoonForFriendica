@@ -334,8 +334,8 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachment)
             is ComposerMviModel.Intent.AddLink ->
                 addLink(
-                    anchor = intent.link.first,
-                    url = intent.link.second,
+                    anchor = intent.link.anchor,
+                    url = intent.link.url,
                 )
 
             is ComposerMviModel.Intent.AddMention -> addMention(handle = intent.handle)
