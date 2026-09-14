@@ -37,6 +37,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.Pre
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
+data class SpinnerValue(val value: String, val title: String)
+
 @Composable
 fun SpinnerField(
     modifier: Modifier = Modifier,
@@ -47,7 +49,7 @@ fun SpinnerField(
     isError: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    values: List<Pair<String, String>> = emptyList(),
+    values: List<SpinnerValue> = emptyList(),
     onValueChange: ((String) -> Unit)? = null,
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -102,9 +104,9 @@ fun SpinnerField(
                 values.forEach { value ->
                     DropdownMenuItem(
                         onClick = {
-                            onValueChange?.invoke(value.second)
+                            onValueChange?.invoke(value.value)
                             expanded = false
-                            val isCustom = value.second.isBlank()
+                            val isCustom = value.value.isBlank()
                             if (isCustom) {
                                 focusRequester.requestFocus()
                             }
@@ -112,7 +114,7 @@ fun SpinnerField(
                         },
                         text = {
                             Text(
-                                text = value.first,
+                                text = value.title,
                                 modifier = Modifier.wrapContentWidth().align(Alignment.Start),
                             )
                         },

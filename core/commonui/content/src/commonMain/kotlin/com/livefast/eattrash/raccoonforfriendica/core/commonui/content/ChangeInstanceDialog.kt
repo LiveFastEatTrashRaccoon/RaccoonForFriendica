@@ -28,6 +28,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerValue
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
@@ -86,13 +87,16 @@ fun ChangeInstanceDialog(
                 values =
                 buildList {
                     for (instance in DefaultFriendicaInstances.filter { it.value !in exclusions }) {
-                        this += buildString {
-                            append(instance.value)
-                            append("  ")
-                            append(instance.lang)
-                        } to instance.value
+                        this += SpinnerValue(
+                            title = buildString {
+                                append(instance.value)
+                                append("  ")
+                                append(instance.lang)
+                            },
+                            value = instance.value,
+                        )
                     }
-                    this += LocalStrings.current.itemOther to ""
+                    this += SpinnerValue(title = LocalStrings.current.itemOther, value = "")
                 },
                 value = nodeName,
                 keyboardOptions =
