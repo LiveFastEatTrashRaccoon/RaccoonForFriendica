@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 
 interface TimelineService {
@@ -17,7 +18,7 @@ interface TimelineService {
         maxId: String? = null,
         minId: String? = null,
         limit: Int = 20,
-    ): Pair<List<Status>, String?>
+    ): Page<Status>
 
     suspend fun getList(id: String, maxId: String? = null, minId: String? = null, limit: Int = 20): List<Status>
 }

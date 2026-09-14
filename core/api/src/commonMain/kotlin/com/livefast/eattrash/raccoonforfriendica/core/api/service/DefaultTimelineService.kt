@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
@@ -30,12 +31,7 @@ class DefaultTimelineService(@Assisted args: ServiceCreationArgs) : TimelineServ
             parameter("limit", limit)
         }.body()
 
-    override suspend fun getHashtag(
-        hashtag: String,
-        maxId: String?,
-        minId: String?,
-        limit: Int,
-    ): Pair<List<Status>, String?> {
+    override suspend fun getHashtag(hashtag: String, maxId: String?, minId: String?, limit: Int): Page<Status> {
         val response = client.get("$baseUrl/v1/timelines/tag/$hashtag") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
@@ -43,7 +39,7 @@ class DefaultTimelineService(@Assisted args: ServiceCreationArgs) : TimelineServ
         }
         val data: List<Status> = response.body()
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun getList(id: String, maxId: String?, minId: String?, limit: Int): List<Status> =

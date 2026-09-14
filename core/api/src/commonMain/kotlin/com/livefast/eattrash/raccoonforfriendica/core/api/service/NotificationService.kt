@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 
 interface NotificationService {
     suspend fun get(
@@ -11,7 +12,7 @@ interface NotificationService {
         minId: String? = null,
         includeAll: Boolean = false,
         limit: Int = 20,
-    ): Pair<List<Notification>, String?>
+    ): Page<Notification>
 
     suspend fun dismiss(id: String): Boolean
 

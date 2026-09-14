@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Collections
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
@@ -74,12 +75,7 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
         parameter("limit", limit)
     }.body()
 
-    override suspend fun getFollowers(
-        id: String,
-        maxId: String?,
-        minId: String?,
-        limit: Int,
-    ): Pair<List<Account>, String?> {
+    override suspend fun getFollowers(id: String, maxId: String?, minId: String?, limit: Int): Page<Account> {
         val response = client.get("$baseUrl/v1/accounts/$id/followers") {
             parameter("id", id)
             parameter("max_id", maxId)
@@ -88,15 +84,10 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
         }
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
         val data: List<Account> = response.body()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
-    override suspend fun getFollowing(
-        id: String,
-        maxId: String?,
-        minId: String?,
-        limit: Int,
-    ): Pair<List<Account>, String?> {
+    override suspend fun getFollowing(id: String, maxId: String?, minId: String?, limit: Int): Page<Account> {
         val response = client.get("$baseUrl/v1/accounts/$id/following") {
             parameter("id", id)
             parameter("max_id", maxId)
@@ -105,7 +96,7 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
         }
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
         val data: List<Account> = response.body()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun follow(id: String, data: FollowUserForm): Relationship =
@@ -116,7 +107,7 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
 
     override suspend fun unfollow(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/unfollow").body()
 
-    override suspend fun getFavorites(maxId: String?, minId: String?, limit: Int): Pair<List<Status>, String?> {
+    override suspend fun getFavorites(maxId: String?, minId: String?, limit: Int): Page<Status> {
         val response = client.get("$baseUrl/v1/favourites") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
@@ -124,10 +115,10 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
         }
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
         val data: List<Status> = response.body()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
-    override suspend fun getBookmarks(maxId: String?, minId: String?, limit: Int): Pair<List<Status>, String?> {
+    override suspend fun getBookmarks(maxId: String?, minId: String?, limit: Int): Page<Status> {
         val response = client.get("$baseUrl/v1/bookmarks") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
@@ -135,7 +126,7 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
         }
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
         val data: List<Status> = response.body()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun getListsContaining(id: String): List<UserList> =
@@ -153,24 +144,24 @@ class DefaultUserService(@Assisted args: ServiceCreationArgs) : UserService {
 
     override suspend fun unblock(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/unblock").body()
 
-    override suspend fun getMuted(maxId: String?, limit: Int): Pair<List<Account>, String?> {
+    override suspend fun getMuted(maxId: String?, limit: Int): Page<Account> {
         val response = client.get("$baseUrl/v1/mutes") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
         val data: List<Account> = response.body()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
-    override suspend fun getBlocked(maxId: String?, limit: Int): Pair<List<Account>, String?> {
+    override suspend fun getBlocked(maxId: String?, limit: Int): Page<Account> {
         val response = client.get("$baseUrl/v1/blocks") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
         val data: List<Account> = response.body()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun updateProfile(content: FormDataContent): Account =

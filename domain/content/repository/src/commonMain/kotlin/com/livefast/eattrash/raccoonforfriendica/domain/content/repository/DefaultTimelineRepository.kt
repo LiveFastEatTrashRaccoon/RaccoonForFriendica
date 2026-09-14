@@ -125,14 +125,14 @@ class DefaultTimelineRepository(
         pageCursor: String?,
         otherInstance: String?,
     ): ListWithPageCursor<TimelineEntryModel>? = try {
-        val (list, cursor) = withProvider(otherInstance) { provider ->
+        val (elements, cursor) = withProvider(otherInstance) { provider ->
             provider.timeline.getHashtag(
                 hashtag = hashtag,
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
         }
-        ListWithPageCursor(list = list.map { it.toModelWithReply() }, cursor = cursor)
+        ListWithPageCursor(list = elements.map { it.toModelWithReply() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

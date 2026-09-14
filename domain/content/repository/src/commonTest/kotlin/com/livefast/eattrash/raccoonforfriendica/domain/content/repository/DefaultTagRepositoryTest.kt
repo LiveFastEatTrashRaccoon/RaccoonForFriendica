@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
@@ -24,7 +25,7 @@ class DefaultTagRepositoryTest {
     @Test
     fun `given results when getFollowed then result and interactions are as expected`() = runTest {
         val tags = listOf(Tag(name = "tag1", url = "url1"))
-        everySuspend { tagService.getFollowedTags(any()) } returns (tags to "cursor")
+        everySuspend { tagService.getFollowedTags(any()) } returns Page(elements = tags, cursor = "cursor")
 
         val res = sut.getFollowed(null)
 

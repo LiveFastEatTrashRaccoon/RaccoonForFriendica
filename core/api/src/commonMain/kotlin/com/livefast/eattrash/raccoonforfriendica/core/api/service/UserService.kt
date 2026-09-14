@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Collections
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
@@ -39,27 +40,17 @@ interface UserService {
 
     suspend fun getSuggestions(limit: Int): List<Suggestion>
 
-    suspend fun getFollowers(
-        id: String,
-        maxId: String? = null,
-        minId: String? = null,
-        limit: Int = 20,
-    ): Pair<List<Account>, String?>
+    suspend fun getFollowers(id: String, maxId: String? = null, minId: String? = null, limit: Int = 20): Page<Account>
 
-    suspend fun getFollowing(
-        id: String,
-        maxId: String? = null,
-        minId: String? = null,
-        limit: Int = 20,
-    ): Pair<List<Account>, String?>
+    suspend fun getFollowing(id: String, maxId: String? = null, minId: String? = null, limit: Int = 20): Page<Account>
 
     suspend fun follow(id: String, data: FollowUserForm): Relationship
 
     suspend fun unfollow(id: String): Relationship
 
-    suspend fun getFavorites(maxId: String? = null, minId: String? = null, limit: Int = 20): Pair<List<Status>, String?>
+    suspend fun getFavorites(maxId: String? = null, minId: String? = null, limit: Int = 20): Page<Status>
 
-    suspend fun getBookmarks(maxId: String? = null, minId: String? = null, limit: Int = 20): Pair<List<Status>, String?>
+    suspend fun getBookmarks(maxId: String? = null, minId: String? = null, limit: Int = 20): Page<Status>
 
     suspend fun getListsContaining(id: String): List<UserList>
 
@@ -71,9 +62,9 @@ interface UserService {
 
     suspend fun unblock(id: String): Relationship
 
-    suspend fun getMuted(maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
+    suspend fun getMuted(maxId: String? = null, limit: Int = 20): Page<Account>
 
-    suspend fun getBlocked(maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
+    suspend fun getBlocked(maxId: String? = null, limit: Int = 20): Page<Account>
 
     suspend fun updateProfile(content: FormDataContent): Account
 

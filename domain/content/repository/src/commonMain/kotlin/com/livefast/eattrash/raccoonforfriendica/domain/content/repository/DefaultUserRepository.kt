@@ -111,13 +111,13 @@ class DefaultUserRepository(
         otherInstance: String?,
     ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            val (list, cursor) = provider.user
+            val (elements, cursor) = provider.user
                 .getFollowers(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -130,13 +130,13 @@ class DefaultUserRepository(
         otherInstance: String?,
     ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            val (list, cursor) = provider.user
+            val (elements, cursor) = provider.user
                 .getFollowing(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -189,12 +189,12 @@ class DefaultUserRepository(
     }
 
     override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
-        val (list, cursor) =
+        val (elements, cursor) =
             provider.followRequest.getAll(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
-        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
@@ -254,26 +254,26 @@ class DefaultUserRepository(
     }
 
     override suspend fun getMuted(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
-        val (list, cursor) =
+        val (elements, cursor) =
             provider.user
                 .getMuted(
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
     override suspend fun getBlocked(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
-        val (list, cursor) =
+        val (elements, cursor) =
             provider.user
                 .getBlocked(
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

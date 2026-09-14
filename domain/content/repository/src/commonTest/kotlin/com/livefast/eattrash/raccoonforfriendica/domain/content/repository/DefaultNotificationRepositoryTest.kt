@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
@@ -38,7 +39,7 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns Pair(emptyList(), null)
+        } returns Page(elements = emptyList(), cursor = null)
 
         val res = sut.getAll(types = NotificationType.ALL)
 
@@ -67,7 +68,7 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns Pair(list, null)
+        } returns Page(elements = list, cursor = null)
 
         val res = sut.getAll(types = NotificationType.ALL)
 
@@ -96,7 +97,7 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns Pair(list, null)
+        } returns Page(elements = list, cursor = null)
 
         val res = sut.getAll(types = NotificationType.ALL, pageCursor = "0")
 
@@ -125,7 +126,7 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns Pair(list, null)
+        } returns Page(elements = list, cursor = null)
 
         sut.getAll(types = NotificationType.ALL)
         val res = sut.getAll(types = NotificationType.ALL)
@@ -155,7 +156,7 @@ class DefaultNotificationRepositoryTest {
                 includeAll = any(),
                 limit = any(),
             )
-        } returns Pair(list, null)
+        } returns Page(elements = list, cursor = null)
 
         sut.getAll(types = NotificationType.ALL)
         val res = sut.getAll(types = NotificationType.ALL, refresh = true)

@@ -34,8 +34,8 @@ class DefaultCirclesRepository(private val provider: ServiceProvider) : CirclesR
     }
 
     override suspend fun getMembers(id: String, pageCursor: String?): ListWithPageCursor<UserModel>? = try {
-        val (list, cursor) = provider.list.getMembers(id = id, maxId = pageCursor)
-        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+        val (elements, cursor) = provider.list.getMembers(id = id, maxId = pageCursor)
+        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
