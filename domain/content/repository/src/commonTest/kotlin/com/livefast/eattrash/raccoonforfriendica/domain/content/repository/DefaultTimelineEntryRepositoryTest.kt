@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Poll
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
@@ -533,7 +534,7 @@ class DefaultTimelineEntryRepositoryTest {
     @Test
     fun `given results when getFavorites then result is expected`() = runTest {
         everySuspend { userService.getFavorites(maxId = any(), limit = any()) } returns
-            (listOf(Status(id = "1")) to null)
+            Page(elements = listOf(Status(id = "1")), cursor = null)
         val res = sut.getFavorites(null)
         assertNotNull(res)
         assertEquals(1, res.list.size)
@@ -543,7 +544,7 @@ class DefaultTimelineEntryRepositoryTest {
     @Test
     fun `given results when getBookmarks then result is expected`() = runTest {
         everySuspend { userService.getBookmarks(maxId = any(), limit = any()) } returns
-            (listOf(Status(id = "1")) to null)
+            Page(elements = listOf(Status(id = "1")), cursor = null)
         val res = sut.getBookmarks(null)
         assertNotNull(res)
         assertEquals(1, res.list.size)
@@ -560,7 +561,7 @@ class DefaultTimelineEntryRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns (listOf(Account(id = "1", acct = "user", username = "user")) to null)
+        } returns Page(elements = listOf(Account(id = "1", acct = "user", username = "user")), cursor = null)
         val res = sut.getUsersWhoFavorited("1", null)
         assertNotNull(res)
         assertEquals(1, res.list.size)
@@ -575,7 +576,7 @@ class DefaultTimelineEntryRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns (listOf(Account(id = "1", acct = "user", username = "user")) to null)
+        } returns Page(elements = listOf(Account(id = "1", acct = "user", username = "user")), cursor = null)
         val res = sut.getUsersWhoReblogged("1", null)
         assertNotNull(res)
         assertEquals(1, res.list.size)
@@ -660,7 +661,7 @@ class DefaultTimelineEntryRepositoryTest {
     fun `given results when getQuoted then result and interactions are as expected`() = runTest {
         everySuspend {
             statusService.getQuotes(id = any(), maxId = any(), limit = any())
-        } returns (listOf(Status(id = "2")) to "")
+        } returns Page(elements = listOf(Status(id = "2")), cursor = "")
 
         val res = sut.getQuotes(
             id = "1",

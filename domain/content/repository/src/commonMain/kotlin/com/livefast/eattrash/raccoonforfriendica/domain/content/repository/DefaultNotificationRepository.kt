@@ -35,13 +35,13 @@ class DefaultNotificationRepository(private val provider: ServiceProvider) : Not
             return ListWithPageCursor(list = cachedValues, cursor = null) // Simplified for cache
         }
         return try {
-            val (list, cursor) =
+            val (elements, cursor) =
                 provider.notification.get(
                     types = types.mapNotNull { it.toDto() },
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            val models = list.map { it.toModel() }
+            val models = elements.map { it.toModel() }
             if (pageCursor == null) {
                 mutex.withLock {
                     cachedValues.addAll(models)

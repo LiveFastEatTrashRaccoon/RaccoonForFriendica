@@ -1,10 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 
 interface FollowRequestService {
-    suspend fun getAll(maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
+    suspend fun getAll(maxId: String? = null, limit: Int = 20): Page<Account>
 
     suspend fun accept(id: String): Relationship
 

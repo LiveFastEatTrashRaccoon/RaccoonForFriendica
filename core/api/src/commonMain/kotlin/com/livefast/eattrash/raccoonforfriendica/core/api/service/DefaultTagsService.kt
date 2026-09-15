@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
@@ -16,13 +17,13 @@ class DefaultTagsService(@Assisted args: ServiceCreationArgs) : TagsService {
     private val baseUrl = args.baseUrl
     private val client = args.client
 
-    override suspend fun getFollowedTags(maxId: String?): Pair<List<Tag>, String?> {
+    override suspend fun getFollowedTags(maxId: String?): Page<Tag> {
         val response = client.get("$baseUrl/v1/followed_tags") {
             parameter("max_id", maxId)
         }
         val data: List<Tag> = response.body()
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun follow(name: String): Tag = client.post("$baseUrl/v1/tags/$name/follow").body()

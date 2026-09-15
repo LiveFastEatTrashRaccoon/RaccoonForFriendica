@@ -52,6 +52,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.serialization.json.Json
 
+private data class ClientKey(val node: String, val credentials: ServiceCredentials?)
+
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
@@ -92,7 +94,7 @@ class DefaultServiceProvider(
 
     private val baseUrl: String get() = "https://$currentNode/api"
     private var lastCredentials: ServiceCredentials? = null
-    private val clientCache = mutableMapOf<Pair<String, ServiceCredentials?>, HttpClient>()
+    private val clientCache = mutableMapOf<ClientKey, HttpClient>()
 
     override fun changeNode(value: String) {
         if (currentNode != value) {
@@ -106,7 +108,7 @@ class DefaultServiceProvider(
     }
 
     private fun reinitialize(credentials: ServiceCredentials?, force: Boolean) {
-        val key = currentNode to credentials
+        val key = ClientKey(node = currentNode, credentials = credentials)
         if (!force && lastCredentials == credentials && clientCache[key] != null) {
             return
         }

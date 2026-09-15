@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
@@ -13,7 +14,7 @@ interface ListService {
 
     suspend fun getBy(id: String): UserList
 
-    suspend fun getMembers(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
+    suspend fun getMembers(id: String, maxId: String? = null, limit: Int = 20): Page<Account>
 
     suspend fun create(data: EditListForm): UserList
 

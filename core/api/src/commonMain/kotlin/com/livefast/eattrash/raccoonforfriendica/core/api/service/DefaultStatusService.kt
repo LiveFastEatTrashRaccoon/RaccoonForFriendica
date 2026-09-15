@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
@@ -56,24 +57,24 @@ class DefaultStatusService(@Assisted args: ServiceCreationArgs) : StatusService 
 
     override suspend fun unfavorite(id: String): Status = client.post("$baseUrl/v1/statuses/$id/unfavourite").body()
 
-    override suspend fun getFavoritedBy(id: String, maxId: String?, limit: Int): Pair<List<Account>, String?> {
+    override suspend fun getFavoritedBy(id: String, maxId: String?, limit: Int): Page<Account> {
         val response = client.get("$baseUrl/v1/statuses/$id/favourited_by") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
         val data: List<Account> = response.body()
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
-    override suspend fun getRebloggedBy(id: String, maxId: String?, limit: Int): Pair<List<Account>, String?> {
+    override suspend fun getRebloggedBy(id: String, maxId: String?, limit: Int): Page<Account> {
         val response = client.get("$baseUrl/v1/statuses/$id/reblogged_by") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
         val data: List<Account> = response.body()
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun create(key: String, data: CreateStatusForm): Status = client.post("$baseUrl/v1/statuses") {
@@ -119,14 +120,14 @@ class DefaultStatusService(@Assisted args: ServiceCreationArgs) : StatusService 
     override suspend fun translate(id: String, data: FormDataContent): Translation =
         client.post("$baseUrl/v1/statuses/$id/translate").body()
 
-    override suspend fun getQuotes(id: String, maxId: String?, limit: Int): Pair<List<Status>, String?> {
+    override suspend fun getQuotes(id: String, maxId: String?, limit: Int): Page<Status> {
         val response = client.get("$baseUrl/v1/statuses/$id/quotes") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
         val data: List<Status> = response.body()
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun revokeQuote(quotedId: String, quotingId: String) =

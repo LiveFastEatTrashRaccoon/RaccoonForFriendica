@@ -181,24 +181,24 @@ class DefaultTimelineEntryRepository(
     }
 
     override suspend fun getFavorites(pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? = try {
-        val (list, cursor) = provider.user
+        val (elements, cursor) = provider.user
             .getFavorites(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
-        return ListWithPageCursor(list.map { it.toModelWithReply() }, cursor)
+        return ListWithPageCursor(elements.map { it.toModelWithReply() }, cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
     override suspend fun getBookmarks(pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? = try {
-        val (list, cursor) = provider.user
+        val (elements, cursor) = provider.user
             .getBookmarks(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
-        return ListWithPageCursor(list.map { it.toModelWithReply() }, cursor)
+        return ListWithPageCursor(elements.map { it.toModelWithReply() }, cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
@@ -210,13 +210,13 @@ class DefaultTimelineEntryRepository(
         otherInstance: String?,
     ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            val (list, cursor) = provider.status
+            val (elements, cursor) = provider.status
                 .getFavoritedBy(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -229,13 +229,13 @@ class DefaultTimelineEntryRepository(
         otherInstance: String?,
     ): ListWithPageCursor<UserModel>? = try {
         withProvider(otherInstance) { provider ->
-            val (list, cursor) = provider.status
+            val (elements, cursor) = provider.status
                 .getRebloggedBy(
                     id = id,
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -406,13 +406,13 @@ class DefaultTimelineEntryRepository(
         pageCursor: String?,
         otherInstance: String?,
     ): ListWithPageCursor<TimelineEntryModel>? = try {
-        val (list, cursor) = withProvider(otherInstance) { provider ->
+        val (elements, cursor) = withProvider(otherInstance) { provider ->
             provider.status.getQuotes(
                 id = id,
                 maxId = pageCursor,
             )
         }
-        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

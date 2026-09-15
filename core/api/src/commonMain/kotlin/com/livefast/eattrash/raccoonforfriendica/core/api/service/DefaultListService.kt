@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaCircle
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
@@ -33,14 +34,14 @@ class DefaultListService(@Assisted args: ServiceCreationArgs) : ListService {
 
     override suspend fun getBy(id: String): UserList = client.get("$baseUrl/v1/lists/$id").body()
 
-    override suspend fun getMembers(id: String, maxId: String?, limit: Int): Pair<List<Account>, String?> {
+    override suspend fun getMembers(id: String, maxId: String?, limit: Int): Page<Account> {
         val response = client.get("$baseUrl/v1/lists/$id/accounts") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
         val data: List<Account> = response.body()
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun create(data: EditListForm): UserList = client.post("$baseUrl/v1/lists") {

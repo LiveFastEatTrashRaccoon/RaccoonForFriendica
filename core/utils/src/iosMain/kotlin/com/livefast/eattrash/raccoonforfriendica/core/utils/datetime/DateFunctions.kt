@@ -86,7 +86,7 @@ actual fun Long.concatDateWithTime(hours: Int, minutes: Int, seconds: Int): Long
     return (result.timeIntervalSince1970 * 1000).toLong()
 }
 
-actual fun Long.extractTimePart(): Pair<Int, Int> {
+actual fun Long.extractTimePart(): TimeComponents{
     val date = NSDate(timeIntervalSinceReferenceDate = (this.toDouble() / 1000))
     val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
     val dateComponents =
@@ -99,10 +99,10 @@ actual fun Long.extractTimePart(): Pair<Int, Int> {
         )
     val hours = dateComponents.hour.toInt()
     val minutes = dateComponents.minute.toInt()
-    return hours to minutes
+    return TimeComponents(hours = hours, minutes = minutes)
 }
 
-actual fun Long.extractDatePart(): Pair<Int, Int> {
+actual fun Long.extractDatePart(): DateComponents {
     val date = NSDate(timeIntervalSinceReferenceDate = (this.toDouble() / 1000))
     val calendar = NSCalendar(calendarIdentifier = NSCalendarIdentifierGregorian)
     val dateComponents =
@@ -115,7 +115,7 @@ actual fun Long.extractDatePart(): Pair<Int, Int> {
         )
     val year = dateComponents.year.toInt()
     val month = dateComponents.month.toInt()
-    return year to month
+    return DateComponents(year = year, month = month)
 }
 
 actual fun getFormattedDate(iso8601Timestamp: String, format: String, withLocalTimezone: Boolean): String {

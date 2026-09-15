@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.ScheduledStatus
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
@@ -32,9 +33,9 @@ interface StatusService {
 
     suspend fun unfavorite(id: String): Status
 
-    suspend fun getFavoritedBy(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
+    suspend fun getFavoritedBy(id: String, maxId: String? = null, limit: Int = 20): Page<Account>
 
-    suspend fun getRebloggedBy(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Account>, String?>
+    suspend fun getRebloggedBy(id: String, maxId: String? = null, limit: Int = 20): Page<Account>
 
     suspend fun create(key: String, data: CreateStatusForm): Status
 
@@ -55,7 +56,7 @@ interface StatusService {
     suspend fun undislike(data: FormDataContent): Boolean
 
     suspend fun translate(id: String, data: FormDataContent): Translation
-    suspend fun getQuotes(id: String, maxId: String? = null, limit: Int = 20): Pair<List<Status>, String?>
+    suspend fun getQuotes(id: String, maxId: String? = null, limit: Int = 20): Page<Status>
 
     suspend fun revokeQuote(quotedId: String, quotingId: String): Boolean
 }

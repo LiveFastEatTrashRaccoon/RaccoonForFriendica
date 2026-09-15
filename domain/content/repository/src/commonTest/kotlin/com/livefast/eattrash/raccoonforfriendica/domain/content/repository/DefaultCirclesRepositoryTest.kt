@@ -1,6 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
@@ -58,7 +59,7 @@ class DefaultCirclesRepositoryTest {
     @Test
     fun `when getMembers then result is as expected`() = runTest {
         val list = listOf(Account(acct = "", id = "", username = ""))
-        everySuspend { listService.getMembers(id = any(), maxId = any()) } returns Pair(list, null)
+        everySuspend { listService.getMembers(id = any(), maxId = any()) } returns Page(elements = list, cursor = null)
 
         val res = sut.getMembers("1")
 

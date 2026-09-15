@@ -36,12 +36,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.Validatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.isValidUrl
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 
+data class LinkInfo(val anchor: String, val url: String)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertLinkDialog(
     modifier: Modifier = Modifier,
     initialAnchor: String? = null,
-    onClose: ((Pair<String, String>?) -> Unit)? = null,
+    onClose: ((LinkInfo?) -> Unit)? = null,
 ) {
     var anchorTextFieldValue by remember {
         mutableStateOf(
@@ -172,7 +174,7 @@ fun InsertLinkDialog(
                             null
                         }
                     if (anchorError == null && urlError == null) {
-                        onClose?.invoke(anchor to url)
+                        onClose?.invoke(LinkInfo(anchor = anchor, url = url))
                     }
                 },
             ) {

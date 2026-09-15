@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
@@ -26,7 +27,7 @@ class DefaultNotificationService(@Assisted args: ServiceCreationArgs) : Notifica
         minId: String?,
         includeAll: Boolean,
         limit: Int,
-    ): Pair<List<Notification>, String?> {
+    ): Page<Notification> {
         val response = client.get("$baseUrl/v1/notifications") {
             if (types.isNotEmpty()) {
                 types.forEach { value ->
@@ -44,7 +45,7 @@ class DefaultNotificationService(@Assisted args: ServiceCreationArgs) : Notifica
         }
         val data: List<Notification> = response.body()
         val cursor = response.headers["link"]?.extractCursorFromLinkHeaderValue()
-        return data to cursor
+        return Page(elements = data, cursor = cursor)
     }
 
     override suspend fun dismiss(id: String): Boolean =

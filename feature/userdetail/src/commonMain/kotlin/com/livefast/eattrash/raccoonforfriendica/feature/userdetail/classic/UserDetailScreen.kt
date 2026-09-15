@@ -900,10 +900,10 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
     if (confirmMuteUserDialogOpen) {
         ConfirmMuteUserBottomSheet(
             userHandle = uiState.user?.handle.orEmpty(),
-            onClose = { pair ->
-                if (pair != null) {
+            onClose = { result ->
+                if (result != null) {
                     confirmMuteUserDialogOpen = false
-                    val (duration, disableNotifications) = pair
+                    val (duration, disableNotifications) = result
                     model.reduce(
                         UserDetailMviModel.Intent.ToggleMute(
                             muted = true,

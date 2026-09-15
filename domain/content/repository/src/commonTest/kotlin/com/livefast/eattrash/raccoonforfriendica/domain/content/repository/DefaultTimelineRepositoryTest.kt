@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
@@ -556,7 +557,7 @@ class DefaultTimelineRepositoryTest {
                 limit = any(),
                 hashtag = any(),
             )
-        } returns ((19 downTo 0).map { Status(id = "$it") } to "42")
+        } returns Page(elements = (19 downTo 0).map { Status(id = "$it") }, cursor = "42")
 
         val res =
             sut.getHashtag(
@@ -595,7 +596,7 @@ class DefaultTimelineRepositoryTest {
                 limit = any(),
                 hashtag = any(),
             )
-        } returns ((19 downTo 0).map { Status(id = "$it") } to "42")
+        } returns Page(elements = (19 downTo 0).map { Status(id = "$it") }, cursor = "42")
 
         val res =
             sut.getHashtag(

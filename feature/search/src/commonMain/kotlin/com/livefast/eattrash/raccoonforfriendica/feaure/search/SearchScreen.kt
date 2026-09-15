@@ -665,11 +665,11 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
         (confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator)?.also { user ->
             ConfirmMuteUserBottomSheet(
                 userHandle = user.handle.orEmpty(),
-                onClose = { pair ->
+                onClose = { result ->
                     val entryId = confirmMuteEntry?.id
                     confirmMuteEntry = null
-                    if (pair != null) {
-                        val (duration, disableNotifications) = pair
+                    if (result != null) {
+                        val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
                                 SearchMviModel.Intent.MuteUser(

@@ -71,8 +71,8 @@ internal fun DateTimeSelectionFlow(initialDateMillis: Long, onClose: ((String?) 
         val initialValues = initialDateMillis.extractTimePart()
         val timePickerState =
             rememberTimePickerState(
-                initialHour = initialValues.first,
-                initialMinute = initialValues.second,
+                initialHour = initialValues.hours,
+                initialMinute = initialValues.minutes,
                 is24Hour = true,
             )
         DatePickerDialog(

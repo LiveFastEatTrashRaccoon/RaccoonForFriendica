@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Search
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
@@ -164,7 +165,10 @@ class DefaultUserRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns (listOf(Account(id = "2", username = "following", acct = "following@node")) to null)
+        } returns Page(
+            elements = listOf(Account(id = "2", username = "following", acct = "following@node")),
+            cursor = null,
+        )
 
         val res = sut.getFollowing(id = "1", pageCursor = null, otherInstance = otherInstance)
 
@@ -193,7 +197,10 @@ class DefaultUserRepositoryTest {
                 maxId = any(),
                 limit = any(),
             )
-        } returns (listOf(Account(id = "2", username = "follower", acct = "follower@node")) to null)
+        } returns Page(
+            elements = listOf(Account(id = "2", username = "follower", acct = "follower@node")),
+            cursor = null,
+        )
 
         val res = sut.getFollowers(id = "1", pageCursor = null, otherInstance = otherInstance)
 
@@ -294,16 +301,16 @@ class DefaultUserRepositoryTest {
     @Test
     fun `given results when getMuted then result is expected`() = runTest {
         everySuspend { userService.getMuted(any(), any()) } returns
-            (listOf(Account(id = "1", username = "u", acct = "a")) to null)
+            Page(elements = listOf(Account(id = "1", username = "u", acct = "a")), cursor = null)
         val res = sut.getMuted(null)
         assertNotNull(res)
-        assertEquals(1, res?.list?.size)
+        assertEquals(1, res.list.size)
     }
 
     @Test
     fun `given results when getBlocked then result is expected`() = runTest {
         everySuspend { userService.getBlocked(any(), any()) } returns
-            (listOf(Account(id = "1", username = "u", acct = "a")) to null)
+            Page(elements = listOf(Account(id = "1", username = "u", acct = "a")), cursor = null)
         val res = sut.getBlocked(null)
         assertNotNull(res)
         assertEquals(1, res.list.size)
@@ -314,7 +321,7 @@ class DefaultUserRepositoryTest {
     @Test
     fun `given results when getFollowRequests then result is expected`() = runTest {
         everySuspend { followRequestService.getAll(any(), any()) } returns
-            (listOf(Account(id = "1", username = "u", acct = "a")) to "cursor")
+            Page(elements = listOf(Account(id = "1", username = "u", acct = "a")), cursor = "cursor")
         val res = sut.getFollowRequests(null)
         assertNotNull(res)
         assertEquals(1, res.list.size)

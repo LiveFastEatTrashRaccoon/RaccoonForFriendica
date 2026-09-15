@@ -15,11 +15,11 @@ import io.ktor.utils.io.CancellationException
 @Inject
 class DefaultTagRepository(private val provider: ServiceProvider) : TagRepository {
     override suspend fun getFollowed(pageCursor: String?): ListWithPageCursor<TagModel>? = try {
-        val (list, cursor) =
+        val (elements, cursor) =
             provider.tag.getFollowedTags(
                 maxId = pageCursor,
             )
-        ListWithPageCursor(list = list.map { it.toModel() }, cursor = cursor)
+        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

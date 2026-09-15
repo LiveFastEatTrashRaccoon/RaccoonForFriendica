@@ -25,12 +25,12 @@ expect fun Long.concatDateWithTime(hours: Int, minutes: Int, seconds: Int): Long
 /**
  * Extract the time (hours, minutes) from a timestamp (in milliseconds).
  */
-expect fun Long.extractTimePart(): Pair<Int, Int>
+expect fun Long.extractTimePart(): TimeComponents
 
 /**
  * Extract the date (year, month) from a timestamp (in milliseconds).
  */
-expect fun Long.extractDatePart(): Pair<Int, Int>
+expect fun Long.extractDatePart(): DateComponents
 
 /**
  * Converts a date (in the ISO 8601 format) to another given format.

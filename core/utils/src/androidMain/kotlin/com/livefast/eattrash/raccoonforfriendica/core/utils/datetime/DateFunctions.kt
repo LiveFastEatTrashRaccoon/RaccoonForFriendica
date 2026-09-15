@@ -71,21 +71,21 @@ actual fun Long.concatDateWithTime(hours: Int, minutes: Int, seconds: Int): Long
     return calendar.timeInMillis
 }
 
-actual fun Long.extractTimePart(): Pair<Int, Int> {
+actual fun Long.extractTimePart(): TimeComponents {
     val calendar = GregorianCalendar.getInstance()
     calendar.timeInMillis = this
     val hours = calendar.get(Calendar.HOUR_OF_DAY)
     val minutes = calendar.get(Calendar.MINUTE)
-    return hours to minutes
+    return TimeComponents(hours = hours, minutes = minutes)
 }
 
-actual fun Long.extractDatePart(): Pair<Int, Int> {
+actual fun Long.extractDatePart(): DateComponents {
     val calendar = GregorianCalendar.getInstance()
     calendar.timeInMillis = this
     val year = calendar.get(Calendar.YEAR)
     // months are starting from 0
     val month = calendar.get(Calendar.MONTH) + 1
-    return year to month
+    return DateComponents(year = year, month = month)
 }
 
 actual fun getFormattedDate(iso8601Timestamp: String, format: String, withLocalTimezone: Boolean): String {

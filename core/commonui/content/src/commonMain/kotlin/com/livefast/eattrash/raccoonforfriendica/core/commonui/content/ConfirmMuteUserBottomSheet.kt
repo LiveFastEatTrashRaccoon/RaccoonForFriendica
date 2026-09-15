@@ -30,6 +30,8 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
+data class MuteUserInfo(val duration: Duration, val disableNotifications: Boolean)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmMuteUserBottomSheet(
@@ -47,11 +49,7 @@ fun ConfirmMuteUserBottomSheet(
             3.days,
             7.days,
         ),
-    onClose: (
-        (
-            Pair<Duration, Boolean>?,
-        ) -> Unit
-    )? = null,
+    onClose: ((MuteUserInfo?) -> Unit)? = null,
 ) {
     var selectedDuration by remember { mutableStateOf(initialValue) }
     var selectedDisableNotifications by remember { mutableStateOf(true) }
@@ -125,7 +123,12 @@ fun ConfirmMuteUserBottomSheet(
             Button(
                 modifier = Modifier.padding(horizontal = Spacing.m).fillMaxWidth(),
                 onClick = {
-                    onClose?.invoke(selectedDuration to selectedDisableNotifications)
+                    onClose?.invoke(
+                        MuteUserInfo(
+                            duration = selectedDuration,
+                            disableNotifications = selectedDisableNotifications,
+                        ),
+                    )
                 },
             ) {
                 Text(
