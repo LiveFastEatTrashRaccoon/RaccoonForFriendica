@@ -10,7 +10,6 @@ import dev.zacsweers.metro.SingleIn
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-@Named("default")
 @Inject
 class DefaultSharedPreferencesProvider(private val context: Context) : SharedPreferencesProvider {
 
