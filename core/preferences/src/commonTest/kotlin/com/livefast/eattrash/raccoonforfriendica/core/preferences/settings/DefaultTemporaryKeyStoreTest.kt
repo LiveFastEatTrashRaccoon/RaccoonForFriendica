@@ -1,13 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.settings
 
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.DefaultTemporaryKeyStore
+import com.russhwolf.settings.Settings
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
-import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,7 +15,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class DefaultTemporaryKeyStoreTest {
-    private val settings = mock<SettingsWrapper>(MockMode.autoUnit)
+    private val settings = mock<Settings>(MockMode.autoUnit)
 
     private val sut = DefaultTemporaryKeyStore(settings)
 
@@ -44,12 +44,12 @@ class DefaultTemporaryKeyStoreTest {
     @Test
     fun `when get Int then result is as expected`() = runTest {
         every { settings.hasKey(any()) } returns true
-        every { settings[any(), any<Int>()] } returns 2
+        every { settings.getInt(any(), any()) } returns 2
 
         val res = sut.get("key", 1)
         assertEquals(2, res)
         verify {
-            settings["key", 1]
+            settings.getInt("key", 1)
         }
     }
 
@@ -58,19 +58,19 @@ class DefaultTemporaryKeyStoreTest {
         sut.save("key", 0)
 
         verify {
-            settings["key"] = 0
+            settings.putInt("key", 0)
         }
     }
 
     @Test
     fun `when get Long then result is as expected`() = runTest {
         every { settings.hasKey(any()) } returns true
-        every { settings[any(), any<Long>()] } returns 2
+        every { settings.getLong(any(), any()) } returns 2L
 
         val res = sut.get("key", 1L)
         assertEquals(2L, res)
         verify {
-            settings["key", 1L]
+            settings.getLong("key", 1L)
         }
     }
 
@@ -78,19 +78,19 @@ class DefaultTemporaryKeyStoreTest {
     fun `when save Long then interactions are as expected`() = runTest {
         sut.save("key", 1L)
         verify {
-            settings["key"] = 1L
+            settings.putLong("key", 1L)
         }
     }
 
     @Test
     fun `when get Boolean then result is as expected`() = runTest {
         every { settings.hasKey(any()) } returns true
-        every { settings[any(), any<Boolean>()] } returns true
+        every { settings.getBoolean(any(), any()) } returns true
 
         val res = sut.get("key", false)
         assertTrue(res)
         verify {
-            settings["key", false]
+            settings.getBoolean("key", false)
         }
     }
 
@@ -99,19 +99,19 @@ class DefaultTemporaryKeyStoreTest {
         sut.save("key", true)
 
         verify {
-            settings["key"] = true
+            settings.putBoolean("key", true)
         }
     }
 
     @Test
     fun `when get String then result is as expected`() = runTest {
         every { settings.hasKey(any()) } returns true
-        every { settings[any(), any<String>()] } returns "b"
+        every { settings.getString(any(), any()) } returns "b"
 
         val res = sut.get("key", "a")
         assertEquals("b", res)
         verify {
-            settings["key", "a"]
+            settings.getString("key", "a")
         }
     }
 
@@ -120,19 +120,19 @@ class DefaultTemporaryKeyStoreTest {
         sut.save("key", "value")
 
         verify {
-            settings["key"] = "value"
+            settings.putString("key", "value")
         }
     }
 
     @Test
     fun `when get Float then result is as expected`() = runTest {
         every { settings.hasKey(any()) } returns true
-        every { settings[any(), any<Float>()] } returns 2.0f
+        every { settings.getFloat(any(), any()) } returns 2.0f
 
         val res = sut.get("key", 1.0f)
         assertEquals(2.0f, res)
         verify {
-            settings["key", 1.0f]
+            settings.getFloat("key", 1.0f)
         }
     }
 
@@ -140,19 +140,19 @@ class DefaultTemporaryKeyStoreTest {
     fun `when save Float then interactions are as expected`() = runTest {
         sut.save("key", 1.0f)
         verify {
-            settings["key"] = 1.0f
+            settings.putFloat("key", 1.0f)
         }
     }
 
     @Test
     fun `when get Double then result is as expected`() = runTest {
         every { settings.hasKey(any()) } returns true
-        every { settings[any(), any<Double>()] } returns 2.0
+        every { settings.getDouble(any(), any()) } returns 2.0
 
         val res = sut.get("key", 1.0)
         assertEquals(2.0, res)
         verify {
-            settings["key", 1.0]
+            settings.getDouble("key", 1.0)
         }
     }
 
@@ -161,7 +161,7 @@ class DefaultTemporaryKeyStoreTest {
         sut.save("key", 1.0)
 
         verify {
-            settings["key"] = 1.0
+            settings.putDouble("key", 1.0)
         }
     }
 
@@ -176,14 +176,14 @@ class DefaultTemporaryKeyStoreTest {
     @Test
     fun `given existing key when get String list then result is as expected`() = runTest {
         every { settings.hasKey(any()) } returns true
-        every { settings[any(), any<String>()] } returns "a, b"
+        every { settings.getString(any(), any()) } returns "a, b"
 
         val res = sut.get("key", listOf("c", "d"))
         assertEquals(2, res.size)
         assertEquals("a", res.first())
         assertEquals("b", res[1])
         verify {
-            settings["key", ""]
+            settings.getString("key", "")
         }
     }
 
@@ -192,8 +192,8 @@ class DefaultTemporaryKeyStoreTest {
         val values = listOf("a", "b", "c")
         sut.save("key", values)
 
-        verifySuspend {
-            settings.set(key = "key", value = values.joinToString(", "))
+        verify {
+            settings.putString("key", values.joinToString(", "))
         }
     }
 

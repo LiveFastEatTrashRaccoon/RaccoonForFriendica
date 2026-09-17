@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.preferences.store
 
-import com.livefast.eattrash.raccoonforfriendica.core.preferences.settings.SettingsWrapper
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -14,7 +16,7 @@ import kotlinx.coroutines.withContext
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultTemporaryKeyStore(
-    private val settings: SettingsWrapper,
+    private val settings: Settings,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : TemporaryKeyStore {
     override suspend fun containsKey(key: String): Boolean = withContext(dispatcher) {
