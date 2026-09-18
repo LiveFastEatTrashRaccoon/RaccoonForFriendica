@@ -96,7 +96,7 @@ fun CustomImage(
                 onState = {
                     painterState = it
                 },
-                imageLoader = LocalUiDeps.current.imageLoaderProvider.provideImageLoader(),
+                imageLoader = LocalUiDeps.current.imageLoaderProvider.provide(),
             )
         } else {
             Box(

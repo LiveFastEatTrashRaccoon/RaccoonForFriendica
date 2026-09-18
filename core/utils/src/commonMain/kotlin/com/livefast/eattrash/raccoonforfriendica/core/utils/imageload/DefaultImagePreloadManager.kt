@@ -16,7 +16,7 @@ class DefaultImagePreloadManager(
     private val imageLoaderProvider: ImageLoaderProvider,
 ) : ImagePreloadManager {
     override fun preload(url: String) {
-        val imageLoader = imageLoaderProvider.provideImageLoader()
+        val imageLoader = imageLoaderProvider.provide()
         val request =
             ImageRequest
                 .Builder(context)
@@ -26,7 +26,7 @@ class DefaultImagePreloadManager(
     }
 
     override fun remove(url: String) {
-        val imageLoader = imageLoaderProvider.provideImageLoader()
+        val imageLoader = imageLoaderProvider.provide()
         imageLoader.memoryCache?.remove(MemoryCache.Key(url))
         imageLoader.diskCache?.remove(url)
     }

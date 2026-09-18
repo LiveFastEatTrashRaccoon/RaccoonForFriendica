@@ -47,5 +47,5 @@ class DefaultImageLoaderProvider(
             .build()
     }
 
-    override fun provideImageLoader(): ImageLoader = imageLoader
+    override fun provide(): ImageLoader = imageLoader
 }
