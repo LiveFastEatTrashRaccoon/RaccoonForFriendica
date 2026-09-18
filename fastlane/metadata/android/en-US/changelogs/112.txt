@@ -1,0 +1,4 @@
+- fix: truncated posts with hashtags and inline images in anchors
+- enh: improve startup time with optimized dependency injection
+- refactor: code cleanup and simplification
+- chore: update dependencies
