@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.encryption.EncryptionHelper
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.SettingsListener
-import kotlinx.coroutines.runBlocking
 
 @SuppressLint("UseKtx")
 class EncryptingSharedPreferencesSettings(
@@ -152,14 +151,20 @@ class EncryptingSharedPreferencesSettings(
     override val size: Int
         get() = preferences.all.size
 
-    private fun decrypt(value: String): String = runBlocking {
+    private fun decrypt(value: String): String = try {
+        if (value.isEmpty()) return ""
         val bytes = encryptionHelper.decodeFromString(value)
+        if (bytes.isEmpty()) return ""
         encryptionHelper.decrypt(bytes).orEmpty()
+    } catch (_: Exception) {
+        ""
     }
 
-    private fun encrypt(value: String): String = runBlocking {
+    private fun encrypt(value: String): String = try {
         val bytes = encryptionHelper.encrypt(value) ?: byteArrayOf()
         encryptionHelper.encodeToString(bytes)
+    } catch (_: Exception) {
+        ""
     }
 
     /*

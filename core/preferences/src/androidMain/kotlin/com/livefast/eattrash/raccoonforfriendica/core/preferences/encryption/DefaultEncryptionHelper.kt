@@ -22,7 +22,7 @@ class DefaultEncryptionHelper : EncryptionHelper {
         KeyStore.getInstance(STORE_NAME).apply { load(null) }
     }
 
-    override fun encrypt(input: String): ByteArray? {
+    override fun encrypt(input: String): ByteArray? = try {
         val secretKey = getOrCreateMasterKey() ?: return null
         val cipher = Cipher.getInstance(CIPHER)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
@@ -30,12 +30,14 @@ class DefaultEncryptionHelper : EncryptionHelper {
         val data = cipher.doFinal(input.toByteArray(Charsets.UTF_8))
         val iv = cipher.iv
 
-        return iv + data
+        iv + data
+    } catch (_: Exception) {
+        null
     }
 
-    override fun decrypt(input: ByteArray): String? {
+    override fun decrypt(input: ByteArray): String? = try {
         val secretKey = getOrCreateMasterKey() ?: return null
-        require(input.size > IV_SIZE) { return null }
+        if (input.size <= IV_SIZE) return null
 
         val iv = input.sliceArray(0 until IV_SIZE)
         val data = input.sliceArray(IV_SIZE until input.size)
@@ -43,12 +45,22 @@ class DefaultEncryptionHelper : EncryptionHelper {
         val spec = GCMParameterSpec(128, iv)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, spec)
 
-        return cipher.doFinal(data).toString(Charsets.UTF_8)
+        cipher.doFinal(data).toString(Charsets.UTF_8)
+    } catch (_: Exception) {
+        null
     }
 
-    override fun encodeToString(input: ByteArray): String = Base64.encode(input)
+    override fun encodeToString(input: ByteArray): String = try {
+        Base64.encode(input)
+    } catch (_: Exception) {
+        ""
+    }
 
-    override fun decodeFromString(input: String): ByteArray = Base64.decode(source = input)
+    override fun decodeFromString(input: String): ByteArray = try {
+        Base64.decode(source = input)
+    } catch (_: Exception) {
+        byteArrayOf()
+    }
 
     private fun getOrCreateMasterKey(): SecretKey? {
         val existing = store.containsAlias(ALIAS_NAME)
