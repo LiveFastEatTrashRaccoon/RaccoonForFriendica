@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 @ContributesIntoMap(
     scope = AppScope::class,
@@ -150,7 +151,7 @@ class TimelineViewModel(
                 identityRepository.currentUser,
             ) { settings, _, user ->
                 settings to user
-            }.debounce(750)
+            }.debounce(750.milliseconds)
                 .distinctUntilChanged()
                 .onEach { (settings, user) ->
                     circlesRefreshed = false

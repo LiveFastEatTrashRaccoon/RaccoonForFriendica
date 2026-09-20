@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @ContributesIntoMap(
     scope = AppScope::class,
@@ -68,7 +69,7 @@ class ConversationListViewModel(
                 .map { it.userSearchQuery }
                 .distinctUntilChanged()
                 .drop(1)
-                .debounce(750)
+                .debounce(750.milliseconds)
                 .onEach { query ->
                     refreshUsers(query)
                 }.launchIn(this)

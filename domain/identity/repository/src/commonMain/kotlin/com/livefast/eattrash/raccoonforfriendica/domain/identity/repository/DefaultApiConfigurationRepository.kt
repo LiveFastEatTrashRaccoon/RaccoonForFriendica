@@ -10,6 +10,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.seconds
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
@@ -134,6 +135,6 @@ class DefaultApiConfigurationRepository(
         private const val METHOD_OAUTH_2 = "OAuth2"
         private const val DEFAULT_NODE = "friendica.world"
         private const val DEFAULT_METHOD = METHOD_BASIC
-        private const val VALIDATE_CREDENTIALS_TIMEOUT = 2000L
+        private val VALIDATE_CREDENTIALS_TIMEOUT = 2.seconds
     }
 }

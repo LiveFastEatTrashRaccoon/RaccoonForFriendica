@@ -50,6 +50,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @ContributesIntoMap(
     scope = AppScope::class,
@@ -113,7 +114,7 @@ class SearchViewModel(
                 .map { it.query }
                 .distinctUntilChanged()
                 .drop(1)
-                .debounce(1000)
+                .debounce(1.seconds)
                 .onEach {
                     refresh()
                 }.launchIn(this)

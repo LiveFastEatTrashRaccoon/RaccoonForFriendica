@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 @AssistedInject
@@ -47,7 +48,7 @@ class LoginViewModel(
     init {
         viewModelScope.launch {
             authManager.credentialFlow
-                .debounce(250)
+                .debounce(250.milliseconds)
                 .onEach { credentials ->
                     finalizeLogin(credentials)
                 }.launchIn(this)

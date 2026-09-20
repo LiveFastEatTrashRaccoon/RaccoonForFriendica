@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 @AssistedInject
@@ -72,7 +73,7 @@ class CircleMembersViewModel(
                 .map { it.searchUsersQuery }
                 .distinctUntilChanged()
                 .drop(1)
-                .debounce(750)
+                .debounce(750.milliseconds)
                 .onEach { query ->
                     if (uiState.value.addUsersDialogOpened) {
                         refreshSearchUsers(query)

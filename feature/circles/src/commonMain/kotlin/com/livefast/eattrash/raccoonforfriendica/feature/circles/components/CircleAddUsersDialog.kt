@@ -52,6 +52,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
@@ -71,7 +72,7 @@ internal fun CircleAddUserDialog(
         snapshotFlow { users }
             .drop(1)
             .map { it.isEmpty() }
-            .debounce(250)
+            .debounce(250.milliseconds)
             .collectAsState(false)
 
     BasicAlertDialog(
