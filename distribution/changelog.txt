@@ -1,9 +1,6 @@
 ## What's Changed
 
-- fix: truncated posts with hashtags and inline images in anchors
-- enh: migrate to Metro for dependency injection
-- refactor: align `NSUserDefaults` management for settings on iOS to other platforms
-- refactor: code cleanup and simplification
-- chore: update dependencies
+- fix: improve startup error handling and account switch
+- chore: code cleanup
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.0...1.1.1
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.1...1.1.2
