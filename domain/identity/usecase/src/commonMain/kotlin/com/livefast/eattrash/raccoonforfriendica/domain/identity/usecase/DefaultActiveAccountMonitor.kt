@@ -98,11 +98,6 @@ class DefaultActiveAccountMonitor(
     private suspend fun process(account: AccountModel?) {
         if (account == null) {
             apiConfigurationRepository.setAuth(null)
-            supportedFeatureRepository.refresh()
-
-            contentPreloadManager.preload()
-
-            identityRepository.refreshCurrentUser(null)
 
             val accountSettings =
                 accountRepository.getBy(handle = "")?.let {
@@ -110,28 +105,57 @@ class DefaultActiveAccountMonitor(
                 } ?: defaultSettings
             settingsRepository.changeCurrent(accountSettings)
 
-            notificationCoordinator.setupAnonymousUser()
-            announcementsManager.clearUnreadCount()
-            followedHashtagCache.clear()
+            try {
+                supportedFeatureRepository.refresh()
+            } catch (_: Exception) {}
+            try {
+                contentPreloadManager.preload()
+            } catch (_: Exception) {}
+            try {
+                identityRepository.refreshCurrentUser(null)
+            } catch (_: Exception) {}
+
+            try {
+                notificationCoordinator.setupAnonymousUser()
+            } catch (_: Exception) {}
+            try {
+                announcementsManager.clearUnreadCount()
+            } catch (_: Exception) {}
+            try {
+                followedHashtagCache.clear()
+            } catch (_: Exception) {}
         } else {
             val defaultNode = apiConfigurationRepository.getDefaultNode()
             val node = account.handle.nodeName ?: defaultNode
             val credentials = accountCredentialsCache.get(account.id)
             apiConfigurationRepository.changeNode(node)
             apiConfigurationRepository.setAuth(credentials)
-            supportedFeatureRepository.refresh()
-
-            contentPreloadManager.preload(account.remoteId)
-
-            identityRepository.refreshCurrentUser(account.remoteId)
 
             val accountSettings = settingsRepository.get(account.id) ?: defaultSettings
             settingsRepository.changeCurrent(accountSettings)
 
-            markerRepository.get(type = MarkerType.Notifications, refresh = true)
-            notificationCoordinator.setupLoggedUser()
-            announcementsManager.refreshUnreadCount()
-            followedHashtagCache.refresh()
+            try {
+                supportedFeatureRepository.refresh()
+            } catch (_: Exception) {}
+            try {
+                contentPreloadManager.preload(account.remoteId)
+            } catch (_: Exception) {}
+            try {
+                identityRepository.refreshCurrentUser(account.remoteId)
+            } catch (_: Exception) {}
+
+            try {
+                markerRepository.get(type = MarkerType.Notifications, refresh = true)
+            } catch (_: Exception) {}
+            try {
+                notificationCoordinator.setupLoggedUser()
+            } catch (_: Exception) {}
+            try {
+                announcementsManager.refreshUnreadCount()
+            } catch (_: Exception) {}
+            try {
+                followedHashtagCache.refresh()
+            } catch (_: Exception) {}
         }
     }
 
