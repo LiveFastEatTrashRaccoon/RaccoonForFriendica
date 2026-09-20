@@ -99,7 +99,9 @@ class DrawerViewModel(
     }
 
     private fun switchAccount(account: AccountModel) {
-        check(account.remoteId != uiState.value.user?.id) { return }
+        if (account.remoteId == uiState.value.user?.id && uiState.value.user != null) {
+            return
+        }
         viewModelScope.launch {
             switchAccountUseCase(account)
             emitEffect(DrawerMviModel.Effect.AccountChangeSuccess)
@@ -108,7 +110,9 @@ class DrawerViewModel(
 
     private fun submitChangeNode() {
         val isLogged = apiConfigurationRepository.isLogged.value
-        check(!isLogged) { return }
+        if (isLogged) {
+            return
+        }
 
         viewModelScope.launch {
             val newNode = uiState.value.anonymousChangeNodeName
@@ -134,7 +138,9 @@ class DrawerViewModel(
             }
 
             val isValid = nodeNameError == null
-            check(isValid) { return@launch }
+            if (!isValid) {
+                return@launch
+            }
 
             apiConfigurationRepository.changeNode(newNode)
             supportedFeatureRepository.refresh()

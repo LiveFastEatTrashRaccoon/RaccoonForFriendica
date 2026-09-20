@@ -110,7 +110,9 @@ class UnpublishedViewModel(
         when (intent) {
             is UnpublishedMviModel.Intent.ChangeSection ->
                 viewModelScope.launch {
-                    check(!uiState.value.loading) { return@launch }
+                    if (uiState.value.loading) {
+                        return@launch
+                    }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(UnpublishedMviModel.Effect.BackToTop)
                     refresh(initial = true)

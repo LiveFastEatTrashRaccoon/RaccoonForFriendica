@@ -137,7 +137,9 @@ class UserDetailViewModel(
         when (intent) {
             is UserDetailMviModel.Intent.ChangeSection ->
                 viewModelScope.launch {
-                    check(!uiState.value.loading) { return@launch }
+                    if (uiState.value.loading) {
+                        return@launch
+                    }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(UserDetailMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -657,7 +659,9 @@ class UserDetailViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        check(!entry.translationLoading) { return }
+        if (entry.translationLoading) {
+            return
+        }
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }

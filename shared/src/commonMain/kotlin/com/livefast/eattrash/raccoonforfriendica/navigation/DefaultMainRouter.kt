@@ -44,7 +44,7 @@ class DefaultMainRouter(
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
 
     override fun openUserDetail(user: UserModel, otherInstance: String?) {
-        check(user.id != currentUserId) { return }
+        if (user.id == currentUserId) { return }
         val openGroupsInForumModeByDefault =
             settingsRepository.current.value?.openGroupsInForumModeByDefault == true
         scope.launch {
@@ -121,17 +121,17 @@ class DefaultMainRouter(
     }
 
     override fun openFavorites() {
-        check(isLogged) { return }
+        if (!isLogged) { return }
         navigationCoordinator.push(Destination.Favorites)
     }
 
     override fun openBookmarks() {
-        check(isLogged) { return }
+        if (!isLogged) { return }
         navigationCoordinator.push(Destination.Bookmarks)
     }
 
     override fun openFollowedHashtags() {
-        check(isLogged) { return }
+        if (!isLogged) { return }
         navigationCoordinator.push(Destination.FollowedHashtags)
     }
 
@@ -167,7 +167,7 @@ class DefaultMainRouter(
         initialText: String?,
         initialAttachment: ByteArray?,
     ) {
-        check(isLogged) { return }
+        if (!isLogged) { return }
         scope.launch {
             if (inReplyTo != null) {
                 entryCache.put(inReplyTo.id, inReplyTo)

@@ -191,7 +191,7 @@ class ThreadViewModel(
                 }
             val initialIndex = mainEntries.indexOfFirst { it.id == entryId }.coerceAtLeast(0)
             val replies: List<List<TimelineEntryModel>> = mainEntries.map { emptyList() }
-            check(mainEntries.size == replies.size)
+            check(mainEntries.size == replies.size) { "Unable to create navigation set " }
             updateState {
                 it.copy(
                     currentIndex = initialIndex,
@@ -236,7 +236,9 @@ class ThreadViewModel(
     }
 
     private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
-        check(!entry.loadMoreButtonLoading) { return }
+        if (entry.loadMoreButtonLoading) {
+            return
+        }
         val currentState = uiState.value
         val currentReplies = currentState.replies[currentState.currentIndex]
         updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
@@ -570,7 +572,9 @@ class ThreadViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        check(!entry.translationLoading) { return }
+        if (entry.translationLoading) {
+            return
+        }
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
@@ -594,7 +598,9 @@ class ThreadViewModel(
     }
 
     private fun changeNavigationIndex(newIndex: Int) {
-        check(swipeNavigationEnabled) { return }
+        if (!swipeNavigationEnabled) {
+            return
+        }
         viewModelScope.launch {
             updateState {
                 it.copy(
@@ -618,7 +624,9 @@ class ThreadViewModel(
     }
 
     private suspend fun loadNavigationNextPage() {
-        check(swipeNavigationEnabled) { return }
+        if (!swipeNavigationEnabled) {
+            return
+        }
         timelineNavigationManager.loadNextPage()
         updateState {
             val currentEntries = it.mainEntries
@@ -626,7 +634,7 @@ class ThreadViewModel(
                 timelineNavigationManager.currentList.drop(currentEntries.size)
             val mainEntries = currentEntries + newEntries
             val replies =
-                buildList<List<TimelineEntryModel>> {
+                buildList {
                     addAll(it.replies)
                     val sizeDiff = abs(mainEntries.size - it.replies.size)
                     repeat(sizeDiff) {
@@ -634,7 +642,7 @@ class ThreadViewModel(
                     }
                 }
 
-            check(mainEntries.size == replies.size)
+            check(mainEntries.size == replies.size) { "Unable to create navigation entry set" }
             it.copy(
                 mainEntries = mainEntries,
                 replies = replies,

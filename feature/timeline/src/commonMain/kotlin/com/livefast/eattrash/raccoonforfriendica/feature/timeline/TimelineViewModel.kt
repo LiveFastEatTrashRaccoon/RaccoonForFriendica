@@ -155,11 +155,9 @@ class TimelineViewModel(
                 .distinctUntilChanged()
                 .onEach { (settings, user) ->
                     circlesRefreshed = false
-                    val hasSettings = settings != null
-                    // wait until either there is a logged user if there are valid credentials stored
-                    val hasUser =
-                        user != null || !apiConfigurationRepository.hasCachedAuthCredentials()
-                    if (hasSettings && hasUser) {
+                    val cachedAuth = apiConfigurationRepository.hasCachedAuthCredentials()
+                    val hasUser = user != null || !cachedAuth
+                    if (hasUser) {
                         viewModelScope.launch {
                             refresh(
                                 initial = true,
@@ -281,13 +279,13 @@ class TimelineViewModel(
     }
 
     private suspend fun refresh(initial: Boolean = false, forceRefresh: Boolean = false) {
-        // do not do anything if type is unknown
         val timelineType = uiState.value.timelineType ?: return
 
-        // workaround to handle refresh after initial network call failed
-        check(!activeAccountMonitor.isNotLoggedButItShould()) {
-            activeAccountMonitor.forceRefresh()
-            return
+        val notLogged = activeAccountMonitor.isNotLoggedButItShould()
+        if (notLogged) {
+            try {
+                activeAccountMonitor.forceRefresh()
+            } catch (_: Exception) {}
         }
         if (circlesRefreshed) {
             // needed as a last-resort to update circles if edited elsewhere
@@ -597,7 +595,9 @@ class TimelineViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        check(!entry.translationLoading) { return }
+        if (entry.translationLoading) {
+            return
+        }
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }

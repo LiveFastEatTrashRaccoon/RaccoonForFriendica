@@ -1386,7 +1386,9 @@ class ComposerViewModel(
     }
 
     private suspend fun loadNextPageUsers() {
-        check(!uiState.value.userSearchLoading) { return }
+        if (uiState.value.userSearchLoading) {
+            return
+        }
 
         updateState { it.copy(userSearchLoading = true) }
         val users = userPaginationManager.loadNextPage()
@@ -1409,7 +1411,9 @@ class ComposerViewModel(
     }
 
     private suspend fun loadNextPageGalleryPhotos() {
-        check(!uiState.value.galleryLoading) { return }
+        if (uiState.value.galleryLoading) {
+            return
+        }
 
         updateState { it.copy(galleryLoading = true) }
         val photos = albumPhotoPaginationManager.loadNextPage()
@@ -1613,7 +1617,9 @@ class ComposerViewModel(
     private fun changeMarkupMode(mode: MarkupMode) {
         val currentState = uiState.value
         val oldMode = currentState.markupMode
-        check(mode != oldMode) { return }
+        if (mode == oldMode) {
+            return
+        }
 
         viewModelScope.launch {
             val newTitle =
@@ -1664,7 +1670,9 @@ class ComposerViewModel(
 
     private fun submit(enableAltTextCheck: Boolean, enableParentVisibilityCheck: Boolean) {
         val currentState = uiState.value
-        check(!currentState.loading) { return }
+        if (currentState.loading) {
+            return
+        }
 
         val spoiler = currentState.spoilerValue.text.takeIf { currentState.hasSpoiler }
         val title = currentState.titleValue.text.takeIf { it.isNotBlank() && currentState.hasTitle }

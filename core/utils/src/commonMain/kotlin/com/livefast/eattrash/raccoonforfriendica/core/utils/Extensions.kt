@@ -4,8 +4,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 
 fun String?.ellipsize(length: Int = 100, ellipsis: String = "…"): String {
-    check(!isNullOrEmpty()) { return "" }
-    check(this.length >= length) { return this }
+    if (isNullOrEmpty()) { return "" }
+    if (this.length < length) { return this }
     return take(length - 1) + ellipsis
 }
 

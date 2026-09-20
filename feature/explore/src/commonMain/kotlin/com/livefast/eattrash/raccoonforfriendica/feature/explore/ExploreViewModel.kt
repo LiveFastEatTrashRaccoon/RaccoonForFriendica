@@ -143,7 +143,9 @@ class ExploreViewModel(
         when (intent) {
             is ExploreMviModel.Intent.ChangeSection ->
                 viewModelScope.launch {
-                    check(!uiState.value.loading) { return@launch }
+                    if (uiState.value.loading) {
+                        return@launch
+                    }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(ExploreMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -594,7 +596,9 @@ class ExploreViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        check(!entry.translationLoading) { return }
+        if (entry.translationLoading) {
+            return
+        }
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
@@ -655,7 +659,9 @@ class ExploreViewModel(
     private fun submitSelectForeignInstanceName() {
         viewModelScope.launch {
             val newNode = uiState.value.selectForeignInstanceName
-            check(apiConfigurationRepository.node.value != newNode) { return@launch }
+            if (apiConfigurationRepository.node.value == newNode) {
+                return@launch
+            }
 
             // validate fields
             val nodeNameError =
@@ -678,7 +684,9 @@ class ExploreViewModel(
             }
 
             val isValid = nodeNameError == null
-            check(isValid) { return@launch }
+            if (!isValid) {
+                return@launch
+            }
             updateState { it.copy(otherInstance = newNode, selectForeignInstanceName = "", refreshing = true) }
             refreshAvailableSections()
             emitEffect(ExploreMviModel.Effect.SelectForeignInstanceSuccess)

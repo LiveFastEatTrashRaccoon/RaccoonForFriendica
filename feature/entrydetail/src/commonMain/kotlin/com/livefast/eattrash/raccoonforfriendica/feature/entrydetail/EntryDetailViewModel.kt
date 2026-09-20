@@ -234,7 +234,9 @@ class EntryDetailViewModel(
     }
 
     private suspend fun loadContext() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) {
+            return
+        }
 
         updateState { it.copy(loading = true) }
         val mainEntry = uiState.value.mainEntry
@@ -288,7 +290,9 @@ class EntryDetailViewModel(
             list: List<TimelineEntryModel>,
         ): List<TimelineEntryModel> {
             val parentId = entry.parentId
-            check(!parentId.isNullOrEmpty() && entry.id != rootId) { return list }
+            if (parentId.isNullOrEmpty() || entry.id == rootId) {
+                return list
+            }
             val parent = timelineEntryRepository.getById(parentId) ?: return list
             return buildAncestorsRec(parent, listOf(parent) + list)
         }
@@ -309,7 +313,9 @@ class EntryDetailViewModel(
     }
 
     private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
-        check(!entry.loadMoreButtonLoading) { return }
+        if (entry.loadMoreButtonLoading) {
+            return
+        }
 
         val currentState = uiState.value
         val currentReplies = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
@@ -633,7 +639,9 @@ class EntryDetailViewModel(
 
     private fun toggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
-        check(!entry.translationLoading) { return }
+        if (entry.translationLoading) {
+            return
+        }
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
@@ -657,7 +665,9 @@ class EntryDetailViewModel(
     }
 
     private fun changeNavigationIndex(newIndex: Int) {
-        check(swipeNavigationEnabled) { return }
+        if (!swipeNavigationEnabled) {
+            return
+        }
 
         viewModelScope.launch {
             updateState {
@@ -680,7 +690,9 @@ class EntryDetailViewModel(
     }
 
     private suspend fun loadNavigationNextPage() {
-        check(swipeNavigationEnabled) { return }
+        if (!swipeNavigationEnabled) {
+            return
+        }
 
         timelineNavigationManager.loadNextPage()
         updateState {

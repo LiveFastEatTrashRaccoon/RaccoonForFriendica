@@ -163,7 +163,7 @@ class MyAccountViewModel(
         when (intent) {
             is MyAccountMviModel.Intent.ChangeSection ->
                 viewModelScope.launch {
-                    check(!uiState.value.loading) { return@launch }
+                    if (uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(MyAccountMviModel.Effect.BackToTop)
                     refresh(initial = true)

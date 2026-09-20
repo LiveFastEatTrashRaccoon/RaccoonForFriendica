@@ -25,7 +25,7 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
         } else {
             try {
                 val user = provider.user.getById(userId)
-               updateCurrentUser(user)
+                updateCurrentUser(user)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 try {
@@ -48,13 +48,13 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
                 displayName = user.displayName,
                 entryCount = user.statusesCount,
                 fields =
-                    user.fields.map {
-                        FieldModel(
-                            key = it.name,
-                            value = it.value,
-                            verified = it.verifiedAt != null,
-                        )
-                    },
+                user.fields.map {
+                    FieldModel(
+                        key = it.name,
+                        value = it.value,
+                        verified = it.verifiedAt != null,
+                    )
+                },
                 followers = user.followersCount,
                 following = user.followingCount,
                 group = user.group,
@@ -76,13 +76,13 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
                 displayName = user.displayName,
                 entryCount = user.statusesCount,
                 fields =
-                    user.fields.map {
-                        FieldModel(
-                            key = it.name,
-                            value = it.value,
-                            verified = it.verifiedAt != null,
-                        )
-                    },
+                user.fields.map {
+                    FieldModel(
+                        key = it.name,
+                        value = it.value,
+                        verified = it.verifiedAt != null,
+                    )
+                },
                 followers = user.followersCount,
                 following = user.followingCount,
                 group = user.group,

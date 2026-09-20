@@ -80,7 +80,9 @@ class ManageBlocksViewModel(
         when (intent) {
             is ManageBlocksMviModel.Intent.ChangeSection ->
                 viewModelScope.launch {
-                    check(!uiState.value.loading) { return@launch }
+                    if (uiState.value.loading) {
+                        return@launch
+                    }
                     updateState { it.copy(section = intent.section) }
                     emitEffect(ManageBlocksMviModel.Effect.BackToTop)
                     refresh(initial = true)
@@ -228,7 +230,9 @@ class ManageBlocksViewModel(
     }
 
     private fun addStopWord(word: String) {
-        check(word.isNotBlank()) { return }
+        if (word.isBlank()) {
+            return
+        }
         viewModelScope.launch {
             mutex.withLock {
                 val newValues =

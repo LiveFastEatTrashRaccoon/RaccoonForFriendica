@@ -284,7 +284,9 @@ class InboxViewModel(
     }
 
     private fun markAsRead(notification: NotificationModel) {
-        check(!notification.read) { return }
+        if (notification.read) {
+            return
+        }
         viewModelScope.launch {
             updateItemInState(notification.id) { it.copy(read = true) }
             inboxManager.decrementUnreadCount()
@@ -292,7 +294,9 @@ class InboxViewModel(
     }
 
     private fun dismiss(notification: NotificationModel) {
-        check(!notification.read) { return }
+        if (notification.read) {
+            return
+        }
         viewModelScope.launch {
             val success = notificationRepository.dismiss(notification.id)
             if (success) {

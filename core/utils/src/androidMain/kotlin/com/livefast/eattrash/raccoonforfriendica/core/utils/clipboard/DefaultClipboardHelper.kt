@@ -23,7 +23,7 @@ class DefaultClipboardHelper(
     override suspend fun getText(): String? {
         val data = clipboard.getClipEntry()?.clipData ?: return null
         val count = data.itemCount
-        check(count > 0) { return null }
+        if (count <= 0) { return null }
 
         val item = data.getItemAt(count - 1)
         return item.coerceToText(context).toString()

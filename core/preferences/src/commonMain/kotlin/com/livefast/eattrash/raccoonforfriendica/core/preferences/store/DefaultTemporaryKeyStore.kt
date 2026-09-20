@@ -85,7 +85,9 @@ class DefaultTemporaryKeyStore(
 
     override suspend fun get(key: String, default: List<String>, delimiter: String): List<String> =
         withContext(dispatcher) {
-            check(settings.hasKey(key)) { return@withContext default }
+            if (!settings.hasKey(key)) {
+                return@withContext default
+            }
             val joined = settings[key, ""]
             joined.split(delimiter)
         }

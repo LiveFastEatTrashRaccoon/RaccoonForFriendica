@@ -198,7 +198,9 @@ class ConversationListViewModel(
     }
 
     private suspend fun loadNextPageUsers() {
-        check(!uiState.value.userSearchLoading) { return }
+        if (uiState.value.userSearchLoading) {
+            return
+        }
 
         updateState { it.copy(userSearchLoading = true) }
         val users = userPaginationManager.loadNextPage()
