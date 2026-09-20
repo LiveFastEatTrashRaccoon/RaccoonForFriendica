@@ -38,10 +38,12 @@ class DefaultAccountRepository(private val accountDao: AccountDao) : AccountRepo
         val old = accountDao.getActive()
         if (old != null && active) {
             accountDao.replaceActive(
-                old = old.copy(active = false),
                 new = account.copy(active = true).toEntity(),
             )
         } else {
+            if (active) {
+                accountDao.clearActive()
+            }
             accountDao.update(account.copy(active = active).toEntity())
         }
     }
