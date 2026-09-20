@@ -3,18 +3,15 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.preferences.store.TemporaryKeyStore
 import dev.mokkery.MockMode
-import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlin.time.Duration.Companion.seconds
 
 class DefaultApiConfigurationRepositoryTest {
     private val keyStore =
@@ -100,82 +97,19 @@ class DefaultApiConfigurationRepositoryTest {
 
     // region hasCachedAuthCredentials
     @Test
-    fun `given invalid OAuth credentials stored when hasCachedAuthCredentials then result is as expected`() = runTest {
-        everySuspend {
-            credentialsRepository.validateApplicationCredentials(
-                node = any(),
-                credentials = any(),
-            )
-        } returns false
+    fun `given no credentials stored when hasCachedAuthCredentials then result is false`() = runTest {
+        everySuspend { keyStore.get("lastCred1", any<String>()) } returns ""
 
         val res = sut.hasCachedAuthCredentials()
 
         assertFalse(res)
-        verifySuspend {
-            credentialsRepository.validateApplicationCredentials(
-                "default-instance",
-                ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
-            )
-        }
     }
 
     @Test
-    fun `given invalid basic credentials stored when hasCachedAuthCredentials then result is as expected`() = runTest {
-        everySuspend { keyStore.get("lastMethod", any<String>()) } returns "HTTPBasic"
-        everySuspend { keyStore.get("lastCred1", any<String>()) } returns "fake1"
-        everySuspend { keyStore.get("lastCred2", any<String>()) } returns "fake2"
-        everySuspend {
-            credentialsRepository.validateApplicationCredentials(
-                node = any(),
-                credentials = any(),
-            )
-        } returns false
-
-        val res = sut.hasCachedAuthCredentials()
-
-        assertFalse(res)
-        verifySuspend {
-            credentialsRepository.validateApplicationCredentials(
-                "default-instance",
-                ApiCredentials.HttpBasic(user = "fake1", pass = "fake2"),
-            )
-        }
-    }
-
-    @Test
-    fun `given timeout when hasCachedAuthCredentials then result is as expected`() = runTest {
-        everySuspend {
-            credentialsRepository.validateApplicationCredentials(
-                node = any(),
-                credentials = any(),
-            )
-        } calls {
-            delay(10.seconds)
-            true
-        }
-
-        val res = sut.hasCachedAuthCredentials()
-
-        assertFalse(res)
-        verifySuspend {
-            credentialsRepository.validateApplicationCredentials(
-                "default-instance",
-                ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
-            )
-        }
-    }
-
-    @Test
-    fun `given valid credentials when hasCachedAuthCredentials then result is as expected`() = runTest {
+    fun `given stored credentials when hasCachedAuthCredentials then result is true`() = runTest {
         val res = sut.hasCachedAuthCredentials()
 
         assertTrue(res)
-        verifySuspend {
-            credentialsRepository.validateApplicationCredentials(
-                "default-instance",
-                ApiCredentials.OAuth2(accessToken = "fake-access-token", refreshToken = ""),
-            )
-        }
     }
     // endregion
 

@@ -9,8 +9,6 @@ import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.time.Duration.Companion.seconds
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
@@ -45,11 +43,7 @@ class DefaultApiConfigurationRepository(
         }
     }
 
-    override suspend fun hasCachedAuthCredentials(): Boolean {
-        val node = keyStore.get(KEY_LAST_NODE, "").takeIf { it.isNotEmpty() } ?: DEFAULT_NODE
-        val credentials = retrieveFromKeyStore()
-        return validateCredentials(credentials = credentials, node = node)
-    }
+    override suspend fun hasCachedAuthCredentials(): Boolean = retrieveFromKeyStore() != null
 
     override suspend fun refresh(): Result<Unit> = try {
         val oldCredentials = retrieveFromKeyStore()
@@ -68,15 +62,6 @@ class DefaultApiConfigurationRepository(
         if (e is CancellationException) throw e
         return Result.failure(e)
     }
-
-    private suspend fun validateCredentials(credentials: ApiCredentials?, node: String): Boolean =
-        withTimeoutOrNull(VALIDATE_CREDENTIALS_TIMEOUT) {
-            credentials != null &&
-                credentialsRepository.validateApplicationCredentials(
-                    node = node,
-                    credentials = credentials,
-                )
-        } == true
 
     private suspend fun retrieveFromKeyStore(): ApiCredentials? {
         val method = keyStore.get(KEY_METHOD, DEFAULT_METHOD)
@@ -135,6 +120,5 @@ class DefaultApiConfigurationRepository(
         private const val METHOD_OAUTH_2 = "OAuth2"
         private const val DEFAULT_NODE = "friendica.world"
         private const val DEFAULT_METHOD = METHOD_BASIC
-        private val VALIDATE_CREDENTIALS_TIMEOUT = 2.seconds
     }
 }
