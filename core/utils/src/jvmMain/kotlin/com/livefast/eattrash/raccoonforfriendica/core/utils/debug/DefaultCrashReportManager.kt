@@ -55,7 +55,7 @@ class DefaultCrashReportManager(
     }
 
     override fun initialize() {
-        check(enabled.value) { return }
+        if (!enabled.value) { return }
         Sentry.init { options ->
             options.dsn = SentryConfigurationValues.DSN
         }
@@ -73,7 +73,7 @@ class DefaultCrashReportManager(
         comment: String,
         email: String?,
     ) {
-        check(enabled.value) { return }
+        if (!enabled.value) { return }
         val eventId = Sentry.captureMessage(tag.toMessageTag())
         val feedback =
             UserFeedback(eventId).apply {

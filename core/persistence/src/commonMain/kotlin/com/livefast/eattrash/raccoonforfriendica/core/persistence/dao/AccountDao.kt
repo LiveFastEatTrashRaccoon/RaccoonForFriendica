@@ -32,13 +32,16 @@ abstract class AccountDao {
     @Query("SELECT * FROM AccountEntity WHERE active = 1")
     abstract fun getActiveAsFlow(): Flow<List<AccountEntity>>
 
+    @Query("UPDATE AccountEntity SET active = 0")
+    abstract suspend fun clearActive()
+
     @Update
     abstract suspend fun update(item: AccountEntity)
 
     @Transaction
-    open suspend fun replaceActive(old: AccountEntity, new: AccountEntity) {
-        update(old)
-        update(new)
+    open suspend fun replaceActive(new: AccountEntity) {
+        clearActive()
+        update(new.copy(active = true))
     }
 
     @Delete

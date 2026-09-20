@@ -199,8 +199,6 @@ class DefaultAccountRepositoryTest {
         verifySuspend {
             accountDao.getActive()
             accountDao.replaceActive(
-                old =
-                AccountEntity(id = 1, handle = "account1@example.org", active = false),
                 new =
                 AccountEntity(id = 2, handle = "account2@example.org", active = true),
             )

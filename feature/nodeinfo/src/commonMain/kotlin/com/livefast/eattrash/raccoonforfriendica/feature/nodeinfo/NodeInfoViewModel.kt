@@ -97,7 +97,9 @@ class NodeInfoViewModel(
 
     private fun submitChangeNode() {
         val isLogged = apiConfigurationRepository.isLogged.value
-        check(!isLogged) { return }
+        if (isLogged) {
+            return
+        }
 
         viewModelScope.launch {
             val newNode = uiState.value.anonymousChangeNodeName
@@ -123,7 +125,9 @@ class NodeInfoViewModel(
             }
 
             val isValid = nodeNameError == null
-            check(isValid) { return@launch }
+            if (!isValid) {
+                return@launch
+            }
 
             apiConfigurationRepository.changeNode(newNode)
             supportedFeatureRepository.refresh()

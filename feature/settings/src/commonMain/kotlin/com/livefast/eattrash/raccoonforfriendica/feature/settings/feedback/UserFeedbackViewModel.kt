@@ -68,7 +68,9 @@ class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) 
                 )
             }
             val isValid = commentError == null && emailError == null
-            check(isValid) { return@launch }
+            if (!isValid) {
+                return@launch
+            }
 
             updateState { it.copy(loading = true) }
             try {

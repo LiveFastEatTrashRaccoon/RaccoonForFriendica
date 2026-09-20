@@ -200,7 +200,9 @@ class ConversationViewModel(
     private fun submit() {
         val currentState = uiState.value
         val text = currentState.newMessageValue.text
-        check(text.isNotEmpty() && !currentState.sendInProgress) { return }
+        if (text.isEmpty() || currentState.sendInProgress) {
+            return
+        }
 
         viewModelScope.launch {
             val relationshipStatus =

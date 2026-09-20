@@ -187,7 +187,9 @@ class CircleMembersViewModel(
     }
 
     private suspend fun loadNextPageSearchUsers() {
-        check(!uiState.value.userSearchLoading) { return }
+        if (uiState.value.userSearchLoading) {
+            return
+        }
 
         updateState { it.copy(userSearchLoading = true) }
         val users = searchPaginationManager.loadNextPage()

@@ -75,7 +75,9 @@ class DefaultUserRepository(
             cachedUser = null
         }
         val fromCache = cachedUser
-        check(fromCache == null) { return fromCache }
+        if (fromCache != null) {
+            return fromCache
+        }
         return try {
             provider.user.verifyCredentials().toModel()
         } catch (e: Exception) {

@@ -1,5 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CredentialAccount
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -23,35 +25,73 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
         } else {
             try {
                 val user = provider.user.getById(userId)
-                currentUser.update {
-                    UserModel(
-                        avatar = user.avatar,
-                        bio = user.note,
-                        created = user.createdAt,
-                        displayName = user.displayName,
-                        entryCount = user.statusesCount,
-                        fields =
-                        user.fields.map {
-                            FieldModel(
-                                key = it.name,
-                                value = it.value,
-                                verified = it.verifiedAt != null,
-                            )
-                        },
-                        followers = user.followersCount,
-                        following = user.followingCount,
-                        group = user.group,
-                        handle = user.acct,
-                        header = user.header,
-                        id = user.id,
-                        url = user.url,
-                        username = user.username,
-                    )
-                }
+                updateCurrentUser(user)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                currentUser.update { null }
+                try {
+                    val user = provider.user.verifyCredentials()
+                    updateCurrentUser(user)
+                } catch (e2: Exception) {
+                    if (e2 is CancellationException) throw e2
+                    currentUser.update { null }
+                }
             }
+        }
+    }
+
+    private fun updateCurrentUser(user: CredentialAccount) {
+        currentUser.update {
+            UserModel(
+                avatar = user.avatar,
+                bio = user.note,
+                created = user.createdAt,
+                displayName = user.displayName,
+                entryCount = user.statusesCount,
+                fields =
+                user.fields.map {
+                    FieldModel(
+                        key = it.name,
+                        value = it.value,
+                        verified = it.verifiedAt != null,
+                    )
+                },
+                followers = user.followersCount,
+                following = user.followingCount,
+                group = user.group,
+                handle = user.acct,
+                header = user.header,
+                id = user.id,
+                url = user.url,
+                username = user.username,
+            )
+        }
+    }
+
+    private fun updateCurrentUser(user: Account) {
+        currentUser.update {
+            UserModel(
+                avatar = user.avatar,
+                bio = user.note,
+                created = user.createdAt,
+                displayName = user.displayName,
+                entryCount = user.statusesCount,
+                fields =
+                user.fields.map {
+                    FieldModel(
+                        key = it.name,
+                        value = it.value,
+                        verified = it.verifiedAt != null,
+                    )
+                },
+                followers = user.followersCount,
+                following = user.followingCount,
+                group = user.group,
+                handle = user.acct,
+                header = user.header,
+                id = user.id,
+                url = user.url,
+                username = user.username,
+            )
         }
     }
 }

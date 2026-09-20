@@ -65,7 +65,9 @@ class LibreTranslateProvider(
                 ),
             )
         }
-        check(response.status.isSuccess())
+        if (!response.status.isSuccess()) {
+            return ""
+        }
         val outputData: TranslationResponseBody = response.body()
         outputData.text.orEmpty()
     } catch (e: Exception) {

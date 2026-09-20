@@ -56,62 +56,86 @@ class EncryptingPreferencesSettings(
     }
 
     override fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        check(hasKey(key)) { return defaultValue }
+        if (!hasKey(key)) {
+            return defaultValue
+        }
         return preferences.getBoolean(key, false)
     }
 
     override fun getBooleanOrNull(key: String): Boolean? {
-        check(hasKey(key)) { return null }
+        if (!hasKey(key)) {
+            return null
+        }
         return preferences.getBoolean(key, false)
     }
 
     override fun getDouble(key: String, defaultValue: Double): Double {
-        check(hasKey(key)) { return defaultValue }
+        if (!hasKey(key)) {
+            return defaultValue
+        }
         return Double.fromBits(preferences.getLong(key, 0.0.toRawBits()))
     }
 
     override fun getDoubleOrNull(key: String): Double? {
-        check(hasKey(key)) { return null }
+        if (!hasKey(key)) {
+            return null
+        }
         return Double.fromBits(preferences.getLong(key, 0.0.toRawBits()))
     }
 
     override fun getFloat(key: String, defaultValue: Float): Float {
-        check(hasKey(key)) { return defaultValue }
+        if (!hasKey(key)) {
+            return defaultValue
+        }
         return preferences.getFloat(key, 0.0f)
     }
 
     override fun getFloatOrNull(key: String): Float? {
-        check(hasKey(key)) { return null }
+        if (!hasKey(key)) {
+            return null
+        }
         return preferences.getFloat(key, 0.0f)
     }
 
     override fun getInt(key: String, defaultValue: Int): Int {
-        check(hasKey(key)) { return defaultValue }
+        if (!hasKey(key)) {
+            return defaultValue
+        }
         return preferences.getInt(key, 0)
     }
 
     override fun getIntOrNull(key: String): Int? {
-        check(hasKey(key)) { return null }
+        if (!hasKey(key)) {
+            return null
+        }
         return preferences.getInt(key, 0)
     }
 
     override fun getLong(key: String, defaultValue: Long): Long {
-        check(hasKey(key)) { return defaultValue }
+        if (!hasKey(key)) {
+            return defaultValue
+        }
         return preferences.getLong(key, 0)
     }
 
     override fun getLongOrNull(key: String): Long? {
-        check(hasKey(key)) { return null }
+        if (!hasKey(key)) {
+            return null
+        }
         return preferences.getLong(key, 0)
     }
 
     override fun getString(key: String, defaultValue: String): String {
-        check(hasKey(key)) { return defaultValue }
+        if (!hasKey(key)) {
+            return defaultValue
+        }
         return decrypt(preferences.get(key, "").orEmpty())
     }
 
     override fun getStringOrNull(key: String): String? {
-        check(hasKey(key)) { return null }
+        if (!hasKey(key)) {
+            return null
+        }
         return decrypt(preferences.get(key, "").orEmpty())
     }
 

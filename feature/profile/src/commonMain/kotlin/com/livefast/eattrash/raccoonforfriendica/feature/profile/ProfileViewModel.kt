@@ -96,7 +96,7 @@ class ProfileViewModel(
     }
 
     private fun switchAccount(account: AccountModel) {
-        check(account.remoteId != uiState.value.currentUserId) { return }
+        if (account.remoteId == uiState.value.currentUserId && uiState.value.currentUserId != null) { return }
         viewModelScope.launch {
             updateState {
                 it.copy(loading = true)
@@ -107,7 +107,7 @@ class ProfileViewModel(
     }
 
     private fun deleteAccount(account: AccountModel) {
-        check(account.remoteId != uiState.value.currentUserId) { return }
+        if (account.remoteId == uiState.value.currentUserId && uiState.value.currentUserId != null) { return }
         viewModelScope.launch {
             deleteAccountUseCase(account)
         }

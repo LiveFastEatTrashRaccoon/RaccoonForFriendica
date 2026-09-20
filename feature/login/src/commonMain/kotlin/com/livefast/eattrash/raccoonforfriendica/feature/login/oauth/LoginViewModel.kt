@@ -97,7 +97,9 @@ class LoginViewModel(
                 )
             }
             val isValid = nodeNameError == null
-            check(isValid) { return@launch }
+            if (!isValid) {
+                return@launch
+            }
 
             val url = getSignupUrl(node = node, type = type)
             if (url.isEmpty()) {
@@ -109,7 +111,9 @@ class LoginViewModel(
     }
 
     private fun submit() {
-        check(!uiState.value.loading) { return }
+        if (uiState.value.loading) {
+            return
+        }
 
         viewModelScope.launch {
             val node = uiState.value.nodeName
@@ -133,7 +137,9 @@ class LoginViewModel(
             }
 
             val isValid = nodeNameError == null
-            check(isValid) { return@launch }
+            if (!isValid) {
+                return@launch
+            }
 
             updateState { it.copy(loading = true) }
             try {

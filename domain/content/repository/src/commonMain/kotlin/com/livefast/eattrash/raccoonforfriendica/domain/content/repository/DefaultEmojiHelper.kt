@@ -14,13 +14,17 @@ import dev.zacsweers.metro.SingleIn
 @Inject
 class DefaultEmojiHelper(private val repository: EmojiRepository) : EmojiHelper {
     override suspend fun UserModel.withEmojisIfMissing(): UserModel {
-        check(emojis.isEmpty()) { return this }
+        if (emojis.isNotEmpty()) {
+            return this
+        }
         val texts =
             arrayOf(
                 displayName.orEmpty(),
                 bio.orEmpty(),
             )
-        check(texts.any { it.contains(EMOJI_REGEX) }) { return this }
+        if (texts.none { it.contains(EMOJI_REGEX) }) {
+            return this
+        }
 
         val node = handle.nodeName
         val emojis = repository.getAll(node)?.filterContainedIn(*texts).orEmpty()

@@ -199,7 +199,9 @@ class AlbumDetailViewModel(
     }
 
     private fun moveToOtherAlbum(attachment: AttachmentModel, otherAlbum: String) {
-        check(otherAlbum != albumName) { return }
+        if (otherAlbum == albumName) {
+            return
+        }
         viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val successful =
