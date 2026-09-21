@@ -29,12 +29,8 @@ import kotlinx.coroutines.launch
 @Inject
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,
-    private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
     private val logoutUseCase: LogoutUseCase,
-    private val switchAccountUseCase: SwitchAccountUseCase,
-    private val deleteAccountUseCase: DeleteAccountUseCase,
-    private val authManager: AuthManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
     MviModelDelegate<ProfileMviModel.Intent, ProfileMviModel.State, ProfileMviModel.Effect>
@@ -61,21 +57,12 @@ class ProfileViewModel(
                     }
                 }.launchIn(this)
 
-            accountRepository
-                .getAllAsFlow()
-                .onEach { accounts ->
-                    val nonAnonymousAccounts = accounts.filter { it.remoteId != null }
-                    updateState {
-                        it.copy(availableAccounts = nonAnonymousAccounts)
-                    }
-                }.launchIn(this)
-
             settingsRepository.current
                 .onEach { settings ->
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                            settings?.hideNavigationBarWhileScrolling ?: true,
+                                settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)
@@ -88,28 +75,6 @@ class ProfileViewModel(
                 viewModelScope.launch {
                     logoutUseCase()
                 }
-
-            is ProfileMviModel.Intent.SwitchAccount -> switchAccount(intent.account)
-            is ProfileMviModel.Intent.DeleteAccount -> deleteAccount(intent.account)
-            ProfileMviModel.Intent.AddAccount -> authManager.openNewAccount()
-        }
-    }
-
-    private fun switchAccount(account: AccountModel) {
-        if (account.remoteId == uiState.value.currentUserId && uiState.value.currentUserId != null) { return }
-        viewModelScope.launch {
-            updateState {
-                it.copy(loading = true)
-            }
-            switchAccountUseCase(account)
-            emitEffect(ProfileMviModel.Effect.AccountChangeSuccess)
-        }
-    }
-
-    private fun deleteAccount(account: AccountModel) {
-        if (account.remoteId == uiState.value.currentUserId && uiState.value.currentUserId != null) { return }
-        viewModelScope.launch {
-            deleteAccountUseCase(account)
         }
     }
 }
