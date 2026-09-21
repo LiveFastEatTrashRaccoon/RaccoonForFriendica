@@ -25,11 +25,7 @@ class DefaultAppInfoRepository(private val context: Context) : AppInfoRepository
                 buildString {
                     append(packageInfo.versionName)
                     append(" (")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        append(packageInfo.longVersionCode)
-                    } else {
-                        append(packageInfo.versionCode)
-                    }
+                    append(packageInfo.longVersionCode)
                     append(")")
                 },
                 isDebug = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0,

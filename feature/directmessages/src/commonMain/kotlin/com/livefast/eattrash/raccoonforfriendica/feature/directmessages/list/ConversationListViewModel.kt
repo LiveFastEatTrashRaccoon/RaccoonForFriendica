@@ -151,7 +151,8 @@ class ConversationListViewModel(
                     .loadNextPage()
                     .groupBy {
                         it.parentUri
-                    }.mapNotNull { (_, messages) ->
+                    }.mapNotNull { mapEntry ->
+                        val messages = mapEntry.value
                         val lastMessage =
                             messages.takeIf { it.isNotEmpty() }?.maxBy { it.created.orEmpty() }
                         val user =

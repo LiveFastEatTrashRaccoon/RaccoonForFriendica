@@ -81,6 +81,7 @@ android {
 dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.nav3.ui)
     implementation(libs.metrox.android)
     implementation(libs.metrox.viewmodel.compose)
 

@@ -153,7 +153,8 @@ class TimelineViewModel(
                 settings to user
             }.debounce(750.milliseconds)
                 .distinctUntilChanged()
-                .onEach { (settings, user) ->
+                .onEach { mapEntry ->
+                    val user = mapEntry.second
                     circlesRefreshed = false
                     val cachedAuth = apiConfigurationRepository.hasCachedAuthCredentials()
                     val hasUser = user != null || !cachedAuth
@@ -601,7 +602,7 @@ class TimelineViewModel(
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val (translation, provider) =
+            val mapEntry =
                 when {
                     !entry.isShowingTranslation && entry.translation == null -> {
                         val result = getTranslation(entry = entry, targetLang = targetLang)
@@ -609,6 +610,8 @@ class TimelineViewModel(
                     }
                     else -> entry.translation to entry.translationProvider
                 }
+            val translation = mapEntry.first
+            val provider = mapEntry.second
             val newEntry =
                 entry.copy(
                     isShowingTranslation = translation != null && !entry.isShowingTranslation,

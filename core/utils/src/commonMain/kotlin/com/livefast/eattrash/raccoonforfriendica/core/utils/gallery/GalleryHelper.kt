@@ -8,7 +8,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.prepareGet
 import io.ktor.http.contentLength
 import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.readRemaining
+import io.ktor.utils.io.readBuffer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -41,7 +41,7 @@ suspend fun GalleryHelper.download(url: String): ByteArray =
             val channel: ByteReadChannel = httpResponse.body()
             var result = byteArrayOf()
             while (!channel.isClosedForRead) {
-                val packet = channel.readRemaining(4096)
+                val packet = channel.readBuffer(4096L)
                 while (!packet.exhausted()) {
                     val bytes = packet.readByteArray()
                     result += bytes
