@@ -37,6 +37,7 @@ class DeleteAccountViewModel(
         }
         viewModelScope.launch {
             deleteAccountUseCase(account)
+            emitEffect(DeleteAccountMviModel.Effect.Success)
         }
     }
 }
