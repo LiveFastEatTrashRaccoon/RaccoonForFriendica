@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
@@ -66,8 +67,6 @@ fun ProfileScreen(
     myAccountModel: MyAccountMviModel,
     modifier: Modifier = Modifier,
     myAccountLazyListState: LazyListState = rememberLazyListState(),
-    switchAccountDialogModel: SwitchAccountMviModel = metroViewModel<SwitchAccountViewModel>(),
-    deleteAccountDialogModel: DeleteAccountMviModel = metroViewModel<DeleteAccountViewModel>(),
 ) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
@@ -168,11 +167,12 @@ fun ProfileScreen(
     }
 
     if (manageAccountsDialogOpened) {
+        val viewModelStoreOwner = rememberViewModelStoreOwner()
+        val  switchAccountModel: SwitchAccountMviModel = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
+        val dialogUiState by switchAccountModel.uiState.collectAsState()
 
-        val dialogUiState by switchAccountDialogModel.uiState.collectAsState()
-
-        LaunchedEffect(switchAccountDialogModel) {
-            switchAccountDialogModel.effects.onEach { effect ->
+        LaunchedEffect(switchAccountModel) {
+            switchAccountModel.effects.onEach { effect ->
                 when (effect) {
                     SwitchAccountMviModel.Effect.AccountChangeSuccess -> {
                         navigationCoordinator.showGlobalMessage(successMessage)
@@ -238,9 +238,9 @@ fun ProfileScreen(
                     val accounts = dialogUiState.availableAccounts
                     if (index in accounts.indices) {
                         val selectedAccount = accounts[index]
-                        switchAccountDialogModel.reduce(SwitchAccountMviModel.Intent.SwitchAccount(selectedAccount))
+                        switchAccountModel.reduce(SwitchAccountMviModel.Intent.SwitchAccount(selectedAccount))
                     } else {
-                        switchAccountDialogModel.reduce(SwitchAccountMviModel.Intent.AddAccount)
+                        switchAccountModel.reduce(SwitchAccountMviModel.Intent.AddAccount)
                     }
                 }
             },
@@ -255,13 +255,23 @@ fun ProfileScreen(
     }
 
     if (confirmDeleteAccount != null) {
+        val viewModelStoreOwner = rememberViewModelStoreOwner()
+        val deleteAccountModel: DeleteAccountMviModel = metroViewModel<DeleteAccountViewModel>(viewModelStoreOwner)
+        LaunchedEffect(deleteAccountModel) {
+            deleteAccountModel.effects.onEach { effect ->
+                when (effect) {
+                    DeleteAccountMviModel.Effect.Success -> {
+                        confirmDeleteAccount = null
+                    }
+                }
+            }.launchIn(this)
+        }
         CustomConfirmDialog(
             title = LocalStrings.current.actionDeleteAccount,
             onClose = { confirm ->
                 val account = confirmDeleteAccount
-                confirmDeleteAccount = null
                 if (confirm && account != null) {
-                    deleteAccountDialogModel.reduce(DeleteAccountMviModel.Intent.Submit(account))
+                    deleteAccountModel.reduce(DeleteAccountMviModel.Intent.Submit(account))
                 }
             },
         )

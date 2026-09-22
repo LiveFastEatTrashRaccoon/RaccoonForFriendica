@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
@@ -52,12 +53,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerContent(
-    modifier: Modifier = Modifier,
-    model: DrawerMviModel = metroViewModel<DrawerViewModel>(),
-    switchAccountialogModel: SwitchAccountMviModel = metroViewModel<SwitchAccountViewModel>(),
-    switchInstanceDialogModel: SwitchInstanceMviModel = metroViewModel<SwitchInstanceViewModel>(),
-) {
+fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMviModel = metroViewModel<DrawerViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
@@ -227,10 +223,12 @@ fun DrawerContent(
         }
 
         if (manageAccountsDialogOpened) {
-            val dialogUiState by switchAccountialogModel.uiState.collectAsState()
+            val viewModelStoreOwner = rememberViewModelStoreOwner()
+            val switchAccountModel: SwitchAccountMviModel = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
+            val dialogUiState by switchAccountModel.uiState.collectAsState()
 
-            LaunchedEffect(switchAccountialogModel) {
-                switchAccountialogModel.effects
+            LaunchedEffect(switchAccountModel) {
+                switchAccountModel.effects
                     .onEach { event ->
                         when (event) {
                             SwitchAccountMviModel.Effect.AccountChangeSuccess -> {
@@ -285,7 +283,7 @@ fun DrawerContent(
                         val accounts = dialogUiState.availableAccounts
                         if (index in accounts.indices) {
                             val selectedAccount = accounts[index]
-                            switchAccountialogModel.reduce(SwitchAccountMviModel.Intent.SwitchAccount(selectedAccount))
+                            switchAccountModel.reduce(SwitchAccountMviModel.Intent.SwitchAccount(selectedAccount))
                         }
                     }
                 },
@@ -293,10 +291,13 @@ fun DrawerContent(
         }
 
         if (changeInstanceDialogOpened) {
-            val dialogUiState by switchInstanceDialogModel.uiState.collectAsState()
+            val viewModelStoreOwner = rememberViewModelStoreOwner()
+            val switchInstanceModel: SwitchInstanceMviModel =
+                metroViewModel<SwitchInstanceViewModel>(viewModelStoreOwner)
+            val dialogUiState by switchInstanceModel.uiState.collectAsState()
 
-            LaunchedEffect(switchInstanceDialogModel) {
-                switchInstanceDialogModel.effects.onEach { effect ->
+            LaunchedEffect(switchInstanceModel) {
+                switchInstanceModel.effects.onEach { effect ->
                     when (effect) {
                         SwitchInstanceMviModel.Effect.ChangeInstanceSuccess -> {
                             changeInstanceDialogOpened = false
@@ -312,14 +313,14 @@ fun DrawerContent(
                 validationInProgress = dialogUiState.validationInProgress,
                 validationError = dialogUiState.nodeError,
                 onClose = {
-                    switchInstanceDialogModel.reduce(SwitchInstanceMviModel.Intent.Reset)
+                    switchInstanceModel.reduce(SwitchInstanceMviModel.Intent.Reset)
                     changeInstanceDialogOpened = false
                 },
                 onNodeChange = { value ->
-                    switchInstanceDialogModel.reduce(SwitchInstanceMviModel.Intent.SetInstanceName(value))
+                    switchInstanceModel.reduce(SwitchInstanceMviModel.Intent.SetInstanceName(value))
                 },
                 onSubmit = {
-                    switchInstanceDialogModel.reduce(SwitchInstanceMviModel.Intent.Submit)
+                    switchInstanceModel.reduce(SwitchInstanceMviModel.Intent.Submit)
                 },
             )
         }
