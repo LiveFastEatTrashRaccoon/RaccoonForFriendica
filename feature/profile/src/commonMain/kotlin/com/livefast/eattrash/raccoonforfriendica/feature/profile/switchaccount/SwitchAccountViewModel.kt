@@ -25,8 +25,8 @@ import kotlinx.coroutines.launch
 )
 @Inject
 class SwitchAccountViewModel(
-    private val identityRepository: IdentityRepository,
-    private val accountRepository: AccountRepository,
+    identityRepository: IdentityRepository,
+    accountRepository: AccountRepository,
     private val switchAccountUseCase: SwitchAccountUseCase,
     private val authManager: AuthManager,
 ) : ViewModel(),

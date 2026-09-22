@@ -16,5 +16,7 @@ interface DeleteAccountMviModel :
         val currentUserId: String? = null,
     )
 
-    sealed interface Effect
+    sealed interface Effect {
+        data object Success : Effect
+    }
 }
