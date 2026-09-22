@@ -47,9 +47,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.delete.DeleteAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.delete.DeleteAccountViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.switchaccount.SwitchAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.switchaccount.SwitchAccountViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -61,6 +66,8 @@ fun ProfileScreen(
     myAccountModel: MyAccountMviModel,
     modifier: Modifier = Modifier,
     myAccountLazyListState: LazyListState = rememberLazyListState(),
+    switchAccountDialogModel: SwitchAccountMviModel = metroViewModel<SwitchAccountViewModel>(),
+    deleteAccountDialogModel: DeleteAccountMviModel = metroViewModel<DeleteAccountViewModel>(),
 ) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
@@ -72,16 +79,6 @@ fun ProfileScreen(
     var confirmLogoutDialogOpened by remember { mutableStateOf(false) }
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
     var confirmDeleteAccount by remember { mutableStateOf<AccountModel?>(null) }
-
-    LaunchedEffect(model) {
-        model.effects
-            .onEach { event ->
-                when (event) {
-                    ProfileMviModel.Effect.AccountChangeSuccess ->
-                        navigationCoordinator.showGlobalMessage(successMessage)
-                }
-            }.launchIn(this)
-    }
 
     CompositionLocalProvider(
         LocalProfileTopAppBarStateWrapper provides
@@ -171,9 +168,22 @@ fun ProfileScreen(
     }
 
     if (manageAccountsDialogOpened) {
+
+        val dialogUiState by switchAccountDialogModel.uiState.collectAsState()
+
+        LaunchedEffect(switchAccountDialogModel) {
+            switchAccountDialogModel.effects.onEach { effect ->
+                when (effect) {
+                    SwitchAccountMviModel.Effect.AccountChangeSuccess -> {
+                        navigationCoordinator.showGlobalMessage(successMessage)
+                    }
+                }
+            }.launchIn(this)
+        }
+
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val items =
-            uiState.availableAccounts.map { account ->
+            dialogUiState.availableAccounts.map { account ->
                 CustomModalBottomSheetItem(
                     label = account.displayName.orEmpty(),
                     subtitle = account.handle,
@@ -225,18 +235,18 @@ fun ProfileScreen(
             onSelect = { index ->
                 manageAccountsDialogOpened = false
                 if (index != null) {
-                    val accounts = uiState.availableAccounts
+                    val accounts = dialogUiState.availableAccounts
                     if (index in accounts.indices) {
                         val selectedAccount = accounts[index]
-                        model.reduce(ProfileMviModel.Intent.SwitchAccount(selectedAccount))
+                        switchAccountDialogModel.reduce(SwitchAccountMviModel.Intent.SwitchAccount(selectedAccount))
                     } else {
-                        model.reduce(ProfileMviModel.Intent.AddAccount)
+                        switchAccountDialogModel.reduce(SwitchAccountMviModel.Intent.AddAccount)
                     }
                 }
             },
             onLongPress = { index ->
                 manageAccountsDialogOpened = false
-                val selectedAccount = uiState.availableAccounts[index]
+                val selectedAccount = dialogUiState.availableAccounts[index]
                 if (!selectedAccount.active) {
                     confirmDeleteAccount = selectedAccount
                 }
@@ -251,7 +261,7 @@ fun ProfileScreen(
                 val account = confirmDeleteAccount
                 confirmDeleteAccount = null
                 if (confirm && account != null) {
-                    model.reduce(ProfileMviModel.Intent.DeleteAccount(account))
+                    deleteAccountDialogModel.reduce(DeleteAccountMviModel.Intent.Submit(account))
                 }
             },
         )
