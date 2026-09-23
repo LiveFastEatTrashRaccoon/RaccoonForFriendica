@@ -5,7 +5,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
@@ -118,12 +117,6 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
         data class Submit(val enableAltTextCheck: Boolean = true, val enableParentVisibilityCheck: Boolean = true) :
             Intent
 
-        data object GalleryInitialLoad : Intent
-
-        data object GalleryLoadMorePhotos : Intent
-
-        data class GalleryAlbumSelected(val album: String) : Intent
-
         data class ChangePublicationType(val type: PublicationType) : Intent
 
         data object AddPoll : Intent
@@ -174,11 +167,6 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
         val galleryFeatureSupported: Boolean = false,
         val pollFeatureSupported: Boolean = false,
         val quotePoliciesSupported: Boolean = false,
-        val galleryCurrentAlbum: String? = null,
-        val galleryAlbums: List<MediaAlbumModel> = emptyList(),
-        val galleryCanFetchMore: Boolean = true,
-        val galleryLoading: Boolean = false,
-        val galleryCurrentAlbumPhotos: List<AttachmentModel> = emptyList(),
         val characterLimit: Int? = null,
         val attachmentLimit: Int? = null,
         val pollOptionLimit: Int? = null,
