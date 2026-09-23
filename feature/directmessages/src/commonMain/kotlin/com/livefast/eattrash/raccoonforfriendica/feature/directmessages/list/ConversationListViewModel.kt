@@ -7,8 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDeleg
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ConversationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -18,27 +16,19 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 @ContributesIntoMap(
     scope = AppScope::class,
     binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
-@OptIn(FlowPreview::class)
 class ConversationListViewModel(
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
-    private val userPaginationManager: UserPaginationManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
     MviModelDelegate<ConversationListMviModel.Intent, ConversationListMviModel.State, ConversationListMviModel.Effect>
@@ -65,15 +55,6 @@ class ConversationListViewModel(
                     }
                 }.launchIn(this)
 
-            uiState
-                .map { it.userSearchQuery }
-                .distinctUntilChanged()
-                .drop(1)
-                .debounce(750.milliseconds)
-                .onEach { query ->
-                    refreshUsers(query)
-                }.launchIn(this)
-
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
@@ -94,21 +75,6 @@ class ConversationListViewModel(
             ConversationListMviModel.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
-                }
-
-            is ConversationListMviModel.Intent.UserSearchSetQuery ->
-                viewModelScope.launch {
-                    updateState { it.copy(userSearchQuery = intent.query) }
-                }
-
-            ConversationListMviModel.Intent.UserSearchClear ->
-                viewModelScope.launch {
-                    updateState { it.copy(userSearchUsers = emptyList()) }
-                }
-
-            ConversationListMviModel.Intent.UserSearchLoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPageUsers()
                 }
 
             is ConversationListMviModel.Intent.MarkConversationAsRead ->
@@ -184,33 +150,6 @@ class ConversationListViewModel(
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
             if (e is CancellationException) throw e
-        }
-    }
-
-    private suspend fun refreshUsers(query: String) {
-        userPaginationManager.reset(
-            UserPaginationSpecification.SearchFollowing(
-                query = query,
-                withRelationship = false,
-            ),
-        )
-        updateState { it.copy(userSearchCanFetchMore = userPaginationManager.canFetchMore) }
-        loadNextPageUsers()
-    }
-
-    private suspend fun loadNextPageUsers() {
-        if (uiState.value.userSearchLoading) {
-            return
-        }
-
-        updateState { it.copy(userSearchLoading = true) }
-        val users = userPaginationManager.loadNextPage()
-        updateState {
-            it.copy(
-                userSearchUsers = users,
-                userSearchCanFetchMore = userPaginationManager.canFetchMore,
-                userSearchLoading = false,
-            )
         }
     }
 }
