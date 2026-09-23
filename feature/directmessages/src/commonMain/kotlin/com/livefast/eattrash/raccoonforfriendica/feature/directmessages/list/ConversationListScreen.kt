@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -52,6 +53,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.ConversationItem
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.selectuser.SelectUserMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.selectuser.SelectUserViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -255,21 +259,25 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
     }
 
     if (selectUserToCreateConversationDialogOpen) {
+        val viewModelStoreOwner = rememberViewModelStoreOwner()
+        val selectUserModel: SelectUserMviModel = metroViewModel<SelectUserViewModel>(viewModelStoreOwner)
+        val dialogUiState by selectUserModel.uiState.collectAsState()
+
         SelectUserDialog(
-            query = uiState.userSearchQuery,
-            users = uiState.userSearchUsers,
+            query = dialogUiState.userSearchQuery,
+            users = dialogUiState.userSearchUsers,
             autoloadImages = uiState.autoloadImages,
-            loading = uiState.userSearchLoading,
-            canFetchMore = uiState.userSearchCanFetchMore,
+            loading = dialogUiState.userSearchLoading,
+            canFetchMore = dialogUiState.userSearchCanFetchMore,
             onSearch = {
-                model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(it))
+                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchSetQuery(it))
             },
             onLoadMoreUsers = {
-                model.reduce(ConversationListMviModel.Intent.UserSearchLoadNextPage)
+                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchLoadNextPage)
             },
             onClose = { user ->
-                model.reduce(ConversationListMviModel.Intent.UserSearchSetQuery(""))
-                model.reduce(ConversationListMviModel.Intent.UserSearchClear)
+                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchSetQuery(""))
+                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchClear)
                 selectUserToCreateConversationDialogOpen = false
                 val userId = user?.id
                 if (userId != null) {
