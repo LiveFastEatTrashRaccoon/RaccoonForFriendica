@@ -11,13 +11,7 @@ interface CircleMembersMviModel :
 
         data class Remove(val userId: String) : Intent
 
-        data class SetSearchUserQuery(val text: String) : Intent
-
-        data class ToggleAddUsersDialog(val opened: Boolean) : Intent
-
         data class Add(val users: List<UserModel>) : Intent
-
-        data object UserSearchLoadNextPage : Intent
     }
 
     data class State(
@@ -26,11 +20,6 @@ interface CircleMembersMviModel :
         val loading: Boolean = false,
         val circle: CircleModel? = null,
         val users: List<UserModel> = emptyList(),
-        val addUsersDialogOpened: Boolean = false,
-        val searchUsersQuery: String = "",
-        val searchUsers: List<UserModel> = emptyList(),
-        val userSearchLoading: Boolean = false,
-        val userSearchCanFetchMore: Boolean = true,
         val autoloadImages: Boolean = true,
         val hideNavigationBarWhileScrolling: Boolean = true,
     )

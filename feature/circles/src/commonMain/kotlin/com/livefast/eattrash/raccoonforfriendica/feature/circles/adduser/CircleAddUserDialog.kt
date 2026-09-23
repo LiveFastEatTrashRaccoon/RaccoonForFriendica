@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.circles.components
+package com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

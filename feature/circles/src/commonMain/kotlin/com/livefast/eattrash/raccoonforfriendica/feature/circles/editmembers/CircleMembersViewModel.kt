@@ -21,15 +21,11 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
 @AssistedInject
@@ -38,7 +34,7 @@ class CircleMembersViewModel(
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val settingsRepository: SettingsRepository,
-    private val searchPaginationManager: UserPaginationManager,
+
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
@@ -69,16 +65,6 @@ class CircleMembersViewModel(
                     }
                 }.launchIn(this)
 
-            uiState
-                .map { it.searchUsersQuery }
-                .distinctUntilChanged()
-                .drop(1)
-                .debounce(750.milliseconds)
-                .onEach { query ->
-                    if (uiState.value.addUsersDialogOpened) {
-                        refreshSearchUsers(query)
-                    }
-                }.launchIn(this)
             if (uiState.value.initial) {
                 refresh(initial = true)
             }
@@ -90,32 +76,6 @@ class CircleMembersViewModel(
             CircleMembersMviModel.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
-                }
-
-            is CircleMembersMviModel.Intent.ToggleAddUsersDialog ->
-                viewModelScope.launch {
-                    if (intent.opened) {
-                        refreshSearchUsers("")
-                        updateState { it.copy(addUsersDialogOpened = true) }
-                    } else {
-                        updateState {
-                            it.copy(
-                                searchUsersQuery = "",
-                                searchUsers = emptyList(),
-                                addUsersDialogOpened = false,
-                            )
-                        }
-                    }
-                }
-
-            is CircleMembersMviModel.Intent.SetSearchUserQuery ->
-                viewModelScope.launch {
-                    updateState { it.copy(searchUsersQuery = intent.text) }
-                }
-
-            CircleMembersMviModel.Intent.UserSearchLoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPageSearchUsers()
                 }
 
             is CircleMembersMviModel.Intent.Add -> add(intent.users)
@@ -169,35 +129,6 @@ class CircleMembersViewModel(
         updateState {
             it.copy(
                 users = it.users + items,
-            )
-        }
-    }
-
-    private suspend fun refreshSearchUsers(query: String) {
-        searchPaginationManager.reset(
-            UserPaginationSpecification.SearchFollowing(
-                query = query,
-                withRelationship = false,
-                // exclude members of the current circle
-                excludeIds = uiState.value.users.map { it.id },
-            ),
-        )
-        updateState { it.copy(userSearchCanFetchMore = searchPaginationManager.canFetchMore) }
-        loadNextPageSearchUsers()
-    }
-
-    private suspend fun loadNextPageSearchUsers() {
-        if (uiState.value.userSearchLoading) {
-            return
-        }
-
-        updateState { it.copy(userSearchLoading = true) }
-        val users = searchPaginationManager.loadNextPage()
-        updateState {
-            it.copy(
-                searchUsers = users,
-                userSearchCanFetchMore = searchPaginationManager.canFetchMore,
-                userSearchLoading = false,
             )
         }
     }
