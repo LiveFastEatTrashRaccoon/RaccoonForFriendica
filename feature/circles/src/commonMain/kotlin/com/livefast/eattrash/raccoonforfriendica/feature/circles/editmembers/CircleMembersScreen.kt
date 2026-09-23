@@ -57,10 +57,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWit
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserMviModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModelArgs
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleAddUserDialog
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
