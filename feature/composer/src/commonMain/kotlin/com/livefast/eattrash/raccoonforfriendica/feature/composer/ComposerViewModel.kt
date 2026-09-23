@@ -30,8 +30,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.compareTo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
@@ -39,7 +37,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Draft
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MediaRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
@@ -89,8 +86,6 @@ class ComposerViewModel(
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val mediaRepository: MediaRepository,
-    private val albumRepository: PhotoAlbumRepository,
-    private val albumPhotoPaginationManager: AlbumPhotoPaginationManager,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
     private val scheduledEntryRepository: ScheduledEntryRepository,
     private val draftRepository: DraftRepository,
@@ -403,32 +398,7 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
             is ComposerMviModel.Intent.AddStrikethroughFormat -> addStrikethroughFormat(intent.fieldType)
             is ComposerMviModel.Intent.AddCodeFormat -> addCodeFormat(intent.fieldType)
-            is ComposerMviModel.Intent.AddAttachmentsFromGallery ->
-                addAttachmentsFromGallery(intent.attachments)
-
-            is ComposerMviModel.Intent.GalleryAlbumSelected ->
-                viewModelScope.launch {
-                    updateState { it.copy(galleryCurrentAlbum = intent.album) }
-                    refreshGalleryPhotos()
-                }
-
-            ComposerMviModel.Intent.GalleryInitialLoad ->
-                viewModelScope.launch {
-                    val albums = albumRepository.getAll().orEmpty()
-                    val currentAlbum = albums.firstOrNull()
-                    updateState {
-                        it.copy(
-                            galleryAlbums = albums,
-                            galleryCurrentAlbum = currentAlbum?.name,
-                        )
-                    }
-                    refreshGalleryPhotos()
-                }
-
-            ComposerMviModel.Intent.GalleryLoadMorePhotos ->
-                viewModelScope.launch {
-                    loadNextPageGalleryPhotos()
-                }
+            is ComposerMviModel.Intent.AddAttachmentsFromGallery -> addAttachmentsFromGallery(intent.attachments)
 
             is ComposerMviModel.Intent.ChangePublicationType ->
                 viewModelScope.launch {
@@ -1401,33 +1371,9 @@ class ComposerViewModel(
         }
     }
 
-    private suspend fun refreshGalleryPhotos() {
-        val albumName = uiState.value.galleryCurrentAlbum ?: return
-        albumPhotoPaginationManager.reset(
-            AlbumPhotoPaginationSpecification.Default(albumName),
-        )
-        updateState { it.copy(galleryCanFetchMore = albumPhotoPaginationManager.canFetchMore) }
-        loadNextPageGalleryPhotos()
-    }
-
-    private suspend fun loadNextPageGalleryPhotos() {
-        if (uiState.value.galleryLoading) {
-            return
-        }
-
-        updateState { it.copy(galleryLoading = true) }
-        val photos = albumPhotoPaginationManager.loadNextPage()
-        updateState {
-            it.copy(
-                galleryCurrentAlbumPhotos = photos,
-                galleryCanFetchMore = albumPhotoPaginationManager.canFetchMore,
-                galleryLoading = false,
-            )
-        }
-    }
-
     private fun getNewTextFieldValue(value: TextFieldValue, additionalPart: String, offsetAfter: Int): TextFieldValue {
-        val (text, selection) = value.let { it.text to it.selection }
+        val text = value.text
+        val selection = value.selection
         val newText =
             buildString {
                 append(text.substring(0, selection.start))

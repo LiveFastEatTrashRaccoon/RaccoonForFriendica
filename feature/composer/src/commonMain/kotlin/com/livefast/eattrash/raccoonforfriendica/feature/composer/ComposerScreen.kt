@@ -54,6 +54,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
@@ -99,7 +100,10 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Pol
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.QuotedInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SuggestionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.gallerypicker.GalleryPickerMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.gallerypicker.GalleryPickerViewModel
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -983,22 +987,26 @@ fun ComposerScreen(
         }
 
         if (photoGalleryPickerOpen) {
+            val viewModelStoreOwner = rememberViewModelStoreOwner()
+            val galleryPickerModel: GalleryPickerMviModel = metroViewModel<GalleryPickerViewModel>(viewModelStoreOwner)
+            val dialogUiState by galleryPickerModel.uiState.collectAsState()
+
             GalleryPickerDialog(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                currentAlbum = uiState.galleryCurrentAlbum,
-                albums = uiState.galleryAlbums,
+                currentAlbum = dialogUiState.galleryCurrentAlbum,
+                albums = dialogUiState.galleryAlbums,
                 autoloadImages = uiState.autoloadImages,
-                canFetchMore = uiState.galleryCanFetchMore,
-                loading = uiState.galleryLoading,
-                photos = uiState.galleryCurrentAlbumPhotos,
+                canFetchMore = dialogUiState.galleryCanFetchMore,
+                loading = dialogUiState.galleryLoading,
+                photos = dialogUiState.galleryCurrentAlbumPhotos,
                 onInitialLoad = {
-                    model.reduce(ComposerMviModel.Intent.GalleryInitialLoad)
+                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.GalleryInitialLoad)
                 },
                 onLoadMorePhotos = {
-                    model.reduce(ComposerMviModel.Intent.GalleryLoadMorePhotos)
+                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.GalleryLoadMorePhotos)
                 },
                 onChangeAlbum = { album ->
-                    model.reduce(ComposerMviModel.Intent.GalleryAlbumSelected(album))
+                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.GalleryAlbumSelected(album))
                 },
                 onClose = { attachments ->
                     photoGalleryPickerOpen = false
