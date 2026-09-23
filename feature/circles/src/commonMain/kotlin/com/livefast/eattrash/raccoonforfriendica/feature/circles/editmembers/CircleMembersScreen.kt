@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -56,6 +57,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWit
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleAddUserDialog
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -85,6 +89,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
     val genericError = LocalStrings.current.messageGenericError
     var confirmRemoveUserId by remember { mutableStateOf<String?>(null) }
     val customBackCallback by rememberUpdatedState(customBackAction)
+    var addUsersDialogOpened by remember { mutableStateOf(false) }
 
     fun goBackToTop() {
         try {
@@ -145,7 +150,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
                             shape = MaterialTheme.shapes.small,
                             colors = IconButtonDefaults.filledTonalIconButtonColors(),
                             onClick = {
-                                model.reduce(CircleMembersMviModel.Intent.ToggleAddUsersDialog(true))
+                                addUsersDialogOpened = true
                             },
                         ) {
                             Icon(
@@ -172,7 +177,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            model.reduce(CircleMembersMviModel.Intent.ToggleAddUsersDialog(true))
+                            addUsersDialogOpened = true
                         },
                     ) {
                         Icon(
@@ -290,21 +295,33 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
         )
     }
 
-    if (uiState.addUsersDialogOpened) {
+    if (addUsersDialogOpened) {
+        val viewModelStoreOwner = rememberViewModelStoreOwner()
+        val addUsersViewModel: CircleAddUserMviModel = assistedMetroViewModel<CircleAddUserViewModel>(
+            viewModelStoreOwner,
+            extras = CreationExtras {
+                this[CircleAddUserViewModel.KEY_ARGS] = CircleAddUserViewModelArgs(
+                    // exclude members of the current circle
+                    userIdsToExclude = uiState.users.map { it.id },
+                )
+            },
+        )
+        val dialogUiState by addUsersViewModel.uiState.collectAsState()
+
         CircleAddUserDialog(
-            query = uiState.searchUsersQuery,
-            users = uiState.searchUsers,
+            query = dialogUiState.searchUsersQuery,
+            users = dialogUiState.searchUsers,
             autoloadImages = uiState.autoloadImages,
-            loading = uiState.userSearchLoading,
-            canFetchMore = uiState.userSearchCanFetchMore,
+            loading = dialogUiState.userSearchLoading,
+            canFetchMore = dialogUiState.userSearchCanFetchMore,
             onLoadMoreUsers = {
-                model.reduce(CircleMembersMviModel.Intent.UserSearchLoadNextPage)
+                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.UserSearchLoadNextPage)
             },
             onSearch = {
-                model.reduce(CircleMembersMviModel.Intent.SetSearchUserQuery(it))
+                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.SetSearchUserQuery(text = it))
             },
             onClose = { values ->
-                model.reduce(CircleMembersMviModel.Intent.ToggleAddUsersDialog(false))
+                addUsersDialogOpened = false
                 if (values != null) {
                     model.reduce(CircleMembersMviModel.Intent.Add(values))
                 }
