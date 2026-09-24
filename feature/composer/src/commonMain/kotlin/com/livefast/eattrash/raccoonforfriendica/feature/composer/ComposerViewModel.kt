@@ -30,8 +30,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.compareTo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
@@ -63,11 +61,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -81,7 +75,6 @@ class ComposerViewModel(
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
-    private val userPaginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
@@ -119,15 +112,6 @@ class ComposerViewModel(
 
     init {
         viewModelScope.launch {
-            uiState
-                .map { it.userSearchQuery }
-                .distinctUntilChanged()
-                .drop(1)
-                .debounce(750.milliseconds)
-                .onEach { query ->
-                    refreshUsers(query)
-                }.launchIn(this)
-
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(author = currentUser) }
@@ -367,21 +351,6 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.AddGroupReference -> addMention(handle = intent.handle)
-
-            is ComposerMviModel.Intent.UserSearchSetQuery ->
-                viewModelScope.launch {
-                    updateState { it.copy(userSearchQuery = intent.query) }
-                }
-
-            ComposerMviModel.Intent.UserSearchClear ->
-                viewModelScope.launch {
-                    updateState { it.copy(userSearchUsers = emptyList()) }
-                }
-
-            ComposerMviModel.Intent.UserSearchLoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPageUsers()
-                }
 
             is ComposerMviModel.Intent.SetSensitive ->
                 viewModelScope.launch {
@@ -1341,33 +1310,6 @@ class ComposerViewModel(
     private fun removeAttachment(attachment: AttachmentModel) {
         viewModelScope.launch {
             removeAttachmentFromState(attachment.id)
-        }
-    }
-
-    private suspend fun refreshUsers(query: String) {
-        userPaginationManager.reset(
-            UserPaginationSpecification.Search(
-                query = query,
-                withRelationship = false,
-            ),
-        )
-        updateState { it.copy(userSearchCanFetchMore = userPaginationManager.canFetchMore) }
-        loadNextPageUsers()
-    }
-
-    private suspend fun loadNextPageUsers() {
-        if (uiState.value.userSearchLoading) {
-            return
-        }
-
-        updateState { it.copy(userSearchLoading = true) }
-        val users = userPaginationManager.loadNextPage()
-        updateState {
-            it.copy(
-                userSearchUsers = users,
-                userSearchCanFetchMore = userPaginationManager.canFetchMore,
-                userSearchLoading = false,
-            )
         }
     }
 
