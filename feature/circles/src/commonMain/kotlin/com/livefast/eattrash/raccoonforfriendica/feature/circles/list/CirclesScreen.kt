@@ -40,6 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -55,10 +57,15 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.canBeEdited
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleEditorDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItem
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorData
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorDialog
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorViewModelArgs
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -85,6 +92,7 @@ fun CirclesScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val genericError = LocalStrings.current.messageGenericError
     val customOpenCallback by rememberUpdatedState(customOpenAction)
+    var editorData by remember { mutableStateOf<CircleEditorData?>(null) }
 
     fun goBackToTop() {
         try {
@@ -148,7 +156,7 @@ fun CirclesScreen(
                             shape = MaterialTheme.shapes.small,
                             colors = IconButtonDefaults.filledTonalIconButtonColors(),
                             onClick = {
-                                model.reduce(CirclesMviModel.Intent.OpenEditor())
+                                editorData = CircleEditorData()
                             },
                         ) {
                             Icon(
@@ -176,7 +184,7 @@ fun CirclesScreen(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            model.reduce(CirclesMviModel.Intent.OpenEditor())
+                            editorData = CircleEditorData()
                         },
                     ) {
                         Icon(
@@ -264,7 +272,12 @@ fun CirclesScreen(
                                 onSelectOption = { optionId ->
                                     when (optionId) {
                                         OptionId.Edit -> {
-                                            model.reduce(CirclesMviModel.Intent.OpenEditor(item.circle))
+                                            editorData = CircleEditorData(
+                                                id = item.circle.id,
+                                                title = item.circle.name,
+                                                replyPolicy = item.circle.replyPolicy,
+                                                exclusive = item.circle.exclusive,
+                                            )
                                         }
 
                                         CustomOptions.EditMembers -> {
@@ -329,18 +342,41 @@ fun CirclesScreen(
         )
     }
 
-    val editorData = uiState.editorData
     if (editorData != null) {
+        val viewModelStoreOwner = rememberViewModelStoreOwner()
+        val editorModel: CircleEditorMviModel = assistedMetroViewModel<CircleEditorViewModel>(
+            viewModelStoreOwner = viewModelStoreOwner,
+            extras = CreationExtras {
+                this[CircleEditorViewModel.KEY_ARGS] = CircleEditorViewModelArgs(editorData as CircleEditorData)
+            },
+        )
+        val dialogUiState by editorModel.uiState.collectAsState()
+
+        LaunchedEffect(editorModel) {
+            editorModel.effects.onEach { effect ->
+                when (effect) {
+                    is CircleEditorMviModel.Effect.Success -> {
+                        editorData = null
+                        model.reduce(CirclesMviModel.Intent.Upsert(effect.circle))
+                    }
+
+                    CircleEditorMviModel.Effect.Failure -> {
+                        snackbarHostState.showSnackbar(genericError)
+                    }
+                }
+            }.launchIn(this)
+        }
+
         CircleEditorDialog(
-            data = editorData,
+            data = dialogUiState.data,
             onDataChange = { newData ->
-                model.reduce(CirclesMviModel.Intent.UpdateEditorData(newData))
+                editorModel.reduce(CircleEditorMviModel.Intent.UpdateData(newData))
             },
             onClose = { success ->
                 if (success) {
-                    model.reduce(CirclesMviModel.Intent.SubmitEditorData)
+                    editorModel.reduce(CircleEditorMviModel.Intent.Submit)
                 } else {
-                    model.reduce(CirclesMviModel.Intent.DismissEditor)
+                    editorData = null
                 }
             },
         )

@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -58,31 +56,16 @@ class CirclesViewModel(
                     refresh()
                 }
 
-            is CirclesMviModel.Intent.OpenEditor ->
-                viewModelScope.launch {
-                    val editorData =
-                        CircleEditorData(
-                            id = intent.circle?.id,
-                            title = intent.circle?.name.orEmpty(),
-                            exclusive = intent.circle?.exclusive == true,
-                            replyPolicy = intent.circle?.replyPolicy ?: CircleReplyPolicy.List,
-                        )
-                    updateState { it.copy(editorData = editorData) }
-                }
-
-            is CirclesMviModel.Intent.UpdateEditorData ->
-                viewModelScope.launch {
-                    updateState { it.copy(editorData = intent.data) }
-                }
-
-            CirclesMviModel.Intent.DismissEditor ->
-                viewModelScope.launch {
-                    updateState { it.copy(editorData = null) }
-                }
-
-            CirclesMviModel.Intent.SubmitEditorData -> submitEditorData()
             is CirclesMviModel.Intent.Delete -> delete(intent.circleId)
             is CirclesMviModel.Intent.OpenDetail -> handleOpenDetail(intent.circle)
+            is CirclesMviModel.Intent.Upsert -> viewModelScope.launch {
+                val new = uiState.value.items.none { it is CircleListItem.Circle && it.circle.id == intent.circle.id }
+                if (new) {
+                    insertItemInState(intent.circle)
+                } else {
+                    updateItemInState(intent.circle.id) { intent.circle }
+                }
+            }
         }
     }
 
@@ -181,53 +164,6 @@ class CirclesViewModel(
                 removeItemFromState(id)
             } else {
                 emitEffect(CirclesMviModel.Effect.Failure)
-            }
-        }
-    }
-
-    private fun submitEditorData() {
-        val data = uiState.value.editorData ?: return
-
-        viewModelScope.launch {
-            val title = data.title
-            if (title.isEmpty()) {
-                updateState {
-                    it.copy(editorData = it.editorData?.copy(titleError = ValidationError.MissingField))
-                }
-                return@launch
-            }
-
-            updateState {
-                it.copy(editorData = it.editorData?.copy(titleError = null))
-            }
-
-            if (data.id != null) {
-                val item =
-                    circlesRepository.update(
-                        id = data.id,
-                        title = title,
-                        exclusive = data.exclusive,
-                        replyPolicy = data.replyPolicy,
-                    )
-                if (item != null) {
-                    updateItemInState(data.id) { item }
-                    updateState { it.copy(editorData = null) }
-                } else {
-                    emitEffect(CirclesMviModel.Effect.Failure)
-                }
-            } else {
-                val item =
-                    circlesRepository.create(
-                        title = title,
-                        exclusive = data.exclusive,
-                        replyPolicy = data.replyPolicy,
-                    )
-                if (item != null) {
-                    insertItemInState(item)
-                    updateState { it.copy(editorData = null) }
-                } else {
-                    emitEffect(CirclesMviModel.Effect.Failure)
-                }
             }
         }
     }
