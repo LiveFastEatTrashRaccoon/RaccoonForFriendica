@@ -1,19 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.circles.list
 
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
-import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-
-data class CircleEditorData(
-    val id: String? = null,
-    val title: String = "",
-    val titleError: ValidationError? = null,
-    val replyPolicy: CircleReplyPolicy = CircleReplyPolicy.List,
-    val exclusive: Boolean = false,
-)
 
 sealed interface CircleListItem {
     data class Header(val type: CircleType) : CircleListItem
@@ -25,17 +15,11 @@ interface CirclesMviModel : MviModel<CirclesMviModel.Intent, CirclesMviModel.Sta
     sealed interface Intent {
         data object Refresh : Intent
 
-        data class OpenEditor(val circle: CircleModel? = null) : Intent
-
-        data class UpdateEditorData(val data: CircleEditorData) : Intent
-
-        data object DismissEditor : Intent
-
-        data object SubmitEditorData : Intent
-
         data class Delete(val circleId: String) : Intent
 
         data class OpenDetail(val circle: CircleModel) : Intent
+
+        data class Upsert(val circle: CircleModel) : Intent
     }
 
     data class State(
@@ -43,7 +27,6 @@ interface CirclesMviModel : MviModel<CirclesMviModel.Intent, CirclesMviModel.Sta
         val refreshing: Boolean = false,
         val loading: Boolean = false,
         val items: List<CircleListItem> = emptyList(),
-        val editorData: CircleEditorData? = null,
         val hideNavigationBarWhileScrolling: Boolean = true,
         val operationInProgress: Boolean = false,
     )
