@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.circles.components
+package com.livefast.eattrash.raccoonforfriendica.feature.circles.edit
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CircleEditorData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
