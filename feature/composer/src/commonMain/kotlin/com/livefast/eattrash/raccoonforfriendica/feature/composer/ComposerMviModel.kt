@@ -84,12 +84,6 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
 
         data class AddLink(val link: LinkInfo) : Intent
 
-        data object UserSearchLoadNextPage : Intent
-
-        data class UserSearchSetQuery(val query: String) : Intent
-
-        data object UserSearchClear : Intent
-
         data class AddMention(val handle: String) : Intent
 
         data class CompleteMention(val handle: String) : Intent
@@ -156,10 +150,6 @@ interface ComposerMviModel : MviModel<ComposerMviModel.Intent, ComposerMviModel.
         val attachments: List<AttachmentModel> = emptyList(),
         val poll: PollModel? = null,
         val loading: Boolean = false,
-        val userSearchUsers: List<UserModel> = emptyList(),
-        val userSearchLoading: Boolean = false,
-        val userSearchCanFetchMore: Boolean = true,
-        val userSearchQuery: String = "",
         val availableCircles: List<CircleModel> = emptyList(),
         val hasSpoiler: Boolean = false,
         val hasTitle: Boolean = false,
