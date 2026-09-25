@@ -40,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -71,9 +70,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAction: (() -> Unit)? = null) {
     val model: CircleMembersMviModel = assistedMetroViewModel<CircleMembersViewModel>(
-        extras = CreationExtras {
-            this[CircleMembersViewModel.KEY_ARGS] = CircleMembersViewModelArgs(id)
-        },
+        extras = CircleMembersViewModel.getExtras(CircleMembersViewModelArgs(id = id)),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
@@ -298,13 +295,13 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
     if (addUsersDialogOpened) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
         val addUsersViewModel: CircleAddUserMviModel = assistedMetroViewModel<CircleAddUserViewModel>(
-            viewModelStoreOwner,
-            extras = CreationExtras {
-                this[CircleAddUserViewModel.KEY_ARGS] = CircleAddUserViewModelArgs(
+            viewModelStoreOwner = viewModelStoreOwner,
+            extras = CircleAddUserViewModel.getExtras(
+                CircleAddUserViewModelArgs(
                     // exclude members of the current circle
                     userIdsToExclude = uiState.users.map { it.id },
-                )
-            },
+                ),
+            ),
         )
         val dialogUiState by addUsersViewModel.uiState.collectAsState()
 

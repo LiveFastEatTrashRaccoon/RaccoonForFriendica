@@ -48,7 +48,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -91,9 +90,7 @@ import kotlin.time.Duration
 @Composable
 fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: ForumListMviModel = assistedMetroViewModel<ForumListViewModel>(
-        extras = CreationExtras {
-            this[ForumListViewModel.KEY_ARGS] = ForumListViewModelArgs(id)
-        },
+        extras = ForumListViewModel.getExtras(ForumListViewModelArgs(id = id)),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

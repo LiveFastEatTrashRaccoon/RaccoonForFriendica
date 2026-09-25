@@ -45,7 +45,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -76,9 +75,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val model: AlbumDetailMviModel = assistedMetroViewModel<AlbumDetailViewModel>(
-        extras = CreationExtras {
-            this[AlbumDetailViewModel.KEY_ARGS] = AlbumDetailViewModelArgs(name)
-        },
+        extras = AlbumDetailViewModel.getExtras(AlbumDetailViewModelArgs(albumName = name)),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

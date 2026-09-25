@@ -32,7 +32,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -671,9 +670,13 @@ class ThreadViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<ThreadViewModelArgs>()
+        fun getExtras(args: ThreadViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<ThreadViewModelArgs>()
 
 data class ThreadViewModelArgs(val entryId: String, val swipeNavigationEnabled: Boolean)
 

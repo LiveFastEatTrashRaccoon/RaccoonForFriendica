@@ -48,7 +48,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.converte
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerViewModel.Companion.KEY_ARGS
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.usecase.PrepareForPreviewUseCase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -64,7 +63,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -1754,13 +1752,17 @@ class ComposerViewModel(
     }
 
     companion object {
+        fun getExtras(args: ComposerViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
+
         private const val PLACEHOLDER_ID = "placeholder"
         private val SUGGESTION_DELAY = 750.milliseconds
-        val KEY_ARGS = CreationExtras.Key<ComposerViewModelArgs>()
     }
 }
 
-@Serializable
+private val KEY_ARGS = CreationExtras.Key<ComposerViewModelArgs>()
+
 data class ComposerViewModelArgs(val inReplyToId: String?, val quotedId: String?)
 
 @AssistedFactory

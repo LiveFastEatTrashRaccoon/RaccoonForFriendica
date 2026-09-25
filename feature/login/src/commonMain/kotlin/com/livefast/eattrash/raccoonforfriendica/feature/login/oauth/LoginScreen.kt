@@ -44,7 +44,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -59,7 +58,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadabl
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.toLoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -68,9 +66,7 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
     val model: LoginMviModel = assistedMetroViewModel<LoginViewModel>(
-        extras = CreationExtras {
-            this[KEY_ARGS] = LoginViewModelArgs(loginType.toLoginType())
-        },
+        extras = LoginViewModel.getExtras(LoginViewModelArgs(type = loginType.toLoginType())),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

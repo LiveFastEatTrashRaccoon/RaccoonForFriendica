@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
@@ -49,9 +48,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun EventDetailScreen(eventId: String, modifier: Modifier = Modifier) {
     val model: EventDetailMviModel = assistedMetroViewModel<EventDetailViewModel>(
-        extras = CreationExtras {
-            this[EventDetailViewModel.KEY_ARGS] = EventDetailViewModelArgs(eventId)
-        },
+        extras = EventDetailViewModel.getExtras(EventDetailViewModelArgs(eventId)),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

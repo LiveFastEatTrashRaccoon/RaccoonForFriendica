@@ -9,7 +9,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.manage.ManageUserCirclesViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -157,9 +156,13 @@ class ManageUserCirclesViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<ManageUserCirclesViewModelArgs>()
+        fun getExtras(args: ManageUserCirclesViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<ManageUserCirclesViewModelArgs>()
 
 data class ManageUserCirclesViewModelArgs(val userId: String)
 

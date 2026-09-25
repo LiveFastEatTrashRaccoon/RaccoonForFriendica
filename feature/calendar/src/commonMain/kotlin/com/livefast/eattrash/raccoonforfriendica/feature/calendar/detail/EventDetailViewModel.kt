@@ -8,7 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDeleg
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -52,9 +51,13 @@ class EventDetailViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<EventDetailViewModelArgs>()
+        fun getExtras(args: EventDetailViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<EventDetailViewModelArgs>()
 
 data class EventDetailViewModelArgs(val id: String)
 

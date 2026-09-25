@@ -29,7 +29,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -52,12 +51,12 @@ fun ImageDetailScreen(
     videoIndices: List<Int> = emptyList(),
 ) {
     val model: ImageDetailMviModel = assistedMetroViewModel<ImageDetailViewModel>(
-        extras = CreationExtras {
-            this[ImageDetailViewModel.KEY_ARGS] = ImageDetailViewModelArgs(
+        extras = ImageDetailViewModel.getExtras(
+            ImageDetailViewModelArgs(
                 urls = urls,
                 initialIndex = initialIndex,
-            )
-        },
+            ),
+        ),
     )
     val uiState by model.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }

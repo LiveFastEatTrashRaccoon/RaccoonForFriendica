@@ -12,7 +12,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserP
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -22,7 +21,6 @@ import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
@@ -157,9 +155,13 @@ class CircleMembersViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<CircleMembersViewModelArgs>()
+        fun getExtras(args: CircleMembersViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<CircleMembersViewModelArgs>()
 
 data class CircleMembersViewModelArgs(val id: String)
 

@@ -54,7 +54,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -101,12 +100,12 @@ fun ThreadScreen(
     otherInstance: String? = null,
 ) {
     val model: ThreadMviModel = assistedMetroViewModel<ThreadViewModel>(
-        extras = CreationExtras {
-            this[ThreadViewModel.KEY_ARGS] = ThreadViewModelArgs(
+        extras = ThreadViewModel.getExtras(
+            ThreadViewModelArgs(
                 entryId = entryId,
                 swipeNavigationEnabled = swipeNavigationEnabled,
-            )
-        },
+            ),
+        ),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

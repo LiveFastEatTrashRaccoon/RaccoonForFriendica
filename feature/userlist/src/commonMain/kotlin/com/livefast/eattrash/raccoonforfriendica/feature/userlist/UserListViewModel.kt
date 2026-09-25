@@ -22,7 +22,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ExportUs
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.userlist.UserListViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -271,9 +270,13 @@ class UserListViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<UserListViewModelArgs>()
+        fun getExtras(args: UserListViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<UserListViewModelArgs>()
 
 @Serializable
 data class UserListViewModelArgs(val type: UserListType, val userId: String, val entryId: String)

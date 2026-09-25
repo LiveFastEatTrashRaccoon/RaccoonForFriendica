@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -69,9 +68,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
     val model: ShortcutTimelineMviModel = assistedMetroViewModel<ShortcutTimelineViewModel>(
-        extras = CreationExtras {
-            this[ShortcutTimelineViewModel.KEY_ARGS] = ShortcutTimelineViewModelArgs(node)
-        },
+        extras = ShortcutTimelineViewModel.getExtras(ShortcutTimelineViewModelArgs(name = node)),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

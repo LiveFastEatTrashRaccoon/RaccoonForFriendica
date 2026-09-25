@@ -11,7 +11,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeI
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReportRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
-import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -125,9 +124,13 @@ class CreateReportViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<CreateReportViewModelArgs>()
+        fun getExtras(args: CreateReportViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<CreateReportViewModelArgs>()
 
 data class CreateReportViewModelArgs(val userId: String, val entryId: String)
 

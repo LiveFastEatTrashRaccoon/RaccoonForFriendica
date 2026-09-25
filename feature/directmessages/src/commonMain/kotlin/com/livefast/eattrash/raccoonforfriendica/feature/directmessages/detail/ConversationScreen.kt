@@ -47,7 +47,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -77,12 +76,12 @@ import kotlin.math.abs
 @Composable
 fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifier = Modifier) {
     val model: ConversationMviModel = assistedMetroViewModel<ConversationViewModel>(
-        extras = CreationExtras {
-            this[ConversationViewModel.KEY_ARGS] = ConversationViewModelArgs(
+        extras = ConversationViewModel.getExtras(
+            ConversationViewModelArgs(
                 otherUserId = otherUserId,
                 parentUri = parentUri,
-            )
-        },
+            ),
+        ),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

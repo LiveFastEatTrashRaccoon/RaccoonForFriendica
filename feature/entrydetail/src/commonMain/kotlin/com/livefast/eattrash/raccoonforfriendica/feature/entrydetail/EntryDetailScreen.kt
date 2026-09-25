@@ -54,7 +54,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -103,12 +102,12 @@ fun EntryDetailScreen(
 ) {
     val model: EntryDetailMviModel = assistedMetroViewModel<EntryDetailViewModel>(
         key = id,
-        extras = CreationExtras {
-            this[EntryDetailViewModel.KEY_ARGS] = EntryDetailViewModelArgs(
+        extras = EntryDetailViewModel.getExtras(
+            EntryDetailViewModelArgs(
                 id = id,
                 swipeNavigationEnabled = swipeNavigationEnabled,
-            )
-        },
+            ),
+        ),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

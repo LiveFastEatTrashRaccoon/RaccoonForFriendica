@@ -31,7 +31,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsMo
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline.ShortcutTimelineViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -436,9 +435,13 @@ class ShortcutTimelineViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<ShortcutTimelineViewModelArgs>()
+        fun getExtras(args: ShortcutTimelineViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<ShortcutTimelineViewModelArgs>()
 
 data class ShortcutTimelineViewModelArgs(val name: String)
 

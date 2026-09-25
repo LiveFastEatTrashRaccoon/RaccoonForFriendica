@@ -30,7 +30,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
@@ -52,9 +51,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
     val model: ManageUserCirclesMviModel = assistedMetroViewModel<ManageUserCirclesViewModel>(
-        extras = CreationExtras {
-            this[ManageUserCirclesViewModel.KEY_ARGS] = ManageUserCirclesViewModelArgs(userId = userId)
-        },
+        extras = ManageUserCirclesViewModel.getExtras(ManageUserCirclesViewModelArgs(userId = userId)),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

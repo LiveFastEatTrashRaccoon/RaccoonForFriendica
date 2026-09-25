@@ -13,7 +13,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Auth
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.CredentialsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.LoginUseCase
-import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -171,9 +170,13 @@ class LoginViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<LoginViewModelArgs>()
+        fun getExtras(args: LoginViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<LoginViewModelArgs>()
 
 private fun getSignupUrl(node: String, type: LoginType) = buildString {
     when (type) {

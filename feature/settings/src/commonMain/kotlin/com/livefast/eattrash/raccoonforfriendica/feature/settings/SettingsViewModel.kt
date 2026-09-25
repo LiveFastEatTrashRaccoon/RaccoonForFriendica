@@ -49,7 +49,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ImportS
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -642,9 +641,13 @@ class SettingsViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<SettingsViewModelArgs>()
+        fun getExtras(args: SettingsViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<SettingsViewModelArgs>()
 
 @Serializable
 data class SettingsViewModelArgs(val controller: PermissionControllerWrapper)

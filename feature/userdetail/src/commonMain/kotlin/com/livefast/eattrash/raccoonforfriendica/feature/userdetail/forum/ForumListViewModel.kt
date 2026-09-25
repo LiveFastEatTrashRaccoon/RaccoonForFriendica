@@ -33,7 +33,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum.ForumListViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -50,7 +49,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class ForumListViewModel(
-    @Assisted args: ForumListViewModelArgs,
+    @Assisted private val args: ForumListViewModelArgs,
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -74,8 +73,6 @@ class ForumListViewModel(
     MviModelDelegate<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>
     by DefaultMviModelDelegate(initialState = ForumListMviModel.State()),
     ForumListMviModel {
-
-    private val id = args.id
 
     init {
         viewModelScope.launch {
@@ -170,7 +167,7 @@ class ForumListViewModel(
     }
 
     private suspend fun loadUser() {
-        val account = userCache.get(id)
+        val account = userCache.get(args.id)
         updateState {
             it.copy(user = account)
         }
@@ -182,7 +179,7 @@ class ForumListViewModel(
         }
         paginationManager.reset(
             TimelinePaginationSpecification.Forum(
-                userId = id,
+                userId = args.id,
                 includeNsfw = settingsRepository.current.value?.includeNsfw == true,
             ),
         )
@@ -504,9 +501,13 @@ class ForumListViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<ForumListViewModelArgs>()
+        fun getExtras(args: ForumListViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<ForumListViewModelArgs>()
 
 @Serializable
 data class ForumListViewModelArgs(val id: String)

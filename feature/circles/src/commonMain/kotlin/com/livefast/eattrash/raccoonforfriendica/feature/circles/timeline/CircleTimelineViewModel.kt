@@ -35,7 +35,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -529,9 +528,13 @@ class CircleTimelineViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<CircleTimelineViewModelArgs>()
+        fun getExtras(args: CircleTimelineViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<CircleTimelineViewModelArgs>()
 
 @Serializable
 data class CircleTimelineViewModelArgs(val id: String)

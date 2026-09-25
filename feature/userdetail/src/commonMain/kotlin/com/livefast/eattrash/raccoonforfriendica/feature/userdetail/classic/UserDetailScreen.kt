@@ -54,7 +54,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -112,9 +111,7 @@ import kotlin.time.Duration
 @Composable
 fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: UserDetailMviModel = assistedMetroViewModel<UserDetailViewModel>(
-        extras = CreationExtras {
-            this[UserDetailViewModel.KEY_ARGS] = UserDetailViewModelArgs(id)
-        },
+        extras = UserDetailViewModel.getExtras(UserDetailViewModelArgs(id = id)),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

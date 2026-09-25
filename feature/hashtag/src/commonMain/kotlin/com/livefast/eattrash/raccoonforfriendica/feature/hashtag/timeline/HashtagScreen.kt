@@ -35,7 +35,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -74,9 +73,7 @@ import kotlin.time.Duration
 @Composable
 fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: HashtagMviModel = assistedMetroViewModel<HashtagViewModel>(
-        extras = CreationExtras {
-            this[HashtagViewModel.KEY_ARGS] = HashtagViewModelArgs(tag)
-        },
+        extras = HashtagViewModel.getExtras(HashtagViewModelArgs(tag = tag)),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

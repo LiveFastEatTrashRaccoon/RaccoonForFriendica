@@ -279,19 +279,17 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                         val myAccountViewModel: MyAccountMviModel = metroViewModel<MyAccountViewModel>()
                                         val favoritesViewModel: EntryListMviModel =
                                             assistedMetroViewModel<EntryListViewModel>(
-                                                extras = CreationExtras {
-                                                    this[EntryListViewModel.KEY_ARGS] =
-                                                        EntryListViewModelArgs(
-                                                            type = EntryListType.Favorites,
-                                                        )
-                                                },
+                                                extras = EntryListViewModel.getExtras(
+                                                    EntryListViewModelArgs(
+                                                        type = EntryListType.Favorites,
+                                                    )
+                                                ),
                                             )
                                         val bookmarksViewModel: EntryListMviModel =
                                             assistedMetroViewModel<EntryListViewModel>(
-                                                extras = CreationExtras {
-                                                    this[EntryListViewModel.KEY_ARGS] =
-                                                        EntryListViewModelArgs(type = EntryListType.Favorites)
-                                                },
+                                                extras = EntryListViewModel.getExtras(
+                                                    EntryListViewModelArgs(type = EntryListType.Bookmarks)
+                                                ),
                                             )
                                         val followedHashtagsViewModel: FollowedHashtagsMviModel =
                                             metroViewModel<FollowedHashtagsViewModel>()

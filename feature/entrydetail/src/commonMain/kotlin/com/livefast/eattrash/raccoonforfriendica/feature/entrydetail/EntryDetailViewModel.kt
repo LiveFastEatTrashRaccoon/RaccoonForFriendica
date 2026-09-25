@@ -36,7 +36,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -774,9 +773,13 @@ class EntryDetailViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<EntryDetailViewModelArgs>()
+        fun getExtras(args: EntryDetailViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<EntryDetailViewModelArgs>()
 
 @Serializable
 data class EntryDetailViewModelArgs(val id: String, val swipeNavigationEnabled: Boolean)

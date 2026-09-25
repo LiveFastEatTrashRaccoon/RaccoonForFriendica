@@ -45,7 +45,6 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
@@ -121,9 +120,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             factory.create()
         }
     val model: SettingsMviModel = assistedMetroViewModel<SettingsViewModel>(
-        extras = CreationExtras {
-            this[SettingsViewModel.KEY_ARGS] = SettingsViewModelArgs(controller)
-        },
+        extras = SettingsViewModel.getExtras(SettingsViewModelArgs(controller)),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

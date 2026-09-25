@@ -7,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviMod
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -91,9 +90,13 @@ class CircleEditorViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<CircleEditorViewModelArgs>()
+        fun getExtras(args: CircleEditorViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<CircleEditorViewModelArgs>()
 
 data class CircleEditorViewModelArgs(val data: CircleEditorData)
 

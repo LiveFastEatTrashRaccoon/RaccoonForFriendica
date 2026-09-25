@@ -90,9 +90,13 @@ class CircleAddUserViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<CircleAddUserViewModelArgs>()
+        fun getExtras(args: CircleAddUserViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<CircleAddUserViewModelArgs>()
 
 data class CircleAddUserViewModelArgs(val userIdsToExclude: List<String>)
 
@@ -101,7 +105,7 @@ data class CircleAddUserViewModelArgs(val userIdsToExclude: List<String>)
 @ContributesIntoMap(AppScope::class)
 fun interface CircleAddUserFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): CircleAddUserViewModel {
-        val args = extras[CircleAddUserViewModel.KEY_ARGS] ?: error("ViewModel creation args not found")
+        val args = extras[KEY_ARGS] ?: error("ViewModel creation args not found")
         return create(args)
     }
     fun create(@Assisted args: CircleAddUserViewModelArgs): CircleAddUserViewModel

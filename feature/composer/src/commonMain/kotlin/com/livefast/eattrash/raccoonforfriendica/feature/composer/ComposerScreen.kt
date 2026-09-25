@@ -53,7 +53,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
@@ -125,9 +124,9 @@ fun ComposerScreen(
     hasInitialAttachment: Boolean = false,
 ) {
     val model: ComposerMviModel = assistedMetroViewModel<ComposerViewModel>(
-        extras = CreationExtras {
-            this[ComposerViewModel.KEY_ARGS] = ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId)
-        },
+        extras = ComposerViewModel.getExtras(
+            ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId),
+        ),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

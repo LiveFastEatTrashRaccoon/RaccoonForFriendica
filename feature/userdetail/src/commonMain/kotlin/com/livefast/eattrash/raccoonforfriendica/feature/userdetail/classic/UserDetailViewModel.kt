@@ -39,7 +39,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Iden
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.classic.UserDetailViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -705,9 +704,13 @@ class UserDetailViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<UserDetailViewModelArgs>()
+        fun getExtras(args: UserDetailViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<UserDetailViewModelArgs>()
 
 @Serializable
 data class UserDetailViewModelArgs(val id: String)

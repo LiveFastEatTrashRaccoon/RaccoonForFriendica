@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
@@ -74,9 +73,7 @@ import kotlin.time.Duration
 @Composable
 fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
     val model: CircleTimelineMviModel = assistedMetroViewModel<CircleTimelineViewModel>(
-        extras = CreationExtras {
-            this[CircleTimelineViewModel.KEY_ARGS] = CircleTimelineViewModelArgs(id)
-        },
+        extras = CircleTimelineViewModel.getExtras(CircleTimelineViewModelArgs(id)),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

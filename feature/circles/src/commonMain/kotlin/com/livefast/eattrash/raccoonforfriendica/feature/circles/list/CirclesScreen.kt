@@ -40,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -346,9 +345,9 @@ fun CirclesScreen(
         val viewModelStoreOwner = rememberViewModelStoreOwner()
         val editorModel: CircleEditorMviModel = assistedMetroViewModel<CircleEditorViewModel>(
             viewModelStoreOwner = viewModelStoreOwner,
-            extras = CreationExtras {
-                this[CircleEditorViewModel.KEY_ARGS] = CircleEditorViewModelArgs(editorData as CircleEditorData)
-            },
+            extras = CircleEditorViewModel.getExtras(
+                CircleEditorViewModelArgs(data = editorData as CircleEditorData),
+            ),
         )
         val dialogUiState by editorModel.uiState.collectAsState()
 

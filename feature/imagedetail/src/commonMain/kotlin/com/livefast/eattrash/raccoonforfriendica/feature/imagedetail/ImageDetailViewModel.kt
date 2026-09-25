@@ -11,7 +11,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelpe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.download
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
-import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -146,9 +145,13 @@ class ImageDetailViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<ImageDetailViewModelArgs>()
+        fun getExtras(args: ImageDetailViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<ImageDetailViewModelArgs>()
 
 private fun String.extractExtension(): String = let { s ->
     val idx = s.lastIndexOf(".").takeIf { it >= 0 } ?: s.length

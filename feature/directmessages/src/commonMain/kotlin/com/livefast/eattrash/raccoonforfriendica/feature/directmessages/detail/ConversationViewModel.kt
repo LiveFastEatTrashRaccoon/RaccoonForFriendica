@@ -18,7 +18,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -267,9 +266,13 @@ class ConversationViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<ConversationViewModelArgs>()
+        fun getExtras(args: ConversationViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<ConversationViewModelArgs>()
 
 @Serializable
 data class ConversationViewModelArgs(val otherUserId: String, val parentUri: String)

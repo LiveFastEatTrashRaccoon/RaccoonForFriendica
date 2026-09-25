@@ -164,9 +164,7 @@ internal fun getEntryProvider(
     }
     entry<Destination.Favorites>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: EntryListMviModel = favoritesViewModel ?: assistedMetroViewModel<EntryListViewModel>(
-            extras = CreationExtras {
-                this[EntryListViewModel.KEY_ARGS] = EntryListViewModelArgs(type = EntryListType.Favorites)
-            }
+            extras = EntryListViewModel.getExtras(EntryListViewModelArgs(type = EntryListType.Favorites))
         )
         EntryListScreen(
             model = model,
@@ -175,9 +173,7 @@ internal fun getEntryProvider(
     }
     entry<Destination.Bookmarks>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: EntryListMviModel = bookmarksViewModel ?: assistedMetroViewModel<EntryListViewModel>(
-            extras = CreationExtras {
-                this[EntryListViewModel.KEY_ARGS] = EntryListViewModelArgs(type = EntryListType.Bookmarks)
-            }
+            extras = EntryListViewModel.getExtras(EntryListViewModelArgs(type = EntryListType.Bookmarks))
         )
         EntryListScreen(
             model = model,
@@ -186,11 +182,11 @@ internal fun getEntryProvider(
     }
     entry<Destination.QuotingEntries>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: EntryListMviModel = assistedMetroViewModel<EntryListViewModel>(
-            extras = CreationExtras {
-                this[EntryListViewModel.KEY_ARGS] = EntryListViewModelArgs(
+            extras = EntryListViewModel.getExtras(
+                EntryListViewModelArgs(
                     type = EntryListType.Quoting(entryId = it.entryId, otherInstance = it.otherInstance),
                 )
-            }
+            )
         )
         EntryListScreen(
             model = model,

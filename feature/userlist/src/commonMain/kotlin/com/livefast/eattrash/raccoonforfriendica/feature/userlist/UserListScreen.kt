@@ -40,7 +40,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -78,13 +77,13 @@ fun UserListScreen(
     otherInstance: String? = null,
 ) {
     val model: UserListMviModel = assistedMetroViewModel<UserListViewModel>(
-        extras = CreationExtras {
-            this[UserListViewModel.KEY_ARGS] = UserListViewModelArgs(
-                type.toUserListType(),
-                userId.orEmpty(),
-                entryId.orEmpty(),
-            )
-        },
+        extras = UserListViewModel.getExtras(
+            UserListViewModelArgs(
+                type = type.toUserListType(),
+                userId = userId.orEmpty(),
+                entryId = entryId.orEmpty(),
+            ),
+        ),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

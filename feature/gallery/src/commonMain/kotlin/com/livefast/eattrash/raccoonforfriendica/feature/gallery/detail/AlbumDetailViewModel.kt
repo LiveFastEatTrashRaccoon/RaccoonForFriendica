@@ -15,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Photo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailViewModel.Companion.KEY_ARGS
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -235,9 +234,13 @@ class AlbumDetailViewModel(
     }
 
     companion object {
-        val KEY_ARGS = CreationExtras.Key<AlbumDetailViewModelArgs>()
+        fun getExtras(args: AlbumDetailViewModelArgs) = CreationExtras {
+            this[KEY_ARGS] = args
+        }
     }
 }
+
+private val KEY_ARGS = CreationExtras.Key<AlbumDetailViewModelArgs>()
 
 data class AlbumDetailViewModelArgs(val albumName: String)
 
