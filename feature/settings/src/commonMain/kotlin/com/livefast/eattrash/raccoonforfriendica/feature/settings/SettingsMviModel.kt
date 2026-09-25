@@ -10,7 +10,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFami
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
-import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
 import com.livefast.eattrash.raccoonforfriendica.core.utils.permissions.PermissionState
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
@@ -84,10 +83,6 @@ interface SettingsMviModel : MviModel<SettingsMviModel.Intent, SettingsMviModel.
         data class ChangeReplyDepth(val depth: Int) : Intent
 
         data class ChangeCommentBarTheme(val commentBarTheme: CommentBarTheme) : Intent
-
-        data class SwitchDefaultTranslationProvider(val config: TranslationProviderConfig) : Intent
-        data class AddTranslationProviderConfig(val url: String, val apiKey: String) : Intent
-        data class DeleteTranslationProviderConfig(val config: TranslationProviderConfig) : Intent
     }
 
     data class State(
@@ -136,8 +131,7 @@ interface SettingsMviModel : MviModel<SettingsMviModel.Intent, SettingsMviModel.
         val replyDepth: Int = 1,
         val availableUrlOpeningModes: List<UrlOpeningMode> = emptyList(),
         val commentBarTheme: CommentBarTheme = CommentBarTheme.Rainbow,
-        val defaultTranslationProviderId: List<TranslationProviderConfig> = emptyList(),
-        val translationProviderConfigs: List<TranslationProviderConfig> = emptyList(),
+        val translationProviderUrl: String? = null,
     )
 
     sealed interface Effect {
