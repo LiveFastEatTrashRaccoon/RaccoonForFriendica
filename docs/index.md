@@ -108,11 +108,10 @@ You are **awesome**… THANKS ❤️🦝️❤️
 ## Further reading
 
 If what you have read so far sounds interesting to you and you want to know more, here are some
-useful
-links:
+useful links:
 
 - check out the [User manual](manual/en/index.md);
-- visit our [Blog](https://livefasteattrashraccoon.github.io/blog/archive){ target = _blank };
+- visit our [Blog](https://livefasteattrashraccoon.github.io/blog){ target = _blank };
 - have a look at the [README](https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/blob/master/README.md){ target = _blank };
 
 If, on the other hand, you just want to interact with the community, provide suggestions, report
