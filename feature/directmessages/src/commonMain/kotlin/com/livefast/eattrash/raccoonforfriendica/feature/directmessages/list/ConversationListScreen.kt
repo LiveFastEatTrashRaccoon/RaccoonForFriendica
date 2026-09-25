@@ -264,20 +264,20 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
         val dialogUiState by selectUserModel.uiState.collectAsState()
 
         SelectUserDialog(
-            query = dialogUiState.userSearchQuery,
-            users = dialogUiState.userSearchUsers,
+            query = dialogUiState.query,
+            users = dialogUiState.users,
             autoloadImages = uiState.autoloadImages,
-            loading = dialogUiState.userSearchLoading,
-            canFetchMore = dialogUiState.userSearchCanFetchMore,
+            loading = dialogUiState.loading,
+            canFetchMore = dialogUiState.canFetchMore,
             onSearch = {
-                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchSetQuery(it))
+                selectUserModel.reduce(SelectUserMviModel.Intent.SetQuery(it))
             },
             onLoadMoreUsers = {
-                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchLoadNextPage)
+                selectUserModel.reduce(SelectUserMviModel.Intent.LoadNextPage)
             },
             onClose = { user ->
-                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchSetQuery(""))
-                selectUserModel.reduce(SelectUserMviModel.Intent.UserSearchClear)
+                selectUserModel.reduce(SelectUserMviModel.Intent.SetQuery(""))
+                selectUserModel.reduce(SelectUserMviModel.Intent.Clear)
                 selectUserToCreateConversationDialogOpen = false
                 val userId = user?.id
                 if (userId != null) {

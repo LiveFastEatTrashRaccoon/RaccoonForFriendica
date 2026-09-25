@@ -36,7 +36,7 @@ class SelectUserViewModel(private val userPaginationManager: UserPaginationManag
     init {
         viewModelScope.launch {
             uiState
-                .map { it.userSearchQuery }
+                .map { it.query }
                 .distinctUntilChanged()
                 .drop(1)
                 .debounce(750.milliseconds)
@@ -48,19 +48,19 @@ class SelectUserViewModel(private val userPaginationManager: UserPaginationManag
 
     override fun reduce(intent: SelectUserMviModel.Intent) {
         when (intent) {
-            SelectUserMviModel.Intent.UserSearchClear ->
+            SelectUserMviModel.Intent.Clear ->
                 viewModelScope.launch {
-                    updateState { it.copy(userSearchUsers = emptyList()) }
+                    updateState { it.copy(users = emptyList()) }
                 }
 
-            SelectUserMviModel.Intent.UserSearchLoadNextPage ->
+            SelectUserMviModel.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPageUsers()
                 }
 
-            is SelectUserMviModel.Intent.UserSearchSetQuery ->
+            is SelectUserMviModel.Intent.SetQuery ->
                 viewModelScope.launch {
-                    updateState { it.copy(userSearchQuery = intent.query) }
+                    updateState { it.copy(query = intent.query) }
                 }
         }
     }
@@ -72,22 +72,22 @@ class SelectUserViewModel(private val userPaginationManager: UserPaginationManag
                 withRelationship = false,
             ),
         )
-        updateState { it.copy(userSearchCanFetchMore = userPaginationManager.canFetchMore) }
+        updateState { it.copy(canFetchMore = userPaginationManager.canFetchMore) }
         loadNextPageUsers()
     }
 
     private suspend fun loadNextPageUsers() {
-        if (uiState.value.userSearchLoading) {
+        if (uiState.value.loading) {
             return
         }
 
-        updateState { it.copy(userSearchLoading = true) }
+        updateState { it.copy(loading = true) }
         val users = userPaginationManager.loadNextPage()
         updateState {
             it.copy(
-                userSearchUsers = users,
-                userSearchCanFetchMore = userPaginationManager.canFetchMore,
-                userSearchLoading = false,
+                users = users,
+                canFetchMore = userPaginationManager.canFetchMore,
+                loading = false,
             )
         }
     }

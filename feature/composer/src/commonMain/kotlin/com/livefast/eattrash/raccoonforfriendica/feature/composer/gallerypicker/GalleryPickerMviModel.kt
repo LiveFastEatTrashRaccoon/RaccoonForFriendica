@@ -8,19 +8,19 @@ interface GalleryPickerMviModel :
     MviModel<GalleryPickerMviModel.Intent, GalleryPickerMviModel.State, GalleryPickerMviModel.Effect> {
 
     sealed interface Intent {
-        data object GalleryInitialLoad : Intent
+        data object InitialLoad : Intent
 
-        data object GalleryLoadMorePhotos : Intent
+        data object LoadMorePhotos : Intent
 
-        data class GalleryAlbumSelected(val album: String) : Intent
+        data class SelectAlbum(val album: String) : Intent
     }
 
     data class State(
-        val galleryCurrentAlbum: String? = null,
-        val galleryAlbums: List<MediaAlbumModel> = emptyList(),
-        val galleryCanFetchMore: Boolean = true,
-        val galleryLoading: Boolean = false,
-        val galleryCurrentAlbumPhotos: List<AttachmentModel> = emptyList(),
+        val currentAlbum: String? = null,
+        val albums: List<MediaAlbumModel> = emptyList(),
+        val canFetchMore: Boolean = true,
+        val loading: Boolean = false,
+        val currentAlbumPhotos: List<AttachmentModel> = emptyList(),
     )
 
     sealed interface Effect

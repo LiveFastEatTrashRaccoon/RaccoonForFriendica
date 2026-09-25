@@ -309,16 +309,16 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
         val dialogUiState by addUsersViewModel.uiState.collectAsState()
 
         CircleAddUserDialog(
-            query = dialogUiState.searchUsersQuery,
-            users = dialogUiState.searchUsers,
+            query = dialogUiState.query,
+            users = dialogUiState.users,
             autoloadImages = uiState.autoloadImages,
-            loading = dialogUiState.userSearchLoading,
-            canFetchMore = dialogUiState.userSearchCanFetchMore,
+            loading = dialogUiState.loading,
+            canFetchMore = dialogUiState.canFetchMore,
             onLoadMoreUsers = {
-                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.UserSearchLoadNextPage)
+                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.LoadNextPage)
             },
             onSearch = {
-                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.SetSearchUserQuery(text = it))
+                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.SetQuery(text = it))
             },
             onClose = { values ->
                 addUsersDialogOpened = false

@@ -993,20 +993,20 @@ fun ComposerScreen(
 
             GalleryPickerDialog(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                currentAlbum = dialogUiState.galleryCurrentAlbum,
-                albums = dialogUiState.galleryAlbums,
+                currentAlbum = dialogUiState.currentAlbum,
+                albums = dialogUiState.albums,
                 autoloadImages = uiState.autoloadImages,
-                canFetchMore = dialogUiState.galleryCanFetchMore,
-                loading = dialogUiState.galleryLoading,
-                photos = dialogUiState.galleryCurrentAlbumPhotos,
+                canFetchMore = dialogUiState.canFetchMore,
+                loading = dialogUiState.loading,
+                photos = dialogUiState.currentAlbumPhotos,
                 onInitialLoad = {
-                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.GalleryInitialLoad)
+                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.InitialLoad)
                 },
                 onLoadMorePhotos = {
-                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.GalleryLoadMorePhotos)
+                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.LoadMorePhotos)
                 },
                 onChangeAlbum = { album ->
-                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.GalleryAlbumSelected(album))
+                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.SelectAlbum(album))
                 },
                 onClose = { attachments ->
                     photoGalleryPickerOpen = false

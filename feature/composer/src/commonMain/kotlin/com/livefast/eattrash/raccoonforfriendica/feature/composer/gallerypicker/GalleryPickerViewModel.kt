@@ -31,26 +31,26 @@ class GalleryPickerViewModel(
 
     override fun reduce(intent: GalleryPickerMviModel.Intent) {
         when (intent) {
-            is GalleryPickerMviModel.Intent.GalleryAlbumSelected ->
+            is GalleryPickerMviModel.Intent.SelectAlbum ->
                 viewModelScope.launch {
-                    updateState { it.copy(galleryCurrentAlbum = intent.album) }
+                    updateState { it.copy(currentAlbum = intent.album) }
                     refreshGalleryPhotos()
                 }
 
-            GalleryPickerMviModel.Intent.GalleryInitialLoad ->
+            GalleryPickerMviModel.Intent.InitialLoad ->
                 viewModelScope.launch {
                     val albums = albumRepository.getAll().orEmpty()
                     val currentAlbum = albums.firstOrNull()
                     updateState {
                         it.copy(
-                            galleryAlbums = albums,
-                            galleryCurrentAlbum = currentAlbum?.name,
+                            albums = albums,
+                            currentAlbum = currentAlbum?.name,
                         )
                     }
                     refreshGalleryPhotos()
                 }
 
-            GalleryPickerMviModel.Intent.GalleryLoadMorePhotos ->
+            GalleryPickerMviModel.Intent.LoadMorePhotos ->
                 viewModelScope.launch {
                     loadNextPageGalleryPhotos()
                 }
@@ -58,26 +58,26 @@ class GalleryPickerViewModel(
     }
 
     private suspend fun refreshGalleryPhotos() {
-        val albumName = uiState.value.galleryCurrentAlbum ?: return
+        val albumName = uiState.value.currentAlbum ?: return
         albumPhotoPaginationManager.reset(
             AlbumPhotoPaginationSpecification.Default(albumName),
         )
-        updateState { it.copy(galleryCanFetchMore = albumPhotoPaginationManager.canFetchMore) }
+        updateState { it.copy(canFetchMore = albumPhotoPaginationManager.canFetchMore) }
         loadNextPageGalleryPhotos()
     }
 
     private suspend fun loadNextPageGalleryPhotos() {
-        if (uiState.value.galleryLoading) {
+        if (uiState.value.loading) {
             return
         }
 
-        updateState { it.copy(galleryLoading = true) }
+        updateState { it.copy(loading = true) }
         val photos = albumPhotoPaginationManager.loadNextPage()
         updateState {
             it.copy(
-                galleryCurrentAlbumPhotos = photos,
-                galleryCanFetchMore = albumPhotoPaginationManager.canFetchMore,
-                galleryLoading = false,
+                currentAlbumPhotos = photos,
+                canFetchMore = albumPhotoPaginationManager.canFetchMore,
+                loading = false,
             )
         }
     }

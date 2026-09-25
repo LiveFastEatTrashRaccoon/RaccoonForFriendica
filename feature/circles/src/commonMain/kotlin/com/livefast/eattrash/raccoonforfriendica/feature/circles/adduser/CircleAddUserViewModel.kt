@@ -37,7 +37,7 @@ class CircleAddUserViewModel(
     init {
         viewModelScope.launch {
             uiState
-                .map { it.searchUsersQuery }
+                .map { it.query }
                 .distinctUntilChanged()
                 .drop(1)
                 .debounce(750.milliseconds)
@@ -49,12 +49,12 @@ class CircleAddUserViewModel(
 
     override fun reduce(intent: CircleAddUserMviModel.Intent) {
         when (intent) {
-            is CircleAddUserMviModel.Intent.SetSearchUserQuery ->
+            is CircleAddUserMviModel.Intent.SetQuery ->
                 viewModelScope.launch {
-                    updateState { it.copy(searchUsersQuery = intent.text) }
+                    updateState { it.copy(query = intent.text) }
                 }
 
-            CircleAddUserMviModel.Intent.UserSearchLoadNextPage ->
+            CircleAddUserMviModel.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPageSearchUsers()
                 }
@@ -69,22 +69,22 @@ class CircleAddUserViewModel(
                 excludeIds = args.userIdsToExclude,
             ),
         )
-        updateState { it.copy(userSearchCanFetchMore = searchPaginationManager.canFetchMore) }
+        updateState { it.copy(canFetchMore = searchPaginationManager.canFetchMore) }
         loadNextPageSearchUsers()
     }
 
     private suspend fun loadNextPageSearchUsers() {
-        if (uiState.value.userSearchLoading) {
+        if (uiState.value.loading) {
             return
         }
 
-        updateState { it.copy(userSearchLoading = true) }
+        updateState { it.copy(loading = true) }
         val users = searchPaginationManager.loadNextPage()
         updateState {
             it.copy(
-                searchUsers = users,
-                userSearchCanFetchMore = searchPaginationManager.canFetchMore,
-                userSearchLoading = false,
+                users = users,
+                canFetchMore = searchPaginationManager.canFetchMore,
+                loading = false,
             )
         }
     }

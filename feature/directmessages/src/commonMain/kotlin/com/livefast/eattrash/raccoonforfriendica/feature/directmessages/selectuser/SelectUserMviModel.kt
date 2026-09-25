@@ -7,18 +7,18 @@ interface SelectUserMviModel :
     MviModel<SelectUserMviModel.Intent, SelectUserMviModel.State, SelectUserMviModel.Effect> {
 
     sealed interface Intent {
-        data object UserSearchLoadNextPage : Intent
+        data object LoadNextPage : Intent
 
-        data class UserSearchSetQuery(val query: String) : Intent
+        data class SetQuery(val query: String) : Intent
 
-        data object UserSearchClear : Intent
+        data object Clear : Intent
     }
 
     data class State(
-        val userSearchUsers: List<UserModel> = emptyList(),
-        val userSearchLoading: Boolean = false,
-        val userSearchCanFetchMore: Boolean = true,
-        val userSearchQuery: String = "",
+        val users: List<UserModel> = emptyList(),
+        val loading: Boolean = false,
+        val canFetchMore: Boolean = true,
+        val query: String = "",
     )
 
     sealed interface Effect
