@@ -18,8 +18,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSche
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
-import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
-import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderTypes
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconVariant
@@ -283,7 +281,9 @@ class SettingsViewModel(
                 }.launchIn(this)
 
             translationProviderConfigStore.observe().onEach { configs ->
-                updateState { it.copy(translationProviderConfigs = configs) }
+                updateState {
+                    it.copy(translationProviderUrl = configs.firstOrNull { conf -> conf.default }?.url)
+                }
             }.launchIn(this)
         }
     }
@@ -428,21 +428,6 @@ class SettingsViewModel(
                 viewModelScope.launch {
                     changeReplyDepth(intent.depth)
                 }
-
-            is SettingsMviModel.Intent.SwitchDefaultTranslationProvider -> viewModelScope.launch {
-                translationProviderConfigStore.setDefaultId(intent.config.id)
-            }
-            is SettingsMviModel.Intent.AddTranslationProviderConfig -> viewModelScope.launch {
-                val config = TranslationProviderConfig(
-                    name = TranslationProviderTypes.LibreTranslate.name,
-                    url = intent.url,
-                    apiKey = intent.apiKey,
-                )
-                translationProviderConfigStore.create(config)
-            }
-            is SettingsMviModel.Intent.DeleteTranslationProviderConfig -> viewModelScope.launch {
-                translationProviderConfigStore.delete(intent.config.id)
-            }
         }
     }
 
@@ -667,7 +652,7 @@ data class SettingsViewModelArgs(val controller: PermissionControllerWrapper)
 @AssistedFactory
 @ViewModelAssistedFactoryKey(SettingsViewModel::class)
 @ContributesIntoMap(AppScope::class)
-fun interface Factory : ViewModelAssistedFactory {
+fun interface SettingsViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): SettingsViewModel =
         create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
 

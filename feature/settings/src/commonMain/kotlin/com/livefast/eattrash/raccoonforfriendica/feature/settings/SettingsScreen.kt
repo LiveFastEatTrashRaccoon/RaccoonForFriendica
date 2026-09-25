@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
@@ -101,7 +102,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.Notificati
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.translationconfig.TranslationConfigMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.translationconfig.TranslationConfigViewModel
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -158,8 +162,6 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     var replyDepthBottomSheepOpened by remember { mutableStateOf(false) }
     var aboutDialogOpened by remember { mutableStateOf(false) }
     var manageTranslationProvidersOpened by remember { mutableStateOf(false) }
-    var translationProviderConfigToDelete by remember { mutableStateOf<TranslationProviderConfig?>(null) }
-    var addTranslationProviderConfigDialogOpened by remember { mutableStateOf(false) }
 
     PermissionControllerWrapperBindEffect(controller = controller)
     LaunchedEffect(model) {
@@ -392,8 +394,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     )
                     SettingsRow(
                         title = LocalStrings.current.settingsItemTranslationProvider,
-                        value = uiState.translationProviderConfigs
-                            .firstOrNull { it.default }?.url
+                        value = uiState.translationProviderUrl
                             ?.replace("http://", "")
                             ?.replace("https://", "") ?: LocalStrings.current.shortUnavailable,
                         onTap = {
@@ -1183,10 +1184,17 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     }
 
     if (manageTranslationProvidersOpened) {
+        val viewModelStoreOwner = rememberViewModelStoreOwner()
+        val configModel: TranslationConfigMviModel =
+            metroViewModel<TranslationConfigViewModel>(viewModelStoreOwner)
+        val configUiState by configModel.uiState.collectAsState()
+
+        var translationProviderConfigToDelete by remember { mutableStateOf<TranslationProviderConfig?>(null) }
+        var addTranslationProviderConfigDialogOpened by remember { mutableStateOf(false) }
         var optionsOffset by remember { mutableStateOf(Offset.Zero) }
         var optionsMenuOpen by remember { mutableStateOf(false) }
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        val items = uiState.translationProviderConfigs.map { config ->
+        val items = configUiState.configs.map { config ->
             CustomModalBottomSheetItem(
                 label = config.url,
                 subtitle = config.name,
@@ -1274,15 +1282,15 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             items = items,
             shouldHideOnSelect = { index ->
                 // do not hide the bottom sheet when selection the last "add" action
-                index in uiState.translationProviderConfigs.indices
+                index in configUiState.configs.indices
             },
             onSelect = { index ->
                 if (index != null) {
-                    val configs = uiState.translationProviderConfigs
+                    val configs = configUiState.configs
                     if (index in configs.indices) {
                         manageTranslationProvidersOpened = false
                         val selectedConfig = configs[index]
-                        model.reduce(SettingsMviModel.Intent.SwitchDefaultTranslationProvider(selectedConfig))
+                        configModel.reduce(TranslationConfigMviModel.Intent.SwitchDefault(selectedConfig))
                     } else {
                         addTranslationProviderConfigDialogOpened = true
                     }
@@ -1291,40 +1299,40 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 }
             },
         )
-    }
 
-    if (addTranslationProviderConfigDialogOpened) {
-        EditTwoTextualInfosDialog(
-            title = LocalStrings.current.translationProviderConfigDialogTitle,
-            label1 = LocalStrings.current.translationProviderConfigFieldServerUrl,
-            placeHolder1 = buildString {
-                append(LocalStrings.current.exempliGratia)
-                append(" ")
-                append("https://libretranslate.com")
-            },
-            label2 = LocalStrings.current.translationProviderConfigFieldApiKey,
-            keyboardType1 = KeyboardType.Uri,
-            keyboardType2 = KeyboardType.Text,
-            onClose = { url, key ->
-                addTranslationProviderConfigDialogOpened = false
-                if (url != null && key != null) {
-                    model.reduce(SettingsMviModel.Intent.AddTranslationProviderConfig(url = url, apiKey = key))
-                }
-            },
-        )
-    }
+        if (addTranslationProviderConfigDialogOpened) {
+            EditTwoTextualInfosDialog(
+                title = LocalStrings.current.translationProviderConfigDialogTitle,
+                label1 = LocalStrings.current.translationProviderConfigFieldServerUrl,
+                placeHolder1 = buildString {
+                    append(LocalStrings.current.exempliGratia)
+                    append(" ")
+                    append("https://libretranslate.com")
+                },
+                label2 = LocalStrings.current.translationProviderConfigFieldApiKey,
+                keyboardType1 = KeyboardType.Uri,
+                keyboardType2 = KeyboardType.Text,
+                onClose = { url, key ->
+                    addTranslationProviderConfigDialogOpened = false
+                    if (url != null && key != null) {
+                        configModel.reduce(TranslationConfigMviModel.Intent.AddConfig(url = url, apiKey = key))
+                    }
+                },
+            )
+        }
 
-    if (translationProviderConfigToDelete != null) {
-        CustomConfirmDialog(
-            title = LocalStrings.current.actionDelete,
-            onClose = { confirm ->
-                val config = translationProviderConfigToDelete
-                translationProviderConfigToDelete = null
-                if (confirm && config != null) {
-                    model.reduce(SettingsMviModel.Intent.DeleteTranslationProviderConfig(config))
-                }
-            },
-        )
+        if (translationProviderConfigToDelete != null) {
+            CustomConfirmDialog(
+                title = LocalStrings.current.actionDelete,
+                onClose = { confirm ->
+                    val config = translationProviderConfigToDelete
+                    translationProviderConfigToDelete = null
+                    if (confirm && config != null) {
+                        configModel.reduce(TranslationConfigMviModel.Intent.DeleteConfig(config))
+                    }
+                },
+            )
+        }
     }
 }
 
