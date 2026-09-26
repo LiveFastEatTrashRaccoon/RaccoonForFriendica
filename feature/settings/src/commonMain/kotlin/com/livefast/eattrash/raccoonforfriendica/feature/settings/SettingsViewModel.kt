@@ -59,7 +59,6 @@ import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @AssistedInject
@@ -649,7 +648,6 @@ class SettingsViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<SettingsViewModelArgs>()
 
-@Serializable
 data class SettingsViewModelArgs(val controller: PermissionControllerWrapper)
 
 @AssistedFactory

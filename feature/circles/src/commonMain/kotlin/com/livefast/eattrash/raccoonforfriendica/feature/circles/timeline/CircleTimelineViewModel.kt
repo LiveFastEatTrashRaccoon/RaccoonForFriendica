@@ -46,7 +46,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @AssistedInject
@@ -536,7 +535,6 @@ class CircleTimelineViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<CircleTimelineViewModelArgs>()
 
-@Serializable
 data class CircleTimelineViewModelArgs(val id: String)
 
 @AssistedFactory

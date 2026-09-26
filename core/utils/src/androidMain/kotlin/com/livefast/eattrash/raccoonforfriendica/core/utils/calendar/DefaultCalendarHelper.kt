@@ -9,7 +9,6 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlin.coroutines.cancellation.CancellationException
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultCalendarHelper(private val context: Context) : CalendarHelper {

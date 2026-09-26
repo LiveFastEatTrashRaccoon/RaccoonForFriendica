@@ -8,7 +8,6 @@ import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultShareHelper : ShareHelper {

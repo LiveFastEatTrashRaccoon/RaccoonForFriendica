@@ -44,7 +44,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @AssistedInject
@@ -545,7 +544,6 @@ class HashtagViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<HashtagViewModelArgs>()
 
-@Serializable
 data class HashtagViewModelArgs(val tag: String)
 
 @AssistedFactory

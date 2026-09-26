@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.seconds
 
 private val POLLING_INTERVAL = 1.2.seconds
@@ -274,7 +273,6 @@ class ConversationViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<ConversationViewModelArgs>()
 
-@Serializable
 data class ConversationViewModelArgs(val otherUserId: String, val parentUri: String)
 
 @AssistedFactory

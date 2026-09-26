@@ -13,7 +13,6 @@ import java.awt.datatransfer.StringSelection
 import java.awt.datatransfer.UnsupportedFlavorException
 import java.io.IOException
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultClipboardHelperFactory : ClipboardHelperFactory {

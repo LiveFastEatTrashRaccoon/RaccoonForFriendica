@@ -8,11 +8,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 
 private data class ConversationNode(val entry: TimelineEntryModel, var children: List<ConversationNode> = listOf())
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultPopulateThreadUseCase(

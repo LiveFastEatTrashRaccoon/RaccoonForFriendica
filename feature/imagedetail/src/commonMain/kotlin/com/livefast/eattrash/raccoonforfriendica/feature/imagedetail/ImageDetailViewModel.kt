@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlin.coroutines.cancellation.CancellationException
 
 @AssistedInject
@@ -158,7 +157,6 @@ private fun String.extractExtension(): String = let { s ->
     s.substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
 }
 
-@Serializable
 data class ImageDetailViewModelArgs(val urls: List<String>, val initialIndex: Int = 0)
 
 @AssistedFactory

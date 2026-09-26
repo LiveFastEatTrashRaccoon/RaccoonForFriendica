@@ -46,7 +46,6 @@ import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @AssistedInject
@@ -781,7 +780,6 @@ class EntryDetailViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<EntryDetailViewModelArgs>()
 
-@Serializable
 data class EntryDetailViewModelArgs(val id: String, val swipeNavigationEnabled: Boolean)
 
 @AssistedFactory

@@ -33,7 +33,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 
 @AssistedInject
 class UserListViewModel(
@@ -278,7 +277,6 @@ class UserListViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<UserListViewModelArgs>()
 
-@Serializable
 data class UserListViewModelArgs(val type: UserListType, val userId: String, val entryId: String)
 
 @AssistedFactory

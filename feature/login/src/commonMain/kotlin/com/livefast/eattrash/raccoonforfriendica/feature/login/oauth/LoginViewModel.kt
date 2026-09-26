@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
@@ -196,7 +195,6 @@ private fun getSignupUrl(node: String, type: LoginType) = buildString {
     }
 }
 
-@Serializable
 data class LoginViewModelArgs(val type: LoginType)
 
 @AssistedFactory
