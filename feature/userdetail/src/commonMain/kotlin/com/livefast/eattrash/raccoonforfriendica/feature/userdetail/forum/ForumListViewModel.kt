@@ -44,7 +44,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @AssistedInject
@@ -509,7 +508,6 @@ class ForumListViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<ForumListViewModelArgs>()
 
-@Serializable
 data class ForumListViewModelArgs(val id: String)
 
 @AssistedFactory

@@ -45,7 +45,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @AssistedInject
@@ -525,7 +524,6 @@ class EntryListViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<EntryListViewModelArgs>()
 
-@Serializable
 data class EntryListViewModelArgs(val type: EntryListType)
 
 @AssistedFactory
