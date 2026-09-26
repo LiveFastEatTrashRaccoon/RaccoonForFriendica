@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.stateIn
 
 private const val THRESHOLD = 1f
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultFabNestedScrollConnection : FabNestedScrollConnection {

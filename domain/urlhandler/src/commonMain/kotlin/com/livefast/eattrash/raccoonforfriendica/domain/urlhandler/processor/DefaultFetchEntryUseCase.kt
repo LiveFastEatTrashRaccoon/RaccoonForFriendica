@@ -7,11 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Searc
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration.Companion.milliseconds
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultFetchEntryUseCase(private val searchRepository: SearchRepository) : FetchEntryUseCase {

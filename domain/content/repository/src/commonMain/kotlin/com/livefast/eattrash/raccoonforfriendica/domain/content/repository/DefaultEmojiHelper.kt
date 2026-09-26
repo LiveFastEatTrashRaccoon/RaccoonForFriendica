@@ -7,9 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultEmojiHelper(private val repository: EmojiRepository) : EmojiHelper {

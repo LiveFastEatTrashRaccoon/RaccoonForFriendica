@@ -5,9 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 
-@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultSwitchAccountUseCase(private val accountRepository: AccountRepository) : SwitchAccountUseCase {
