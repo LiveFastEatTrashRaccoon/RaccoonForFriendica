@@ -194,7 +194,7 @@ internal fun getEntryProvider(
             otherInstance = it.otherInstance,
         )
     }
-    entry<Destination.FollowedHashtags> {
+    entry<Destination.FollowedHashtags>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: FollowedHashtagsMviModel = followedHashtagsViewModel ?: metroViewModel<FollowedHashtagsViewModel>()
         FollowedHashtagsScreen(model = model)
     }
@@ -231,7 +231,7 @@ internal fun getEntryProvider(
             videoIndices = it.videoIndices,
         )
     }
-    entry<Destination.ManageBlocks> {
+    entry<Destination.ManageBlocks>(metadata = ListDetailSceneStrategy.listPane()) {
         ManageBlocksScreen()
     }
     entry<Destination.Circles>(metadata = ListDetailSceneStrategy.listPane()) {
@@ -244,7 +244,7 @@ internal fun getEntryProvider(
     entry<Destination.CircleTimeline>(metadata = ListDetailSceneStrategy.listPane()) {
         CircleTimelineScreen(id = it.circleId)
     }
-    entry<Destination.FollowRequests> {
+    entry<Destination.FollowRequests>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: FollowRequestsMviModel = followRequestsViewModel ?: metroViewModel<FollowRequestsViewModel>()
         FollowRequestsScreen(model = model)
     }
@@ -272,7 +272,7 @@ internal fun getEntryProvider(
     entry<Destination.AlbumDetail>(metadata = ListDetailSceneStrategy.detailPane()) {
         AlbumDetailScreen(name = it.name)
     }
-    entry<Destination.Unpublished> {
+    entry<Destination.Unpublished>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: UnpublishedMviModel = unpublishedViewModel ?: metroViewModel<UnpublishedViewModel>()
         UnpublishedScreen(model = model)
     }
@@ -304,7 +304,7 @@ internal fun getEntryProvider(
     entry<Destination.Acknowledgements> {
         AcknowledgementsScreen()
     }
-    entry<Destination.ShortcutList> {
+    entry<Destination.ShortcutList>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: ShortcutListMviModel = shortcutListViewModel ?: metroViewModel<ShortcutListViewModel>()
         ShortcutListScreen(model = model)
     }
