@@ -1,10 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchinstance
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 
-@Stable
 interface SwitchInstanceMviModel :
     MviModel<SwitchInstanceMviModel.Intent, SwitchInstanceMviModel.State, SwitchInstanceMviModel.Effect> {
 

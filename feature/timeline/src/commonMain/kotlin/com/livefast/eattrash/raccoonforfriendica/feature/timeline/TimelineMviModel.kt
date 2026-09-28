@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import kotlin.time.Duration
 
-@Stable
 interface TimelineMviModel : MviModel<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect> {
     sealed interface Intent {
         data object Refresh : Intent

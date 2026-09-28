@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-@Stable
 interface MainRouter {
     fun openUserDetail(user: UserModel, otherInstance: String? = null)
 

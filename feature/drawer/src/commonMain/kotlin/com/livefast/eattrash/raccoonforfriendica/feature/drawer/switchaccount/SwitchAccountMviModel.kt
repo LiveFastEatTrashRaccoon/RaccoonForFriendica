@@ -1,10 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchaccount
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 
-@Stable
 interface SwitchAccountMviModel :
     MviModel<SwitchAccountMviModel.Intent, SwitchAccountMviModel.State, SwitchAccountMviModel.Effect> {
 

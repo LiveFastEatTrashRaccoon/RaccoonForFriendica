@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.userdetail.forum
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlin.time.Duration
 
-@Stable
 interface ForumListMviModel :
     MviModel<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect> {
     sealed interface Intent {

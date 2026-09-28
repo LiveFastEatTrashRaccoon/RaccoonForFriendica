@@ -1,8 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.share
 
-import androidx.compose.runtime.Stable
-
-@Stable
 interface ShareHelper {
     val supportsShareImage: Boolean
 

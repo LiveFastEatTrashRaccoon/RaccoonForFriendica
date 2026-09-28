@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.userdetail.classic
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
@@ -9,7 +8,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import kotlin.time.Duration
 
-@Stable
 interface UserDetailMviModel :
     MviModel<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect> {
     sealed interface Intent {

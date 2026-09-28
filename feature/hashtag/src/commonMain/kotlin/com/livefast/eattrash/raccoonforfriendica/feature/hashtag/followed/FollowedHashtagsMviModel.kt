@@ -1,10 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 
-@Stable
 interface FollowedHashtagsMviModel :
     MviModel<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect> {
     sealed interface Intent {

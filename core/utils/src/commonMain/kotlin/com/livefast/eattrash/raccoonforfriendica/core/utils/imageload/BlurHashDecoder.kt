@@ -1,9 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.imageload
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.ImageBitmap
 
-@Stable
 interface BlurHashDecoder {
     /**
      * Clear calculations stored in memory cache.

@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.network
 
-import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.StateFlow
 
 sealed interface NetworkState {
@@ -9,7 +8,6 @@ sealed interface NetworkState {
     data object Disconnected : NetworkState
 }
 
-@Stable
 interface NetworkStateObserver {
     val state: StateFlow<NetworkState>
 

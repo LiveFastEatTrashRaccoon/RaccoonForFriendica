@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.profile.edit
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 
-@Stable
 interface EditProfileMviModel :
     MviModel<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect> {
     sealed interface Intent {

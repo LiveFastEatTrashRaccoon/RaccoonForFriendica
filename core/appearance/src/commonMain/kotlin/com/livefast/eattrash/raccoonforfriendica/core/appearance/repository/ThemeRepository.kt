@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.repository
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontFamily
@@ -8,7 +7,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiFontScal
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 import kotlinx.coroutines.flow.StateFlow
 
-@Stable
 interface ThemeRepository {
     val theme: StateFlow<UiTheme>
     val fontFamily: StateFlow<UiFontFamily>

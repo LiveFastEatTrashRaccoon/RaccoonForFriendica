@@ -1,11 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.appearance.theme
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiTheme
 
-@Stable
 interface ColorSchemeProvider {
     val supportsDynamicColors: Boolean
 

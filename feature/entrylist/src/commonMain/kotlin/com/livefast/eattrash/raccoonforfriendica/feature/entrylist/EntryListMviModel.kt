@@ -1,12 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.entrylist
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import kotlin.time.Duration
 
-@Stable
 interface EntryListMviModel :
     MviModel<EntryListMviModel.Intent, EntryListMviModel.State, EntryListMviModel.Effect> {
     sealed interface Intent {

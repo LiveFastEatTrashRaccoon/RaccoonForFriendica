@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.utils.gallery
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.provideHttpClientEngine
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -15,7 +14,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import kotlinx.io.readByteArray
 
-@Stable
 interface GalleryHelper {
     val supportsCustomPath: Boolean
 

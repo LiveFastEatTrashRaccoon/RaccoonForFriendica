@@ -1,10 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.followrequests
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
-@Stable
 interface FollowRequestsMviModel :
     MviModel<FollowRequestsMviModel.Intent, FollowRequestsMviModel.State, FollowRequestsMviModel.Effect> {
     sealed interface Intent {

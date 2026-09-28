@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.settings
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.ThemeColor
@@ -21,7 +20,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpening
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import kotlin.time.Duration
 
-@Stable
 interface SettingsMviModel : MviModel<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect> {
     sealed interface Intent {
         data class ChangeTheme(val theme: UiTheme) : Intent

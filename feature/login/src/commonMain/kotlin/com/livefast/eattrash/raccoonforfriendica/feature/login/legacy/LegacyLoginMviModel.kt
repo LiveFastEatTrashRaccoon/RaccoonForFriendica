@@ -1,10 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.login.legacy
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 
-@Stable
 interface LegacyLoginMviModel :
     MviModel<LegacyLoginMviModel.Intent, LegacyLoginMviModel.State, LegacyLoginMviModel.Effect> {
     sealed interface Intent {

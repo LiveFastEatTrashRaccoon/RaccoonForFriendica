@@ -1,9 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
-import androidx.compose.runtime.Stable
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 
-@Stable
 interface EntryActionRepository {
     fun canShare(entry: TimelineEntryModel): Boolean
 

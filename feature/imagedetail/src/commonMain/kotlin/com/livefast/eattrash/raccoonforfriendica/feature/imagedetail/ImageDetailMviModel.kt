@@ -1,10 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.layout.ContentScale
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModel
 
-@Stable
 interface ImageDetailMviModel :
     MviModel<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect> {
     sealed interface Intent {
