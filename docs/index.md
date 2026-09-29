@@ -2,15 +2,16 @@
 
 ## Overview
 
-Raccoon is a mobile client for [Friendica](https://friendi.ca), a federated social platform. The
-app is powered by Kotlin Multiplatform (KMP) and Compose Multiplatform (CMP), mainly focusing on the
-Android platform, even if it could run on iOS too and – who knows? – in the future new platforms
-could be added (such as desktop).
+Raccoon is a mobile client for [Friendica](https://friendi.ca){ target=_blank } and
+[Mastodon](https://joinmastodon.org){ target=_blank }.
+The app is powered by Kotlin Multiplatform (KMP) and Compose Multiplatform (CMP) and is currently
+available for Android and Debian-based GNU/Linux distributions. In the future – who knows? – new
+platforms could be added (e.g. iOS).
 
 Like the "twin" Lemmy app, this project started out as an exercise to experiment with KMP and CMP,
 push them to the limit with some real world task with a fair amount of complexity (image loading,
 HTML rendering, file system and gallery access, networking, local database management,
-shared preferences, navigation, resource access e.g. fonts/drawables/localization, etc.), and it
+shared preferences, navigation, resource access e.g. fonts/drawables/localization, etc.). But it
 quickly grew to a fully functional app that can benefit other users too, this is the reason why it
 is released as an open-source app.
 
