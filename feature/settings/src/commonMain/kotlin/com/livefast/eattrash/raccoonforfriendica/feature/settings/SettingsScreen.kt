@@ -18,13 +18,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -578,7 +579,10 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     if (languageBottomSheetOpened) {
         CustomModalBottomSheet(
             title = LocalStrings.current.settingsItemLanguage,
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            sheetState = rememberBottomSheetState(
+                initialValue = SheetValue.Hidden,
+                enabledValues = setOf(SheetValue.Expanded, SheetValue.Hidden),
+            ),
             items =
             Locales.AVAILABLE_LANGUAGES.map { lang ->
                 CustomModalBottomSheetItem(
@@ -688,7 +692,10 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     }
 
     if (themeColorBottomSheetOpened) {
-        val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val state = rememberBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            enabledValues = setOf(SheetValue.Expanded, SheetValue.Hidden),
+        )
         CustomModalBottomSheet(
             sheetState = state,
             title = LocalStrings.current.settingsItemTheme,
@@ -1190,7 +1197,10 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         var addTranslationProviderConfigDialogOpened by remember { mutableStateOf(false) }
         var optionsOffset by remember { mutableStateOf(Offset.Zero) }
         var optionsMenuOpen by remember { mutableStateOf(false) }
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val sheetState = rememberBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            enabledValues = setOf(SheetValue.Expanded, SheetValue.Hidden),
+        )
         val items = configUiState.configs.map { config ->
             CustomModalBottomSheetItem(
                 label = config.url,

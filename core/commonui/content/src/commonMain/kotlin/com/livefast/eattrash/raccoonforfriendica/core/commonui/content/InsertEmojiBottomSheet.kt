@@ -24,8 +24,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +51,10 @@ fun InsertEmojiBottomSheet(
     emojis: List<EmojiModel>,
     modifier: Modifier = Modifier,
     withInsertCustom: Boolean = false,
-    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    sheetState: SheetState = rememberBottomSheetState(
+        initialValue = SheetValue.Hidden,
+        enabledValues = setOf(SheetValue.Expanded, SheetValue.Hidden),
+    ),
     onInsert: ((EmojiModel) -> Unit)? = null,
     onInsertCustom: ((String) -> Unit)? = null,
     onClose: (() -> Unit)? = null,
