@@ -115,10 +115,9 @@ class ConversationListViewModel(
             val items =
                 paginationManager
                     .loadNextPage()
-                    .groupBy {
-                        it.parentUri
-                    }.mapNotNull { mapEntry ->
-                        val messages = mapEntry.value
+                    .groupBy { it.parentUri }
+                    .map { it.value }
+                    .mapNotNull { messages ->
                         val lastMessage =
                             messages.takeIf { it.isNotEmpty() }?.maxBy { it.created.orEmpty() }
                         val user =

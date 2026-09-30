@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
@@ -153,8 +154,8 @@ class TimelineViewModel(
                 settings to user
             }.debounce(750.milliseconds)
                 .distinctUntilChanged()
-                .onEach { mapEntry ->
-                    val user = mapEntry.second
+                .map { it.second }
+                .onEach { user ->
                     circlesRefreshed = false
                     val cachedAuth = apiConfigurationRepository.hasCachedAuthCredentials()
                     val hasUser = user != null || !cachedAuth
@@ -613,16 +614,20 @@ class TimelineViewModel(
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val mapEntry =
-                when {
-                    !entry.isShowingTranslation && entry.translation == null -> {
-                        val result = getTranslation(entry = entry, targetLang = targetLang)
-                        result?.target to result?.provider
-                    }
-                    else -> entry.translation to entry.translationProvider
+            val translation: TimelineEntryModel?
+            val provider: String?
+            when {
+                !entry.isShowingTranslation && entry.translation == null -> {
+                    val result = getTranslation(entry = entry, targetLang = targetLang)
+                    translation = result?.target
+                    provider = result?.provider
                 }
-            val translation = mapEntry.first
-            val provider = mapEntry.second
+
+                else -> {
+                    translation = entry.translation
+                    provider = entry.translationProvider
+                }
+            }
             val newEntry =
                 entry.copy(
                     isShowingTranslation = translation != null && !entry.isShowingTranslation,
