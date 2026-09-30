@@ -125,8 +125,11 @@ class ShortcutTimelineViewModel(
                 }
 
             is ShortcutTimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is ShortcutTimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is ShortcutTimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is ShortcutTimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
             is ShortcutTimelineMviModel.Intent.SubmitPollVote ->
@@ -136,13 +139,16 @@ class ShortcutTimelineViewModel(
                 )
 
             is ShortcutTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is ShortcutTimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is ShortcutTimelineMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(ShortcutTimelineMviModel.Effect.OpenDetail(intent.entry))
                 }
+
             is ShortcutTimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -412,6 +418,7 @@ class ShortcutTimelineViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

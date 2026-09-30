@@ -288,6 +288,7 @@ fun CirclesScreen(
                                         }
 
                                         OptionId.Delete -> confirmDeleteItemId = item.circle.id
+
                                         else -> Unit
                                     }
                                 },

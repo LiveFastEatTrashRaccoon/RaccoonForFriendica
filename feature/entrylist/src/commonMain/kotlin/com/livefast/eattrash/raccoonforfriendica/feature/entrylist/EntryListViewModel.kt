@@ -135,10 +135,15 @@ class EntryListViewModel(
                 }
 
             is EntryListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is EntryListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is EntryListMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is EntryListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is EntryListMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is EntryListMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -146,22 +151,30 @@ class EntryListViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is EntryListMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+
             is EntryListMviModel.Intent.TogglePin -> togglePin(intent.entry)
+
             is EntryListMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is EntryListMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is EntryListMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is EntryListMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(EntryListMviModel.Effect.OpenDetail(intent.entry))
                 }
+
             is EntryListMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is EntryListMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -174,8 +187,10 @@ class EntryListViewModel(
             when (type) {
                 EntryListType.Bookmarks ->
                     Bookmarks(includeNsfw = settingsRepository.current.value?.includeNsfw == true)
+
                 EntryListType.Favorites ->
                     Favorites(includeNsfw = settingsRepository.current.value?.includeNsfw == true)
+
                 is EntryListType.Quoting ->
                     Quotes(id = type.entryId, otherInstance = type.otherInstance)
             },
@@ -482,6 +497,7 @@ class EntryListViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

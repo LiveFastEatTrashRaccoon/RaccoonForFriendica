@@ -27,7 +27,9 @@ class DefaultBottomNavigationAdapter(private val backStack: NavBackStack<NavKey>
                         section
                     }
                 }
+
                 BottomNavigationSection.Profile -> BottomNavigationSection.Profile
+
                 else -> section
             }
         }

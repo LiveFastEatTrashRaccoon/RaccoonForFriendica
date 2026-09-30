@@ -57,7 +57,9 @@ class CirclesViewModel(
                 }
 
             is CirclesMviModel.Intent.Delete -> delete(intent.circleId)
+
             is CirclesMviModel.Intent.OpenDetail -> handleOpenDetail(intent.circle)
+
             is CirclesMviModel.Intent.Upsert -> viewModelScope.launch {
                 val new = uiState.value.items.none { it is CircleListItem.Circle && it.circle.id == intent.circle.id }
                 if (new) {

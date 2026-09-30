@@ -55,7 +55,9 @@ class DefaultTimelineNavigationManager(private val paginationManager: TimelinePa
                 .takeIf { it >= 0 } ?: return null
         return when {
             index < history.lastIndex -> history[index + 1]
+
             !paginationManager.canFetchMore -> null
+
             else -> {
                 val newPosts = paginationManager.loadNextPage()
                 val newIndex = newPosts.indexOfFirst { it.id == postId }

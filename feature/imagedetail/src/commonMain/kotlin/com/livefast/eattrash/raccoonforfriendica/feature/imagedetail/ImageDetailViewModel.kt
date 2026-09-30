@@ -56,8 +56,11 @@ class ImageDetailViewModel(
                 }
 
             is ImageDetailMviModel.Intent.ChangeContentScale -> changeContentScale(intent.contentScale)
+
             ImageDetailMviModel.Intent.SaveToGallery -> downloadAndSave()
+
             ImageDetailMviModel.Intent.ShareAsUrl -> shareAsUrl()
+
             ImageDetailMviModel.Intent.ShareAsFile -> shareAsFile()
         }
     }

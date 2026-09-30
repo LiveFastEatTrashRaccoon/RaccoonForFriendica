@@ -81,8 +81,11 @@ class AlbumDetailViewModel(
     override fun reduce(intent: AlbumDetailMviModel.Intent) {
         when (intent) {
             AlbumDetailMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
+
             AlbumDetailMviModel.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
+
             is AlbumDetailMviModel.Intent.Create -> upload(intent.byteArray)
+
             is AlbumDetailMviModel.Intent.EditDescription ->
                 updateDescription(attachment = intent.attachment, description = intent.description)
 

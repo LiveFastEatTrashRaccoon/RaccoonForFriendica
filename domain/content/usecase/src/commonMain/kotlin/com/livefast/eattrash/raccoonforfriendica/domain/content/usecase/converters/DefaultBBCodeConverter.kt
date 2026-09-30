@@ -65,21 +65,37 @@ class DefaultBBCodeConverter : BBCodeConverter {
                 .onOpenTag { name, attributes, _ ->
                     when (name) {
                         "h1" -> builder.append("[h1]")
+
                         "h2" -> builder.append("[h2]")
+
                         "h3" -> builder.append("[h3]")
+
                         "h4" -> builder.append("[h4]")
+
                         "h5" -> builder.append("[h5]")
+
                         "br" -> builder.appendLine()
+
                         "b", "strong" -> builder.append("[b]")
+
                         "u" -> builder.append("[u]")
+
                         "i", "em" -> builder.append("[i]")
+
                         "s" -> builder.append("[s]")
+
                         "ul" -> builder.append("[ul]")
+
                         "ol" -> builder.append("[ol]")
+
                         "li" -> builder.append("[li]")
+
                         "code" -> builder.append("[code]")
+
                         "blockquote" -> builder.append("[quote]")
+
                         "q" -> builder.append("[quote]")
+
                         "a" -> {
                             val url = attributes["href"] ?: ""
                             builder.append("[url=$url]")

@@ -134,10 +134,15 @@ class ForumListViewModel(
                 }
 
             is ForumListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is ForumListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is ForumListMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is ForumListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is ForumListMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is ForumListMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -145,6 +150,7 @@ class ForumListViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is ForumListMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
@@ -152,15 +158,20 @@ class ForumListViewModel(
                 )
 
             is ForumListMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is ForumListMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is ForumListMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is ForumListMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(ForumListMviModel.Effect.OpenDetail(intent.entry))
                 }
+
             is ForumListMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is ForumListMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -466,6 +477,7 @@ class ForumListViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

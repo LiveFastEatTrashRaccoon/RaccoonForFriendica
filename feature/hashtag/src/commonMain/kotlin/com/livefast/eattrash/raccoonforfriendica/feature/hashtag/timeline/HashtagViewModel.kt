@@ -149,11 +149,17 @@ class HashtagViewModel(
                 }
 
             is HashtagMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is HashtagMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is HashtagMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is HashtagMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is HashtagMviModel.Intent.ToggleTagFollow -> toggleTagFollow(intent.newValue)
+
             is HashtagMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is HashtagMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -161,22 +167,30 @@ class HashtagViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is HashtagMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+
             is HashtagMviModel.Intent.TogglePin -> togglePin(intent.entry)
+
             is HashtagMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is HashtagMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is HashtagMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is HashtagMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(HashtagMviModel.Effect.OpenDetail(intent.entry))
                 }
+
             is HashtagMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is HashtagMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -502,6 +516,7 @@ class HashtagViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

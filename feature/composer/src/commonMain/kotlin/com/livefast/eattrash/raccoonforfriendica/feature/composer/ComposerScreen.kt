@@ -258,6 +258,7 @@ fun ComposerScreen(
                 ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
 
                 is ComposerMviModel.Effect.OpenPreview -> previewEntry = event.entry
+
                 is ComposerMviModel.Effect.TriggerAttachmentEdit ->
                     attachmentBeingEdited = event.attachment
 

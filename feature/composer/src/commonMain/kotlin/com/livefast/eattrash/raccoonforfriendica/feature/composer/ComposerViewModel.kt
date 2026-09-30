@@ -309,6 +309,7 @@ class ComposerViewModel(
                 updateAttachmentDescription(intent.attachment, intent.description)
 
             is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachment)
+
             is ComposerMviModel.Intent.AddLink ->
                 addLink(
                     anchor = intent.link.anchor,
@@ -318,6 +319,7 @@ class ComposerViewModel(
             is ComposerMviModel.Intent.AddMention -> addMention(handle = intent.handle)
 
             is ComposerMviModel.Intent.CompleteMention -> completeMention(intent.handle)
+
             is ComposerMviModel.Intent.CompleteHashtag -> completeHashtag(intent.name)
 
             is ComposerMviModel.Intent.AddInitialMentions ->
@@ -361,10 +363,15 @@ class ComposerViewModel(
                 }
 
             is ComposerMviModel.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
+
             is ComposerMviModel.Intent.AddItalicFormat -> addItalicFormat(intent.fieldType)
+
             is ComposerMviModel.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
+
             is ComposerMviModel.Intent.AddStrikethroughFormat -> addStrikethroughFormat(intent.fieldType)
+
             is ComposerMviModel.Intent.AddCodeFormat -> addCodeFormat(intent.fieldType)
+
             is ComposerMviModel.Intent.AddAttachmentsFromGallery -> addAttachmentsFromGallery(intent.attachments)
 
             is ComposerMviModel.Intent.ChangePublicationType ->
@@ -493,6 +500,7 @@ class ComposerViewModel(
                 )
 
             is ComposerMviModel.Intent.ChangeMarkupMode -> changeMarkupMode(intent.mode)
+
             is ComposerMviModel.Intent.AddInlineImageStep1 ->
                 uploadAttachment(
                     byteArray = intent.byteArray,
@@ -1384,6 +1392,7 @@ class ComposerViewModel(
                     val bbCode = bbCodeConverter.fromHtml(entry.content)
                     entry.copy(content = bbCode)
                 }
+
                 // make the server strip off all the HTML
                 else -> timelineEntryRepository.getSource(entry.id) ?: entry
             }

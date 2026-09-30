@@ -105,6 +105,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
             .onEach { event ->
                 when (event) {
                     ShortcutTimelineMviModel.Effect.BackToTop -> goBackToTop()
+
                     ShortcutTimelineMviModel.Effect.PollVoteFailure ->
                         pollErrorDialogOpened = true
 
@@ -323,6 +324,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                                 }
 
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
                                         ShortcutTimelineMviModel.Intent.CopyToClipboard(

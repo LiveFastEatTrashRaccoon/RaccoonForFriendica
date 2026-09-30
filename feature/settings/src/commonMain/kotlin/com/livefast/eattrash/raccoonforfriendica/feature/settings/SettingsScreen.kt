@@ -947,6 +947,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             text =
                             when (it) {
                                 NotificationMode.Disabled -> ""
+
                                 NotificationMode.Pull ->
                                     LocalStrings.current.settingsNotificationModePullExplanation
 

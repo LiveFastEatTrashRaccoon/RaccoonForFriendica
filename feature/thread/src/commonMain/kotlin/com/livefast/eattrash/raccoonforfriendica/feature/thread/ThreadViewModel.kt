@@ -140,10 +140,15 @@ class ThreadViewModel(
                 }
 
             is ThreadMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is ThreadMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is ThreadMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is ThreadMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is ThreadMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is ThreadMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -151,17 +156,24 @@ class ThreadViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is ThreadMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+
             is ThreadMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is ThreadMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is ThreadMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is ThreadMviModel.Intent.ChangeNavigationIndex ->
                 changeNavigationIndex(intent.index)
+
             is ThreadMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is ThreadMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -345,6 +357,7 @@ class ThreadViewModel(
                                 list.map { entry ->
                                     when {
                                         entry.id == entryId -> entry.let(block)
+
                                         entry.reblog?.id == entryId ->
                                             entry.copy(reblog = entry.reblog?.let(block))
 
@@ -583,6 +596,7 @@ class ThreadViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

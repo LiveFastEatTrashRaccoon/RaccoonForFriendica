@@ -119,6 +119,7 @@ class UnpublishedViewModel(
                 }
 
             is UnpublishedMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             UnpublishedMviModel.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()

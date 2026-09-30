@@ -124,7 +124,9 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
             .onEach { event ->
                 when (event) {
                     SearchMviModel.Effect.BackToTop -> goBackToTop()
+
                     SearchMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     is SearchMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -481,8 +483,11 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                                         }
 
                                         OptionId.Delete -> confirmDeleteEntryId = item.entry.id
+
                                         OptionId.Mute -> confirmMuteEntry = item.entry
+
                                         OptionId.Block -> confirmBlockEntry = item.entry
+
                                         OptionId.Pin, OptionId.Unpin ->
                                             model.reduce(
                                                 SearchMviModel.Intent.TogglePin(item.entry),
@@ -504,6 +509,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                                             }
 
                                         OptionId.ViewDetails -> seeDetailsEntry = item.entry.original
+
                                         OptionId.Quote -> {
                                             item.entry.original.also { entryToShare ->
                                                 mainRouter.openComposer(

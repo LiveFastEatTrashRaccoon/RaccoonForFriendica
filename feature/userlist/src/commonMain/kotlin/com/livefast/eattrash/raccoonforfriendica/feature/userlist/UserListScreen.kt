@@ -119,6 +119,7 @@ fun UserListScreen(
             .onEach { event ->
                 when (event) {
                     UserListMviModel.Effect.BackToTop -> goBackToTop()
+
                     is UserListMviModel.Effect.SaveList -> {
                         if (event.content.isEmpty()) {
                             snackbarHostState.showSnackbar(errorMessage)

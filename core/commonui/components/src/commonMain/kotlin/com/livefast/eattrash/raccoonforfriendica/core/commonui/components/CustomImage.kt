@@ -119,6 +119,7 @@ fun CustomImage(
 
         when (val state = painterState) {
             AsyncImagePainter.State.Empty -> Unit
+
             is AsyncImagePainter.State.Error -> {
                 onFailure?.invoke(this, state.result.throwable)
             }

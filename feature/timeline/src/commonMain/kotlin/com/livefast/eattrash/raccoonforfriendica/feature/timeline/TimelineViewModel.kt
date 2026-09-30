@@ -188,9 +188,13 @@ class TimelineViewModel(
                 }
 
             is TimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is TimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is TimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is TimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is TimelineMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -198,12 +202,15 @@ class TimelineViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is TimelineMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+
             is TimelineMviModel.Intent.TogglePin -> togglePin(intent.entry)
+
             is TimelineMviModel.Intent.SubmitPollVote ->
                 submitPoll(
                     intent.entry,
@@ -211,8 +218,11 @@ class TimelineViewModel(
                 )
 
             is TimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is TimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is TimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is TimelineMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
@@ -221,6 +231,7 @@ class TimelineViewModel(
                 }
 
             is TimelineMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is TimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }

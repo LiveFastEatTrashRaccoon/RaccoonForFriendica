@@ -137,13 +137,16 @@ fun ExploreScreen(
             .onEach { event ->
                 when (event) {
                     ExploreMviModel.Effect.BackToTop -> goBackToTop()
+
                     ExploreMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     is ExploreMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
                     is ExploreMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+
                     ExploreMviModel.Effect.SelectForeignInstanceSuccess -> {
                         selectForeignInstanceOpened = false
                     }
@@ -566,8 +569,11 @@ fun ExploreScreen(
                                         }
 
                                         OptionId.Delete -> confirmDeleteEntryId = item.entry.id
+
                                         OptionId.Mute -> confirmMuteEntry = item.entry
+
                                         OptionId.Block -> confirmBlockEntry = item.entry
+
                                         OptionId.Pin, OptionId.Unpin ->
                                             model.reduce(
                                                 ExploreMviModel.Intent.TogglePin(item.entry),
@@ -589,6 +595,7 @@ fun ExploreScreen(
                                             }
 
                                         OptionId.ViewDetails -> seeDetailsEntry = item.entry.original
+
                                         OptionId.Quote -> {
                                             item.entry.original.also { entryToShare ->
                                                 mainRouter.openComposer(

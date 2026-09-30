@@ -112,6 +112,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
             .onEach { event ->
                 when (event) {
                     ConversationMviModel.Effect.BackToTop -> goBackToTop()
+
                     ConversationMviModel.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
 

@@ -52,6 +52,7 @@ class ManageUserCirclesViewModel(
             }
 
             is ManageUserCirclesMviModel.Intent.Add -> addUserToCircle(intent.circleId)
+
             is ManageUserCirclesMviModel.Intent.Remove -> removeUserFrom(intent.circleId)
         }
     }

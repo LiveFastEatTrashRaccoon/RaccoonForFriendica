@@ -86,6 +86,7 @@ class DefaultCredentialsRepository(
     override suspend fun validateApplicationCredentials(node: String, credentials: ApiCredentials): Boolean =
         when (credentials) {
             is ApiCredentials.HttpBasic -> true
+
             is ApiCredentials.OAuth2 -> {
                 try {
                     provider.changeNode(node)

@@ -54,8 +54,11 @@ fun Visibility.toIcon(coreResources: CoreResources): ImageVector = when (this) {
 @Composable
 fun Visibility.toReadableName(): String = when (this) {
     Visibility.Direct -> LocalStrings.current.visibilityDirect
+
     Visibility.Private -> LocalStrings.current.visibilityPrivate
+
     Visibility.Public -> LocalStrings.current.visibilityPublic
+
     Visibility.LocalPublic ->
         buildString {
             append(LocalStrings.current.timelineLocal)
@@ -63,7 +66,9 @@ fun Visibility.toReadableName(): String = when (this) {
             append(LocalStrings.current.visibilityPublic)
             append(")")
         }
+
     Visibility.Unlisted -> LocalStrings.current.visibilityUnlisted
+
     Visibility.LocalUnlisted ->
         buildString {
             append(LocalStrings.current.timelineLocal)
@@ -71,6 +76,7 @@ fun Visibility.toReadableName(): String = when (this) {
             append(LocalStrings.current.visibilityUnlisted)
             append(")")
         }
+
     is Visibility.Circle -> name ?: LocalStrings.current.visibilityCircle
 }
 

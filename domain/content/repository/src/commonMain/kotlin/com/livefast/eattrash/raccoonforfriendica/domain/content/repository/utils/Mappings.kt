@@ -207,7 +207,9 @@ private fun QuoteApproval.toQuotePermission(): QuotePermission {
      */
     return when (currentUser) {
         QuotePolicyForCurrentUser.Automatic -> QuotePermission.AutomaticallyApprove
+
         QuotePolicyForCurrentUser.Manual -> QuotePermission.ManualApprove
+
         else -> {
             if (automatic.contains(QuotePolicyDto.Followers) || manual.contains(QuotePolicyDto.Followers)) {
                 QuotePermission.OnlyFollowers

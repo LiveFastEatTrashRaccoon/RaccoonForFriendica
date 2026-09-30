@@ -36,8 +36,11 @@ fun String.parseHtml(
                             builder.appendLine().appendLine()
                         }
                     }
+
                     "span" -> Unit
+
                     "br" -> builder.appendLine()
+
                     "a" -> {
                         builder.pushStringAnnotation("link", attributes["href"] ?: "")
                         builder.pushStyle(
@@ -57,10 +60,15 @@ fun String.parseHtml(
                     }
 
                     "b", "strong" -> builder.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
+
                     "u" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
+
                     "i", "em" -> builder.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
+
                     "s" -> builder.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
+
                     "ul" -> builder.appendLine()
+
                     "ol" -> {
                         builder.appendLine()
                         inOrderedList = true
@@ -75,6 +83,7 @@ fun String.parseHtml(
                         }
 
                     "code" -> builder.pushStyle(SpanStyle(fontFamily = FontFamily.Monospace))
+
                     "blockquote" -> {
                         builder.pushStyle(
                             ParagraphStyle(
@@ -112,7 +121,9 @@ fun String.parseHtml(
                             inInlineQuote = false
                         }
                     }
+
                     "span", "br", "img" -> Unit
+
                     "b", "strong", "u", "i", "em", "s", "code" ->
                         try {
                             builder.pop()
@@ -133,12 +144,14 @@ fun String.parseHtml(
                     }
 
                     "ul" -> Unit
+
                     "ol" -> {
                         orderedListIndex = 0
                         inOrderedList = false
                     }
 
                     "li" -> builder.appendLine()
+
                     "blockquote" ->
                         try {
                             builder.pop() // corresponds to pushStyle (ParagraphStyle)

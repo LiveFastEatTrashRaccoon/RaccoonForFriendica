@@ -87,15 +87,20 @@ class ManageBlocksViewModel(
                     emitEffect(ManageBlocksMviModel.Effect.BackToTop)
                     refresh(initial = true)
                 }
+
             ManageBlocksMviModel.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     if (uiState.value.section != ManageBlocksSection.StopWords) {
                         loadNextUserPage()
                     }
                 }
+
             ManageBlocksMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
+
             is ManageBlocksMviModel.Intent.ToggleMute -> unmute(intent.userId)
+
             is ManageBlocksMviModel.Intent.ToggleBlock -> unblock(intent.userId)
+
             is ManageBlocksMviModel.Intent.SetRateLimit ->
                 setRateLimit(
                     handle = intent.handle,
@@ -103,6 +108,7 @@ class ManageBlocksViewModel(
                 )
 
             is ManageBlocksMviModel.Intent.AddStopWord -> addStopWord(intent.word)
+
             is ManageBlocksMviModel.Intent.RemoveStopWord -> removeStopWord(intent.word)
         }
     }

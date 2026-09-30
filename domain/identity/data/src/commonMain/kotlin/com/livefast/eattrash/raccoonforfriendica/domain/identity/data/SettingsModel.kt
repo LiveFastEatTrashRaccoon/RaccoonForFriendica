@@ -41,6 +41,7 @@ data class SettingsModel(
 fun Int.toDomainMaxLines(): Int = when (this) {
     // interpret null values as unlimited
     0 -> Int.MAX_VALUE
+
     else -> this
 }
 

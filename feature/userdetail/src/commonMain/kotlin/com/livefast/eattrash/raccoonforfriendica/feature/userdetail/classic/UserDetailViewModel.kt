@@ -154,21 +154,32 @@ class UserDetailViewModel(
                 }
 
             UserDetailMviModel.Intent.Follow -> follow()
+
             UserDetailMviModel.Intent.Unfollow -> unfollow()
+
             is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is UserDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is UserDetailMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is UserDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             UserDetailMviModel.Intent.DisableNotifications -> toggleNotifications(enabled = false)
+
             UserDetailMviModel.Intent.EnableNotifications -> toggleNotifications(enabled = true)
+
             is UserDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is UserDetailMviModel.Intent.ToggleBlock -> toggleBlock(intent.blocked)
+
             is UserDetailMviModel.Intent.ToggleMute ->
                 toggleMute(
                     muted = intent.muted,
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             UserDetailMviModel.Intent.TogglePersonalNoteEditMode ->
                 toggleEditPersonalNote()
 
@@ -178,16 +189,22 @@ class UserDetailViewModel(
                 }
 
             UserDetailMviModel.Intent.SubmitPersonalNote -> updatePersonalNote()
+
             is UserDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is UserDetailMviModel.Intent.SetRateLimit -> setRateLimit(intent.value)
+
             is UserDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is UserDetailMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(UserDetailMviModel.Effect.OpenDetail(intent.entry))
                 }
+
             is UserDetailMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is UserDetailMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -669,6 +686,7 @@ class UserDetailViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

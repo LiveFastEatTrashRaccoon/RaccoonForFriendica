@@ -47,8 +47,10 @@ class DefaultEntryActionRepository(
     override fun canQuote(entry: TimelineEntryModel): Boolean = when {
         // Friendica
         supportedFeatureRepository.features.value.supportsEntryShare -> true
+
         // Mastodon
         entry.quotePermission in listOf(QuotePermission.AutomaticallyApprove, QuotePermission.ManualApprove) -> true
+
         else -> false
     }
 
