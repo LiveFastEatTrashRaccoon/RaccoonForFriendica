@@ -220,6 +220,7 @@ fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier)
                                     )
 
                                 OptionId.Delete -> confirmDeleteEntryId = entry.id
+
                                 else -> Unit
                             }
                         },

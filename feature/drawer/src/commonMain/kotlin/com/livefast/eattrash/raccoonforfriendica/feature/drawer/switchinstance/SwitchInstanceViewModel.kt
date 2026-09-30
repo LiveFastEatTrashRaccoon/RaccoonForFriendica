@@ -37,6 +37,7 @@ class SwitchInstanceViewModel(
                 }
 
             SwitchInstanceMviModel.Intent.Submit -> submitChangeNode()
+
             SwitchInstanceMviModel.Intent.Reset -> reset()
         }
     }

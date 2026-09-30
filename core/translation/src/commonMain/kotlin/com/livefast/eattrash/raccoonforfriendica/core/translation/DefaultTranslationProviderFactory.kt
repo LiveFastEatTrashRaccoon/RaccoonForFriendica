@@ -15,6 +15,7 @@ class DefaultTranslationProviderFactory : TranslationProviderFactory {
             apiKey = config.apiKey,
             baseUrl = config.url,
         )
+
         else -> throw IllegalArgumentException("Unknown translation provider: ${config.name}")
     }
 }

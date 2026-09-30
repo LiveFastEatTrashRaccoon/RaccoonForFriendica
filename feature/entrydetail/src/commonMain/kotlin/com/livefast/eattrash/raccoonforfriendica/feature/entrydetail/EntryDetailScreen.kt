@@ -157,6 +157,7 @@ fun EntryDetailScreen(
                         }
 
                     EntryDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     is EntryDetailMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -423,8 +424,11 @@ fun EntryDetailScreen(
                                     }
 
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
+
                                     OptionId.Mute -> confirmMuteEntry = entry
+
                                     OptionId.Block -> confirmBlockEntry = entry
+
                                     OptionId.Pin, OptionId.Unpin ->
                                         model.reduce(EntryDetailMviModel.Intent.TogglePin(entry))
 
@@ -444,6 +448,7 @@ fun EntryDetailScreen(
                                         }
 
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                     OptionId.Quote -> {
                                         entry.original.also { entryToShare ->
                                             mainRouter.openComposer(

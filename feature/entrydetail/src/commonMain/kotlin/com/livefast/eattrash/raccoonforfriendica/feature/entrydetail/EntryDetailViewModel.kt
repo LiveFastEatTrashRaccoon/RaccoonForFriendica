@@ -153,10 +153,15 @@ class EntryDetailViewModel(
                 }
 
             is EntryDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is EntryDetailMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is EntryDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is EntryDetailMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is EntryDetailMviModel.Intent.MuteUser ->
                 mute(
                     entryId = intent.entryId,
@@ -172,13 +177,18 @@ class EntryDetailViewModel(
                 )
 
             is EntryDetailMviModel.Intent.TogglePin -> togglePin(intent.entry)
+
             is EntryDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is EntryDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is EntryDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is EntryDetailMviModel.Intent.ChangeNavigationIndex ->
                 changeNavigationIndex(intent.index)
 
             is EntryDetailMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is EntryDetailMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -649,6 +659,7 @@ class EntryDetailViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

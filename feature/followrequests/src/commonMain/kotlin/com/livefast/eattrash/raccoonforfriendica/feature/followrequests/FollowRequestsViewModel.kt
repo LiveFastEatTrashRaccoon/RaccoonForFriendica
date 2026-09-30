@@ -73,6 +73,7 @@ class FollowRequestsViewModel(
                 }
 
             is FollowRequestsMviModel.Intent.Accept -> accept(intent.id)
+
             is FollowRequestsMviModel.Intent.Reject -> reject(intent.id)
         }
     }

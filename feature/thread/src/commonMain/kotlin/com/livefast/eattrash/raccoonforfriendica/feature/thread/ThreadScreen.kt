@@ -148,6 +148,7 @@ fun ThreadScreen(
             .onEach { event ->
                 when (event) {
                     ThreadMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     is ThreadMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -648,8 +649,11 @@ fun ThreadScreen(
                                     }
 
                                     OptionId.Delete -> confirmDeleteEntryId = entry.id
+
                                     OptionId.Mute -> confirmMuteEntry = entry
+
                                     OptionId.Block -> confirmBlockEntry = entry
+
                                     OptionId.ReportUser ->
                                         entry.original.creator?.also { userToReport ->
                                             mainRouter.openCreateReport(user = userToReport)
@@ -666,6 +670,7 @@ fun ThreadScreen(
                                         }
 
                                     OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                     OptionId.Quote -> {
                                         entry.original.also { entryToShare ->
                                             mainRouter.openComposer(

@@ -99,6 +99,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
             .onEach { event ->
                 when (event) {
                     GalleryMviModel.Effect.BackToTop -> goBackToTop()
+
                     GalleryMviModel.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
                 }

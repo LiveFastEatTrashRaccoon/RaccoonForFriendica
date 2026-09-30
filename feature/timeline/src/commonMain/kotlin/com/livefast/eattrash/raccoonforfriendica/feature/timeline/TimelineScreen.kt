@@ -140,7 +140,9 @@ fun TimelineScreen(
             .onEach { event ->
                 when (event) {
                     TimelineMviModel.Effect.BackToTop -> goBackToTop()
+
                     TimelineMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     is TimelineMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -513,8 +515,11 @@ fun TimelineScreen(
                                 }
 
                                 OptionId.Delete -> confirmDeleteEntryId = entry.id
+
                                 OptionId.Mute -> confirmMuteEntry = entry
+
                                 OptionId.Block -> confirmBlockEntry = entry
+
                                 OptionId.Pin, OptionId.Unpin ->
                                     model.reduce(TimelineMviModel.Intent.TogglePin(entry))
 
@@ -543,6 +548,7 @@ fun TimelineScreen(
                                 }
 
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
                                         TimelineMviModel.Intent.CopyToClipboard(entry.original),

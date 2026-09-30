@@ -174,12 +174,19 @@ class SearchViewModel(
                 }
 
             is SearchMviModel.Intent.Follow -> follow(intent.userId)
+
             is SearchMviModel.Intent.Unfollow -> unfollow(intent.userId)
+
             is SearchMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is SearchMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is SearchMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is SearchMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is SearchMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is SearchMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -187,16 +194,23 @@ class SearchViewModel(
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
+
             is SearchMviModel.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+
             is SearchMviModel.Intent.TogglePin -> togglePin(intent.entry)
+
             is SearchMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is SearchMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is SearchMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is SearchMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is SearchMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -209,12 +223,15 @@ class SearchViewModel(
         paginationManager.reset(
             when (uiState.value.section) {
                 SearchSection.Hashtags -> SearchPaginationSpecification.Hashtags(query)
+
                 SearchSection.Posts ->
                     SearchPaginationSpecification.Entries(
                         query = query,
                         includeNsfw = settingsRepository.current.value?.includeNsfw == true,
                     )
+
                 SearchSection.Users -> SearchPaginationSpecification.Users(query)
+
                 SearchSection.Groups -> SearchPaginationSpecification.Groups(query)
             },
         )
@@ -603,6 +620,7 @@ class SearchViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

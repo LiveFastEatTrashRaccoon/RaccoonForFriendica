@@ -172,7 +172,9 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
             .onEach { event ->
                 when (event) {
                     UserDetailMviModel.Effect.BackToTop -> goBackToTop()
+
                     UserDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     UserDetailMviModel.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
 
@@ -786,6 +788,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                     }
 
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
                                         mainRouter.openComposer(

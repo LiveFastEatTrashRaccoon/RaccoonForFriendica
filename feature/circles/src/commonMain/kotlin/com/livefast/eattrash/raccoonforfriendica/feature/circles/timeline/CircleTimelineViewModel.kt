@@ -143,10 +143,15 @@ class CircleTimelineViewModel(
                 }
 
             is CircleTimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is CircleTimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is CircleTimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is CircleTimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is CircleTimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is CircleTimelineMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -162,6 +167,7 @@ class CircleTimelineViewModel(
                 )
 
             is CircleTimelineMviModel.Intent.TogglePin -> togglePin(intent.entry)
+
             is CircleTimelineMviModel.Intent.SubmitPollVote ->
                 submitPoll(
                     intent.entry,
@@ -169,14 +175,18 @@ class CircleTimelineViewModel(
                 )
 
             is CircleTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is CircleTimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is CircleTimelineMviModel.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
                     emitEffect(CircleTimelineMviModel.Effect.OpenDetail(intent.entry))
                 }
+
             is CircleTimelineMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is CircleTimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
@@ -493,6 +503,7 @@ class CircleTimelineViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

@@ -115,6 +115,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
             .onEach { event ->
                 when (event) {
                     HashtagMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     is HashtagMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -411,8 +412,11 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                                 }
 
                                 OptionId.Delete -> confirmDeleteEntryId = entry.id
+
                                 OptionId.Mute -> confirmMuteEntry = entry
+
                                 OptionId.Block -> confirmBlockEntry = entry
+
                                 OptionId.Pin, OptionId.Unpin ->
                                     model.reduce(HashtagMviModel.Intent.TogglePin(entry))
 
@@ -432,6 +436,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                                     }
 
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                 OptionId.Quote -> {
                                     entry.original.also { entryToShare ->
                                         mainRouter.openComposer(

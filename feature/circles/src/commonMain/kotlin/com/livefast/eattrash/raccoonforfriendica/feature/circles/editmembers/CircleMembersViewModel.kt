@@ -77,6 +77,7 @@ class CircleMembersViewModel(
                 }
 
             is CircleMembersMviModel.Intent.Add -> add(intent.users)
+
             is CircleMembersMviModel.Intent.Remove -> remove(intent.userId)
         }
     }

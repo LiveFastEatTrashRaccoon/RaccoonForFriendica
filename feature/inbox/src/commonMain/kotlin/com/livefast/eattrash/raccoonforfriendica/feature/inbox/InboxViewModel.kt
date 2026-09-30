@@ -117,10 +117,15 @@ class InboxViewModel(
                 }
 
             is InboxMviModel.Intent.Follow -> follow(intent.userId)
+
             is InboxMviModel.Intent.Unfollow -> unfollow(intent.userId)
+
             is InboxMviModel.Intent.MarkAsRead -> markAsRead(intent.notification)
+
             InboxMviModel.Intent.DismissAll -> dismissAll()
+
             is InboxMviModel.Intent.Dismiss -> dismiss(intent.notification)
+
             is InboxMviModel.Intent.RevokeQuote -> revokeQuote(intent.entry)
         }
     }

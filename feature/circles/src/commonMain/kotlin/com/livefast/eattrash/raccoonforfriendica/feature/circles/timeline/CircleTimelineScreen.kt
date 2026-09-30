@@ -112,6 +112,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
             .onEach { event ->
                 when (event) {
                     CircleTimelineMviModel.Effect.BackToTop -> goBackToTop()
+
                     CircleTimelineMviModel.Effect.PollVoteFailure ->
                         pollErrorDialogOpened =
                             true
@@ -399,8 +400,11 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                                 }
 
                                 OptionId.Delete -> confirmDeleteEntryId = entry.id
+
                                 OptionId.Mute -> confirmMuteEntry = entry
+
                                 OptionId.Block -> confirmBlockEntry = entry
+
                                 OptionId.Pin, OptionId.Unpin ->
                                     model.reduce(CircleTimelineMviModel.Intent.TogglePin(entry))
 
@@ -428,6 +432,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                                 }
 
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
                                         CircleTimelineMviModel.Intent.CopyToClipboard(

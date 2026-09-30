@@ -133,6 +133,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
             .onEach { event ->
                 when (event) {
                     ForumListMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+
                     is ForumListMviModel.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -533,8 +534,11 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                 }
 
                                 OptionId.Delete -> confirmDeleteEntryId = entry.id
+
                                 OptionId.Mute -> confirmMuteEntry = entry
+
                                 OptionId.Block -> confirmBlockEntry = entry
+
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
                                         mainRouter.openCreateReport(user = userToReport)
@@ -560,6 +564,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                 }
 
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
+
                                 OptionId.CopyToClipboard ->
                                     model.reduce(ForumListMviModel.Intent.CopyToClipboard(entry.original))
 

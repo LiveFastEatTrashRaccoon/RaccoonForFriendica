@@ -322,6 +322,7 @@ class SettingsViewModel(
                 viewModelScope.launch {
                     changeThemeColor(intent.themeColor)
                 }
+
             is SettingsMviModel.Intent.ChangeDefaultTimelineType ->
                 viewModelScope.launch {
                     changeDefaultTimelineType(intent.type)
@@ -421,7 +422,9 @@ class SettingsViewModel(
                 }
 
             is SettingsMviModel.Intent.ExportSettings -> handleExportSettings()
+
             is SettingsMviModel.Intent.ImportSettings -> handleImportSettings(intent.content)
+
             is SettingsMviModel.Intent.ChangeReplyDepth ->
                 viewModelScope.launch {
                     changeReplyDepth(intent.depth)
@@ -561,6 +564,7 @@ class SettingsViewModel(
     private suspend fun grantPushNotificationPermission() {
         when (val state = uiState.value.pushNotificationPermissionState) {
             PermissionState.DeniedAlways -> permissionController.openAppSettings()
+
             else -> {
                 val newState =
                     try {

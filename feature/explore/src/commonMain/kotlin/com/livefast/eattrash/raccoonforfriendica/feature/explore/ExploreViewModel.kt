@@ -162,12 +162,19 @@ class ExploreViewModel(
                 }
 
             is ExploreMviModel.Intent.Follow -> follow(intent.userId)
+
             is ExploreMviModel.Intent.Unfollow -> unfollow(intent.userId)
+
             is ExploreMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+
             is ExploreMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+
             is ExploreMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+
             is ExploreMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+
             is ExploreMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+
             is ExploreMviModel.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
@@ -183,19 +190,27 @@ class ExploreViewModel(
                 )
 
             is ExploreMviModel.Intent.TogglePin -> togglePin(intent.entry)
+
             is ExploreMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+
             is ExploreMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+
             is ExploreMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+
             is ExploreMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+
             is ExploreMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+
             ExploreMviModel.Intent.ResetOtherInstance -> viewModelScope.launch {
                 updateState { it.copy(otherInstance = null, refreshing = true) }
                 refreshAvailableSections()
                 refresh()
             }
+
             is ExploreMviModel.Intent.SetSelectForeignInstanceName -> viewModelScope.launch {
                 updateState { it.copy(selectForeignInstanceName = intent.name) }
             }
+
             ExploreMviModel.Intent.SubmitSelectForeignInstanceName -> submitSelectForeignInstanceName()
         }
     }
@@ -608,6 +623,7 @@ class ExploreViewModel(
                         val result = getTranslation(entry = entry, targetLang = targetLang)
                         result?.target to result?.provider
                     }
+
                     else -> entry.translation to entry.translationProvider
                 }
             val newEntry =

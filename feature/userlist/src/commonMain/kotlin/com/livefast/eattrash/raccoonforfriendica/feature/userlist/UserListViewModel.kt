@@ -124,8 +124,11 @@ class UserListViewModel(
                 viewModelScope.launch {
                     refresh()
                 }
+
             is UserListMviModel.Intent.Follow -> follow(intent.userId)
+
             is UserListMviModel.Intent.Unfollow -> unfollow(intent.userId)
+
             UserListMviModel.Intent.Export -> handleExport()
         }
     }
@@ -137,7 +140,9 @@ class UserListViewModel(
         paginationManager.reset(
             when (type) {
                 is UserListType.Follower -> UserPaginationSpecification.Follower(userId)
+
                 is UserListType.Following -> UserPaginationSpecification.Following(userId)
+
                 is UserListType.UsersFavorite ->
                     UserPaginationSpecification.EntryUsersFavorite(entryId)
 

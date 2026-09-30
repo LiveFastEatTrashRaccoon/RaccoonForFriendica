@@ -120,6 +120,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
             .onEach { event ->
                 when (event) {
                     AlbumDetailMviModel.Effect.BackToTop -> goBackToTop()
+
                     AlbumDetailMviModel.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
                 }
@@ -278,6 +279,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                         onSelectOption = { optionId ->
                             when (optionId) {
                                 OptionId.Delete -> attachmentIdToDelete = attachment.id
+
                                 OptionId.Edit ->
                                     attachmentWithDescriptionBeingEdited = attachment
 
