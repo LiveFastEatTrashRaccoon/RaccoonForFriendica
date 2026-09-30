@@ -8,18 +8,20 @@ plugins {
 }
 
 // generate a properties file so the JVM can read the version at runtime
-val generateVersionProperties by tasks.registering {
-    val versionName = rootProject.findProperty("versionName")?.toString() ?: "0.0.1"
-    val outputDir = layout.buildDirectory.dir("generated/app-info")
-    val outputFile = outputDir.map { it.file("version.properties") }
-    inputs.property("version", versionName)
-    outputs.dir(outputDir)
-    doLast {
-        val file = outputFile.get().asFile
-        file.parentFile.mkdirs()
-        file.writeText("version=$versionName")
+val generateVersionProperties =
+    tasks.register("generateVersionProperties") {
+        description = "Generate version.properties file"
+        val versionName = rootProject.findProperty("versionName")?.toString() ?: "1.0.0"
+        val outputDir = layout.buildDirectory.dir("generated/app-info")
+        val outputFile = outputDir.map { it.file("version.properties") }
+        inputs.property("version", versionName)
+        outputs.dir(outputDir)
+        doLast {
+            val file = outputFile.get().asFile
+            file.parentFile.mkdirs()
+            file.writeText("version=$versionName")
+        }
     }
-}
 
 kotlin {
     sourceSets {

@@ -28,8 +28,8 @@ compose.desktop {
             javaHome = System.getenv("JAVA_HOME") ?: ""
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Raccoon"
-            packageVersion = (rootProject.properties["versionName"] as? String)?.substringBefore("-")
-            version = (rootProject.properties["buildNumber"] as? Int) ?: 1
+            packageVersion = (rootProject.findProperty("versionName") as? String)?.substringBefore("-") ?: "1.0.0"
+            version = (rootProject.findProperty("buildNumber") as? Int) ?: 1
             description = "A client for Mastodon, Friendica and other federated social platforms."
             copyright = "Copyright (C) 2026 LiveFastEatTrashRacoon"
             vendor = "LiveFastEatTrashRaccoon"
