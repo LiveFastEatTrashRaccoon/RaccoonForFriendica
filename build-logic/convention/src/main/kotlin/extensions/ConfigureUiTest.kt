@@ -3,7 +3,8 @@ package extensions
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import utils.dependency
+import utils.getBundle
+import utils.getLibrary
 import utils.libs
 
 internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
@@ -13,19 +14,15 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
                 when (name) {
                     "androidHostTest" -> {
                         dependencies {
-                            implementation(libs.findLibrary("compose-ui-test").dependency)
-                            implementation(libs.findLibrary("compose-ui-test-manifest").dependency)
-                            implementation(libs.findLibrary("robolectric").dependency)
+                            implementation(libs.getBundle("compose-test"))
+                            implementation(libs.getLibrary("robolectric"))
                         }
                     }
                     "androidDeviceTest" -> {
                         dependencies {
                             implementation(kotlin("test"))
-                            implementation(libs.findLibrary("androidx-test-core").dependency)
-                            implementation(libs.findLibrary("androidx-test-runner").dependency)
-                            implementation(libs.findLibrary("androidx-test-junit").dependency)
-                            implementation(libs.findLibrary("androidx-test-junit-ktx").dependency)
-                            implementation(libs.findLibrary("espresso").dependency)
+                            implementation(libs.getBundle("androidx-device-test"))
+                            implementation(libs.getLibrary("espresso"))
                         }
                     }
                 }

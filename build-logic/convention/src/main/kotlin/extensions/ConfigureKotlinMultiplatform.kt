@@ -5,8 +5,8 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import utils.PACKAGE_PREFIX
+import utils.getVersion
 import utils.libs
-import utils.version
 
 interface CustomKotlinMultiplatformExtension {
     fun iosFramework(
@@ -62,8 +62,8 @@ internal fun Project.configureKotlinMultiplatformAndroidLibrary(target: KotlinMu
         val moduleName = path.split(":").drop(1).joinToString(".")
         namespace = if (moduleName.isNotEmpty()) "$PACKAGE_PREFIX.$moduleName" else PACKAGE_PREFIX
 
-        compileSdk = libs.findVersion("android-compileSdk").version
-        minSdk = libs.findVersion("android-minSdk").version
+        compileSdk = libs.getVersion("android-compileSdk")
+        minSdk = libs.getVersion("android-minSdk")
 
         packaging {
             resources {

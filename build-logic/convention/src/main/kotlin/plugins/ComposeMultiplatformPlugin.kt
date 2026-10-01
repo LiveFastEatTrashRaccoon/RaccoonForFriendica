@@ -5,20 +5,20 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import utils.dependency
+import utils.getLibrary
+import utils.getPluginId
 import utils.libs
-import utils.pluginId
 
 class ComposeMultiplatformPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit =
         with(target) {
             with(pluginManager) {
-                apply(libs.findPlugin("jetbrains-compose").pluginId)
-                apply(libs.findPlugin("compose-compiler").pluginId)
+                apply(libs.getPluginId("jetbrains-compose"))
+                apply(libs.getPluginId("compose-compiler"))
             }
 
             dependencies {
-                add("androidRuntimeClasspath", libs.findLibrary("compose-ui-tooling").dependency)
+                add("androidRuntimeClasspath", libs.getLibrary("compose-ui-tooling"))
             }
 
             extensions.configure(KotlinMultiplatformExtension::class.java) {
