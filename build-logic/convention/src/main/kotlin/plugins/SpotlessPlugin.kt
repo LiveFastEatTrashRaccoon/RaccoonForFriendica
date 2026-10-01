@@ -3,15 +3,15 @@ package plugins
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import utils.dependency
+import utils.getLibrary
+import utils.getPluginId
 import utils.libs
-import utils.pluginId
 
 class SpotlessPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit =
         with(target) {
             with(pluginManager) {
-                apply(libs.findPlugin("spotless").pluginId)
+                apply(libs.getPluginId("spotless"))
             }
             extensions.configure(SpotlessExtension::class.java) {
                 kotlin {
@@ -25,7 +25,7 @@ class SpotlessPlugin : Plugin<Project> {
                         )
                         .customRuleSets(
                             listOf(
-                                libs.findLibrary("ktlint-compose-rules").dependency.let { dep ->
+                                libs.getLibrary("ktlint-compose-rules").get().let { dep ->
                                     "${dep.group}:${dep.name}:${dep.version}"
                                 },
                             ),

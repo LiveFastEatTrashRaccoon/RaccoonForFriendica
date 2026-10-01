@@ -3,7 +3,8 @@ package extensions
 import org.gradle.api.Project
 import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import utils.dependency
+import utils.getLibrary
+import utils.getBundle
 import utils.libs
 
 internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatformExtension) =
@@ -12,16 +13,11 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
         sourceSets.apply {
             commonMain {
                 dependencies {
-                    implementation(libs.findLibrary("compose-runtime").dependency)
-                    implementation(libs.findLibrary("compose-foundation").dependency)
-                    implementation(libs.findLibrary("compose-m3").dependency)
-                    implementation(libs.findLibrary("compose-m3-adaptive").dependency)
-                    implementation(libs.findLibrary("compose-m3-adaptive-nav3").dependency)
-                    implementation(libs.findLibrary("compose-m3-wsc").dependency)
-                    implementation(libs.findLibrary("androidx-nav3-ui").dependency)
-                    implementation(libs.findLibrary("androidx-lifecycle-viewmodel-nav3").dependency)
-                    implementation(libs.findLibrary("compose-navigationevent").dependency)
-                    implementation(libs.findLibrary("compose-ui-tooling-preview").dependency)
+                    implementation(libs.getBundle("compose-ui"))
+                    implementation(libs.getBundle("compose-adaptive"))
+                    implementation(libs.getBundle("compose-navigation"))
+                    implementation(libs.getLibrary("androidx-lifecycle-viewmodel-nav3"))
+                    implementation(libs.getLibrary("compose-ui-tooling-preview"))
                 }
             }
             jvmMain {

@@ -3,7 +3,7 @@ package extensions
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import utils.dependency
+import utils.getLibrary
 import utils.libs
 
 interface CustomDiExtension {
@@ -25,7 +25,7 @@ open class CustomDiExtensionImpl(private val target: Project) : CustomDiExtensio
             extensions.configure<KotlinMultiplatformExtension> {
                 sourceSets.getByName("commonMain").dependencies {
                     if (withViewModels) {
-                        implementation(libs.findLibrary("metrox-viewmodel-compose").dependency)
+                        implementation(libs.getLibrary("metrox-viewmodel-compose"))
                     }
                 }
             }

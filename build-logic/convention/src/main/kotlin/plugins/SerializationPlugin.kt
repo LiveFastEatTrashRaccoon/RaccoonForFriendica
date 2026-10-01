@@ -3,22 +3,22 @@ package plugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import utils.dependency
+import utils.getLibrary
+import utils.getPluginId
 import utils.libs
-import utils.pluginId
 
 class SerializationPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit =
         with(target) {
             with(pluginManager) {
-                apply(libs.findPlugin("ksp").pluginId)
-                apply(libs.findPlugin("kotlinx-serialization").pluginId)
+                apply(libs.getPluginId("ksp"))
+                apply(libs.getPluginId("kotlinx-serialization"))
             }
             extensions.configure(KotlinMultiplatformExtension::class.java) {
                 sourceSets.apply {
                     commonMain {
                         dependencies {
-                            implementation(libs.findLibrary("kotlinx-serialization-json").dependency)
+                            implementation(libs.getLibrary("kotlinx-serialization-json"))
                         }
                     }
                 }
