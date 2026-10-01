@@ -138,3 +138,10 @@ mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 room = { id = "androidx.room", version.ref = "room" }
 sentry = { id = "io.sentry.kotlin.multiplatform.gradle", version.ref = "sentry" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+
+[bundles]
+compose-ui = ["compose-runtime", "compose-foundation", "compose-m3"]
+compose-adaptive = [ "compose-m3-adaptive", "compose-m3-adaptive-nav3", "compose-m3-wsc"]
+compose-navigation = ["androidx-nav3-ui", "compose-navigationevent"]
+compose-test = ["compose-ui-test", "compose-ui-test-manifest"]
+androidx-device-test = ["androidx-test-core", "androidx-test-runner", "androidx-test-junit", "androidx-test-junit-ktx"]
