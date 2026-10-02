@@ -7,13 +7,13 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 /**
- * Delegate interface which exposes some utility functions to all [MviModel] implementors.
+ * Delegate interface which exposes some utility functions to all [Mvi] implementors.
  *
  * @param Intent class of view intents
  * @param State class of UI state
  * @param Effect class of effects
  */
-interface MviModelDelegate<Intent, State, Effect> : MviModel<Intent, State, Effect> {
+interface MviDelegate<Intent, State, Effect> : Mvi<Intent, State, Effect> {
     /**
      * Emit an effect (one-shot event).
      *
@@ -30,11 +30,11 @@ interface MviModelDelegate<Intent, State, Effect> : MviModel<Intent, State, Effe
 }
 
 /**
- * Default implementation of [MviModelDelegate].
+ * Default implementation of [MviDelegate].
  *
  * @param initialState initial UI state
  */
-class DefaultMviModelDelegate<Intent, State, Effect>(initialState: State) : MviModelDelegate<Intent, State, Effect> {
+class DefaultMviDelegate<Intent, State, Effect>(initialState: State) : MviDelegate<Intent, State, Effect> {
     override val uiState = MutableStateFlow(initialState)
     override val effects = MutableSharedFlow<Effect>()
     private val mutex = Mutex()
