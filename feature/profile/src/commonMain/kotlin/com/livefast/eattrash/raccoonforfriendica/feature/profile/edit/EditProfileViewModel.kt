@@ -103,7 +103,7 @@ class EditProfileViewModel(
                 viewModelScope.launch {
                     updateState {
                         it.copy(
-                            bot = intent.value,
+                            bot = intent.bot,
                             hasUnsavedChanges = true,
                         )
                     }
@@ -113,7 +113,7 @@ class EditProfileViewModel(
                 viewModelScope.launch {
                     updateState {
                         it.copy(
-                            discoverable = intent.value,
+                            discoverable = intent.discoverable,
                             hasUnsavedChanges = true,
                         )
                     }
@@ -133,7 +133,7 @@ class EditProfileViewModel(
                 viewModelScope.launch {
                     updateState {
                         it.copy(
-                            locked = intent.value,
+                            locked = intent.locked,
                             hasUnsavedChanges = true,
                         )
                     }
@@ -143,7 +143,7 @@ class EditProfileViewModel(
                 viewModelScope.launch {
                     updateState {
                         it.copy(
-                            hideCollections = intent.value,
+                            hideCollections = intent.hideCollections,
                             hasUnsavedChanges = true,
                         )
                     }
@@ -153,7 +153,7 @@ class EditProfileViewModel(
                 viewModelScope.launch {
                     updateState {
                         it.copy(
-                            noIndex = intent.value,
+                            noIndex = intent.noIndex,
                             hasUnsavedChanges = true,
                         )
                     }
@@ -168,8 +168,8 @@ class EditProfileViewModel(
                     value = intent.value,
                 )
 
-            is EditProfileMvi.Intent.AvatarSelected -> loadImageAvatar(intent.value)
-            is EditProfileMvi.Intent.HeaderSelected -> loadImageHeader(intent.value)
+            is EditProfileMvi.Intent.AvatarSelected -> loadImageAvatar(intent.bytes)
+            is EditProfileMvi.Intent.HeaderSelected -> loadImageHeader(intent.bytes)
             is EditProfileMvi.Intent.InsertCustomEmoji ->
                 insertCustomEmoji(intent.fieldType, intent.emoji)
 
@@ -183,7 +183,7 @@ class EditProfileViewModel(
             is EditProfileMvi.Intent.ChangeQuotePolicy -> viewModelScope.launch {
                 updateState {
                     it.copy(
-                        quotePolicy = intent.value,
+                        quotePolicy = intent.policy,
                         hasUnsavedChanges = true,
                     )
                 }

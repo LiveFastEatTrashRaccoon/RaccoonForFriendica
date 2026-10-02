@@ -41,7 +41,7 @@ class MainViewModel(private val inboxManager: InboxManager) :
         when (intent) {
             is MainMvi.Intent.SetBottomBarOffsetHeightPx -> {
                 viewModelScope.launch {
-                    updateState { it.copy(bottomBarOffsetHeightPx = intent.value) }
+                    updateState { it.copy(bottomBarOffsetHeightPx = intent.px) }
                 }
             }
         }

@@ -36,9 +36,9 @@ interface SettingsMvi : Mvi<SettingsMvi.Intent, SettingsMvi.State, SettingsMvi.E
 
         data class ChangeDefaultTimelineType(val type: TimelineType) : Intent
 
-        data class ChangeIncludeNsfw(val value: Boolean) : Intent
+        data class ChangeIncludeNsfw(val include: Boolean) : Intent
 
-        data class ChangeBlurNsfw(val value: Boolean) : Intent
+        data class ChangeBlurNsfw(val blur: Boolean) : Intent
 
         data class ChangeUrlOpeningMode(val mode: UrlOpeningMode) : Intent
 
@@ -46,13 +46,13 @@ interface SettingsMvi : Mvi<SettingsMvi.Intent, SettingsMvi.State, SettingsMvi.E
 
         data class ChangeDefaultReplyVisibility(val visibility: Visibility) : Intent
 
-        data class ChangeExcludeRepliesFromTimeline(val value: Boolean) : Intent
+        data class ChangeExcludeRepliesFromTimeline(val exclude: Boolean) : Intent
 
-        data class ChangeOpenGroupsInForumModeByDefault(val value: Boolean) : Intent
+        data class ChangeOpenGroupsInForumModeByDefault(val openByDefault: Boolean) : Intent
 
         data class ChangeMarkupMode(val mode: MarkupMode) : Intent
 
-        data class ChangeMaxPostBodyLines(val value: Int) : Intent
+        data class ChangeMaxPostBodyLines(val lines: Int) : Intent
 
         data class ChangeBackgroundNotificationCheckInterval(val duration: Duration?) : Intent
 
@@ -60,13 +60,13 @@ interface SettingsMvi : Mvi<SettingsMvi.Intent, SettingsMvi.State, SettingsMvi.E
 
         data class ChangeNotificationMode(val mode: NotificationMode) : Intent
 
-        data class SelectPushDistributor(val value: String) : Intent
+        data class SelectPushDistributor(val name: String) : Intent
 
         data object GrantPushNotificationsPermission : Intent
 
-        data class ChangeCrashReportEnabled(val value: Boolean) : Intent
+        data class ChangeCrashReportEnabled(val enabled: Boolean) : Intent
 
-        data class ChangeHideNavigationBarWhileScrolling(val value: Boolean) : Intent
+        data class ChangeHideNavigationBarWhileScrolling(val hide: Boolean) : Intent
 
         data class ChangeAppIcon(val variant: AppIconVariant) : Intent
 

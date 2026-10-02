@@ -192,7 +192,7 @@ class UserDetailViewModel(
 
             is UserDetailMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is UserDetailMvi.Intent.SetRateLimit -> setRateLimit(intent.value)
+            is UserDetailMvi.Intent.SetRateLimit -> setRateLimit(intent.rateLimit)
 
             is UserDetailMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 

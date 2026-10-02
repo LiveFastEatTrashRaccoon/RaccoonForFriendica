@@ -12,15 +12,15 @@ interface EditProfileMvi : Mvi<EditProfileMvi.Intent, EditProfileMvi.State, Edit
 
         data class ChangeBio(val value: TextFieldValue) : Intent
 
-        data class ChangeBot(val value: Boolean) : Intent
+        data class ChangeBot(val bot: Boolean) : Intent
 
-        data class ChangeLocked(val value: Boolean) : Intent
+        data class ChangeLocked(val locked: Boolean) : Intent
 
-        data class ChangeDiscoverable(val value: Boolean) : Intent
+        data class ChangeDiscoverable(val discoverable: Boolean) : Intent
 
-        data class ChangeHideCollections(val value: Boolean) : Intent
+        data class ChangeHideCollections(val hideCollections: Boolean) : Intent
 
-        data class ChangeNoIndex(val value: Boolean) : Intent
+        data class ChangeNoIndex(val noIndex: Boolean) : Intent
 
         data object AddField : Intent
 
@@ -28,37 +28,37 @@ interface EditProfileMvi : Mvi<EditProfileMvi.Intent, EditProfileMvi.State, Edit
 
         data class RemoveField(val index: Int) : Intent
 
-        data class AvatarSelected(val value: ByteArray) : Intent {
+        data class AvatarSelected(val bytes: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other == null || this::class != other::class) return false
 
                 other as AvatarSelected
 
-                return value.contentEquals(other.value)
+                return bytes.contentEquals(other.bytes)
             }
 
-            override fun hashCode(): Int = value.contentHashCode()
+            override fun hashCode(): Int = bytes.contentHashCode()
         }
 
-        data class HeaderSelected(val value: ByteArray) : Intent {
+        data class HeaderSelected(val bytes: ByteArray) : Intent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (other == null || this::class != other::class) return false
 
                 other as HeaderSelected
 
-                return value.contentEquals(other.value)
+                return bytes.contentEquals(other.bytes)
             }
 
-            override fun hashCode(): Int = value.contentHashCode()
+            override fun hashCode(): Int = bytes.contentHashCode()
         }
 
         data class InsertCustomEmoji(val fieldType: EditProfilerFieldType, val emoji: EmojiModel) : Intent
 
         data object DeleteAccount : Intent
 
-        data class ChangeQuotePolicy(val value: QuotePolicy)  : Intent
+        data class ChangeQuotePolicy(val policy: QuotePolicy)  : Intent
 
         data object Submit : Intent
     }

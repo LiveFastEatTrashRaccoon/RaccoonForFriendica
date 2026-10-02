@@ -86,14 +86,14 @@ fun ChangeInstanceDialog(
                 },
                 values =
                 buildList {
-                    for (instance in DefaultFriendicaInstances.filter { it.value !in exclusions }) {
+                    for (instance in DefaultFriendicaInstances.filter { it.node !in exclusions }) {
                         this += SpinnerValue(
                             title = buildString {
-                                append(instance.value)
+                                append(instance.node)
                                 append("  ")
                                 append(instance.lang)
                             },
-                            value = instance.value,
+                            value = instance.node,
                         )
                     }
                     this += SpinnerValue(title = LocalStrings.current.itemOther, value = "")

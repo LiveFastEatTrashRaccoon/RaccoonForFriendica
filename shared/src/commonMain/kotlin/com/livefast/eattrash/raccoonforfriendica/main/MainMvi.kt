@@ -5,7 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 
 interface MainMvi : Mvi<MainMvi.Intent, MainMvi.UiState, MainMvi.Effect> {
     sealed interface Intent {
-        data class SetBottomBarOffsetHeightPx(val value: Float) : Intent
+        data class SetBottomBarOffsetHeightPx(val px: Float) : Intent
     }
 
     data class UiState(

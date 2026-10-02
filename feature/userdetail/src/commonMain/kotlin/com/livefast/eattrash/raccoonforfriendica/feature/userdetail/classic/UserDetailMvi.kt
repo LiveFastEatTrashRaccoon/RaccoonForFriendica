@@ -50,7 +50,7 @@ interface UserDetailMvi : Mvi<UserDetailMvi.Intent, UserDetailMvi.State, UserDet
 
         data class CopyToClipboard(val entry: TimelineEntryModel) : Intent
 
-        data class SetRateLimit(val value: Double) : Intent
+        data class SetRateLimit(val rateLimit: Double) : Intent
 
         data class ToggleTranslation(val entry: TimelineEntryModel) : Intent
 

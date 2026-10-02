@@ -52,7 +52,7 @@ class LoginViewModel(
                 }.launchIn(this)
             val currentNode = apiConfigurationRepository.node.value
             val shouldUseDropDown = type == LoginType.Friendica
-            val isCurrentNodeInDropDown = DefaultFriendicaInstances.any { it.value == currentNode }
+            val isCurrentNodeInDropDown = DefaultFriendicaInstances.any { it.node == currentNode }
             updateState {
                 it.copy(
                     useDropDown = shouldUseDropDown,

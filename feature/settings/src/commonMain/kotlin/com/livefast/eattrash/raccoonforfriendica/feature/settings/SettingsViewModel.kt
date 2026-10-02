@@ -330,12 +330,12 @@ class SettingsViewModel(
 
             is SettingsMvi.Intent.ChangeIncludeNsfw ->
                 viewModelScope.launch {
-                    changeIncludeNsfw(intent.value)
+                    changeIncludeNsfw(intent.include)
                 }
 
             is SettingsMvi.Intent.ChangeBlurNsfw ->
                 viewModelScope.launch {
-                    changeBlurNsfw(intent.value)
+                    changeBlurNsfw(intent.blur)
                 }
 
             is SettingsMvi.Intent.ChangeUrlOpeningMode ->
@@ -355,12 +355,12 @@ class SettingsViewModel(
 
             is SettingsMvi.Intent.ChangeExcludeRepliesFromTimeline ->
                 viewModelScope.launch {
-                    changeExcludeRepliesFromTimeline(intent.value)
+                    changeExcludeRepliesFromTimeline(intent.exclude)
                 }
 
             is SettingsMvi.Intent.ChangeOpenGroupsInForumModeByDefault ->
                 viewModelScope.launch {
-                    changeOpenGroupsInForumModeByDefault(intent.value)
+                    changeOpenGroupsInForumModeByDefault(intent.openByDefault)
                 }
 
             is SettingsMvi.Intent.ChangeMarkupMode ->
@@ -370,7 +370,7 @@ class SettingsViewModel(
 
             is SettingsMvi.Intent.ChangeMaxPostBodyLines ->
                 viewModelScope.launch {
-                    changeMaxPostBodyLines(intent.value)
+                    changeMaxPostBodyLines(intent.lines)
                 }
 
             is SettingsMvi.Intent.ChangeBackgroundNotificationCheckInterval ->
@@ -390,7 +390,7 @@ class SettingsViewModel(
 
             is SettingsMvi.Intent.SelectPushDistributor ->
                 viewModelScope.launch {
-                    selectPushDistributor(intent.value)
+                    selectPushDistributor(intent.name)
                 }
 
             SettingsMvi.Intent.GrantPushNotificationsPermission ->
@@ -399,11 +399,11 @@ class SettingsViewModel(
                 }
 
             is SettingsMvi.Intent.ChangeCrashReportEnabled ->
-                changeCrashReportEnabled(intent.value)
+                changeCrashReportEnabled(intent.enabled)
 
             is SettingsMvi.Intent.ChangeHideNavigationBarWhileScrolling ->
                 viewModelScope.launch {
-                    changeHideNavigationBarWhileScrolling(intent.value)
+                    changeHideNavigationBarWhileScrolling(intent.hide)
                 }
 
             is SettingsMvi.Intent.ChangeAppIcon ->

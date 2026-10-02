@@ -75,7 +75,7 @@ class CreateReportViewModel(
 
             is CreateReportMvi.Intent.ChangeForward ->
                 viewModelScope.launch {
-                    updateState { it.copy(forward = intent.value) }
+                    updateState { it.copy(forward = intent.forward) }
                 }
 
             is CreateReportMvi.Intent.ChangeViolatedRules ->

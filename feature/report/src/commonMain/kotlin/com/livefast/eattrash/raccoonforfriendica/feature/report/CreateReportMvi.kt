@@ -14,7 +14,7 @@ interface CreateReportMvi : Mvi<CreateReportMvi.Intent, CreateReportMvi.State, C
 
         data class ChangeViolatedRules(val ruleIds: List<String>) : Intent
 
-        data class ChangeForward(val value: Boolean) : Intent
+        data class ChangeForward(val forward: Boolean) : Intent
 
         data object Submit : Intent
     }
