@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
@@ -37,9 +37,9 @@ class NodeInfoViewModel(
     private val emojiHelper: EmojiHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<NodeInfoMviModel.Intent, NodeInfoMviModel.State, NodeInfoMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = NodeInfoMviModel.State()),
-    NodeInfoMviModel {
+    MviDelegate<NodeInfoMvi.Intent, NodeInfoMvi.State, NodeInfoMvi.Effect>
+    by DefaultMviDelegate(initialState = NodeInfoMvi.State()),
+    NodeInfoMvi {
 
     init {
         viewModelScope.launch {
@@ -84,14 +84,14 @@ class NodeInfoViewModel(
         updateState { it.copy(info = nodeInfo) }
     }
 
-    override fun reduce(intent: NodeInfoMviModel.Intent) {
+    override fun reduce(intent: NodeInfoMvi.Intent) {
         when (intent) {
-            is NodeInfoMviModel.Intent.SetAnonymousChangeNode ->
+            is NodeInfoMvi.Intent.SetAnonymousChangeNode ->
                 viewModelScope.launch {
                     updateState { it.copy(anonymousChangeNodeName = intent.nodeName) }
                 }
 
-            NodeInfoMviModel.Intent.SubmitAnonymousChangeNode -> submitChangeNode()
+            NodeInfoMvi.Intent.SubmitAnonymousChangeNode -> submitChangeNode()
         }
     }
 
@@ -132,7 +132,7 @@ class NodeInfoViewModel(
             apiConfigurationRepository.changeNode(newNode)
             supportedFeatureRepository.refresh()
             loadInfo()
-            emitEffect(NodeInfoMviModel.Effect.AnonymousChangeNodeSuccess)
+            emitEffect(NodeInfoMvi.Effect.AnonymousChangeNodeSuccess)
         }
     }
 }

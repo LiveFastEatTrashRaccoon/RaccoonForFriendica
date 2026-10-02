@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings.translationco
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderTypes
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
@@ -13,12 +13,12 @@ import kotlinx.coroutines.launch
 
 class TranslationConfigViewModel(private val translationProviderConfigStore: TranslationProviderConfigStore) :
     ViewModel(),
-    MviModelDelegate<
-        TranslationConfigMviModel.Intent,
-        TranslationConfigMviModel.State,
-        TranslationConfigMviModel.Effect,
-        > by DefaultMviModelDelegate(initialState = TranslationConfigMviModel.State()),
-    TranslationConfigMviModel {
+    MviDelegate<
+        TranslationConfigMvi.Intent,
+        TranslationConfigMvi.State,
+        TranslationConfigMvi.Effect,
+        > by DefaultMviDelegate(initialState = TranslationConfigMvi.State()),
+    TranslationConfigMvi {
 
     init {
         viewModelScope.launch {
@@ -28,13 +28,13 @@ class TranslationConfigViewModel(private val translationProviderConfigStore: Tra
         }
     }
 
-    override fun reduce(intent: TranslationConfigMviModel.Intent) {
+    override fun reduce(intent: TranslationConfigMvi.Intent) {
         when (intent) {
-            is TranslationConfigMviModel.Intent.SwitchDefault -> viewModelScope.launch {
+            is TranslationConfigMvi.Intent.SwitchDefault -> viewModelScope.launch {
                 translationProviderConfigStore.setDefaultId(intent.config.id)
             }
 
-            is TranslationConfigMviModel.Intent.AddConfig -> viewModelScope.launch {
+            is TranslationConfigMvi.Intent.AddConfig -> viewModelScope.launch {
                 val config = TranslationProviderConfig(
                     name = TranslationProviderTypes.LibreTranslate.name,
                     url = intent.url,
@@ -43,7 +43,7 @@ class TranslationConfigViewModel(private val translationProviderConfigStore: Tra
                 translationProviderConfigStore.create(config)
             }
 
-            is TranslationConfigMviModel.Intent.DeleteConfig -> viewModelScope.launch {
+            is TranslationConfigMvi.Intent.DeleteConfig -> viewModelScope.launch {
                 translationProviderConfigStore.delete(intent.config.id)
             }
         }

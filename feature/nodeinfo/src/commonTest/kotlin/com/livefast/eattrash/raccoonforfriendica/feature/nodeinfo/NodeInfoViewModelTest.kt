@@ -69,7 +69,7 @@ class NodeInfoViewModelTest {
     private val supportedFeatureRepository = mock<SupportedFeatureRepository>()
     private val credentialsRepository = mock<CredentialsRepository>()
 
-    private lateinit var sut: NodeInfoMviModel
+    private lateinit var sut: NodeInfoMvi
 
     @BeforeTest
     @OptIn(ExperimentalCoroutinesApi::class)

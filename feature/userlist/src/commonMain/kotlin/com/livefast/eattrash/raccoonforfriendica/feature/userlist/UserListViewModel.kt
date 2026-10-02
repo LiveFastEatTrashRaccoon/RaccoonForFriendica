@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.userlist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
@@ -48,9 +48,9 @@ class UserListViewModel(
     private val exportUserList: ExportUserListUseCase,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<UserListMviModel.Intent, UserListMviModel.State, UserListMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = UserListMviModel.State()),
-    UserListMviModel {
+    MviDelegate<UserListMvi.Intent, UserListMvi.State, UserListMvi.Effect>
+    by DefaultMviDelegate(initialState = UserListMvi.State()),
+    UserListMvi {
 
     private val type = args.type
     private val userId = args.userId
@@ -113,23 +113,23 @@ class UserListViewModel(
         }
     }
 
-    override fun reduce(intent: UserListMviModel.Intent) {
+    override fun reduce(intent: UserListMvi.Intent) {
         when (intent) {
-            UserListMviModel.Intent.LoadNextPage ->
+            UserListMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            UserListMviModel.Intent.Refresh ->
+            UserListMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is UserListMviModel.Intent.Follow -> follow(intent.userId)
+            is UserListMvi.Intent.Follow -> follow(intent.userId)
 
-            is UserListMviModel.Intent.Unfollow -> unfollow(intent.userId)
+            is UserListMvi.Intent.Unfollow -> unfollow(intent.userId)
 
-            UserListMviModel.Intent.Export -> handleExport()
+            UserListMvi.Intent.Export -> handleExport()
         }
     }
 
@@ -182,7 +182,7 @@ class UserListViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(UserListMviModel.Effect.BackToTop)
+                emitEffect(UserListMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -269,7 +269,7 @@ class UserListViewModel(
             updateState { it.copy(operationInProgress = true) }
             val content = exportUserList(specification)
             updateState { it.copy(operationInProgress = false) }
-            emitEffect(UserListMviModel.Effect.SaveList(content))
+            emitEffect(UserListMvi.Effect.SaveList(content))
         }
     }
 

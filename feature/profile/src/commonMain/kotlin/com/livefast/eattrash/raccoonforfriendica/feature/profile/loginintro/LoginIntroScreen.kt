@@ -65,7 +65,7 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginIntroScreen(modifier: Modifier = Modifier) {
-    val model: LoginIntroMviModel = metroViewModel<LoginIntroViewModel>()
+    val model: LoginIntroMvi = metroViewModel<LoginIntroViewModel>()
     val uriHandler = LocalUriHandler.current
     val fullColor = MaterialTheme.colorScheme.onBackground
     var moreInfoBottomSheetOpened by remember { mutableStateOf(false) }
@@ -117,7 +117,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                model.reduce(LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Friendica))
+                model.reduce(LoginIntroMvi.Intent.StartOauth2Flow(LoginType.Friendica))
             },
         ) {
             Text(text = LocalStrings.current.buttonLogin)
@@ -145,7 +145,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
             onSelectOption = { optionId ->
                 when (optionId) {
                     CustomOptions.LegacyLogin ->
-                        model.reduce(LoginIntroMviModel.Intent.StartLegacyFlow)
+                        model.reduce(LoginIntroMvi.Intent.StartLegacyFlow)
 
                     else -> Unit
                 }
@@ -166,7 +166,7 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 model.reduce(
-                    LoginIntroMviModel.Intent.StartOauth2Flow(LoginType.Mastodon),
+                    LoginIntroMvi.Intent.StartOauth2Flow(LoginType.Mastodon),
                 )
             },
         ) {

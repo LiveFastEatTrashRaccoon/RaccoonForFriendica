@@ -74,7 +74,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
-    val model: AlbumDetailMviModel = assistedMetroViewModel<AlbumDetailViewModel>(
+    val model: AlbumDetailMvi = assistedMetroViewModel<AlbumDetailViewModel>(
         extras = AlbumDetailViewModel.getExtras(AlbumDetailViewModelArgs(albumName = name)),
     )
     val uiState by model.uiState.collectAsState()
@@ -95,7 +95,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
         galleryHelper.getImageFromGallery { bytes ->
             openImagePicker = false
             if (bytes.isNotEmpty()) {
-                model.reduce(AlbumDetailMviModel.Intent.Create(bytes))
+                model.reduce(AlbumDetailMvi.Intent.Create(bytes))
             }
         }
     }
@@ -119,9 +119,9 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    AlbumDetailMviModel.Effect.BackToTop -> goBackToTop()
+                    AlbumDetailMvi.Effect.BackToTop -> goBackToTop()
 
-                    AlbumDetailMviModel.Effect.Failure ->
+                    AlbumDetailMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
                 }
             }.launchIn(this)
@@ -222,7 +222,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(AlbumDetailMviModel.Intent.Refresh)
+                model.reduce(AlbumDetailMvi.Intent.Refresh)
             },
         ) {
             LazyVerticalStaggeredGrid(
@@ -294,7 +294,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(AlbumDetailMviModel.Intent.LoadNextPage)
+                        model.reduce(AlbumDetailMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -325,7 +325,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                 val attachment = attachmentWithDescriptionBeingEdited
                 if (attachment != null && newValue != null) {
                     model.reduce(
-                        AlbumDetailMviModel.Intent.EditDescription(
+                        AlbumDetailMvi.Intent.EditDescription(
                             attachment = attachment,
                             description = newValue,
                         ),
@@ -347,7 +347,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                 if (idx != null && attachment != null) {
                     val albumName = items[idx].label
                     model.reduce(
-                        AlbumDetailMviModel.Intent.Move(
+                        AlbumDetailMvi.Intent.Move(
                             attachment = attachment,
                             album = albumName,
                         ),
@@ -364,7 +364,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                 val idToDelete = attachmentIdToDelete
                 attachmentIdToDelete = null
                 if (confirm && idToDelete != null) {
-                    model.reduce(AlbumDetailMviModel.Intent.Delete(idToDelete))
+                    model.reduce(AlbumDetailMvi.Intent.Delete(idToDelete))
                 }
             },
         )

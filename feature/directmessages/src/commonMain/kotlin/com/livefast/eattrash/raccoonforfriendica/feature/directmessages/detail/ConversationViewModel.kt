@@ -4,8 +4,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
@@ -46,9 +46,9 @@ class ConversationViewModel(
     private val userCache: LocalItemCache<UserModel>,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<ConversationMviModel.Intent, ConversationMviModel.State, ConversationMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ConversationMviModel.State()),
-    ConversationMviModel {
+    MviDelegate<ConversationMvi.Intent, ConversationMvi.State, ConversationMvi.Effect>
+    by DefaultMviDelegate(initialState = ConversationMvi.State()),
+    ConversationMvi {
 
     private val otherUserId = args.otherUserId
     private var parentUriToUse = args.parentUri
@@ -91,24 +91,24 @@ class ConversationViewModel(
         job = null
     }
 
-    override fun reduce(intent: ConversationMviModel.Intent) {
+    override fun reduce(intent: ConversationMvi.Intent) {
         when (intent) {
-            ConversationMviModel.Intent.Refresh ->
+            ConversationMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            ConversationMviModel.Intent.LoadNextPage ->
+            ConversationMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is ConversationMviModel.Intent.SetNewMessageValue ->
+            is ConversationMvi.Intent.SetNewMessageValue ->
                 viewModelScope.launch {
                     updateState { it.copy(newMessageValue = intent.value) }
                 }
 
-            ConversationMviModel.Intent.Submit -> submit()
+            ConversationMvi.Intent.Submit -> submit()
         }
     }
 
@@ -142,7 +142,7 @@ class ConversationViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(ConversationMviModel.Effect.BackToTop)
+                emitEffect(ConversationMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -170,7 +170,7 @@ class ConversationViewModel(
         if (newMessages.isNotEmpty()) {
             updateParentUriIfNeeded(newMessages.lastOrNull()?.parentUri)
             updateState { it.copy(items = newMessages + originalItems) }
-            emitEffect(ConversationMviModel.Effect.BackToTop)
+            emitEffect(ConversationMvi.Effect.BackToTop)
         }
     }
 
@@ -214,7 +214,7 @@ class ConversationViewModel(
                 // it is necessary that you follow the other user, otherwise messages are sent
                 // to some other random user https://github.com/friendica/friendica/issues/11274
 
-                emitEffect(ConversationMviModel.Effect.FollowUserRequired)
+                emitEffect(ConversationMvi.Effect.FollowUserRequired)
                 return@launch
             }
 
@@ -234,7 +234,7 @@ class ConversationViewModel(
                     items = listOf(newItem) + originalItems,
                 )
             }
-            emitEffect(ConversationMviModel.Effect.BackToTop)
+            emitEffect(ConversationMvi.Effect.BackToTop)
             val remoteMessage =
                 messageRepository.create(
                     recipientId = otherUserId,
@@ -243,7 +243,7 @@ class ConversationViewModel(
                 )
             updateState { it.copy(sendInProgress = false) }
             if (remoteMessage == null) {
-                emitEffect(ConversationMviModel.Effect.Failure)
+                emitEffect(ConversationMvi.Effect.Failure)
                 updateState {
                     it.copy(items = originalItems)
                 }

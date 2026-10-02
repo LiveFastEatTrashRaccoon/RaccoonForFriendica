@@ -102,7 +102,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.Notificati
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.toReadableName
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.toReadableName
-import com.livefast.eattrash.raccoonforfriendica.feature.settings.translationconfig.TranslationConfigMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.translationconfig.TranslationConfigMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.translationconfig.TranslationConfigViewModel
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -120,7 +120,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         remember(factory) {
             factory.create()
         }
-    val model: SettingsMviModel = assistedMetroViewModel<SettingsViewModel>(
+    val model: SettingsMvi = assistedMetroViewModel<SettingsViewModel>(
         extras = SettingsViewModel.getExtras(SettingsViewModelArgs(controller)),
     )
     val uiState by model.uiState.collectAsState()
@@ -166,7 +166,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         model.effects
             .onEach { evt ->
                 when (evt) {
-                    is SettingsMviModel.Effect.SaveSettings -> {
+                    is SettingsMvi.Effect.SaveSettings -> {
                         settingsContent = evt.content
                     }
                 }
@@ -276,7 +276,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         value = uiState.excludeRepliesFromTimeline,
                         onValueChange = {
                             model.reduce(
-                                SettingsMviModel.Intent.ChangeExcludeRepliesFromTimeline(it),
+                                SettingsMvi.Intent.ChangeExcludeRepliesFromTimeline(it),
                             )
                         },
                     )
@@ -285,7 +285,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         value = uiState.openGroupsInForumModeByDefault,
                         onValueChange = {
                             model.reduce(
-                                SettingsMviModel.Intent.ChangeOpenGroupsInForumModeByDefault(it),
+                                SettingsMvi.Intent.ChangeOpenGroupsInForumModeByDefault(it),
                             )
                         },
                     )
@@ -355,7 +355,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                                         title = LocalStrings.current.settingsPushNotificationPermissionNotGranted,
                                         value = LocalStrings.current.actionGrantPermission,
                                         onTap = {
-                                            model.reduce(SettingsMviModel.Intent.GrantPushNotificationsPermission)
+                                            model.reduce(SettingsMvi.Intent.GrantPushNotificationsPermission)
                                         },
                                     )
 
@@ -454,7 +454,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             subtitle = LocalStrings.current.settingsItemDynamicColorsSubtitle,
                             value = uiState.dynamicColors,
                             onValueChange = {
-                                model.reduce(SettingsMviModel.Intent.ChangeDynamicColors(it))
+                                model.reduce(SettingsMvi.Intent.ChangeDynamicColors(it))
                             },
                         )
                     }
@@ -463,7 +463,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         value = uiState.hideNavigationBarWhileScrolling,
                         onValueChange = {
                             model.reduce(
-                                SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling(it),
+                                SettingsMvi.Intent.ChangeHideNavigationBarWhileScrolling(it),
                             )
                         },
                     )
@@ -510,14 +510,14 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         title = LocalStrings.current.settingsItemIncludeNsfw,
                         value = uiState.includeNsfw,
                         onValueChange = {
-                            model.reduce(SettingsMviModel.Intent.ChangeIncludeNsfw(it))
+                            model.reduce(SettingsMvi.Intent.ChangeIncludeNsfw(it))
                         },
                     )
                     SettingsSwitchRow(
                         title = LocalStrings.current.settingsItemBlurNsfw,
                         value = uiState.blurNsfw,
                         onValueChange = {
-                            model.reduce(SettingsMviModel.Intent.ChangeBlurNsfw(it))
+                            model.reduce(SettingsMvi.Intent.ChangeBlurNsfw(it))
                         },
                     )
 
@@ -542,7 +542,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         },
                         value = uiState.crashReportEnabled,
                         onValueChange = {
-                            model.reduce(SettingsMviModel.Intent.ChangeCrashReportEnabled(it))
+                            model.reduce(SettingsMvi.Intent.ChangeCrashReportEnabled(it))
                         },
                     )
 
@@ -555,7 +555,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         SettingsRow(
                             title = LocalStrings.current.settingsItemExport,
                             onTap = {
-                                model.reduce(SettingsMviModel.Intent.ExportSettings)
+                                model.reduce(SettingsMvi.Intent.ExportSettings)
                             },
                         )
                         SettingsRow(
@@ -599,7 +599,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 languageBottomSheetOpened = false
                 if (index != null) {
                     val value = Locales.AVAILABLE_LANGUAGES[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeLanguage(value))
+                    model.reduce(SettingsMvi.Intent.ChangeLanguage(value))
                 }
             },
         )
@@ -627,7 +627,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 themeBottomSheetOpened = false
                 if (index != null) {
                     val value = themes[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeTheme(value))
+                    model.reduce(SettingsMvi.Intent.ChangeTheme(value))
                 }
             },
         )
@@ -654,7 +654,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 fontFamilyBottomSheetOpened = false
                 if (index != null) {
                     val value = fonts[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeFontFamily(value))
+                    model.reduce(SettingsMvi.Intent.ChangeFontFamily(value))
                 }
             },
         )
@@ -685,7 +685,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 fontScaleBottomSheetOpened = false
                 if (index != null) {
                     val scale = fontScales[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeFontScale(scale))
+                    model.reduce(SettingsMvi.Intent.ChangeFontScale(scale))
                 }
             },
         )
@@ -756,7 +756,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     if (index in uiState.availableThemeColors.indices) {
                         // theme color selected
                         val value = uiState.availableThemeColors[index]
-                        model.reduce(SettingsMviModel.Intent.ChangeThemeColor(value.toColor()))
+                        model.reduce(SettingsMvi.Intent.ChangeThemeColor(value.toColor()))
                     } else {
                         // custom color selected
                         customColorPickerDialogOpened = true
@@ -772,7 +772,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             onClose = { newColor ->
                 customColorPickerDialogOpened = false
                 if (newColor != null) {
-                    model.reduce(SettingsMviModel.Intent.ChangeThemeColor(newColor))
+                    model.reduce(SettingsMvi.Intent.ChangeThemeColor(newColor))
                 }
             },
         )
@@ -799,7 +799,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 defaultTimelineTypeBottomSheetOpened = false
                 if (index != null) {
                     val type = uiState.availableTimelineTypes[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeDefaultTimelineType(type))
+                    model.reduce(SettingsMvi.Intent.ChangeDefaultTimelineType(type))
                 }
             },
         )
@@ -814,7 +814,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 urlOpeningModeBottomSheetOpened = false
                 if (index != null) {
                     val type = types[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeUrlOpeningMode(type))
+                    model.reduce(SettingsMvi.Intent.ChangeUrlOpeningMode(type))
                 }
             },
         )
@@ -842,7 +842,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 defaultPostVisibilityBottomSheetOpened = false
                 if (index != null) {
                     val type = types[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeDefaultPostVisibility(type))
+                    model.reduce(SettingsMvi.Intent.ChangeDefaultPostVisibility(type))
                 }
             },
         )
@@ -870,7 +870,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 defaultReplyVisibilityBottomSheetOpened = false
                 if (index != null) {
                     val type = types[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeDefaultReplyVisibility(type))
+                    model.reduce(SettingsMvi.Intent.ChangeDefaultReplyVisibility(type))
                 }
             },
         )
@@ -885,7 +885,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 markupModeBottomSheetOpened = false
                 if (index != null) {
                     val mode = modes[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeMarkupMode(mode))
+                    model.reduce(SettingsMvi.Intent.ChangeMarkupMode(mode))
                 }
             },
         )
@@ -901,7 +901,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 maxPostBodyLinesBottomSheetOpened = false
                 if (index != null) {
                     val value = MAX_POST_BODY_LINES_OPTIONS[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeMaxPostBodyLines(value))
+                    model.reduce(SettingsMvi.Intent.ChangeMaxPostBodyLines(value))
                 }
             },
         )
@@ -928,7 +928,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 if (index != null) {
                     val value = BACKGROUND_NOTIFICATION_CHECK_INTERVALS[index]
                     model.reduce(
-                        SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval(value),
+                        SettingsMvi.Intent.ChangeBackgroundNotificationCheckInterval(value),
                     )
                 }
             },
@@ -967,7 +967,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 notificationModeBottomSheetOpened = false
                 if (index != null) {
                     val mode = uiState.availableNotificationModes[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeNotificationMode(mode))
+                    model.reduce(SettingsMvi.Intent.ChangeNotificationMode(mode))
                 }
             },
         )
@@ -984,7 +984,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 pushNotificationDistributorBottomSheetOpened = false
                 if (index != null) {
                     val distributor = uiState.availablePushDistributors[index]
-                    model.reduce(SettingsMviModel.Intent.SelectPushDistributor(distributor))
+                    model.reduce(SettingsMvi.Intent.SelectPushDistributor(distributor))
                 }
             },
         )
@@ -1009,7 +1009,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 imageLoadingModeBottomSheetOpened = false
                 if (index != null) {
                     model.reduce(
-                        SettingsMviModel.Intent.ChangeAutoloadImages(values[index]),
+                        SettingsMvi.Intent.ChangeAutoloadImages(values[index]),
                     )
                 }
             },
@@ -1046,7 +1046,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 appIconBottomSheetOpened = false
                 if (index != null) {
                     val value = values[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeAppIcon(value))
+                    model.reduce(SettingsMvi.Intent.ChangeAppIcon(value))
                 }
             },
         )
@@ -1055,7 +1055,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     if (fileInputOpened) {
         fileSystemManager.readFromFile(mimeTypes = arrayOf(SETTINGS_MIME_TYPE)) { content ->
             if (content != null) {
-                model.reduce(SettingsMviModel.Intent.ImportSettings(content))
+                model.reduce(SettingsMvi.Intent.ImportSettings(content))
             }
             fileInputOpened = false
         }
@@ -1076,7 +1076,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 barThemeBottomSheetOpened = false
                 if (index != null) {
                     model.reduce(
-                        SettingsMviModel.Intent.ChangeBarTheme(values[index]),
+                        SettingsMvi.Intent.ChangeBarTheme(values[index]),
                     )
                 }
             },
@@ -1118,7 +1118,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 commentBarThemeBottomSheetOpened = false
                 if (index != null) {
                     model.reduce(
-                        SettingsMviModel.Intent.ChangeCommentBarTheme(values[index]),
+                        SettingsMvi.Intent.ChangeCommentBarTheme(values[index]),
                     )
                 }
             },
@@ -1141,7 +1141,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 timelineLayoutBottomSheetOpened = false
                 if (index != null) {
                     model.reduce(
-                        SettingsMviModel.Intent.ChangeTimelineLayout(values[index]),
+                        SettingsMvi.Intent.ChangeTimelineLayout(values[index]),
                     )
                 }
             },
@@ -1175,7 +1175,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 replyDepthBottomSheepOpened = false
                 if (index != null) {
                     val value = REPLY_DEPTH_VALUES[index]
-                    model.reduce(SettingsMviModel.Intent.ChangeReplyDepth(value))
+                    model.reduce(SettingsMvi.Intent.ChangeReplyDepth(value))
                 }
             },
         )
@@ -1190,7 +1190,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
     if (manageTranslationProvidersOpened) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
-        val configModel: TranslationConfigMviModel =
+        val configModel: TranslationConfigMvi =
             metroViewModel<TranslationConfigViewModel>(viewModelStoreOwner)
         val configUiState by configModel.uiState.collectAsState()
 
@@ -1298,7 +1298,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     if (index in configs.indices) {
                         manageTranslationProvidersOpened = false
                         val selectedConfig = configs[index]
-                        configModel.reduce(TranslationConfigMviModel.Intent.SwitchDefault(selectedConfig))
+                        configModel.reduce(TranslationConfigMvi.Intent.SwitchDefault(selectedConfig))
                     } else {
                         addTranslationProviderConfigDialogOpened = true
                     }
@@ -1323,7 +1323,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 onClose = { url, key ->
                     addTranslationProviderConfigDialogOpened = false
                     if (url != null && key != null) {
-                        configModel.reduce(TranslationConfigMviModel.Intent.AddConfig(url = url, apiKey = key))
+                        configModel.reduce(TranslationConfigMvi.Intent.AddConfig(url = url, apiKey = key))
                     }
                 },
             )
@@ -1336,7 +1336,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     val config = translationProviderConfigToDelete
                     translationProviderConfigToDelete = null
                     if (confirm && config != null) {
-                        configModel.reduce(TranslationConfigMviModel.Intent.DeleteConfig(config))
+                        configModel.reduce(TranslationConfigMvi.Intent.DeleteConfig(config))
                     }
                 },
             )

@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -36,9 +36,9 @@ class CircleMembersViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<CircleMembersMviModel.Intent, CircleMembersMviModel.State, CircleMembersMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = CircleMembersMviModel.State()),
-    CircleMembersMviModel {
+    MviDelegate<CircleMembersMvi.Intent, CircleMembersMvi.State, CircleMembersMvi.Effect>
+    by DefaultMviDelegate(initialState = CircleMembersMvi.State()),
+    CircleMembersMvi {
 
     private val id = args.id
 
@@ -69,16 +69,16 @@ class CircleMembersViewModel(
         }
     }
 
-    override fun reduce(intent: CircleMembersMviModel.Intent) {
+    override fun reduce(intent: CircleMembersMvi.Intent) {
         when (intent) {
-            CircleMembersMviModel.Intent.Refresh ->
+            CircleMembersMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is CircleMembersMviModel.Intent.Add -> add(intent.users)
+            is CircleMembersMvi.Intent.Add -> add(intent.users)
 
-            is CircleMembersMviModel.Intent.Remove -> remove(intent.userId)
+            is CircleMembersMvi.Intent.Remove -> remove(intent.userId)
         }
     }
 
@@ -139,7 +139,7 @@ class CircleMembersViewModel(
             if (success) {
                 insertItemsInState(users)
             } else {
-                emitEffect(CircleMembersMviModel.Effect.Failure)
+                emitEffect(CircleMembersMvi.Effect.Failure)
             }
         }
     }
@@ -150,7 +150,7 @@ class CircleMembersViewModel(
             if (success) {
                 removeItemFromState(userId)
             } else {
-                emitEffect(CircleMembersMviModel.Effect.Failure)
+                emitEffect(CircleMembersMvi.Effect.Failure)
             }
         }
     }

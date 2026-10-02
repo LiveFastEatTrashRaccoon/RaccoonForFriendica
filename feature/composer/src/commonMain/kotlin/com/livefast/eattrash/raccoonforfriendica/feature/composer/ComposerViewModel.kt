@@ -6,8 +6,8 @@ import androidx.compose.ui.text.input.getSelectedText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
@@ -57,7 +57,6 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
@@ -66,7 +65,6 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(FlowPreview::class)
 @AssistedInject
 class ComposerViewModel(
     @Assisted args: ComposerViewModelArgs,
@@ -90,9 +88,9 @@ class ComposerViewModel(
     private val notificationCenter: NotificationCenter,
     private val attachmentCache: AttachmentCache,
 ) : ViewModel(),
-    MviModelDelegate<ComposerMviModel.Intent, ComposerMviModel.State, ComposerMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ComposerMviModel.State()),
-    ComposerMviModel {
+    MviDelegate<ComposerMvi.Intent, ComposerMvi.State, ComposerMvi.Effect>
+    by DefaultMviDelegate(initialState = ComposerMvi.State()),
+    ComposerMvi {
 
     private val inReplyToId = args.inReplyToId
     private val quotedId = args.quotedId
@@ -203,16 +201,16 @@ class ComposerViewModel(
         uploadJobs.clear()
     }
 
-    override fun reduce(intent: ComposerMviModel.Intent) {
+    override fun reduce(intent: ComposerMvi.Intent) {
         when (intent) {
-            is ComposerMviModel.Intent.LoadEditedPost -> {
+            is ComposerMvi.Intent.LoadEditedPost -> {
                 editedPostId = intent.id
                 loadEditedPost()
             }
 
-            is ComposerMviModel.Intent.AddShareUrl -> addShareUrl(intent.url)
+            is ComposerMvi.Intent.AddShareUrl -> addShareUrl(intent.url)
 
-            is ComposerMviModel.Intent.LoadScheduled ->
+            is ComposerMvi.Intent.LoadScheduled ->
                 viewModelScope.launch {
                     editedPostId = intent.id
                     val entry = entryCache.get(intent.id)
@@ -226,7 +224,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.LoadDraft ->
+            is ComposerMvi.Intent.LoadDraft ->
                 viewModelScope.launch {
                     draftId = intent.id
                     val entry = entryCache.get(intent.id)
@@ -238,7 +236,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.SetFieldValue ->
+            is ComposerMvi.Intent.SetFieldValue ->
                 viewModelScope.launch {
                     when (intent.fieldType) {
                         ComposerFieldType.Body ->
@@ -262,7 +260,7 @@ class ComposerViewModel(
                     }
                 }
 
-            ComposerMviModel.Intent.ToggleHasSpoiler ->
+            ComposerMvi.Intent.ToggleHasSpoiler ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -272,12 +270,12 @@ class ComposerViewModel(
                     }
                 }
 
-            ComposerMviModel.Intent.ToggleHasTitle ->
+            ComposerMvi.Intent.ToggleHasTitle ->
                 viewModelScope.launch {
                     updateState { it.copy(hasTitle = !it.hasTitle) }
                 }
 
-            is ComposerMviModel.Intent.SetVisibility ->
+            is ComposerMvi.Intent.SetVisibility ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -287,7 +285,7 @@ class ComposerViewModel(
                     }
                 }
 
-            ComposerMviModel.Intent.AddInitialAttachment ->
+            ComposerMvi.Intent.AddInitialAttachment ->
                 viewModelScope.launch {
                     val attachmentBytes = attachmentCache.get()
                     attachmentCache.clear()
@@ -299,30 +297,30 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.AddAttachment ->
+            is ComposerMvi.Intent.AddAttachment ->
                 uploadAttachment(
                     byteArray = intent.byteArray,
                     isInlineImage = false,
                 )
 
-            is ComposerMviModel.Intent.EditAttachmentDescription ->
+            is ComposerMvi.Intent.EditAttachmentDescription ->
                 updateAttachmentDescription(intent.attachment, intent.description)
 
-            is ComposerMviModel.Intent.RemoveAttachment -> removeAttachment(intent.attachment)
+            is ComposerMvi.Intent.RemoveAttachment -> removeAttachment(intent.attachment)
 
-            is ComposerMviModel.Intent.AddLink ->
+            is ComposerMvi.Intent.AddLink ->
                 addLink(
                     anchor = intent.link.anchor,
                     url = intent.link.url,
                 )
 
-            is ComposerMviModel.Intent.AddMention -> addMention(handle = intent.handle)
+            is ComposerMvi.Intent.AddMention -> addMention(handle = intent.handle)
 
-            is ComposerMviModel.Intent.CompleteMention -> completeMention(intent.handle)
+            is ComposerMvi.Intent.CompleteMention -> completeMention(intent.handle)
 
-            is ComposerMviModel.Intent.CompleteHashtag -> completeHashtag(intent.name)
+            is ComposerMvi.Intent.CompleteHashtag -> completeHashtag(intent.name)
 
-            is ComposerMviModel.Intent.AddInitialMentions ->
+            is ComposerMvi.Intent.AddInitialMentions ->
                 viewModelScope.launch {
                     val mentions =
                         buildList {
@@ -350,9 +348,9 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.AddGroupReference -> addMention(handle = intent.handle)
+            is ComposerMvi.Intent.AddGroupReference -> addMention(handle = intent.handle)
 
-            is ComposerMviModel.Intent.SetSensitive ->
+            is ComposerMvi.Intent.SetSensitive ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -362,24 +360,24 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
+            is ComposerMvi.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
 
-            is ComposerMviModel.Intent.AddItalicFormat -> addItalicFormat(intent.fieldType)
+            is ComposerMvi.Intent.AddItalicFormat -> addItalicFormat(intent.fieldType)
 
-            is ComposerMviModel.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
+            is ComposerMvi.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
 
-            is ComposerMviModel.Intent.AddStrikethroughFormat -> addStrikethroughFormat(intent.fieldType)
+            is ComposerMvi.Intent.AddStrikethroughFormat -> addStrikethroughFormat(intent.fieldType)
 
-            is ComposerMviModel.Intent.AddCodeFormat -> addCodeFormat(intent.fieldType)
+            is ComposerMvi.Intent.AddCodeFormat -> addCodeFormat(intent.fieldType)
 
-            is ComposerMviModel.Intent.AddAttachmentsFromGallery -> addAttachmentsFromGallery(intent.attachments)
+            is ComposerMvi.Intent.AddAttachmentsFromGallery -> addAttachmentsFromGallery(intent.attachments)
 
-            is ComposerMviModel.Intent.ChangePublicationType ->
+            is ComposerMvi.Intent.ChangePublicationType ->
                 viewModelScope.launch {
                     updateState { it.copy(publicationType = intent.type) }
                 }
 
-            ComposerMviModel.Intent.AddPoll ->
+            ComposerMvi.Intent.AddPoll ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -397,7 +395,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.SetPollMultiple ->
+            is ComposerMvi.Intent.SetPollMultiple ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -407,7 +405,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.SetPollExpirationDate ->
+            is ComposerMvi.Intent.SetPollExpirationDate ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -417,7 +415,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.AddPollOption ->
+            is ComposerMvi.Intent.AddPollOption ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -436,7 +434,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.RemovePollOption ->
+            is ComposerMvi.Intent.RemovePollOption ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -451,7 +449,7 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.EditPollOption ->
+            is ComposerMvi.Intent.EditPollOption ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -473,7 +471,7 @@ class ComposerViewModel(
                     }
                 }
 
-            ComposerMviModel.Intent.RemovePoll ->
+            ComposerMvi.Intent.RemovePoll ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -483,37 +481,37 @@ class ComposerViewModel(
                     }
                 }
 
-            is ComposerMviModel.Intent.InsertCustomEmoji ->
+            is ComposerMvi.Intent.InsertCustomEmoji ->
                 insertCustomEmoji(intent.fieldType, intent.emoji)
 
-            ComposerMviModel.Intent.CreatePreview ->
+            ComposerMvi.Intent.CreatePreview ->
                 viewModelScope.launch {
                     createPreview()
                 }
 
-            is ComposerMviModel.Intent.InsertList -> insertList()
+            is ComposerMvi.Intent.InsertList -> insertList()
 
-            is ComposerMviModel.Intent.Submit ->
+            is ComposerMvi.Intent.Submit ->
                 submit(
                     enableAltTextCheck = intent.enableAltTextCheck,
                     enableParentVisibilityCheck = intent.enableParentVisibilityCheck,
                 )
 
-            is ComposerMviModel.Intent.ChangeMarkupMode -> changeMarkupMode(intent.mode)
+            is ComposerMvi.Intent.ChangeMarkupMode -> changeMarkupMode(intent.mode)
 
-            is ComposerMviModel.Intent.AddInlineImageStep1 ->
+            is ComposerMvi.Intent.AddInlineImageStep1 ->
                 uploadAttachment(
                     byteArray = intent.byteArray,
                     isInlineImage = true,
                 )
 
-            is ComposerMviModel.Intent.AddInlineImageStep2 ->
+            is ComposerMvi.Intent.AddInlineImageStep2 ->
                 insertInlineImage(
                     intent.attachment,
                     intent.description,
                 )
 
-            is ComposerMviModel.Intent.ChangeQuotePolicy ->
+            is ComposerMvi.Intent.ChangeQuotePolicy ->
                 viewModelScope.launch {
                     updateState { it.copy(quotePolicy = intent.policy) }
                 }
@@ -1237,7 +1235,7 @@ class ComposerViewModel(
             if (attachment != null) {
                 if (isInlineImage) {
                     updateState { it.copy(loading = false) }
-                    emitEffect(ComposerMviModel.Effect.TriggerInlineImageEdit(attachment))
+                    emitEffect(ComposerMvi.Effect.TriggerInlineImageEdit(attachment))
                 } else {
                     newAttachmentIds += attachment.id
                     updateState {
@@ -1246,10 +1244,10 @@ class ComposerViewModel(
                             hasUnsavedChanges = true,
                         )
                     }
-                    emitEffect(ComposerMviModel.Effect.TriggerAttachmentEdit(attachment))
+                    emitEffect(ComposerMvi.Effect.TriggerAttachmentEdit(attachment))
                 }
             } else {
-                emitEffect(ComposerMviModel.Effect.Failure())
+                emitEffect(ComposerMvi.Effect.Failure())
             }
         }
     }
@@ -1441,7 +1439,7 @@ class ComposerViewModel(
                 id = localId,
                 inReplyTo = inReplyTo,
             )
-        emitEffect(ComposerMviModel.Effect.OpenPreview(entry))
+        emitEffect(ComposerMvi.Effect.OpenPreview(entry))
     }
 
     private suspend fun validate(enableAltTextCheck: Boolean, enableParentVisibilityCheck: Boolean): Boolean {
@@ -1456,13 +1454,13 @@ class ComposerViewModel(
 
         // either body or image or poll must be present
         if (text.isBlank() && attachments.isEmpty() && poll == null) {
-            emitEffect(ComposerMviModel.Effect.ValidationError.TextOrImagesOrPollMandatory)
+            emitEffect(ComposerMvi.Effect.ValidationError.TextOrImagesOrPollMandatory)
             return false
         }
 
         // all images should have a description for a11y
         if (enableAltTextCheck && attachments.any { it.description.isNullOrEmpty() }) {
-            emitEffect(ComposerMviModel.Effect.ValidationError.AltTextMissing)
+            emitEffect(ComposerMvi.Effect.ValidationError.AltTextMissing)
             return false
         }
 
@@ -1471,20 +1469,20 @@ class ComposerViewModel(
             val timeSpan = poll.expiresAt?.let { getDurationFromNowToDate(it) } ?: Duration.ZERO
             val optionsPopulated = poll.options.all { it.title.isNotBlank() }
             if (poll.options.size < 2 || !optionsPopulated || timeSpan <= Duration.ZERO) {
-                emitEffect(ComposerMviModel.Effect.ValidationError.InvalidPoll)
+                emitEffect(ComposerMvi.Effect.ValidationError.InvalidPoll)
                 return false
             }
         }
 
         // character limit should not be exceeded
         if (text.length > characterLimit) {
-            emitEffect(ComposerMviModel.Effect.ValidationError.CharacterLimitExceeded)
+            emitEffect(ComposerMvi.Effect.ValidationError.CharacterLimitExceeded)
             return false
         }
 
         // Circle visibility should be valid
         if (visibility is Visibility.Circle && visibility.id == null) {
-            emitEffect(ComposerMviModel.Effect.ValidationError.InvalidVisibility)
+            emitEffect(ComposerMvi.Effect.ValidationError.InvalidVisibility)
             return false
         }
 
@@ -1493,7 +1491,7 @@ class ComposerViewModel(
             currentState.inReplyTo != null &&
             visibility > currentState.inReplyTo.visibility
         ) {
-            emitEffect(ComposerMviModel.Effect.ValidationError.VisibilityGreaterThanParent)
+            emitEffect(ComposerMvi.Effect.ValidationError.VisibilityGreaterThanParent)
             return false
         }
 
@@ -1501,7 +1499,7 @@ class ComposerViewModel(
         if (scheduleDate != null) {
             val timeSpan = getDurationFromNowToDate(scheduleDate) ?: Duration.ZERO
             if (timeSpan <= Duration.ZERO) {
-                emitEffect(ComposerMviModel.Effect.ValidationError.ScheduleDateInThePast)
+                emitEffect(ComposerMvi.Effect.ValidationError.ScheduleDateInThePast)
                 return false
             }
         }
@@ -1748,14 +1746,14 @@ class ComposerViewModel(
                         }
                     }
 
-                    emitEffect(ComposerMviModel.Effect.Success)
+                    emitEffect(ComposerMvi.Effect.Success)
                 } else {
-                    emitEffect(ComposerMviModel.Effect.Failure(null))
+                    emitEffect(ComposerMvi.Effect.Failure(null))
                 }
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
-                emitEffect(ComposerMviModel.Effect.Failure(message = e.message))
+                emitEffect(ComposerMvi.Effect.Failure(message = e.message))
             }
         }
     }

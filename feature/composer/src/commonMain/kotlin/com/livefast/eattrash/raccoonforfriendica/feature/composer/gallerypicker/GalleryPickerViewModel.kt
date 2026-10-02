@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.composer.gallerypicker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
@@ -25,19 +25,19 @@ class GalleryPickerViewModel(
     private val albumRepository: PhotoAlbumRepository,
     private val albumPhotoPaginationManager: AlbumPhotoPaginationManager,
 ) : ViewModel(),
-    MviModelDelegate<GalleryPickerMviModel.Intent, GalleryPickerMviModel.State, GalleryPickerMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = GalleryPickerMviModel.State()),
-    GalleryPickerMviModel {
+    MviDelegate<GalleryPickerMvi.Intent, GalleryPickerMvi.State, GalleryPickerMvi.Effect>
+    by DefaultMviDelegate(initialState = GalleryPickerMvi.State()),
+    GalleryPickerMvi {
 
-    override fun reduce(intent: GalleryPickerMviModel.Intent) {
+    override fun reduce(intent: GalleryPickerMvi.Intent) {
         when (intent) {
-            is GalleryPickerMviModel.Intent.SelectAlbum ->
+            is GalleryPickerMvi.Intent.SelectAlbum ->
                 viewModelScope.launch {
                     updateState { it.copy(currentAlbum = intent.album) }
                     refreshGalleryPhotos()
                 }
 
-            GalleryPickerMviModel.Intent.InitialLoad ->
+            GalleryPickerMvi.Intent.InitialLoad ->
                 viewModelScope.launch {
                     val albums = albumRepository.getAll().orEmpty()
                     val currentAlbum = albums.firstOrNull()
@@ -50,7 +50,7 @@ class GalleryPickerViewModel(
                     refreshGalleryPhotos()
                 }
 
-            GalleryPickerMviModel.Intent.LoadMorePhotos ->
+            GalleryPickerMvi.Intent.LoadMorePhotos ->
                 viewModelScope.launch {
                     loadNextPageGalleryPhotos()
                 }

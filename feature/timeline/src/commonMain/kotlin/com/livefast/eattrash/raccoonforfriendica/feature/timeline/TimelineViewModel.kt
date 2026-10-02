@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.timeline
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -84,9 +84,9 @@ class TimelineViewModel(
     private val followedHashtagCache: FollowedHashtagCache,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<TimelineMviModel.Intent, TimelineMviModel.State, TimelineMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = TimelineMviModel.State()),
-    TimelineMviModel {
+    MviDelegate<TimelineMvi.Intent, TimelineMvi.State, TimelineMvi.Effect>
+    by DefaultMviDelegate(initialState = TimelineMvi.State()),
+    TimelineMvi {
     private var circlesRefreshed = false
 
     init {
@@ -171,32 +171,32 @@ class TimelineViewModel(
         }
     }
 
-    override fun reduce(intent: TimelineMviModel.Intent) {
+    override fun reduce(intent: TimelineMvi.Intent) {
         when (intent) {
-            TimelineMviModel.Intent.Refresh ->
+            TimelineMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            TimelineMviModel.Intent.LoadNextPage ->
+            TimelineMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is TimelineMviModel.Intent.ChangeType ->
+            is TimelineMvi.Intent.ChangeType ->
                 viewModelScope.launch {
                     changeTimelineType(intent.type)
                 }
 
-            is TimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is TimelineMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is TimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is TimelineMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is TimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is TimelineMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is TimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is TimelineMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is TimelineMviModel.Intent.MuteUser ->
+            is TimelineMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -204,36 +204,36 @@ class TimelineViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is TimelineMviModel.Intent.BlockUser ->
+            is TimelineMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is TimelineMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is TimelineMvi.Intent.TogglePin -> togglePin(intent.entry)
 
-            is TimelineMviModel.Intent.SubmitPollVote ->
+            is TimelineMvi.Intent.SubmitPollVote ->
                 submitPoll(
                     intent.entry,
                     intent.choices,
                 )
 
-            is TimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is TimelineMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is TimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is TimelineMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is TimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is TimelineMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is TimelineMviModel.Intent.WillOpenDetail ->
+            is TimelineMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(TimelineMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(TimelineMvi.Effect.OpenDetail(intent.entry))
                 }
 
-            is TimelineMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is TimelineMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is TimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is TimelineMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -244,7 +244,7 @@ class TimelineViewModel(
                 timelineType = type,
             )
         }
-        emitEffect(TimelineMviModel.Effect.BackToTop)
+        emitEffect(TimelineMvi.Effect.BackToTop)
         refresh(
             initial = true,
             forceRefresh = true,
@@ -343,7 +343,7 @@ class TimelineViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(TimelineMviModel.Effect.BackToTop)
+                emitEffect(TimelineMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -584,7 +584,7 @@ class TimelineViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(TimelineMviModel.Effect.PollVoteFailure)
+                emitEffect(TimelineMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -601,7 +601,7 @@ class TimelineViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(TimelineMviModel.Effect.TriggerCopy(text))
+                emitEffect(TimelineMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -654,7 +654,7 @@ class TimelineViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(TimelineMviModel.Effect.OpenUrl(url))
+                emitEffect(TimelineMvi.Effect.OpenUrl(url))
             }
         }
     }

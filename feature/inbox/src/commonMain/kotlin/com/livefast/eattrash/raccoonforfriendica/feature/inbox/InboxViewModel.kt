@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
@@ -57,9 +57,9 @@ class InboxViewModel(
     private val pullNotificationManager: PullNotificationManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<InboxMviModel.Intent, InboxMviModel.State, InboxMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = InboxMviModel.State()),
-    InboxMviModel {
+    MviDelegate<InboxMvi.Intent, InboxMvi.State, InboxMvi.Effect>
+    by DefaultMviDelegate(initialState = InboxMvi.State()),
+    InboxMvi {
     init {
         viewModelScope.launch {
             identityRepository.currentUser
@@ -95,38 +95,38 @@ class InboxViewModel(
         }
     }
 
-    override fun reduce(intent: InboxMviModel.Intent) {
+    override fun reduce(intent: InboxMvi.Intent) {
         when (intent) {
-            InboxMviModel.Intent.LoadNextPage ->
+            InboxMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            InboxMviModel.Intent.Refresh ->
+            InboxMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is InboxMviModel.Intent.ChangeSelectedNotificationTypes ->
+            is InboxMvi.Intent.ChangeSelectedNotificationTypes ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(selectedNotificationTypes = intent.types, initial = true)
                     }
-                    emitEffect(InboxMviModel.Effect.BackToTop)
+                    emitEffect(InboxMvi.Effect.BackToTop)
                     refresh(initial = true, forceRefresh = true)
                 }
 
-            is InboxMviModel.Intent.Follow -> follow(intent.userId)
+            is InboxMvi.Intent.Follow -> follow(intent.userId)
 
-            is InboxMviModel.Intent.Unfollow -> unfollow(intent.userId)
+            is InboxMvi.Intent.Unfollow -> unfollow(intent.userId)
 
-            is InboxMviModel.Intent.MarkAsRead -> markAsRead(intent.notification)
+            is InboxMvi.Intent.MarkAsRead -> markAsRead(intent.notification)
 
-            InboxMviModel.Intent.DismissAll -> dismissAll()
+            InboxMvi.Intent.DismissAll -> dismissAll()
 
-            is InboxMviModel.Intent.Dismiss -> dismiss(intent.notification)
+            is InboxMvi.Intent.Dismiss -> dismiss(intent.notification)
 
-            is InboxMviModel.Intent.RevokeQuote -> revokeQuote(intent.entry)
+            is InboxMvi.Intent.RevokeQuote -> revokeQuote(intent.entry)
         }
     }
 
@@ -177,7 +177,7 @@ class InboxViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(InboxMviModel.Effect.BackToTop)
+                emitEffect(InboxMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -329,9 +329,9 @@ class InboxViewModel(
             )
             updateState { it.copy(loading = false) }
             if (success) {
-                emitEffect(InboxMviModel.Effect.Success)
+                emitEffect(InboxMvi.Effect.Success)
             } else {
-                emitEffect(InboxMviModel.Effect.Failure())
+                emitEffect(InboxMvi.Effect.Failure())
             }
         }
     }

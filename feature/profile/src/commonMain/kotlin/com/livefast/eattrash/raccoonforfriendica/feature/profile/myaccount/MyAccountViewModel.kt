@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
@@ -68,9 +68,9 @@ class MyAccountViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<MyAccountMviModel.Intent, MyAccountMviModel.State, MyAccountMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = MyAccountMviModel.State()),
-    MyAccountMviModel {
+    MviDelegate<MyAccountMvi.Intent, MyAccountMvi.State, MyAccountMvi.Effect>
+    by DefaultMviDelegate(initialState = MyAccountMvi.State()),
+    MyAccountMvi {
     init {
         viewModelScope.launch {
             identityRepository
@@ -159,22 +159,22 @@ class MyAccountViewModel(
         }
     }
 
-    override fun reduce(intent: MyAccountMviModel.Intent) {
+    override fun reduce(intent: MyAccountMvi.Intent) {
         when (intent) {
-            is MyAccountMviModel.Intent.ChangeSection ->
+            is MyAccountMvi.Intent.ChangeSection ->
                 viewModelScope.launch {
                     if (uiState.value.loading) { return@launch }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(MyAccountMviModel.Effect.BackToTop)
+                    emitEffect(MyAccountMvi.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            MyAccountMviModel.Intent.LoadNextPage ->
+            MyAccountMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            MyAccountMviModel.Intent.Refresh ->
+            MyAccountMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     launch {
                         val currentUser = userRepository.getCurrent(refresh = true)
@@ -185,15 +185,15 @@ class MyAccountViewModel(
                     }
                 }
 
-            is MyAccountMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
-            is MyAccountMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
-            is MyAccountMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
-            is MyAccountMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
-            is MyAccountMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
-            is MyAccountMviModel.Intent.TogglePin -> togglePin(intent.entry)
-            is MyAccountMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
-            is MyAccountMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
-            MyAccountMviModel.Intent.Logout ->
+            is MyAccountMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is MyAccountMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is MyAccountMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is MyAccountMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is MyAccountMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is MyAccountMvi.Intent.TogglePin -> togglePin(intent.entry)
+            is MyAccountMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is MyAccountMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            MyAccountMvi.Intent.Logout ->
                 viewModelScope.launch {
                     logout()
                 }
@@ -415,7 +415,7 @@ class MyAccountViewModel(
                 notificationCenter.send(TimelineEntryDeletedEvent(entryId))
                 removeEntryFromState(entryId)
             } else {
-                emitEffect(MyAccountMviModel.Effect.Failure)
+                emitEffect(MyAccountMvi.Effect.Failure)
             }
         }
     }
@@ -454,7 +454,7 @@ class MyAccountViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(MyAccountMviModel.Effect.TriggerCopy(text))
+                emitEffect(MyAccountMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -463,7 +463,7 @@ class MyAccountViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(MyAccountMviModel.Effect.OpenUrl(url))
+                emitEffect(MyAccountMvi.Effect.OpenUrl(url))
             }
         }
     }

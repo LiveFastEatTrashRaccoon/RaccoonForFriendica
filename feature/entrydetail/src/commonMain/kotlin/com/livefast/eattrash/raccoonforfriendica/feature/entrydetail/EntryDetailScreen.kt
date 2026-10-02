@@ -100,7 +100,7 @@ fun EntryDetailScreen(
     otherInstance: String? = null,
     customBackAction: (() -> Unit)? = null,
 ) {
-    val model: EntryDetailMviModel = assistedMetroViewModel<EntryDetailViewModel>(
+    val model: EntryDetailMvi = assistedMetroViewModel<EntryDetailViewModel>(
         key = id,
         extras = EntryDetailViewModel.getExtras(
             EntryDetailViewModelArgs(
@@ -149,21 +149,21 @@ fun EntryDetailScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    is EntryDetailMviModel.Effect.ScrollToItem ->
+                    is EntryDetailMvi.Effect.ScrollToItem ->
                         try {
                             lazyListState.scrollToItem(event.index)
                         } catch (e: Exception) {
                             if (e is CancellationException) throw e
                         }
 
-                    EntryDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    EntryDetailMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is EntryDetailMviModel.Effect.TriggerCopy -> {
+                    is EntryDetailMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is EntryDetailMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is EntryDetailMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -293,7 +293,7 @@ fun EntryDetailScreen(
             LaunchedEffect(pagerState) {
                 snapshotFlow { pagerState.currentPage }
                     .onEach {
-                        model.reduce(EntryDetailMviModel.Intent.ChangeNavigationIndex(it))
+                        model.reduce(EntryDetailMvi.Intent.ChangeNavigationIndex(it))
                         goBackToTop()
                     }.launchIn(this)
             }
@@ -320,7 +320,7 @@ fun EntryDetailScreen(
                         ).nestedScroll(fabNestedScrollConnection),
                     isRefreshing = uiState.refreshing,
                     onRefresh = {
-                        model.reduce(EntryDetailMviModel.Intent.Refresh)
+                        model.reduce(EntryDetailMvi.Intent.Refresh)
                     },
                 ) {
                     LazyColumn(
@@ -430,7 +430,7 @@ fun EntryDetailScreen(
                                     OptionId.Block -> confirmBlockEntry = entry
 
                                     OptionId.Pin, OptionId.Unpin ->
-                                        model.reduce(EntryDetailMviModel.Intent.TogglePin(entry))
+                                        model.reduce(EntryDetailMvi.Intent.TogglePin(entry))
 
                                     OptionId.ReportUser ->
                                         entry.original.creator?.also { userToReport ->
@@ -460,28 +460,28 @@ fun EntryDetailScreen(
 
                                     OptionId.CopyToClipboard ->
                                         model.reduce(
-                                            EntryDetailMviModel.Intent.CopyToClipboard(
+                                            EntryDetailMvi.Intent.CopyToClipboard(
                                                 entry.original,
                                             ),
                                         )
 
                                     OptionId.Translate ->
                                         model.reduce(
-                                            EntryDetailMviModel.Intent.ToggleTranslation(
+                                            EntryDetailMvi.Intent.ToggleTranslation(
                                                 entry.original,
                                             ),
                                         )
 
                                     OptionId.AddShortcut ->
                                         model.reduce(
-                                            EntryDetailMviModel.Intent.AddInstanceShortcut(
+                                            EntryDetailMvi.Intent.AddInstanceShortcut(
                                                 entry.nodeName,
                                             ),
                                         )
 
                                     OptionId.OpenInBrowser ->
                                         model.reduce(
-                                            EntryDetailMviModel.Intent.OpenInBrowser(entry),
+                                            EntryDetailMvi.Intent.OpenInBrowser(entry),
                                         )
 
                                     else -> Unit
@@ -562,7 +562,7 @@ fun EntryDetailScreen(
 
                                                 else ->
                                                     model.reduce(
-                                                        EntryDetailMviModel.Intent.ToggleReblog(
+                                                        EntryDetailMvi.Intent.ToggleReblog(
                                                             e,
                                                         ),
                                                     )
@@ -571,7 +571,7 @@ fun EntryDetailScreen(
                                         onBookmark =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
-                                                EntryDetailMviModel.Intent.ToggleBookmark(
+                                                EntryDetailMvi.Intent.ToggleBookmark(
                                                     e,
                                                 ),
                                             )
@@ -579,7 +579,7 @@ fun EntryDetailScreen(
                                         onFavorite =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
-                                                EntryDetailMviModel.Intent.ToggleFavorite(
+                                                EntryDetailMvi.Intent.ToggleFavorite(
                                                     e,
                                                 ),
                                             )
@@ -587,7 +587,7 @@ fun EntryDetailScreen(
                                         onDislike =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
-                                                EntryDetailMviModel.Intent.ToggleDislike(
+                                                EntryDetailMvi.Intent.ToggleDislike(
                                                     e,
                                                 ),
                                             )
@@ -617,7 +617,7 @@ fun EntryDetailScreen(
                                         uiState.currentUserId?.let {
                                             { e, choices ->
                                                 model.reduce(
-                                                    EntryDetailMviModel.Intent.SubmitPollVote(
+                                                    EntryDetailMvi.Intent.SubmitPollVote(
                                                         entry = e,
                                                         choices = choices,
                                                     ),
@@ -626,7 +626,7 @@ fun EntryDetailScreen(
                                         },
                                         onShowOriginal = {
                                             model.reduce(
-                                                EntryDetailMviModel.Intent.ToggleTranslation(
+                                                EntryDetailMvi.Intent.ToggleTranslation(
                                                     entry.original,
                                                 ),
                                             )
@@ -696,21 +696,21 @@ fun EntryDetailScreen(
 
                                             else ->
                                                 model.reduce(
-                                                    EntryDetailMviModel.Intent.ToggleReblog(e),
+                                                    EntryDetailMvi.Intent.ToggleReblog(e),
                                                 )
                                         }
                                     }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                                     onBookmark =
                                     { e: TimelineEntryModel ->
-                                        model.reduce(EntryDetailMviModel.Intent.ToggleBookmark(e))
+                                        model.reduce(EntryDetailMvi.Intent.ToggleBookmark(e))
                                     }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                                     onFavorite =
                                     { e: TimelineEntryModel ->
-                                        model.reduce(EntryDetailMviModel.Intent.ToggleFavorite(e))
+                                        model.reduce(EntryDetailMvi.Intent.ToggleFavorite(e))
                                     }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                                     onDislike =
                                     { e: TimelineEntryModel ->
-                                        model.reduce(EntryDetailMviModel.Intent.ToggleDislike(e))
+                                        model.reduce(EntryDetailMvi.Intent.ToggleDislike(e))
                                     }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                                     onOpenUsersFavorite = { e ->
                                         mainRouter.openEntryUsersFavorite(
@@ -737,7 +737,7 @@ fun EntryDetailScreen(
                                     uiState.currentUserId?.let {
                                         { e, choices ->
                                             model.reduce(
-                                                EntryDetailMviModel.Intent.SubmitPollVote(
+                                                EntryDetailMvi.Intent.SubmitPollVote(
                                                     entry = e,
                                                     choices = choices,
                                                 ),
@@ -746,7 +746,7 @@ fun EntryDetailScreen(
                                     },
                                     onShowOriginal = {
                                         model.reduce(
-                                            EntryDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                            EntryDetailMvi.Intent.ToggleTranslation(entry.original),
                                         )
                                     },
                                     onOpenQuote = { e ->
@@ -765,7 +765,7 @@ fun EntryDetailScreen(
                                         Button(
                                             onClick = {
                                                 model.reduce(
-                                                    EntryDetailMviModel.Intent.LoadMoreReplies(
+                                                    EntryDetailMvi.Intent.LoadMoreReplies(
                                                         entry,
                                                     ),
                                                 )
@@ -845,7 +845,7 @@ fun EntryDetailScreen(
                 val entryId = confirmDeleteEntryId ?: ""
                 confirmDeleteEntryId = null
                 if (confirm && entryId.isNotEmpty()) {
-                    model.reduce(EntryDetailMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(EntryDetailMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -862,7 +862,7 @@ fun EntryDetailScreen(
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                EntryDetailMviModel.Intent.MuteUser(
+                                EntryDetailMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -893,7 +893,7 @@ fun EntryDetailScreen(
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        EntryDetailMviModel.Intent.BlockUser(
+                        EntryDetailMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -919,7 +919,7 @@ fun EntryDetailScreen(
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(EntryDetailMviModel.Intent.ToggleReblog(e))
+                    model.reduce(EntryDetailMvi.Intent.ToggleReblog(e))
                 }
             },
         )

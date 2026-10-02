@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feaure.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -77,9 +77,9 @@ class SearchViewModel(
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<SearchMviModel.Intent, SearchMviModel.State, SearchMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = SearchMviModel.State()),
-    SearchMviModel {
+    MviDelegate<SearchMvi.Intent, SearchMvi.State, SearchMvi.Effect>
+    by DefaultMviDelegate(initialState = SearchMvi.State()),
+    SearchMvi {
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -141,9 +141,9 @@ class SearchViewModel(
         }
     }
 
-    override fun reduce(intent: SearchMviModel.Intent) {
+    override fun reduce(intent: SearchMvi.Intent) {
         when (intent) {
-            is SearchMviModel.Intent.SetSearch ->
+            is SearchMvi.Intent.SetSearch ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -153,41 +153,41 @@ class SearchViewModel(
                     }
                 }
 
-            is SearchMviModel.Intent.ChangeSection ->
+            is SearchMvi.Intent.ChangeSection ->
                 viewModelScope.launch {
                     if (uiState.value.loading) {
                         return@launch
                     }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(SearchMviModel.Effect.BackToTop)
+                    emitEffect(SearchMvi.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            SearchMviModel.Intent.LoadNextPage ->
+            SearchMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            SearchMviModel.Intent.Refresh ->
+            SearchMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is SearchMviModel.Intent.Follow -> follow(intent.userId)
+            is SearchMvi.Intent.Follow -> follow(intent.userId)
 
-            is SearchMviModel.Intent.Unfollow -> unfollow(intent.userId)
+            is SearchMvi.Intent.Unfollow -> unfollow(intent.userId)
 
-            is SearchMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is SearchMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is SearchMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is SearchMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is SearchMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is SearchMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is SearchMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is SearchMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is SearchMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is SearchMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is SearchMviModel.Intent.MuteUser ->
+            is SearchMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -195,23 +195,23 @@ class SearchViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is SearchMviModel.Intent.BlockUser ->
+            is SearchMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is SearchMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is SearchMvi.Intent.TogglePin -> togglePin(intent.entry)
 
-            is SearchMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is SearchMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is SearchMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is SearchMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is SearchMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is SearchMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is SearchMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is SearchMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is SearchMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is SearchMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -584,7 +584,7 @@ class SearchViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(SearchMviModel.Effect.PollVoteFailure)
+                emitEffect(SearchMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -601,7 +601,7 @@ class SearchViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(SearchMviModel.Effect.TriggerCopy(text))
+                emitEffect(SearchMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -649,7 +649,7 @@ class SearchViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(SearchMviModel.Effect.OpenUrl(url))
+                emitEffect(SearchMvi.Effect.OpenUrl(url))
             }
         }
     }

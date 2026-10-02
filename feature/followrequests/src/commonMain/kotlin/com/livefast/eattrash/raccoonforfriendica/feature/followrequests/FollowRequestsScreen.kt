@@ -45,7 +45,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FollowRequestsScreen(model: FollowRequestsMviModel, modifier: Modifier = Modifier) {
+fun FollowRequestsScreen(model: FollowRequestsMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
@@ -111,7 +111,7 @@ fun FollowRequestsScreen(model: FollowRequestsMviModel, modifier: Modifier = Mod
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(FollowRequestsMviModel.Intent.Refresh)
+                model.reduce(FollowRequestsMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -147,10 +147,10 @@ fun FollowRequestsScreen(model: FollowRequestsMviModel, modifier: Modifier = Mod
                         user = user,
                         autoloadImages = uiState.autoloadImages,
                         onAccept = {
-                            model.reduce(FollowRequestsMviModel.Intent.Accept(user.id))
+                            model.reduce(FollowRequestsMvi.Intent.Accept(user.id))
                         },
                         onReject = {
-                            model.reduce(FollowRequestsMviModel.Intent.Reject(user.id))
+                            model.reduce(FollowRequestsMvi.Intent.Reject(user.id))
                         },
                         onClick = {
                             mainRouter.openUserDetail(user)
@@ -161,7 +161,7 @@ fun FollowRequestsScreen(model: FollowRequestsMviModel, modifier: Modifier = Mod
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(FollowRequestsMviModel.Intent.LoadNextPage)
+                        model.reduce(FollowRequestsMvi.Intent.LoadNextPage)
                     }
                 }
 

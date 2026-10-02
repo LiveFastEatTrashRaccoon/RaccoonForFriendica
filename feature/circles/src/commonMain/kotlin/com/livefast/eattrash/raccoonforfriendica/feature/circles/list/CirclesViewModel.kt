@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
@@ -28,9 +28,9 @@ class CirclesViewModel(
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
 ) : ViewModel(),
-    MviModelDelegate<CirclesMviModel.Intent, CirclesMviModel.State, CirclesMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = CirclesMviModel.State()),
-    CirclesMviModel {
+    MviDelegate<CirclesMvi.Intent, CirclesMvi.State, CirclesMvi.Effect>
+    by DefaultMviDelegate(initialState = CirclesMvi.State()),
+    CirclesMvi {
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -49,18 +49,18 @@ class CirclesViewModel(
         }
     }
 
-    override fun reduce(intent: CirclesMviModel.Intent) {
+    override fun reduce(intent: CirclesMvi.Intent) {
         when (intent) {
-            CirclesMviModel.Intent.Refresh ->
+            CirclesMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is CirclesMviModel.Intent.Delete -> delete(intent.circleId)
+            is CirclesMvi.Intent.Delete -> delete(intent.circleId)
 
-            is CirclesMviModel.Intent.OpenDetail -> handleOpenDetail(intent.circle)
+            is CirclesMvi.Intent.OpenDetail -> handleOpenDetail(intent.circle)
 
-            is CirclesMviModel.Intent.Upsert -> viewModelScope.launch {
+            is CirclesMvi.Intent.Upsert -> viewModelScope.launch {
                 val new = uiState.value.items.none { it is CircleListItem.Circle && it.circle.id == intent.circle.id }
                 if (new) {
                     insertItemInState(intent.circle)
@@ -165,7 +165,7 @@ class CirclesViewModel(
             if (success) {
                 removeItemFromState(id)
             } else {
-                emitEffect(CirclesMviModel.Effect.Failure)
+                emitEffect(CirclesMvi.Effect.Failure)
             }
         }
     }
@@ -183,10 +183,10 @@ class CirclesViewModel(
                         )?.firstOrNull()
                 updateState { it.copy(operationInProgress = false) }
                 if (user != null) {
-                    emitEffect(CirclesMviModel.Effect.OpenUser(user))
+                    emitEffect(CirclesMvi.Effect.OpenUser(user))
                 }
             } else {
-                emitEffect(CirclesMviModel.Effect.OpenCircle(circle))
+                emitEffect(CirclesMvi.Effect.OpenCircle(circle))
             }
         }
     }

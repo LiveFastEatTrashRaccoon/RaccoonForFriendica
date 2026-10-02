@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ConversationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.DirectMessagesPaginationSpecification
@@ -31,9 +31,9 @@ class ConversationListViewModel(
     private val settingsRepository: SettingsRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<ConversationListMviModel.Intent, ConversationListMviModel.State, ConversationListMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ConversationListMviModel.State()),
-    ConversationListMviModel {
+    MviDelegate<ConversationListMvi.Intent, ConversationListMvi.State, ConversationListMvi.Effect>
+    by DefaultMviDelegate(initialState = ConversationListMvi.State()),
+    ConversationListMvi {
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -65,19 +65,19 @@ class ConversationListViewModel(
         }
     }
 
-    override fun reduce(intent: ConversationListMviModel.Intent) {
+    override fun reduce(intent: ConversationListMvi.Intent) {
         when (intent) {
-            ConversationListMviModel.Intent.Refresh ->
+            ConversationListMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            ConversationListMviModel.Intent.LoadNextPage ->
+            ConversationListMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is ConversationListMviModel.Intent.MarkConversationAsRead ->
+            is ConversationListMvi.Intent.MarkConversationAsRead ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -144,7 +144,7 @@ class ConversationListViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(ConversationListMviModel.Effect.BackToTop)
+                emitEffect(ConversationListMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }

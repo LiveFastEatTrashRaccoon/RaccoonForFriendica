@@ -37,14 +37,14 @@ import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultBottomNavigationAdapter
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMvi
+import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.navigation.bottomGetEntryProvider
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -54,11 +54,11 @@ import kotlin.math.roundToInt
 
 @Composable
 fun MainScreen(
-    timelineViewModel: TimelineMviModel,
-    exploreViewModel: ExploreMviModel,
-    inboxViewModel: InboxMviModel,
-    profileViewModel: ProfileMviModel,
-    myAccountViewModel: MyAccountMviModel,
+    timelineViewModel: TimelineMvi,
+    exploreViewModel: ExploreMvi,
+    inboxViewModel: InboxMvi,
+    profileViewModel: ProfileMvi,
+    myAccountViewModel: MyAccountMvi,
     timelineLazyListState: LazyListState,
     exploreLazyListState: LazyListState,
     inboxLazyListState: LazyListState,
@@ -66,7 +66,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     lockedSection: BottomNavigationSection = BottomNavigationSection.Home,
 ) {
-    val model: MainMviModel = metroViewModel<MainViewModel>()
+    val model: MainMvi = metroViewModel<MainViewModel>()
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()
@@ -90,7 +90,7 @@ fun MainScreen(
                             -(bottomBarHeightPx + bottomNavigationInsetPx) * 2,
                             0f,
                         )
-                    model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(newOffset))
+                    model.reduce(MainMvi.Intent.SetBottomBarOffsetHeightPx(newOffset))
                     return Offset.Zero
                 }
             }
@@ -122,7 +122,7 @@ fun MainScreen(
 
             navigationCoordinator.currentBottomNavSection.onEach {
                 // when the current tab changes, reset the bottom bar offset to the default value
-                model.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(0f))
+                model.reduce(MainMvi.Intent.SetBottomBarOffsetHeightPx(0f))
             }.launchIn(this)
         }
     }

@@ -57,7 +57,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserDialog
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModelArgs
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
@@ -69,7 +69,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAction: (() -> Unit)? = null) {
-    val model: CircleMembersMviModel = assistedMetroViewModel<CircleMembersViewModel>(
+    val model: CircleMembersMvi = assistedMetroViewModel<CircleMembersViewModel>(
         extras = CircleMembersViewModel.getExtras(CircleMembersViewModelArgs(id = id)),
     )
     val uiState by model.uiState.collectAsState()
@@ -104,7 +104,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
         model.effects
             .onEach { event ->
                 when (event) {
-                    CircleMembersMviModel.Effect.Failure ->
+                    CircleMembersMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
                 }
             }.launchIn(this)
@@ -211,7 +211,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
                 ).nestedScroll(fabNestedScrollConnection),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(CircleMembersMviModel.Intent.Refresh)
+                model.reduce(CircleMembersMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -286,7 +286,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
                 val userId = confirmRemoveUserId
                 confirmRemoveUserId = null
                 if (confirm && userId != null) {
-                    model.reduce(CircleMembersMviModel.Intent.Remove(userId))
+                    model.reduce(CircleMembersMvi.Intent.Remove(userId))
                 }
             },
         )
@@ -294,7 +294,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
 
     if (addUsersDialogOpened) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
-        val addUsersViewModel: CircleAddUserMviModel = assistedMetroViewModel<CircleAddUserViewModel>(
+        val addUsersViewModel: CircleAddUserMvi = assistedMetroViewModel<CircleAddUserViewModel>(
             viewModelStoreOwner = viewModelStoreOwner,
             extras = CircleAddUserViewModel.getExtras(
                 CircleAddUserViewModelArgs(
@@ -312,15 +312,15 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
             loading = dialogUiState.loading,
             canFetchMore = dialogUiState.canFetchMore,
             onLoadMoreUsers = {
-                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.LoadNextPage)
+                addUsersViewModel.reduce(CircleAddUserMvi.Intent.LoadNextPage)
             },
             onSearch = {
-                addUsersViewModel.reduce(CircleAddUserMviModel.Intent.SetQuery(text = it))
+                addUsersViewModel.reduce(CircleAddUserMvi.Intent.SetQuery(text = it))
             },
             onClose = { values ->
                 addUsersDialogOpened = false
                 if (values != null) {
-                    model.reduce(CircleMembersMviModel.Intent.Add(values))
+                    model.reduce(CircleMembersMvi.Intent.Add(values))
                 }
             },
         )

@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
@@ -50,9 +50,9 @@ class UnpublishedViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<UnpublishedMviModel.Intent, UnpublishedMviModel.State, UnpublishedMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = UnpublishedMviModel.State()),
-    UnpublishedMviModel {
+    MviDelegate<UnpublishedMvi.Intent, UnpublishedMvi.State, UnpublishedMvi.Effect>
+    by DefaultMviDelegate(initialState = UnpublishedMvi.State()),
+    UnpublishedMvi {
     init {
         viewModelScope.launch {
             notificationCenter
@@ -106,26 +106,26 @@ class UnpublishedViewModel(
         }
     }
 
-    override fun reduce(intent: UnpublishedMviModel.Intent) {
+    override fun reduce(intent: UnpublishedMvi.Intent) {
         when (intent) {
-            is UnpublishedMviModel.Intent.ChangeSection ->
+            is UnpublishedMvi.Intent.ChangeSection ->
                 viewModelScope.launch {
                     if (uiState.value.loading) {
                         return@launch
                     }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(UnpublishedMviModel.Effect.BackToTop)
+                    emitEffect(UnpublishedMvi.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            is UnpublishedMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is UnpublishedMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            UnpublishedMviModel.Intent.LoadNextPage ->
+            UnpublishedMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            UnpublishedMviModel.Intent.Refresh ->
+            UnpublishedMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }

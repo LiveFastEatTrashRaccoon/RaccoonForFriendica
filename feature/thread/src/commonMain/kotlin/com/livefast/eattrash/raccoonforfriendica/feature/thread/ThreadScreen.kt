@@ -99,7 +99,7 @@ fun ThreadScreen(
     modifier: Modifier = Modifier,
     otherInstance: String? = null,
 ) {
-    val model: ThreadMviModel = assistedMetroViewModel<ThreadViewModel>(
+    val model: ThreadMvi = assistedMetroViewModel<ThreadViewModel>(
         extras = ThreadViewModel.getExtras(
             ThreadViewModelArgs(
                 entryId = entryId,
@@ -147,14 +147,14 @@ fun ThreadScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    ThreadMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    ThreadMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is ThreadMviModel.Effect.TriggerCopy -> {
+                    is ThreadMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is ThreadMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is ThreadMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -267,7 +267,7 @@ fun ThreadScreen(
         LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.currentPage }
                 .onEach {
-                    model.reduce(ThreadMviModel.Intent.ChangeNavigationIndex(it))
+                    model.reduce(ThreadMvi.Intent.ChangeNavigationIndex(it))
                     goBackToTop()
                 }.launchIn(this)
         }
@@ -294,7 +294,7 @@ fun ThreadScreen(
                     ).nestedScroll(fabNestedScrollConnection),
                 isRefreshing = uiState.refreshing,
                 onRefresh = {
-                    model.reduce(ThreadMviModel.Intent.Refresh)
+                    model.reduce(ThreadMvi.Intent.Refresh)
                 },
             ) {
                 LazyColumn(
@@ -350,15 +350,15 @@ fun ThreadScreen(
                                 },
                                 onBookmark =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
+                                    model.reduce(ThreadMvi.Intent.ToggleBookmark(e))
                                 }.takeIf { actionRepository.canBookmark(entry) && isHomeInstance },
                                 onFavorite =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
+                                    model.reduce(ThreadMvi.Intent.ToggleFavorite(e))
                                 }.takeIf { actionRepository.canFavorite(entry) && isHomeInstance },
                                 onDislike =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
+                                    model.reduce(ThreadMvi.Intent.ToggleDislike(e))
                                 }.takeIf { actionRepository.canDislike(entry) && isHomeInstance },
                                 onOpenUsersFavorite = { e ->
                                     mainRouter.openEntryUsersFavorite(
@@ -378,7 +378,7 @@ fun ThreadScreen(
                                 uiState.currentUserId?.let {
                                     { e, choices ->
                                         model.reduce(
-                                            ThreadMviModel.Intent.SubmitPollVote(
+                                            ThreadMvi.Intent.SubmitPollVote(
                                                 entry = e,
                                                 choices = choices,
                                             ),
@@ -387,7 +387,7 @@ fun ThreadScreen(
                                 },
                                 onShowOriginal = {
                                     model.reduce(
-                                        ThreadMviModel.Intent.ToggleTranslation(entry.original),
+                                        ThreadMvi.Intent.ToggleTranslation(entry.original),
                                     )
                                 },
 
@@ -462,22 +462,22 @@ fun ThreadScreen(
 
                                         OptionId.CopyToClipboard ->
                                             entry.original.also { entry ->
-                                                model.reduce(ThreadMviModel.Intent.CopyToClipboard(entry))
+                                                model.reduce(ThreadMvi.Intent.CopyToClipboard(entry))
                                             }
 
                                         OptionId.Translate ->
                                             entry.original.also { entry ->
-                                                model.reduce(ThreadMviModel.Intent.ToggleTranslation(entry))
+                                                model.reduce(ThreadMvi.Intent.ToggleTranslation(entry))
                                             }
 
                                         OptionId.AddShortcut ->
                                             model.reduce(
-                                                ThreadMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                                ThreadMvi.Intent.AddInstanceShortcut(entry.nodeName),
                                             )
 
                                         OptionId.OpenInBrowser ->
                                             model.reduce(
-                                                ThreadMviModel.Intent.OpenInBrowser(entry),
+                                                ThreadMvi.Intent.OpenInBrowser(entry),
                                             )
 
                                         else -> Unit
@@ -537,21 +537,21 @@ fun ThreadScreen(
 
                                     else ->
                                         model.reduce(
-                                            ThreadMviModel.Intent.ToggleReblog(e),
+                                            ThreadMvi.Intent.ToggleReblog(e),
                                         )
                                 }
                             }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                             onBookmark =
                             { e: TimelineEntryModel ->
-                                model.reduce(ThreadMviModel.Intent.ToggleBookmark(e))
+                                model.reduce(ThreadMvi.Intent.ToggleBookmark(e))
                             }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                             onFavorite =
                             { e: TimelineEntryModel ->
-                                model.reduce(ThreadMviModel.Intent.ToggleFavorite(e))
+                                model.reduce(ThreadMvi.Intent.ToggleFavorite(e))
                             }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                             onDislike =
                             { e: TimelineEntryModel ->
-                                model.reduce(ThreadMviModel.Intent.ToggleDislike(e))
+                                model.reduce(ThreadMvi.Intent.ToggleDislike(e))
                             }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                             onReply =
                             { e: TimelineEntryModel ->
@@ -562,7 +562,7 @@ fun ThreadScreen(
                             }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
                             onShowOriginal = {
                                 model.reduce(
-                                    ThreadMviModel.Intent.ToggleTranslation(entry.original),
+                                    ThreadMvi.Intent.ToggleTranslation(entry.original),
                                 )
                             },
                             onOpenQuote = { e ->
@@ -680,21 +680,21 @@ fun ThreadScreen(
                                     }
 
                                     OptionId.CopyToClipboard ->
-                                        model.reduce(ThreadMviModel.Intent.CopyToClipboard(entry.original))
+                                        model.reduce(ThreadMvi.Intent.CopyToClipboard(entry.original))
 
                                     OptionId.Translate ->
                                         model.reduce(
-                                            ThreadMviModel.Intent.ToggleTranslation(entry.original),
+                                            ThreadMvi.Intent.ToggleTranslation(entry.original),
                                         )
 
                                     OptionId.AddShortcut ->
                                         model.reduce(
-                                            ThreadMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                            ThreadMvi.Intent.AddInstanceShortcut(entry.nodeName),
                                         )
 
                                     OptionId.OpenInBrowser ->
                                         model.reduce(
-                                            ThreadMviModel.Intent.OpenInBrowser(entry),
+                                            ThreadMvi.Intent.OpenInBrowser(entry),
                                         )
 
                                     else -> Unit
@@ -711,7 +711,7 @@ fun ThreadScreen(
                                 Button(
                                     onClick = {
                                         model.reduce(
-                                            ThreadMviModel.Intent.LoadMoreReplies(entry),
+                                            ThreadMvi.Intent.LoadMoreReplies(entry),
                                         )
                                     },
                                 ) {
@@ -763,7 +763,7 @@ fun ThreadScreen(
                 val deletedEntryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && deletedEntryId != null) {
-                    model.reduce(ThreadMviModel.Intent.DeleteEntry(deletedEntryId))
+                    model.reduce(ThreadMvi.Intent.DeleteEntry(deletedEntryId))
                 }
             },
         )
@@ -780,7 +780,7 @@ fun ThreadScreen(
                         val (duration, disableNotifications) = result
                         if (mutedEntryId != null) {
                             model.reduce(
-                                ThreadMviModel.Intent.MuteUser(
+                                ThreadMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = mutedEntryId,
                                     duration = duration,
@@ -811,7 +811,7 @@ fun ThreadScreen(
                 confirmBlockEntry = null
                 if (confirm && blockedEntryId != null && creatorId != null) {
                     model.reduce(
-                        ThreadMviModel.Intent.BlockUser(
+                        ThreadMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = blockedEntryId,
                         ),
@@ -837,7 +837,7 @@ fun ThreadScreen(
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(ThreadMviModel.Intent.ToggleReblog(e))
+                    model.reduce(ThreadMvi.Intent.ToggleReblog(e))
                 }
             },
         )

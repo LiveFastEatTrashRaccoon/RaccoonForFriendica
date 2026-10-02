@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -69,9 +69,9 @@ class EntryListViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<EntryListMviModel.Intent, EntryListMviModel.State, EntryListMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = EntryListMviModel.State()),
-    EntryListMviModel {
+    MviDelegate<EntryListMvi.Intent, EntryListMvi.State, EntryListMvi.Effect>
+    by DefaultMviDelegate(initialState = EntryListMvi.State()),
+    EntryListMvi {
 
     private val type = args.type
 
@@ -122,29 +122,29 @@ class EntryListViewModel(
         }
     }
 
-    override fun reduce(intent: EntryListMviModel.Intent) {
+    override fun reduce(intent: EntryListMvi.Intent) {
         when (intent) {
-            EntryListMviModel.Intent.Refresh ->
+            EntryListMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            EntryListMviModel.Intent.LoadNextPage ->
+            EntryListMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is EntryListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is EntryListMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is EntryListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is EntryListMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is EntryListMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is EntryListMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is EntryListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is EntryListMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is EntryListMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is EntryListMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is EntryListMviModel.Intent.MuteUser ->
+            is EntryListMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -152,30 +152,30 @@ class EntryListViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is EntryListMviModel.Intent.BlockUser ->
+            is EntryListMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is EntryListMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is EntryListMvi.Intent.TogglePin -> togglePin(intent.entry)
 
-            is EntryListMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is EntryListMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is EntryListMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is EntryListMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is EntryListMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is EntryListMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is EntryListMviModel.Intent.WillOpenDetail ->
+            is EntryListMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(EntryListMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(EntryListMvi.Effect.OpenDetail(intent.entry))
                 }
 
-            is EntryListMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is EntryListMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is EntryListMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is EntryListMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -216,7 +216,7 @@ class EntryListViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(EntryListMviModel.Effect.BackToTop)
+                emitEffect(EntryListMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -461,7 +461,7 @@ class EntryListViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(EntryListMviModel.Effect.PollVoteFailure)
+                emitEffect(EntryListMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -478,7 +478,7 @@ class EntryListViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(EntryListMviModel.Effect.TriggerCopy(text))
+                emitEffect(EntryListMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -526,7 +526,7 @@ class EntryListViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(EntryListMviModel.Effect.OpenUrl(url))
+                emitEffect(EntryListMvi.Effect.OpenUrl(url))
             }
         }
     }

@@ -50,7 +50,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
-    val model: ManageUserCirclesMviModel = assistedMetroViewModel<ManageUserCirclesViewModel>(
+    val model: ManageUserCirclesMvi = assistedMetroViewModel<ManageUserCirclesViewModel>(
         extras = ManageUserCirclesViewModel.getExtras(ManageUserCirclesViewModelArgs(userId = userId)),
     )
     val uiState by model.uiState.collectAsState()
@@ -81,7 +81,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    ManageUserCirclesMviModel.Effect.Error ->
+                    ManageUserCirclesMvi.Effect.Error ->
                         snackbarHostState.showSnackbar(genericError)
                 }
             }.launchIn(this)
@@ -135,7 +135,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(padding).fillMaxWidth(),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ManageUserCirclesMviModel.Intent.Refresh)
+                model.reduce(ManageUserCirclesMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -193,7 +193,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
                     val itemId = confirmAddItemId
                     confirmAddItemId = null
                     if (confirm && itemId != null) {
-                        model.reduce(ManageUserCirclesMviModel.Intent.Add(circleId = itemId))
+                        model.reduce(ManageUserCirclesMvi.Intent.Add(circleId = itemId))
                     }
                 },
             )
@@ -206,7 +206,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
                     val itemId = confirmRemoveItemId
                     confirmRemoveItemId = null
                     if (confirm && itemId != null) {
-                        model.reduce(ManageUserCirclesMviModel.Intent.Remove(circleId = itemId))
+                        model.reduce(ManageUserCirclesMvi.Intent.Remove(circleId = itemId))
                     }
                 },
             )

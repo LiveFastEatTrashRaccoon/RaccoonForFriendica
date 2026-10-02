@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -69,9 +69,9 @@ class ForumListViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<ForumListMviModel.Intent, ForumListMviModel.State, ForumListMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ForumListMviModel.State()),
-    ForumListMviModel {
+    MviDelegate<ForumListMvi.Intent, ForumListMvi.State, ForumListMvi.Effect>
+    by DefaultMviDelegate(initialState = ForumListMvi.State()),
+    ForumListMvi {
 
     init {
         viewModelScope.launch {
@@ -121,29 +121,29 @@ class ForumListViewModel(
         }
     }
 
-    override fun reduce(intent: ForumListMviModel.Intent) {
+    override fun reduce(intent: ForumListMvi.Intent) {
         when (intent) {
-            ForumListMviModel.Intent.LoadNextPage ->
+            ForumListMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            ForumListMviModel.Intent.Refresh ->
+            ForumListMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is ForumListMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ForumListMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is ForumListMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ForumListMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is ForumListMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is ForumListMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is ForumListMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ForumListMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is ForumListMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is ForumListMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is ForumListMviModel.Intent.MuteUser ->
+            is ForumListMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -151,28 +151,28 @@ class ForumListViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is ForumListMviModel.Intent.BlockUser ->
+            is ForumListMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is ForumListMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is ForumListMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is ForumListMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is ForumListMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is ForumListMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is ForumListMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is ForumListMviModel.Intent.WillOpenDetail ->
+            is ForumListMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(ForumListMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(ForumListMvi.Effect.OpenDetail(intent.entry))
                 }
 
-            is ForumListMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is ForumListMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is ForumListMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is ForumListMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -441,7 +441,7 @@ class ForumListViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(ForumListMviModel.Effect.PollVoteFailure)
+                emitEffect(ForumListMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -458,7 +458,7 @@ class ForumListViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(ForumListMviModel.Effect.TriggerCopy(text))
+                emitEffect(ForumListMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -506,7 +506,7 @@ class ForumListViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(ForumListMviModel.Effect.OpenUrl(url))
+                emitEffect(ForumListMvi.Effect.OpenUrl(url))
             }
         }
     }

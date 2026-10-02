@@ -75,7 +75,7 @@ import kotlin.math.abs
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifier = Modifier) {
-    val model: ConversationMviModel = assistedMetroViewModel<ConversationViewModel>(
+    val model: ConversationMvi = assistedMetroViewModel<ConversationViewModel>(
         extras = ConversationViewModel.getExtras(
             ConversationViewModelArgs(
                 otherUserId = otherUserId,
@@ -111,12 +111,12 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
         model.effects
             .onEach { event ->
                 when (event) {
-                    ConversationMviModel.Effect.BackToTop -> goBackToTop()
+                    ConversationMvi.Effect.BackToTop -> goBackToTop()
 
-                    ConversationMviModel.Effect.Failure ->
+                    ConversationMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
 
-                    ConversationMviModel.Effect.FollowUserRequired ->
+                    ConversationMvi.Effect.FollowUserRequired ->
                         snackbarHostState.showSnackbar(followRequiredMessage)
                 }
             }.launchIn(this)
@@ -218,12 +218,12 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                     textStyle = MaterialTheme.typography.bodyMedium,
                     maxLines = 3,
                     onValueChange = {
-                        model.reduce(ConversationMviModel.Intent.SetNewMessageValue(it))
+                        model.reduce(ConversationMvi.Intent.SetNewMessageValue(it))
                     },
                 )
                 FilledIconButton(
                     onClick = {
-                        model.reduce(ConversationMviModel.Intent.Submit)
+                        model.reduce(ConversationMvi.Intent.Submit)
                     },
                 ) {
                     Icon(
@@ -241,7 +241,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                 .fillMaxSize(),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ConversationMviModel.Intent.Refresh)
+                model.reduce(ConversationMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -343,7 +343,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(ConversationMviModel.Intent.LoadNextPage)
+                        model.reduce(ConversationMvi.Intent.LoadNextPage)
                     }
                 }
 

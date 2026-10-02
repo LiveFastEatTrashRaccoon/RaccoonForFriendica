@@ -41,7 +41,7 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 @Composable
 fun AcknowledgementsScreen(
     modifier: Modifier = Modifier,
-    model: AcknowledgementsMviModel = metroViewModel<AcknowledgementsViewModel>(),
+    model: AcknowledgementsMvi = metroViewModel<AcknowledgementsViewModel>(),
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
@@ -89,7 +89,7 @@ fun AcknowledgementsScreen(
                 .fillMaxSize(),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(AcknowledgementsMviModel.Intent.Refresh)
+                model.reduce(AcknowledgementsMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(

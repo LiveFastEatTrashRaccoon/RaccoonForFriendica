@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.directmessages.selectu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import dev.zacsweers.metro.AppScope
@@ -29,9 +29,9 @@ import kotlin.time.Duration.Companion.milliseconds
 @Inject
 class SelectUserViewModel(private val userPaginationManager: UserPaginationManager) :
     ViewModel(),
-    MviModelDelegate<SelectUserMviModel.Intent, SelectUserMviModel.State, SelectUserMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = SelectUserMviModel.State()),
-    SelectUserMviModel {
+    MviDelegate<SelectUserMvi.Intent, SelectUserMvi.State, SelectUserMvi.Effect>
+    by DefaultMviDelegate(initialState = SelectUserMvi.State()),
+    SelectUserMvi {
 
     init {
         viewModelScope.launch {
@@ -46,19 +46,19 @@ class SelectUserViewModel(private val userPaginationManager: UserPaginationManag
         }
     }
 
-    override fun reduce(intent: SelectUserMviModel.Intent) {
+    override fun reduce(intent: SelectUserMvi.Intent) {
         when (intent) {
-            SelectUserMviModel.Intent.Clear ->
+            SelectUserMvi.Intent.Clear ->
                 viewModelScope.launch {
                     updateState { it.copy(users = emptyList()) }
                 }
 
-            SelectUserMviModel.Intent.LoadNextPage ->
+            SelectUserMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPageUsers()
                 }
 
-            is SelectUserMviModel.Intent.SetQuery ->
+            is SelectUserMvi.Intent.SetQuery ->
                 viewModelScope.launch {
                     updateState { it.copy(query = intent.query) }
                 }

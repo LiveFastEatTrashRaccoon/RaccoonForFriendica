@@ -93,7 +93,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreScreen(
-    model: ExploreMviModel,
+    model: ExploreMvi,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
@@ -136,18 +136,18 @@ fun ExploreScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    ExploreMviModel.Effect.BackToTop -> goBackToTop()
+                    ExploreMvi.Effect.BackToTop -> goBackToTop()
 
-                    ExploreMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    ExploreMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is ExploreMviModel.Effect.TriggerCopy -> {
+                    is ExploreMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is ExploreMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is ExploreMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
 
-                    ExploreMviModel.Effect.SelectForeignInstanceSuccess -> {
+                    ExploreMvi.Effect.SelectForeignInstanceSuccess -> {
                         selectForeignInstanceOpened = false
                     }
                 }
@@ -266,7 +266,7 @@ fun ExploreScreen(
                                             optionsMenuOpen = false
                                             when (option.id) {
                                                 CustomOptions.BackToHomeInstance -> {
-                                                    model.reduce(ExploreMviModel.Intent.ResetOtherInstance)
+                                                    model.reduce(ExploreMvi.Intent.ResetOtherInstance)
                                                 }
 
                                                 CustomOptions.SelectForeignInstance -> {
@@ -316,7 +316,7 @@ fun ExploreScreen(
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ExploreMviModel.Intent.Refresh)
+                model.reduce(ExploreMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -337,7 +337,7 @@ fun ExploreScreen(
                         currentSection = uiState.availableSections.indexOf(uiState.section),
                         onSelectSection = {
                             model.reduce(
-                                ExploreMviModel.Intent.ChangeSection(uiState.availableSections[it]),
+                                ExploreMvi.Intent.ChangeSection(uiState.availableSections[it]),
                             )
                         },
                     )
@@ -434,21 +434,21 @@ fun ExploreScreen(
 
                                         else ->
                                             model.reduce(
-                                                ExploreMviModel.Intent.ToggleReblog(e),
+                                                ExploreMvi.Intent.ToggleReblog(e),
                                             )
                                     }
                                 }.takeIf { actionRepository.canReblog(item.entry.original) && isHomeInstance },
                                 onBookmark =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(ExploreMviModel.Intent.ToggleBookmark(e))
+                                    model.reduce(ExploreMvi.Intent.ToggleBookmark(e))
                                 }.takeIf { actionRepository.canBookmark(item.entry.original) && isHomeInstance },
                                 onFavorite =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(ExploreMviModel.Intent.ToggleFavorite(e))
+                                    model.reduce(ExploreMvi.Intent.ToggleFavorite(e))
                                 }.takeIf { actionRepository.canFavorite(item.entry.original) && isHomeInstance },
                                 onDislike =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(ExploreMviModel.Intent.ToggleDislike(e))
+                                    model.reduce(ExploreMvi.Intent.ToggleDislike(e))
                                 }.takeIf { actionRepository.canDislike(item.entry.original) && isHomeInstance },
                                 onReply =
                                 { e: TimelineEntryModel ->
@@ -461,7 +461,7 @@ fun ExploreScreen(
                                 uiState.currentUserId?.let {
                                     { e, choices ->
                                         model.reduce(
-                                            ExploreMviModel.Intent.SubmitPollVote(
+                                            ExploreMvi.Intent.SubmitPollVote(
                                                 entry = e,
                                                 choices = choices,
                                             ),
@@ -470,7 +470,7 @@ fun ExploreScreen(
                                 },
                                 onShowOriginal = {
                                     model.reduce(
-                                        ExploreMviModel.Intent.ToggleTranslation(
+                                        ExploreMvi.Intent.ToggleTranslation(
                                             item.entry.original,
                                         ),
                                     )
@@ -576,7 +576,7 @@ fun ExploreScreen(
 
                                         OptionId.Pin, OptionId.Unpin ->
                                             model.reduce(
-                                                ExploreMviModel.Intent.TogglePin(item.entry),
+                                                ExploreMvi.Intent.TogglePin(item.entry),
                                             )
 
                                         OptionId.ReportUser ->
@@ -607,28 +607,28 @@ fun ExploreScreen(
 
                                         OptionId.CopyToClipboard ->
                                             model.reduce(
-                                                ExploreMviModel.Intent.CopyToClipboard(
+                                                ExploreMvi.Intent.CopyToClipboard(
                                                     item.entry.original,
                                                 ),
                                             )
 
                                         OptionId.Translate ->
                                             model.reduce(
-                                                ExploreMviModel.Intent.ToggleTranslation(
+                                                ExploreMvi.Intent.ToggleTranslation(
                                                     item.entry.original,
                                                 ),
                                             )
 
                                         OptionId.AddShortcut ->
                                             model.reduce(
-                                                ExploreMviModel.Intent.AddInstanceShortcut(
+                                                ExploreMvi.Intent.AddInstanceShortcut(
                                                     item.entry.nodeName,
                                                 ),
                                             )
 
                                         OptionId.OpenInBrowser ->
                                             model.reduce(
-                                                ExploreMviModel.Intent.OpenInBrowser(item.entry),
+                                                ExploreMvi.Intent.OpenInBrowser(item.entry),
                                             )
 
                                         else -> Unit
@@ -686,11 +686,11 @@ fun ExploreScreen(
                                         }
 
                                         RelationshipStatusNextAction.Follow -> {
-                                            model.reduce(ExploreMviModel.Intent.Follow(item.user.id))
+                                            model.reduce(ExploreMvi.Intent.Follow(item.user.id))
                                         }
 
                                         RelationshipStatusNextAction.Unfollow -> {
-                                            model.reduce(ExploreMviModel.Intent.Unfollow(item.user.id))
+                                            model.reduce(ExploreMvi.Intent.Unfollow(item.user.id))
                                         }
                                     }
                                 }.takeIf { isHomeInstance },
@@ -703,7 +703,7 @@ fun ExploreScreen(
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(ExploreMviModel.Intent.LoadNextPage)
+                        model.reduce(ExploreMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -732,7 +732,7 @@ fun ExploreScreen(
                 val userId = confirmUnfollowDialogUserId
                 confirmUnfollowDialogUserId = null
                 if (confirm && userId != null) {
-                    model.reduce(ExploreMviModel.Intent.Unfollow(userId))
+                    model.reduce(ExploreMvi.Intent.Unfollow(userId))
                 }
             },
         )
@@ -745,7 +745,7 @@ fun ExploreScreen(
                 val userId = confirmUnfollowDialogUserId
                 confirmUnfollowDialogUserId = null
                 if (confirm && userId != null) {
-                    model.reduce(ExploreMviModel.Intent.Unfollow(userId))
+                    model.reduce(ExploreMvi.Intent.Unfollow(userId))
                 }
             },
         )
@@ -757,7 +757,7 @@ fun ExploreScreen(
             onClose = { confirm ->
                 val entryId = confirmDeleteEntryId
                 if (confirm && entryId != null) {
-                    model.reduce(ExploreMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(ExploreMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -774,7 +774,7 @@ fun ExploreScreen(
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                ExploreMviModel.Intent.MuteUser(
+                                ExploreMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -805,7 +805,7 @@ fun ExploreScreen(
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        ExploreMviModel.Intent.BlockUser(
+                        ExploreMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -831,7 +831,7 @@ fun ExploreScreen(
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(ExploreMviModel.Intent.ToggleReblog(e))
+                    model.reduce(ExploreMvi.Intent.ToggleReblog(e))
                 }
             },
         )
@@ -856,10 +856,10 @@ fun ExploreScreen(
                 selectForeignInstanceOpened = false
             },
             onNodeChange = { value ->
-                model.reduce(ExploreMviModel.Intent.SetSelectForeignInstanceName(value))
+                model.reduce(ExploreMvi.Intent.SetSelectForeignInstanceName(value))
             },
             onSubmit = {
-                model.reduce(ExploreMviModel.Intent.SubmitSelectForeignInstanceName)
+                model.reduce(ExploreMvi.Intent.SubmitSelectForeignInstanceName)
             },
         )
     }

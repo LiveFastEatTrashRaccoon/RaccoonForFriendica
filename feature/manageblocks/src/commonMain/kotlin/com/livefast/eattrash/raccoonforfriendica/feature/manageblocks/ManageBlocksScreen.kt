@@ -76,7 +76,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun ManageBlocksScreen(
     modifier: Modifier = Modifier,
-    model: ManageBlocksMviModel = metroViewModel<ManageBlocksViewModel>(),
+    model: ManageBlocksMvi = metroViewModel<ManageBlocksViewModel>(),
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
@@ -109,7 +109,7 @@ fun ManageBlocksScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    ManageBlocksMviModel.Effect.BackToTop -> goBackToTop()
+                    ManageBlocksMvi.Effect.BackToTop -> goBackToTop()
                 }
             }.launchIn(this)
     }
@@ -224,7 +224,7 @@ fun ManageBlocksScreen(
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ManageBlocksMviModel.Intent.Refresh)
+                model.reduce(ManageBlocksMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -250,7 +250,7 @@ fun ManageBlocksScreen(
                         currentSection = sections.indexOf(uiState.section),
                         onSelectSection = {
                             model.reduce(
-                                ManageBlocksMviModel.Intent.ChangeSection(sections[it]),
+                                ManageBlocksMvi.Intent.ChangeSection(sections[it]),
                             )
                         },
                     )
@@ -338,7 +338,7 @@ fun ManageBlocksScreen(
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(ManageBlocksMviModel.Intent.LoadNextPage)
+                        model.reduce(ManageBlocksMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -367,7 +367,7 @@ fun ManageBlocksScreen(
                 val userId = confirmUnmuteUserId
                 confirmUnmuteUserId = null
                 if (confirm && userId != null) {
-                    model.reduce(ManageBlocksMviModel.Intent.ToggleMute(userId))
+                    model.reduce(ManageBlocksMvi.Intent.ToggleMute(userId))
                 }
             },
         )
@@ -380,7 +380,7 @@ fun ManageBlocksScreen(
                 val userId = confirmUnblockUserId
                 confirmUnblockUserId = null
                 if (confirm && userId != null) {
-                    model.reduce(ManageBlocksMviModel.Intent.ToggleBlock(userId))
+                    model.reduce(ManageBlocksMvi.Intent.ToggleBlock(userId))
                 }
             },
         )
@@ -422,7 +422,7 @@ fun ManageBlocksScreen(
                 if (user != null && index != null) {
                     val newRate = availableRates[index]
                     model.reduce(
-                        ManageBlocksMviModel.Intent.SetRateLimit(
+                        ManageBlocksMvi.Intent.SetRateLimit(
                             handle = user.handle.orEmpty(),
                             rate = newRate,
                         ),
@@ -441,7 +441,7 @@ fun ManageBlocksScreen(
             onClose = { newValue ->
                 if (newValue != null) {
                     model.reduce(
-                        ManageBlocksMviModel.Intent.AddStopWord(newValue),
+                        ManageBlocksMvi.Intent.AddStopWord(newValue),
                     )
                 }
                 addStopWordDialogOpen = false
@@ -456,7 +456,7 @@ fun ManageBlocksScreen(
                 val word = confirmDeleteStopWord
                 confirmDeleteStopWord = null
                 if (confirm && word != null) {
-                    model.reduce(ManageBlocksMviModel.Intent.RemoveStopWord(word))
+                    model.reduce(ManageBlocksMvi.Intent.RemoveStopWord(word))
                 }
             },
         )

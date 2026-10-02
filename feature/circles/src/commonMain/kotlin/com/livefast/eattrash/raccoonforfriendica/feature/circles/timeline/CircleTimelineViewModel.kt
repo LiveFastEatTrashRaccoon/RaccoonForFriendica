@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -71,9 +71,9 @@ class CircleTimelineViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<CircleTimelineMviModel.Intent, CircleTimelineMviModel.State, CircleTimelineMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = CircleTimelineMviModel.State()),
-    CircleTimelineMviModel {
+    MviDelegate<CircleTimelineMvi.Intent, CircleTimelineMvi.State, CircleTimelineMvi.Effect>
+    by DefaultMviDelegate(initialState = CircleTimelineMvi.State()),
+    CircleTimelineMvi {
 
     private val id = args.id
 
@@ -130,29 +130,29 @@ class CircleTimelineViewModel(
         }
     }
 
-    override fun reduce(intent: CircleTimelineMviModel.Intent) {
+    override fun reduce(intent: CircleTimelineMvi.Intent) {
         when (intent) {
-            CircleTimelineMviModel.Intent.Refresh ->
+            CircleTimelineMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            CircleTimelineMviModel.Intent.LoadNextPage ->
+            CircleTimelineMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is CircleTimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is CircleTimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is CircleTimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is CircleTimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is CircleTimelineMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is CircleTimelineMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is CircleTimelineMviModel.Intent.MuteUser ->
+            is CircleTimelineMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -160,34 +160,34 @@ class CircleTimelineViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is CircleTimelineMviModel.Intent.BlockUser ->
+            is CircleTimelineMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is CircleTimelineMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is CircleTimelineMvi.Intent.TogglePin -> togglePin(intent.entry)
 
-            is CircleTimelineMviModel.Intent.SubmitPollVote ->
+            is CircleTimelineMvi.Intent.SubmitPollVote ->
                 submitPoll(
                     intent.entry,
                     intent.choices,
                 )
 
-            is CircleTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is CircleTimelineMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is CircleTimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is CircleTimelineMviModel.Intent.WillOpenDetail ->
+            is CircleTimelineMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(CircleTimelineMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(CircleTimelineMvi.Effect.OpenDetail(intent.entry))
                 }
 
-            is CircleTimelineMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is CircleTimelineMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is CircleTimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is CircleTimelineMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -226,7 +226,7 @@ class CircleTimelineViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(CircleTimelineMviModel.Effect.BackToTop)
+                emitEffect(CircleTimelineMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -467,7 +467,7 @@ class CircleTimelineViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(CircleTimelineMviModel.Effect.PollVoteFailure)
+                emitEffect(CircleTimelineMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -484,7 +484,7 @@ class CircleTimelineViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(CircleTimelineMviModel.Effect.TriggerCopy(text))
+                emitEffect(CircleTimelineMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -532,7 +532,7 @@ class CircleTimelineViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(CircleTimelineMviModel.Effect.OpenUrl(url))
+                emitEffect(CircleTimelineMvi.Effect.OpenUrl(url))
             }
         }
     }

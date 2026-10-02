@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun UserFeedbackScreen(
     modifier: Modifier = Modifier,
-    model: UserFeedbackMviModel = metroViewModel<UserFeedbackViewModel>(),
+    model: UserFeedbackMvi = metroViewModel<UserFeedbackViewModel>(),
 ) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
@@ -66,11 +66,11 @@ fun UserFeedbackScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    is UserFeedbackMviModel.Effect.Failure -> {
+                    is UserFeedbackMvi.Effect.Failure -> {
                         snackbarHostState.showSnackbar(message = event.message ?: genericError)
                     }
 
-                    UserFeedbackMviModel.Effect.Success -> {
+                    UserFeedbackMvi.Effect.Success -> {
                         navigationCoordinator.pop()
                     }
                 }
@@ -109,7 +109,7 @@ fun UserFeedbackScreen(
                 actions = {
                     FilledIconButton(
                         onClick = {
-                            model.reduce(UserFeedbackMviModel.Intent.Submit)
+                            model.reduce(UserFeedbackMvi.Intent.Submit)
                         },
                     ) {
                         Icon(
@@ -161,7 +161,7 @@ fun UserFeedbackScreen(
                     autoCorrectEnabled = false,
                 ),
                 onValueChange = { value ->
-                    model.reduce(UserFeedbackMviModel.Intent.SetEmail(value))
+                    model.reduce(UserFeedbackMvi.Intent.SetEmail(value))
                 },
                 supportingText = {
                     val error = uiState.emailError
@@ -176,7 +176,7 @@ fun UserFeedbackScreen(
                     if (uiState.email.isNotEmpty()) {
                         IconButton(
                             onClick = {
-                                model.reduce(UserFeedbackMviModel.Intent.SetEmail(""))
+                                model.reduce(UserFeedbackMvi.Intent.SetEmail(""))
                             },
                         ) {
                             Icon(
@@ -206,7 +206,7 @@ fun UserFeedbackScreen(
                     )
                 },
                 onValueChange = { value ->
-                    model.reduce(UserFeedbackMviModel.Intent.SetComment(value))
+                    model.reduce(UserFeedbackMvi.Intent.SetComment(value))
                 },
                 supportingText = {
                     val error = uiState.commentError

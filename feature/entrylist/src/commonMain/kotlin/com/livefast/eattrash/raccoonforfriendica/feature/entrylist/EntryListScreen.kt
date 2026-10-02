@@ -71,12 +71,7 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryListScreen(
-    title: String,
-    model: EntryListMviModel,
-    modifier: Modifier = Modifier,
-    otherInstance: String? = null,
-) {
+fun EntryListScreen(title: String, model: EntryListMvi, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
@@ -115,23 +110,23 @@ fun EntryListScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    EntryListMviModel.Effect.BackToTop -> goBackToTop()
+                    EntryListMvi.Effect.BackToTop -> goBackToTop()
 
-                    EntryListMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    EntryListMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is EntryListMviModel.Effect.TriggerCopy -> {
+                    is EntryListMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is EntryListMviModel.Effect.OpenDetail -> {
+                    is EntryListMvi.Effect.OpenDetail -> {
                         mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
                     }
 
-                    is EntryListMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is EntryListMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -191,7 +186,7 @@ fun EntryListScreen(
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(EntryListMviModel.Intent.Refresh)
+                model.reduce(EntryListMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -230,7 +225,7 @@ fun EntryListScreen(
                         maxBodyLines = uiState.maxBodyLines,
                         pollEnabled = isHomeInstance,
                         onClick = { e ->
-                            model.reduce(EntryListMviModel.Intent.WillOpenDetail(e))
+                            model.reduce(EntryListMvi.Intent.WillOpenDetail(e))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -261,21 +256,21 @@ fun EntryListScreen(
 
                                 else ->
                                     model.reduce(
-                                        EntryListMviModel.Intent.ToggleReblog(e),
+                                        EntryListMvi.Intent.ToggleReblog(e),
                                     )
                             }
                         }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(EntryListMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(EntryListMvi.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(EntryListMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(EntryListMvi.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(EntryListMviModel.Intent.ToggleDislike(e))
+                            model.reduce(EntryListMvi.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
@@ -288,7 +283,7 @@ fun EntryListScreen(
                         uiState.currentUserId?.let {
                             { e, choices ->
                                 model.reduce(
-                                    EntryListMviModel.Intent.SubmitPollVote(
+                                    EntryListMvi.Intent.SubmitPollVote(
                                         entry = e,
                                         choices = choices,
                                     ),
@@ -297,7 +292,7 @@ fun EntryListScreen(
                         },
                         onShowOriginal = {
                             model.reduce(
-                                EntryListMviModel.Intent.ToggleTranslation(entry.original),
+                                EntryListMvi.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -399,7 +394,7 @@ fun EntryListScreen(
                                 OptionId.Block -> confirmBlockEntry = entry
 
                                 OptionId.Pin, OptionId.Unpin ->
-                                    model.reduce(EntryListMviModel.Intent.TogglePin(entry))
+                                    model.reduce(EntryListMvi.Intent.TogglePin(entry))
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
@@ -429,24 +424,24 @@ fun EntryListScreen(
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
-                                        EntryListMviModel.Intent.CopyToClipboard(entry.original),
+                                        EntryListMvi.Intent.CopyToClipboard(entry.original),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        EntryListMviModel.Intent.ToggleTranslation(
+                                        EntryListMvi.Intent.ToggleTranslation(
                                             entry.original,
                                         ),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        EntryListMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        EntryListMvi.Intent.AddInstanceShortcut(entry.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        EntryListMviModel.Intent.OpenInBrowser(entry),
+                                        EntryListMvi.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -461,7 +456,7 @@ fun EntryListScreen(
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(EntryListMviModel.Intent.LoadNextPage)
+                        model.reduce(EntryListMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -490,7 +485,7 @@ fun EntryListScreen(
                 val entryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && entryId != null) {
-                    model.reduce(EntryListMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(EntryListMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -507,7 +502,7 @@ fun EntryListScreen(
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                EntryListMviModel.Intent.MuteUser(
+                                EntryListMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -538,7 +533,7 @@ fun EntryListScreen(
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        EntryListMviModel.Intent.BlockUser(
+                        EntryListMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -564,7 +559,7 @@ fun EntryListScreen(
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(EntryListMviModel.Intent.ToggleReblog(e))
+                    model.reduce(EntryListMvi.Intent.ToggleReblog(e))
                 }
             },
         )

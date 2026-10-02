@@ -57,7 +57,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun AnnouncementsScreen(
     modifier: Modifier = Modifier,
-    model: AnnouncementsMviModel = metroViewModel<AnnouncementsViewModel>(),
+    model: AnnouncementsMvi = metroViewModel<AnnouncementsViewModel>(),
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
@@ -85,7 +85,7 @@ fun AnnouncementsScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    AnnouncementsMviModel.Effect.BackToTop -> goBackToTop()
+                    AnnouncementsMvi.Effect.BackToTop -> goBackToTop()
                 }
             }.launchIn(this)
     }
@@ -151,7 +151,7 @@ fun AnnouncementsScreen(
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(AnnouncementsMviModel.Intent.Refresh)
+                model.reduce(AnnouncementsMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -200,7 +200,7 @@ fun AnnouncementsScreen(
                         },
                         onAddReaction = { name ->
                             model.reduce(
-                                AnnouncementsMviModel.Intent.AddReaction(
+                                AnnouncementsMvi.Intent.AddReaction(
                                     id = announcement.id,
                                     name = name,
                                 ),
@@ -208,7 +208,7 @@ fun AnnouncementsScreen(
                         },
                         onRemoveReaction = { name ->
                             model.reduce(
-                                AnnouncementsMviModel.Intent.RemoveReaction(
+                                AnnouncementsMvi.Intent.RemoveReaction(
                                     id = announcement.id,
                                     name = name,
                                 ),
@@ -237,7 +237,7 @@ fun AnnouncementsScreen(
             onInsert = { emoji ->
                 chooseReactionAnnouncementIdBottomSheetOpened = null
                 model.reduce(
-                    AnnouncementsMviModel.Intent.AddReaction(
+                    AnnouncementsMvi.Intent.AddReaction(
                         id = id,
                         name = emoji.code,
                     ),
@@ -246,7 +246,7 @@ fun AnnouncementsScreen(
             onInsertCustom = { name ->
                 chooseReactionAnnouncementIdBottomSheetOpened = null
                 model.reduce(
-                    AnnouncementsMviModel.Intent.AddReaction(
+                    AnnouncementsMvi.Intent.AddReaction(
                         id = id,
                         name = name,
                     ),

@@ -89,7 +89,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
-    val model: ForumListMviModel = assistedMetroViewModel<ForumListViewModel>(
+    val model: ForumListMvi = assistedMetroViewModel<ForumListViewModel>(
         extras = ForumListViewModel.getExtras(ForumListViewModelArgs(id = id)),
     )
     val uiState by model.uiState.collectAsState()
@@ -132,14 +132,14 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
         model.effects
             .onEach { event ->
                 when (event) {
-                    ForumListMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    ForumListMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is ForumListMviModel.Effect.TriggerCopy -> {
+                    is ForumListMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is ForumListMviModel.Effect.OpenDetail -> {
+                    is ForumListMvi.Effect.OpenDetail -> {
                         mainRouter.openThread(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
@@ -147,7 +147,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         )
                     }
 
-                    is ForumListMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is ForumListMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -254,7 +254,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
 
                                             OptionId.AddShortcut ->
                                                 model.reduce(
-                                                    ForumListMviModel.Intent.AddInstanceShortcut(
+                                                    ForumListMvi.Intent.AddInstanceShortcut(
                                                         uiState.user
                                                             ?.handle.nodeName
                                                             .orEmpty(),
@@ -350,7 +350,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                 ).nestedScroll(fabNestedScrollConnection),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ForumListMviModel.Intent.Refresh)
+                model.reduce(ForumListMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -380,7 +380,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         maxBodyLines = uiState.maxBodyLines,
                         pollEnabled = isHomeInstance,
                         onClick = {
-                            model.reduce(ForumListMviModel.Intent.WillOpenDetail(entry))
+                            model.reduce(ForumListMvi.Intent.WillOpenDetail(entry))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -411,21 +411,21 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
 
                                 else ->
                                     model.reduce(
-                                        ForumListMviModel.Intent.ToggleReblog(e),
+                                        ForumListMvi.Intent.ToggleReblog(e),
                                     )
                             }
                         }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(ForumListMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(ForumListMvi.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(ForumListMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(ForumListMvi.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(ForumListMviModel.Intent.ToggleDislike(e))
+                            model.reduce(ForumListMvi.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
@@ -438,7 +438,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         uiState.currentUserId?.let {
                             { e, choices ->
                                 model.reduce(
-                                    ForumListMviModel.Intent.SubmitPollVote(
+                                    ForumListMvi.Intent.SubmitPollVote(
                                         entry = e,
                                         choices = choices,
                                     ),
@@ -447,7 +447,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         },
                         onShowOriginal = {
                             model.reduce(
-                                ForumListMviModel.Intent.ToggleTranslation(entry.original),
+                                ForumListMvi.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -566,21 +566,21 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                 OptionId.ViewDetails -> seeDetailsEntry = entry.original
 
                                 OptionId.CopyToClipboard ->
-                                    model.reduce(ForumListMviModel.Intent.CopyToClipboard(entry.original))
+                                    model.reduce(ForumListMvi.Intent.CopyToClipboard(entry.original))
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        ForumListMviModel.Intent.ToggleTranslation(entry.original),
+                                        ForumListMvi.Intent.ToggleTranslation(entry.original),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        ForumListMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        ForumListMvi.Intent.AddInstanceShortcut(entry.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        ForumListMviModel.Intent.OpenInBrowser(entry),
+                                        ForumListMvi.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -595,7 +595,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(ForumListMviModel.Intent.LoadNextPage)
+                        model.reduce(ForumListMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -635,7 +635,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                 val entryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && entryId != null) {
-                    model.reduce(ForumListMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(ForumListMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -652,7 +652,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                ForumListMviModel.Intent.MuteUser(
+                                ForumListMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -683,7 +683,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        ForumListMviModel.Intent.BlockUser(
+                        ForumListMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -709,7 +709,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(ForumListMviModel.Intent.ToggleReblog(e))
+                    model.reduce(ForumListMvi.Intent.ToggleReblog(e))
                 }
             },
         )

@@ -4,8 +4,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
@@ -44,9 +44,9 @@ class EditProfileViewModel(
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<EditProfileMviModel.Intent, EditProfileMviModel.State, EditProfileMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = EditProfileMviModel.State()),
-    EditProfileMviModel {
+    MviDelegate<EditProfileMvi.Intent, EditProfileMvi.State, EditProfileMvi.Effect>
+    by DefaultMviDelegate(initialState = EditProfileMvi.State()),
+    EditProfileMvi {
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled.onEach { autoloadImages ->
@@ -87,9 +87,9 @@ class EditProfileViewModel(
         }
     }
 
-    override fun reduce(intent: EditProfileMviModel.Intent) {
+    override fun reduce(intent: EditProfileMvi.Intent) {
         when (intent) {
-            is EditProfileMviModel.Intent.ChangeBio ->
+            is EditProfileMvi.Intent.ChangeBio ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -99,7 +99,7 @@ class EditProfileViewModel(
                     }
                 }
 
-            is EditProfileMviModel.Intent.ChangeBot ->
+            is EditProfileMvi.Intent.ChangeBot ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -109,7 +109,7 @@ class EditProfileViewModel(
                     }
                 }
 
-            is EditProfileMviModel.Intent.ChangeDiscoverable ->
+            is EditProfileMvi.Intent.ChangeDiscoverable ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -119,7 +119,7 @@ class EditProfileViewModel(
                     }
                 }
 
-            is EditProfileMviModel.Intent.ChangeDisplayName ->
+            is EditProfileMvi.Intent.ChangeDisplayName ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -129,7 +129,7 @@ class EditProfileViewModel(
                     }
                 }
 
-            is EditProfileMviModel.Intent.ChangeLocked ->
+            is EditProfileMvi.Intent.ChangeLocked ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -139,7 +139,7 @@ class EditProfileViewModel(
                     }
                 }
 
-            is EditProfileMviModel.Intent.ChangeHideCollections ->
+            is EditProfileMvi.Intent.ChangeHideCollections ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -149,7 +149,7 @@ class EditProfileViewModel(
                     }
                 }
 
-            is EditProfileMviModel.Intent.ChangeNoIndex ->
+            is EditProfileMvi.Intent.ChangeNoIndex ->
                 viewModelScope.launch {
                     updateState {
                         it.copy(
@@ -159,28 +159,28 @@ class EditProfileViewModel(
                     }
                 }
 
-            EditProfileMviModel.Intent.AddField -> addField()
-            is EditProfileMviModel.Intent.RemoveField -> removeField(index = intent.index)
-            is EditProfileMviModel.Intent.EditField ->
+            EditProfileMvi.Intent.AddField -> addField()
+            is EditProfileMvi.Intent.RemoveField -> removeField(index = intent.index)
+            is EditProfileMvi.Intent.EditField ->
                 editField(
                     index = intent.index,
                     key = intent.key,
                     value = intent.value,
                 )
 
-            is EditProfileMviModel.Intent.AvatarSelected -> loadImageAvatar(intent.value)
-            is EditProfileMviModel.Intent.HeaderSelected -> loadImageHeader(intent.value)
-            is EditProfileMviModel.Intent.InsertCustomEmoji ->
+            is EditProfileMvi.Intent.AvatarSelected -> loadImageAvatar(intent.value)
+            is EditProfileMvi.Intent.HeaderSelected -> loadImageHeader(intent.value)
+            is EditProfileMvi.Intent.InsertCustomEmoji ->
                 insertCustomEmoji(intent.fieldType, intent.emoji)
 
-            EditProfileMviModel.Intent.DeleteAccount ->
+            EditProfileMvi.Intent.DeleteAccount ->
                 viewModelScope.launch {
                     val node = apiConfigurationRepository.node.value
                     val url = "https://$node"
-                    emitEffect(EditProfileMviModel.Effect.OpenUrl(url))
+                    emitEffect(EditProfileMvi.Effect.OpenUrl(url))
                 }
 
-            is EditProfileMviModel.Intent.ChangeQuotePolicy -> viewModelScope.launch {
+            is EditProfileMvi.Intent.ChangeQuotePolicy -> viewModelScope.launch {
                 updateState {
                     it.copy(
                         quotePolicy = intent.value,
@@ -189,7 +189,7 @@ class EditProfileViewModel(
                 }
             }
 
-            EditProfileMviModel.Intent.Submit -> submit()
+            EditProfileMvi.Intent.Submit -> submit()
         }
     }
 
@@ -356,10 +356,10 @@ class EditProfileViewModel(
                         loading = false,
                     )
                 }
-                emitEffect(EditProfileMviModel.Effect.Success)
+                emitEffect(EditProfileMvi.Effect.Success)
             } else {
                 updateState { it.copy(loading = false) }
-                emitEffect(EditProfileMviModel.Effect.Failure)
+                emitEffect(EditProfileMvi.Effect.Failure)
             }
         }
     }

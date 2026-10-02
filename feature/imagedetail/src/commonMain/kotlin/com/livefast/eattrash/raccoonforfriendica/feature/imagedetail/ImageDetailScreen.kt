@@ -50,7 +50,7 @@ fun ImageDetailScreen(
     initialIndex: Int = 0,
     videoIndices: List<Int> = emptyList(),
 ) {
-    val model: ImageDetailMviModel = assistedMetroViewModel<ImageDetailViewModel>(
+    val model: ImageDetailMvi = assistedMetroViewModel<ImageDetailViewModel>(
         extras = ImageDetailViewModel.getExtras(
             ImageDetailViewModelArgs(
                 urls = urls,
@@ -77,7 +77,7 @@ fun ImageDetailScreen(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .onEach {
-                model.reduce(ImageDetailMviModel.Intent.ChangeIndex(it))
+                model.reduce(ImageDetailMvi.Intent.ChangeIndex(it))
             }.launchIn(this)
     }
 
@@ -85,10 +85,10 @@ fun ImageDetailScreen(
         model.effects
             .onEach {
                 when (it) {
-                    ImageDetailMviModel.Effect.ShareSuccess ->
+                    ImageDetailMvi.Effect.ShareSuccess ->
                         snackbarHostState.showSnackbar(successMessage)
 
-                    ImageDetailMviModel.Effect.ShareFailure ->
+                    ImageDetailMvi.Effect.ShareFailure ->
                         snackbarHostState.showSnackbar(errorMessage)
                 }
             }.launchIn(this)
@@ -136,7 +136,7 @@ fun ImageDetailScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            model.reduce(ImageDetailMviModel.Intent.SaveToGallery)
+                            model.reduce(ImageDetailMvi.Intent.SaveToGallery)
                         },
                     ) {
                         Icon(
@@ -234,7 +234,7 @@ fun ImageDetailScreen(
                     scaleModeBottomSheetOpened = false
                     if (index != null) {
                         model.reduce(
-                            ImageDetailMviModel.Intent.ChangeContentScale(
+                            ImageDetailMvi.Intent.ChangeContentScale(
                                 when (index) {
                                     1 -> ContentScale.FillWidth
                                     2 -> ContentScale.FillHeight
@@ -264,8 +264,8 @@ fun ImageDetailScreen(
                     if (index != null) {
                         model.reduce(
                             when (index) {
-                                1 -> ImageDetailMviModel.Intent.ShareAsFile
-                                else -> ImageDetailMviModel.Intent.ShareAsUrl
+                                1 -> ImageDetailMvi.Intent.ShareAsFile
+                                else -> ImageDetailMvi.Intent.ShareAsUrl
                             },
                         )
                     }

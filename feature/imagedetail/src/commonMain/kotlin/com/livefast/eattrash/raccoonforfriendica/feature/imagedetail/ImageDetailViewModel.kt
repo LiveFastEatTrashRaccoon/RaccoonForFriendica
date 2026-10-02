@@ -4,8 +4,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.GalleryHelper
 import com.livefast.eattrash.raccoonforfriendica.core.utils.gallery.download
@@ -31,9 +31,9 @@ class ImageDetailViewModel(
     private val galleryHelper: GalleryHelper,
     private val imagePreloadManager: ImagePreloadManager,
 ) : ViewModel(),
-    MviModelDelegate<ImageDetailMviModel.Intent, ImageDetailMviModel.UiState, ImageDetailMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ImageDetailMviModel.UiState()),
-    ImageDetailMviModel {
+    MviDelegate<ImageDetailMvi.Intent, ImageDetailMvi.UiState, ImageDetailMvi.Effect>
+    by DefaultMviDelegate(initialState = ImageDetailMvi.UiState()),
+    ImageDetailMvi {
 
     private val urls = args.urls
     private val initialIndex = args.initialIndex
@@ -48,20 +48,20 @@ class ImageDetailViewModel(
         }
     }
 
-    override fun reduce(intent: ImageDetailMviModel.Intent) {
+    override fun reduce(intent: ImageDetailMvi.Intent) {
         when (intent) {
-            is ImageDetailMviModel.Intent.ChangeIndex ->
+            is ImageDetailMvi.Intent.ChangeIndex ->
                 viewModelScope.launch {
                     updateState { it.copy(currentIndex = intent.index) }
                 }
 
-            is ImageDetailMviModel.Intent.ChangeContentScale -> changeContentScale(intent.contentScale)
+            is ImageDetailMvi.Intent.ChangeContentScale -> changeContentScale(intent.contentScale)
 
-            ImageDetailMviModel.Intent.SaveToGallery -> downloadAndSave()
+            ImageDetailMvi.Intent.SaveToGallery -> downloadAndSave()
 
-            ImageDetailMviModel.Intent.ShareAsUrl -> shareAsUrl()
+            ImageDetailMvi.Intent.ShareAsUrl -> shareAsUrl()
 
-            ImageDetailMviModel.Intent.ShareAsFile -> shareAsFile()
+            ImageDetailMvi.Intent.ShareAsFile -> shareAsFile()
         }
     }
 
@@ -94,11 +94,11 @@ class ImageDetailViewModel(
                     )
                 }
                 updateState { it.copy(loading = false) }
-                emitEffect(ImageDetailMviModel.Effect.ShareSuccess)
+                emitEffect(ImageDetailMvi.Effect.ShareSuccess)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
-                emitEffect(ImageDetailMviModel.Effect.ShareFailure)
+                emitEffect(ImageDetailMvi.Effect.ShareFailure)
             }
         }
     }
@@ -136,12 +136,12 @@ class ImageDetailViewModel(
                 if (path != null) {
                     shareHelper.shareImage(path)
                 } else {
-                    emitEffect(ImageDetailMviModel.Effect.ShareFailure)
+                    emitEffect(ImageDetailMvi.Effect.ShareFailure)
                 }
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
-                emitEffect(ImageDetailMviModel.Effect.ShareFailure)
+                emitEffect(ImageDetailMvi.Effect.ShareFailure)
             }
         }
     }

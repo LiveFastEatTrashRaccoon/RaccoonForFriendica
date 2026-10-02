@@ -35,7 +35,7 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LicencesScreen(modifier: Modifier = Modifier, model: LicencesMviModel = metroViewModel<LicencesViewModel>()) {
+fun LicencesScreen(modifier: Modifier = Modifier, model: LicencesMvi = metroViewModel<LicencesViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()

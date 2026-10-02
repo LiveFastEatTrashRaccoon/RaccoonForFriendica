@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.delete
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.DeleteAccountUseCase
 import dev.zacsweers.metro.AppScope
@@ -21,13 +21,13 @@ import kotlinx.coroutines.launch
 class DeleteAccountViewModel(
     private val deleteAccountUseCase: DeleteAccountUseCase,
 ) : ViewModel(),
-    MviModelDelegate<DeleteAccountMviModel.Intent, DeleteAccountMviModel.State, DeleteAccountMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = DeleteAccountMviModel.State()),
-    DeleteAccountMviModel {
+    MviDelegate<DeleteAccountMvi.Intent, DeleteAccountMvi.State, DeleteAccountMvi.Effect>
+    by DefaultMviDelegate(initialState = DeleteAccountMvi.State()),
+    DeleteAccountMvi {
 
-    override fun reduce(intent: DeleteAccountMviModel.Intent) {
+    override fun reduce(intent: DeleteAccountMvi.Intent) {
         when (intent) {
-            is DeleteAccountMviModel.Intent.Submit -> deleteAccount(intent.account)
+            is DeleteAccountMvi.Intent.Submit -> deleteAccount(intent.account)
         }
     }
 
@@ -37,7 +37,7 @@ class DeleteAccountViewModel(
         }
         viewModelScope.launch {
             deleteAccountUseCase(account)
-            emitEffect(DeleteAccountMviModel.Effect.Success)
+            emitEffect(DeleteAccountMvi.Effect.Success)
         }
     }
 }

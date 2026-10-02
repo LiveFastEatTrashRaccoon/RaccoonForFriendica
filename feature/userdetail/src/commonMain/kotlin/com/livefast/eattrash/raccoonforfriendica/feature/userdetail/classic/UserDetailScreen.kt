@@ -110,7 +110,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
-    val model: UserDetailMviModel = assistedMetroViewModel<UserDetailViewModel>(
+    val model: UserDetailMvi = assistedMetroViewModel<UserDetailViewModel>(
         extras = UserDetailViewModel.getExtras(UserDetailViewModelArgs(id = id)),
     )
     val uiState by model.uiState.collectAsState()
@@ -171,19 +171,19 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
         model.effects
             .onEach { event ->
                 when (event) {
-                    UserDetailMviModel.Effect.BackToTop -> goBackToTop()
+                    UserDetailMvi.Effect.BackToTop -> goBackToTop()
 
-                    UserDetailMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    UserDetailMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    UserDetailMviModel.Effect.Failure ->
+                    UserDetailMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
 
-                    is UserDetailMviModel.Effect.TriggerCopy -> {
+                    is UserDetailMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is UserDetailMviModel.Effect.OpenDetail -> {
+                    is UserDetailMvi.Effect.OpenDetail -> {
                         mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
@@ -191,7 +191,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         )
                     }
 
-                    is UserDetailMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is UserDetailMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -328,7 +328,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
 
                                                 OptionId.Unmute ->
                                                     model.reduce(
-                                                        UserDetailMviModel.Intent.ToggleMute(
+                                                        UserDetailMvi.Intent.ToggleMute(
                                                             muted = false,
                                                         ),
                                                     )
@@ -338,14 +338,14 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
 
                                                 OptionId.Unblock ->
                                                     model.reduce(
-                                                        UserDetailMviModel.Intent.ToggleBlock(
+                                                        UserDetailMvi.Intent.ToggleBlock(
                                                             blocked = false,
                                                         ),
                                                     )
 
                                                 OptionId.Edit ->
                                                     model.reduce(
-                                                        UserDetailMviModel.Intent.TogglePersonalNoteEditMode,
+                                                        UserDetailMvi.Intent.TogglePersonalNoteEditMode,
                                                     )
 
                                                 CustomOptions.ManageCircles ->
@@ -373,7 +373,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
 
                                                 OptionId.AddShortcut ->
                                                     model.reduce(
-                                                        UserDetailMviModel.Intent.AddInstanceShortcut(
+                                                        UserDetailMvi.Intent.AddInstanceShortcut(
                                                             uiState.user
                                                                 ?.handle
                                                                 ?.nodeName
@@ -463,7 +463,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                 ).nestedScroll(fabNestedScrollConnection),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(UserDetailMviModel.Intent.Refresh)
+                model.reduce(UserDetailMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -501,11 +501,11 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                     }
 
                                     RelationshipStatusNextAction.Follow -> {
-                                        model.reduce(UserDetailMviModel.Intent.Follow)
+                                        model.reduce(UserDetailMvi.Intent.Follow)
                                     }
 
                                     RelationshipStatusNextAction.Unfollow -> {
-                                        model.reduce(UserDetailMviModel.Intent.Unfollow)
+                                        model.reduce(UserDetailMvi.Intent.Unfollow)
                                     }
                                 }
                             }.takeIf { isHomeInstance },
@@ -516,7 +516,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                     }
 
                                     NotificationStatusNextAction.Enable -> {
-                                        model.reduce(UserDetailMviModel.Intent.EnableNotifications)
+                                        model.reduce(UserDetailMvi.Intent.EnableNotifications)
                                     }
                                 }
                             },
@@ -554,11 +554,11 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                             editEnabled = uiState.personalNoteEditEnabled,
                             note = note,
                             onChangeNote = {
-                                model.reduce(UserDetailMviModel.Intent.SetPersonalNote(it))
+                                model.reduce(UserDetailMvi.Intent.SetPersonalNote(it))
                             },
                             onSave = {
                                 focusManager.clearFocus()
-                                model.reduce(UserDetailMviModel.Intent.SubmitPersonalNote)
+                                model.reduce(UserDetailMvi.Intent.SubmitPersonalNote)
                             },
                         )
                     }
@@ -615,7 +615,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         currentSection = titles.indexOf(uiState.section),
                         onSelectSection = {
                             model.reduce(
-                                UserDetailMviModel.Intent.ChangeSection(titles[it]),
+                                UserDetailMvi.Intent.ChangeSection(titles[it]),
                             )
                         },
                     )
@@ -643,7 +643,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         maxBodyLines = uiState.maxBodyLines,
                         pollEnabled = isHomeInstance,
                         onClick = { e ->
-                            model.reduce(UserDetailMviModel.Intent.WillOpenDetail(e))
+                            model.reduce(UserDetailMvi.Intent.WillOpenDetail(e))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -676,21 +676,21 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
 
                                 else ->
                                     model.reduce(
-                                        UserDetailMviModel.Intent.ToggleReblog(e),
+                                        UserDetailMvi.Intent.ToggleReblog(e),
                                     )
                             }
                         }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(UserDetailMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(UserDetailMvi.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(UserDetailMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(UserDetailMvi.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(UserDetailMviModel.Intent.ToggleDislike(e))
+                            model.reduce(UserDetailMvi.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
@@ -703,7 +703,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         uiState.currentUserId?.let {
                             { e, choices ->
                                 model.reduce(
-                                    UserDetailMviModel.Intent.SubmitPollVote(
+                                    UserDetailMvi.Intent.SubmitPollVote(
                                         entry = e,
                                         choices = choices,
                                     ),
@@ -712,7 +712,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         },
                         onShowOriginal = {
                             model.reduce(
-                                UserDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                UserDetailMvi.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -799,21 +799,21 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                 }
 
                                 OptionId.CopyToClipboard ->
-                                    model.reduce(UserDetailMviModel.Intent.CopyToClipboard(entry.original))
+                                    model.reduce(UserDetailMvi.Intent.CopyToClipboard(entry.original))
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        UserDetailMviModel.Intent.ToggleTranslation(entry.original),
+                                        UserDetailMvi.Intent.ToggleTranslation(entry.original),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        UserDetailMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        UserDetailMvi.Intent.AddInstanceShortcut(entry.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        UserDetailMviModel.Intent.OpenInBrowser(entry),
+                                        UserDetailMvi.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -828,7 +828,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(UserDetailMviModel.Intent.LoadNextPage)
+                        model.reduce(UserDetailMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -867,7 +867,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
             onClose = { confirm ->
                 confirmUnfollowDialogOpen = false
                 if (confirm) {
-                    model.reduce(UserDetailMviModel.Intent.Unfollow)
+                    model.reduce(UserDetailMvi.Intent.Unfollow)
                 }
             },
         )
@@ -879,7 +879,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
             onClose = { confirm ->
                 confirmDeleteFollowRequestDialogOpen = false
                 if (confirm) {
-                    model.reduce(UserDetailMviModel.Intent.Unfollow)
+                    model.reduce(UserDetailMvi.Intent.Unfollow)
                 }
             },
         )
@@ -891,7 +891,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
             onClose = { confirm ->
                 confirmMuteNotificationsDialogOpen = false
                 if (confirm) {
-                    model.reduce(UserDetailMviModel.Intent.DisableNotifications)
+                    model.reduce(UserDetailMvi.Intent.DisableNotifications)
                 }
             },
         )
@@ -905,7 +905,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                     confirmMuteUserDialogOpen = false
                     val (duration, disableNotifications) = result
                     model.reduce(
-                        UserDetailMviModel.Intent.ToggleMute(
+                        UserDetailMvi.Intent.ToggleMute(
                             muted = true,
                             duration = duration,
                             disableNotifications = disableNotifications,
@@ -929,7 +929,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
             onClose = { confirm ->
                 confirmBlockUserDialogOpen = false
                 if (confirm) {
-                    model.reduce(UserDetailMviModel.Intent.ToggleBlock(blocked = true))
+                    model.reduce(UserDetailMvi.Intent.ToggleBlock(blocked = true))
                 }
             },
         )
@@ -951,7 +951,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(UserDetailMviModel.Intent.ToggleReblog(e))
+                    model.reduce(UserDetailMvi.Intent.ToggleReblog(e))
                 }
             },
         )
@@ -992,7 +992,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                 changeRateLimitBottomSheetOpen = false
                 if (index != null) {
                     val newRate = availableRates[index]
-                    model.reduce(UserDetailMviModel.Intent.SetRateLimit(newRate))
+                    model.reduce(UserDetailMvi.Intent.SetRateLimit(newRate))
                 }
             },
         )

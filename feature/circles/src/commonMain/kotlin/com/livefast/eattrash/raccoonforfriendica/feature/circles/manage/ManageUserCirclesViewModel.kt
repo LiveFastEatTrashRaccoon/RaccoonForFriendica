@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.manage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -25,13 +25,13 @@ class ManageUserCirclesViewModel(
     private val userCache: LocalItemCache<UserModel>,
     private val userRepository: UserRepository,
 ) : ViewModel(),
-    MviModelDelegate<
-        ManageUserCirclesMviModel.Intent,
-        ManageUserCirclesMviModel.State,
-        ManageUserCirclesMviModel.Effect,
+    MviDelegate<
+        ManageUserCirclesMvi.Intent,
+        ManageUserCirclesMvi.State,
+        ManageUserCirclesMvi.Effect,
         >
-    by DefaultMviModelDelegate(initialState = ManageUserCirclesMviModel.State()),
-    ManageUserCirclesMviModel {
+    by DefaultMviDelegate(initialState = ManageUserCirclesMvi.State()),
+    ManageUserCirclesMvi {
 
     private val userId = args.userId
 
@@ -45,15 +45,15 @@ class ManageUserCirclesViewModel(
         }
     }
 
-    override fun reduce(intent: ManageUserCirclesMviModel.Intent) {
+    override fun reduce(intent: ManageUserCirclesMvi.Intent) {
         when (intent) {
-            ManageUserCirclesMviModel.Intent.Refresh -> viewModelScope.launch {
+            ManageUserCirclesMvi.Intent.Refresh -> viewModelScope.launch {
                 refresh()
             }
 
-            is ManageUserCirclesMviModel.Intent.Add -> addUserToCircle(intent.circleId)
+            is ManageUserCirclesMvi.Intent.Add -> addUserToCircle(intent.circleId)
 
-            is ManageUserCirclesMviModel.Intent.Remove -> removeUserFrom(intent.circleId)
+            is ManageUserCirclesMvi.Intent.Remove -> removeUserFrom(intent.circleId)
         }
     }
 
@@ -126,7 +126,7 @@ class ManageUserCirclesViewModel(
                 updateItemInState(id = circleId) {
                     it.copy(pending = false)
                 }
-                emitEffect(ManageUserCirclesMviModel.Effect.Error)
+                emitEffect(ManageUserCirclesMvi.Effect.Error)
             }
         }
     }
@@ -151,7 +151,7 @@ class ManageUserCirclesViewModel(
                 updateItemInState(id = circleId) {
                     it.copy(pending = false)
                 }
-                emitEffect(ManageUserCirclesMviModel.Effect.Error)
+                emitEffect(ManageUserCirclesMvi.Effect.Error)
             }
         }
     }

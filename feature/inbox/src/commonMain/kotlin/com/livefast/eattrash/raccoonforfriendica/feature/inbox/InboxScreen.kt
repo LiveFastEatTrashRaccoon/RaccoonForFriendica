@@ -66,7 +66,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxScreen(
-    model: InboxMviModel,
+    model: InboxMvi,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
@@ -109,9 +109,9 @@ fun InboxScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    InboxMviModel.Effect.BackToTop -> goBackToTop()
-                    InboxMviModel.Effect.Success -> snackbarHostState.showSnackbar(successMessage)
-                    is InboxMviModel.Effect.Failure -> snackbarHostState.showSnackbar(errorMessage)
+                    InboxMvi.Effect.BackToTop -> goBackToTop()
+                    InboxMvi.Effect.Success -> snackbarHostState.showSnackbar(successMessage)
+                    is InboxMvi.Effect.Failure -> snackbarHostState.showSnackbar(errorMessage)
                 }
             }.launchIn(this)
     }
@@ -209,7 +209,7 @@ fun InboxScreen(
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(InboxMviModel.Intent.Refresh)
+                model.reduce(InboxMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -234,7 +234,7 @@ fun InboxScreen(
                         maxBodyLines = uiState.maxBodyLines,
                         onOpenEntry = { entry ->
                             mainRouter.openEntryDetail(entry.original)
-                            model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
+                            model.reduce(InboxMvi.Intent.MarkAsRead(notification))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -245,10 +245,10 @@ fun InboxScreen(
                         },
                         onOpenUser = {
                             mainRouter.openUserDetail(it)
-                            model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
+                            model.reduce(InboxMvi.Intent.MarkAsRead(notification))
                         },
                         onClickUserRelationship = { userId, nextAction ->
-                            model.reduce(InboxMviModel.Intent.MarkAsRead(notification))
+                            model.reduce(InboxMvi.Intent.MarkAsRead(notification))
                             when (nextAction) {
                                 RelationshipStatusNextAction.AcceptRequest -> {
                                     mainRouter.openFollowRequests()
@@ -263,16 +263,16 @@ fun InboxScreen(
                                 }
 
                                 RelationshipStatusNextAction.Follow -> {
-                                    model.reduce(InboxMviModel.Intent.Follow(userId))
+                                    model.reduce(InboxMvi.Intent.Follow(userId))
                                 }
 
                                 RelationshipStatusNextAction.Unfollow -> {
-                                    model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                                    model.reduce(InboxMvi.Intent.Unfollow(userId))
                                 }
                             }
                         },
                         onRevokeQuote = { entry ->
-                            model.reduce(InboxMviModel.Intent.RevokeQuote(entry))
+                            model.reduce(InboxMvi.Intent.RevokeQuote(entry))
                         },
                     )
 
@@ -280,7 +280,7 @@ fun InboxScreen(
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.notifications)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(InboxMviModel.Intent.LoadNextPage)
+                        model.reduce(InboxMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -333,7 +333,7 @@ fun InboxScreen(
                 val userId = confirmUnfollowDialogUserId ?: ""
                 confirmUnfollowDialogUserId = null
                 if (confirm && userId.isNotEmpty()) {
-                    model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                    model.reduce(InboxMvi.Intent.Unfollow(userId))
                 }
             },
         )
@@ -346,7 +346,7 @@ fun InboxScreen(
                 val userId = confirmUnfollowDialogUserId ?: ""
                 confirmDeleteFollowRequestDialogUserId = null
                 if (confirm && userId.isNotEmpty()) {
-                    model.reduce(InboxMviModel.Intent.Unfollow(userId))
+                    model.reduce(InboxMvi.Intent.Unfollow(userId))
                 }
             },
         )
@@ -359,7 +359,7 @@ fun InboxScreen(
             onClose = { values ->
                 configureSelectedTypesDialogOpen = false
                 if (values != null) {
-                    model.reduce(InboxMviModel.Intent.ChangeSelectedNotificationTypes(values))
+                    model.reduce(InboxMvi.Intent.ChangeSelectedNotificationTypes(values))
                 }
             },
         )
@@ -372,7 +372,7 @@ fun InboxScreen(
             onClose = { confirm ->
                 confirmDismissAllDialogOpen = false
                 if (confirm) {
-                    model.reduce(InboxMviModel.Intent.DismissAll)
+                    model.reduce(InboxMvi.Intent.DismissAll)
                 }
             },
         )

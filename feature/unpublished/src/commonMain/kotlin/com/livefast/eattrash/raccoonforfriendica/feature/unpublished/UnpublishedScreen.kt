@@ -57,7 +57,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier) {
+fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
@@ -83,7 +83,7 @@ fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier)
         model.effects
             .onEach { event ->
                 when (event) {
-                    UnpublishedMviModel.Effect.BackToTop -> goBackToTop()
+                    UnpublishedMvi.Effect.BackToTop -> goBackToTop()
                 }
             }.launchIn(this)
     }
@@ -143,7 +143,7 @@ fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier)
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(UnpublishedMviModel.Intent.Refresh)
+                model.reduce(UnpublishedMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -167,7 +167,7 @@ fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier)
                         currentSection = titles.indexOf(uiState.section),
                         onSelectSection = {
                             model.reduce(
-                                UnpublishedMviModel.Intent.ChangeSection(titles[it]),
+                                UnpublishedMvi.Intent.ChangeSection(titles[it]),
                             )
                         },
                     )
@@ -240,7 +240,7 @@ fun UnpublishedScreen(model: UnpublishedMviModel, modifier: Modifier = Modifier)
                 val entryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && entryId != null) {
-                    model.reduce(UnpublishedMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(UnpublishedMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )

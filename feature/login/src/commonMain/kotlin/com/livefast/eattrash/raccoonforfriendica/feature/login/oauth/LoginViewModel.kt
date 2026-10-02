@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.login.oauth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
@@ -37,9 +37,9 @@ class LoginViewModel(
     private val authManager: AuthManager,
     private val loginUseCase: LoginUseCase,
 ) : ViewModel(),
-    MviModelDelegate<LoginMviModel.Intent, LoginMviModel.State, LoginMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = LoginMviModel.State()),
-    LoginMviModel {
+    MviDelegate<LoginMvi.Intent, LoginMvi.State, LoginMvi.Effect>
+    by DefaultMviDelegate(initialState = LoginMvi.State()),
+    LoginMvi {
 
     private val type = args.type
 
@@ -62,16 +62,16 @@ class LoginViewModel(
         }
     }
 
-    override fun reduce(intent: LoginMviModel.Intent) {
+    override fun reduce(intent: LoginMvi.Intent) {
         when (intent) {
-            is LoginMviModel.Intent.SetNodeName ->
+            is LoginMvi.Intent.SetNodeName ->
                 viewModelScope.launch {
                     updateState { it.copy(nodeName = intent.name) }
                 }
 
-            LoginMviModel.Intent.SignUp -> triggerSignup()
+            LoginMvi.Intent.SignUp -> triggerSignup()
 
-            LoginMviModel.Intent.Submit -> submit()
+            LoginMvi.Intent.Submit -> submit()
         }
     }
 
@@ -101,9 +101,9 @@ class LoginViewModel(
 
             val url = getSignupUrl(node = node, type = type)
             if (url.isEmpty()) {
-                emitEffect(LoginMviModel.Effect.Failure())
+                emitEffect(LoginMvi.Effect.Failure())
             } else {
-                emitEffect(LoginMviModel.Effect.OpenUrl(url))
+                emitEffect(LoginMvi.Effect.OpenUrl(url))
             }
         }
     }
@@ -142,10 +142,10 @@ class LoginViewModel(
             updateState { it.copy(loading = true) }
             try {
                 val url = authManager.startOAuthFlow(node)
-                emitEffect(LoginMviModel.Effect.OpenUrl(url))
+                emitEffect(LoginMvi.Effect.OpenUrl(url))
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                emitEffect(LoginMviModel.Effect.Failure(e.message))
+                emitEffect(LoginMvi.Effect.Failure(e.message))
                 updateState { it.copy(loading = false) }
             }
         }
@@ -159,11 +159,11 @@ class LoginViewModel(
                     node = node,
                     credentials = credentials,
                 )
-                emitEffect(LoginMviModel.Effect.Success)
+                emitEffect(LoginMvi.Effect.Success)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
-                emitEffect(LoginMviModel.Effect.Failure(e.message))
+                emitEffect(LoginMvi.Effect.Failure(e.message))
             }
         }
     }

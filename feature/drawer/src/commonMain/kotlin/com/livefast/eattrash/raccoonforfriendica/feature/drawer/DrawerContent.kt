@@ -41,9 +41,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigatio
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.components.DrawerShortcut
-import com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchaccount.SwitchAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchaccount.SwitchAccountMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchaccount.SwitchAccountViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchinstance.SwitchInstanceMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchinstance.SwitchInstanceMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchinstance.SwitchInstanceViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.delay
@@ -54,7 +54,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMviModel = metroViewModel<DrawerViewModel>()) {
+fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMvi = metroViewModel<DrawerViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
@@ -225,14 +225,14 @@ fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMviModel = metroVi
 
         if (manageAccountsDialogOpened) {
             val viewModelStoreOwner = rememberViewModelStoreOwner()
-            val switchAccountModel: SwitchAccountMviModel = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
+            val switchAccountModel: SwitchAccountMvi = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
             val dialogUiState by switchAccountModel.uiState.collectAsState()
 
             LaunchedEffect(switchAccountModel) {
                 switchAccountModel.effects
                     .onEach { event ->
                         when (event) {
-                            SwitchAccountMviModel.Effect.AccountChangeSuccess -> {
+                            SwitchAccountMvi.Effect.AccountChangeSuccess -> {
                                 drawerCoordinator.closeDrawer()
                                 navigationCoordinator.showGlobalMessage(successMessage)
                             }
@@ -287,7 +287,7 @@ fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMviModel = metroVi
                         val accounts = dialogUiState.availableAccounts
                         if (index in accounts.indices) {
                             val selectedAccount = accounts[index]
-                            switchAccountModel.reduce(SwitchAccountMviModel.Intent.SwitchAccount(selectedAccount))
+                            switchAccountModel.reduce(SwitchAccountMvi.Intent.SwitchAccount(selectedAccount))
                         }
                     }
                 },
@@ -296,14 +296,14 @@ fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMviModel = metroVi
 
         if (changeInstanceDialogOpened) {
             val viewModelStoreOwner = rememberViewModelStoreOwner()
-            val switchInstanceModel: SwitchInstanceMviModel =
+            val switchInstanceModel: SwitchInstanceMvi =
                 metroViewModel<SwitchInstanceViewModel>(viewModelStoreOwner)
             val dialogUiState by switchInstanceModel.uiState.collectAsState()
 
             LaunchedEffect(switchInstanceModel) {
                 switchInstanceModel.effects.onEach { effect ->
                     when (effect) {
-                        SwitchInstanceMviModel.Effect.ChangeInstanceSuccess -> {
+                        SwitchInstanceMvi.Effect.ChangeInstanceSuccess -> {
                             changeInstanceDialogOpened = false
                             drawerCoordinator.closeDrawer()
                             navigationCoordinator.showGlobalMessage(successMessage)
@@ -317,14 +317,14 @@ fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMviModel = metroVi
                 validationInProgress = dialogUiState.validationInProgress,
                 validationError = dialogUiState.nodeError,
                 onClose = {
-                    switchInstanceModel.reduce(SwitchInstanceMviModel.Intent.Reset)
+                    switchInstanceModel.reduce(SwitchInstanceMvi.Intent.Reset)
                     changeInstanceDialogOpened = false
                 },
                 onNodeChange = { value ->
-                    switchInstanceModel.reduce(SwitchInstanceMviModel.Intent.SetInstanceName(value))
+                    switchInstanceModel.reduce(SwitchInstanceMvi.Intent.SetInstanceName(value))
                 },
                 onSubmit = {
-                    switchInstanceModel.reduce(SwitchInstanceMviModel.Intent.Submit)
+                    switchInstanceModel.reduce(SwitchInstanceMvi.Intent.Submit)
                 },
             )
         }

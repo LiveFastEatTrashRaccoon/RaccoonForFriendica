@@ -47,7 +47,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventDetailScreen(eventId: String, modifier: Modifier = Modifier) {
-    val model: EventDetailMviModel = assistedMetroViewModel<EventDetailViewModel>(
+    val model: EventDetailMvi = assistedMetroViewModel<EventDetailViewModel>(
         extras = EventDetailViewModel.getExtras(EventDetailViewModelArgs(eventId)),
     )
     val uiState by model.uiState.collectAsState()
