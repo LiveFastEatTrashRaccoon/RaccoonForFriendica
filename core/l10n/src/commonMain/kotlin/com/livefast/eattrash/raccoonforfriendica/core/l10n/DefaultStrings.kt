@@ -1,6 +1,9 @@
 package com.livefast.eattrash.raccoonforfriendica.core.l10n
 
 import androidx.compose.runtime.Composable
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.pluralStringResource
@@ -367,6 +370,7 @@ import raccoonforfriendica.core.l10n.generated.resources.settings_about_app_vers
 import raccoonforfriendica.core.l10n.generated.resources.settings_about_changelog
 import raccoonforfriendica.core.l10n.generated.resources.settings_about_licences
 import raccoonforfriendica.core.l10n.generated.resources.settings_about_matrix
+import raccoonforfriendica.core.l10n.generated.resources.settings_about_read_blog
 import raccoonforfriendica.core.l10n.generated.resources.settings_about_report_issue
 import raccoonforfriendica.core.l10n.generated.resources.settings_about_user_manual
 import raccoonforfriendica.core.l10n.generated.resources.settings_about_view_friendica
@@ -486,10 +490,6 @@ import raccoonforfriendica.core.l10n.generated.resources.visibility_direct
 import raccoonforfriendica.core.l10n.generated.resources.visibility_private
 import raccoonforfriendica.core.l10n.generated.resources.visibility_public
 import raccoonforfriendica.core.l10n.generated.resources.visibility_unlisted
-
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -1192,6 +1192,8 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.settings_about_licences)
     override val settingsAboutMatrix: String
         @Composable get() = stringResource(Res.string.settings_about_matrix)
+    override val settingsAboutReadBlog: String
+        @Composable get() = stringResource(Res.string.settings_about_read_blog)
     override val settingsAboutReportIssue: String
         @Composable get() = stringResource(Res.string.settings_about_report_issue)
     override val settingsAboutUserManual: String

@@ -352,6 +352,7 @@ interface Strings {
     val settingsAboutChangelog: String @Composable get
     val settingsAboutLicences: String @Composable get
     val settingsAboutMatrix: String @Composable get
+    val settingsAboutReadBlog: String @Composable get
     val settingsAboutReportIssue: String @Composable get
     val settingsAboutUserManual: String @Composable get
     val settingsAboutViewFriendica: String @Composable get

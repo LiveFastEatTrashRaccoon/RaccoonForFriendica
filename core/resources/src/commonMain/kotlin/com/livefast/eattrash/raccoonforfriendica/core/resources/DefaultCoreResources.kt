@@ -82,6 +82,7 @@ import raccoonforfriendica.core.resources.generated.resources.format_underlined
 import raccoonforfriendica.core.resources.generated.resources.friendica_logo
 import raccoonforfriendica.core.resources.generated.resources.friendica_small
 import raccoonforfriendica.core.resources.generated.resources.gavel
+import raccoonforfriendica.core.resources.generated.resources.github
 import raccoonforfriendica.core.resources.generated.resources.gnusocial_small
 import raccoonforfriendica.core.resources.generated.resources.gotosocial_small
 import raccoonforfriendica.core.resources.generated.resources.group
@@ -103,6 +104,7 @@ import raccoonforfriendica.core.resources.generated.resources.lock_open
 import raccoonforfriendica.core.resources.generated.resources.logout
 import raccoonforfriendica.core.resources.generated.resources.mastodon_logo
 import raccoonforfriendica.core.resources.generated.resources.mastodon_small
+import raccoonforfriendica.core.resources.generated.resources.matrix
 import raccoonforfriendica.core.resources.generated.resources.menu
 import raccoonforfriendica.core.resources.generated.resources.misskey_small
 import raccoonforfriendica.core.resources.generated.resources.more_vert
@@ -128,6 +130,7 @@ import raccoonforfriendica.core.resources.generated.resources.repeat
 import raccoonforfriendica.core.resources.generated.resources.reply
 import raccoonforfriendica.core.resources.generated.resources.rocket_launch
 import raccoonforfriendica.core.resources.generated.resources.rocket_launch_fill
+import raccoonforfriendica.core.resources.generated.resources.rss_feed
 import raccoonforfriendica.core.resources.generated.resources.save
 import raccoonforfriendica.core.resources.generated.resources.schedule
 import raccoonforfriendica.core.resources.generated.resources.schedule_send
@@ -225,6 +228,9 @@ class DefaultCoreResources : CoreResources {
     override val friendicaSmallLogo: Painter
         @Composable get() = painterResource(Res.drawable.friendica_small)
 
+    override val githubLogo: Painter
+        @Composable get() = painterResource(Res.drawable.github)
+
     override val gnuSocialSmallLogo: Painter
         @Composable get() = painterResource(Res.drawable.gnusocial_small)
 
@@ -242,6 +248,9 @@ class DefaultCoreResources : CoreResources {
 
     override val mastodonSmallLogo: Painter
         @Composable get() = painterResource(Res.drawable.mastodon_small)
+
+    override val matrixLogo: Painter
+        @Composable get() = painterResource(Res.drawable.matrix)
 
     override val misskeySmallLogo: Painter
         @Composable get() = painterResource(Res.drawable.misskey_small)
@@ -503,6 +512,9 @@ class DefaultCoreResources : CoreResources {
 
     override val rocketLaunchFill: ImageVector
         @Composable get() = vectorResource(Res.drawable.rocket_launch_fill)
+
+    override val rssFeed: ImageVector
+        @Composable get() = vectorResource(Res.drawable.rss_feed)
 
     override val save: ImageVector
         @Composable get() = vectorResource(Res.drawable.save)

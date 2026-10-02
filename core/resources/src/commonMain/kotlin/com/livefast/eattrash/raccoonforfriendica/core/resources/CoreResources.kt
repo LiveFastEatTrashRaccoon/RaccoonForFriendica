@@ -32,12 +32,14 @@ interface CoreResources {
     val flipboardSmallLogo: Painter @Composable get
     val friendicaLogo: Painter @Composable get
     val friendicaSmallLogo: Painter @Composable get
+    val githubLogo: Painter @Composable get
     val gnuSocialSmallLogo: Painter @Composable get
     val gotoSocialSmallLogo: Painter @Composable get
     val kbinSmallLogo: Painter @Composable get
     val lemmySmallLogo: Painter @Composable get
     val mastodonLogo: Painter @Composable get
     val mastodonSmallLogo: Painter @Composable get
+    val matrixLogo: Painter @Composable get
     val misskeySmallLogo: Painter @Composable get
     val peerTubeSmallLogo: Painter @Composable get
     val pixelfedSmallLogo: Painter @Composable get
@@ -127,6 +129,7 @@ interface CoreResources {
     val reply: ImageVector @Composable get
     val rocketLaunch: ImageVector @Composable get
     val rocketLaunchFill: ImageVector @Composable get
+    val rssFeed: ImageVector @Composable get
     val save: ImageVector @Composable get
     val schedule: ImageVector @Composable get
     val scheduleSend: ImageVector @Composable get

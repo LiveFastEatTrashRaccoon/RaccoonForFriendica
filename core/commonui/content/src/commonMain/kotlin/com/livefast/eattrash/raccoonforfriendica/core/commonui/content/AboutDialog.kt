@@ -144,19 +144,31 @@ private fun AboutDialogContent(
             }
             item {
                 AboutItem(
-                    icon = LocalResources.current.code,
+                    painter = LocalResources.current.githubLogo,
                     text = LocalStrings.current.settingsAboutViewGithub,
                     textDecoration = TextDecoration.Underline,
                     onClick = {
                         handleAction {
-                            uriHandler.openUri(AboutConstants.WEBSITE_URL)
+                            uriHandler.openUri(AboutConstants.HOMEPAGE_URL)
                         }
                     },
                 )
             }
             item {
                 AboutItem(
-                    icon = LocalResources.current.openInBrowser,
+                    icon = LocalResources.current.rssFeed,
+                    text = LocalStrings.current.settingsAboutReadBlog,
+                    textDecoration = TextDecoration.Underline,
+                    onClick = {
+                        handleAction {
+                            uriHandler.openUri(AboutConstants.BLOG_URL)
+                        }
+                    },
+                )
+            }
+            item {
+                AboutItem(
+                    painter = LocalResources.current.friendicaSmallLogo,
                     text = LocalStrings.current.settingsAboutViewFriendica,
                     textDecoration = TextDecoration.Underline,
                     onClick = {
@@ -168,7 +180,7 @@ private fun AboutDialogContent(
             }
             item {
                 AboutItem(
-                    icon = LocalResources.current.chatFill,
+                    painter = LocalResources.current.matrixLogo,
                     text = LocalStrings.current.settingsAboutMatrix,
                     textDecoration = TextDecoration.Underline,
                     onClick = {
@@ -250,20 +262,20 @@ private fun AboutItem(
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val imageModifier = Modifier.Companion.size(22.dp)
+        val imageModifier = Modifier.size(22.dp)
         if (painter != null) {
             Image(
                 modifier = imageModifier,
                 painter = painter,
                 contentDescription = null,
-                colorFilter = ColorFilter.Companion.tint(MaterialTheme.colorScheme.onBackground),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
             )
         } else if (icon != null) {
             Image(
                 modifier = imageModifier,
                 imageVector = icon,
                 contentDescription = null,
-                colorFilter = ColorFilter.Companion.tint(MaterialTheme.colorScheme.onBackground),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
             )
         }
         Text(
@@ -287,7 +299,8 @@ private fun AboutItem(
 
 private object AboutConstants {
     const val CHANGELOG_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/releases/latest"
-    const val WEBSITE_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica"
+    const val HOMEPAGE_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica"
+    const val BLOG_URL = "https://livefasteattrashraccoon.github.io/blog"
     const val GROUP_URL = "https://poliverso.org/profile/raccoonforfriendicaapp"
     const val MANUAL_URL = "https://livefasteattrashraccoon.github.io/RaccoonForFriendica/manual/en"
     const val MATRIX_URL = "https://matrix.to/#/#raccoonforfriendicaapp:matrix.org"
