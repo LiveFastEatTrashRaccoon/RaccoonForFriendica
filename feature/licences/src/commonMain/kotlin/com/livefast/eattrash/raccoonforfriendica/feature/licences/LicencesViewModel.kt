@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.licences
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItem
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItemType
@@ -23,9 +23,9 @@ import kotlinx.coroutines.launch
 @Inject
 class LicencesViewModel(private val settingsRepository: SettingsRepository) :
     ViewModel(),
-    MviModelDelegate<LicencesMviModel.Intent, LicencesMviModel.State, LicencesMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = LicencesMviModel.State()),
-    LicencesMviModel {
+    MviDelegate<LicencesMvi.Intent, LicencesMvi.State, LicencesMvi.Effect>
+    by DefaultMviDelegate(initialState = LicencesMvi.State()),
+    LicencesMvi {
     init {
         viewModelScope.launch {
             settingsRepository.current

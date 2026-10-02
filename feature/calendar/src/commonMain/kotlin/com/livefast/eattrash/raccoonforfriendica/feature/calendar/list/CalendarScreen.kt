@@ -56,7 +56,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
+fun CalendarScreen(model: CalendarMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -136,7 +136,7 @@ fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(CalendarMviModel.Intent.Refresh)
+                model.reduce(CalendarMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -218,7 +218,7 @@ fun CalendarScreen(model: CalendarMviModel, modifier: Modifier = Modifier) {
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(CalendarMviModel.Intent.LoadNextPage)
+                        model.reduce(CalendarMvi.Intent.LoadNextPage)
                     }
                 }
 

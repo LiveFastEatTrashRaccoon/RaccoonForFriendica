@@ -48,7 +48,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FollowedHashtagsScreen(model: FollowedHashtagsMviModel, modifier: Modifier = Modifier) {
+fun FollowedHashtagsScreen(model: FollowedHashtagsMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
@@ -115,7 +115,7 @@ fun FollowedHashtagsScreen(model: FollowedHashtagsMviModel, modifier: Modifier =
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(FollowedHashtagsMviModel.Intent.Refresh)
+                model.reduce(FollowedHashtagsMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -143,7 +143,7 @@ fun FollowedHashtagsScreen(model: FollowedHashtagsMviModel, modifier: Modifier =
                         onToggleFollow = { newFollow ->
                             if (newFollow) {
                                 model.reduce(
-                                    FollowedHashtagsMviModel.Intent.ToggleTagFollow(
+                                    FollowedHashtagsMvi.Intent.ToggleTagFollow(
                                         tag.name,
                                         newFollow,
                                     ),
@@ -158,7 +158,7 @@ fun FollowedHashtagsScreen(model: FollowedHashtagsMviModel, modifier: Modifier =
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(FollowedHashtagsMviModel.Intent.LoadNextPage)
+                        model.reduce(FollowedHashtagsMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -188,7 +188,7 @@ fun FollowedHashtagsScreen(model: FollowedHashtagsMviModel, modifier: Modifier =
                 confirmUnfollowHashtagName = null
                 if (confirm && oldTag != null) {
                     model.reduce(
-                        FollowedHashtagsMviModel.Intent.ToggleTagFollow(
+                        FollowedHashtagsMvi.Intent.ToggleTagFollow(
                             name = oldTag,
                             newValue = false,
                         ),

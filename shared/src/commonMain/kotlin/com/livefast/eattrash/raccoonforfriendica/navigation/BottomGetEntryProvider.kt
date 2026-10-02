@@ -6,26 +6,26 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMvi
+import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineScreen
 
 @Composable
 internal fun bottomGetEntryProvider(
-    timelineViewModel: TimelineMviModel,
+    timelineViewModel: TimelineMvi,
     timelineLazyListState: LazyListState,
-    exploreViewModel: ExploreMviModel,
+    exploreViewModel: ExploreMvi,
     exploreLazyListState: LazyListState,
-    inboxViewModel: InboxMviModel,
+    inboxViewModel: InboxMvi,
     inboxLazyListState: LazyListState,
-    profileViewModel: ProfileMviModel,
-    myAccountViewModel: MyAccountMviModel,
+    profileViewModel: ProfileMvi,
+    myAccountViewModel: MyAccountMvi,
     myAccountLazyListState: LazyListState,
 ): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<BottomNavigationSection.Home> {

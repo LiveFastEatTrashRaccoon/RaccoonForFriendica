@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.explore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -73,9 +73,9 @@ class ExploreViewModel(
     private val credentialsRepository: CredentialsRepository,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    ExploreMviModel,
-    MviModelDelegate<ExploreMviModel.Intent, ExploreMviModel.State, ExploreMviModel.Effect> by DefaultMviModelDelegate(
-        initialState = ExploreMviModel.State(),
+    ExploreMvi,
+    MviDelegate<ExploreMvi.Intent, ExploreMvi.State, ExploreMvi.Effect> by DefaultMviDelegate(
+        initialState = ExploreMvi.State(),
     ) {
     init {
         viewModelScope.launch {
@@ -139,43 +139,43 @@ class ExploreViewModel(
         }
     }
 
-    override fun reduce(intent: ExploreMviModel.Intent) {
+    override fun reduce(intent: ExploreMvi.Intent) {
         when (intent) {
-            is ExploreMviModel.Intent.ChangeSection ->
+            is ExploreMvi.Intent.ChangeSection ->
                 viewModelScope.launch {
                     if (uiState.value.loading) {
                         return@launch
                     }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(ExploreMviModel.Effect.BackToTop)
+                    emitEffect(ExploreMvi.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            ExploreMviModel.Intent.LoadNextPage ->
+            ExploreMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            ExploreMviModel.Intent.Refresh ->
+            ExploreMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is ExploreMviModel.Intent.Follow -> follow(intent.userId)
+            is ExploreMvi.Intent.Follow -> follow(intent.userId)
 
-            is ExploreMviModel.Intent.Unfollow -> unfollow(intent.userId)
+            is ExploreMvi.Intent.Unfollow -> unfollow(intent.userId)
 
-            is ExploreMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ExploreMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is ExploreMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ExploreMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is ExploreMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is ExploreMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is ExploreMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ExploreMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is ExploreMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is ExploreMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is ExploreMviModel.Intent.MuteUser ->
+            is ExploreMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -183,35 +183,35 @@ class ExploreViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is ExploreMviModel.Intent.BlockUser ->
+            is ExploreMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is ExploreMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is ExploreMvi.Intent.TogglePin -> togglePin(intent.entry)
 
-            is ExploreMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is ExploreMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is ExploreMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is ExploreMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is ExploreMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is ExploreMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is ExploreMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is ExploreMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is ExploreMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is ExploreMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
 
-            ExploreMviModel.Intent.ResetOtherInstance -> viewModelScope.launch {
+            ExploreMvi.Intent.ResetOtherInstance -> viewModelScope.launch {
                 updateState { it.copy(otherInstance = null, refreshing = true) }
                 refreshAvailableSections()
                 refresh()
             }
 
-            is ExploreMviModel.Intent.SetSelectForeignInstanceName -> viewModelScope.launch {
+            is ExploreMvi.Intent.SetSelectForeignInstanceName -> viewModelScope.launch {
                 updateState { it.copy(selectForeignInstanceName = intent.name) }
             }
 
-            ExploreMviModel.Intent.SubmitSelectForeignInstanceName -> submitSelectForeignInstanceName()
+            ExploreMvi.Intent.SubmitSelectForeignInstanceName -> submitSelectForeignInstanceName()
         }
     }
 
@@ -587,7 +587,7 @@ class ExploreViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(ExploreMviModel.Effect.PollVoteFailure)
+                emitEffect(ExploreMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -604,7 +604,7 @@ class ExploreViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(ExploreMviModel.Effect.TriggerCopy(text))
+                emitEffect(ExploreMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -652,7 +652,7 @@ class ExploreViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(ExploreMviModel.Effect.OpenUrl(url))
+                emitEffect(ExploreMvi.Effect.OpenUrl(url))
             }
         }
     }
@@ -705,8 +705,8 @@ class ExploreViewModel(
             }
             updateState { it.copy(otherInstance = newNode, selectForeignInstanceName = "", refreshing = true) }
             refreshAvailableSections()
-            emitEffect(ExploreMviModel.Effect.SelectForeignInstanceSuccess)
-            emitEffect(ExploreMviModel.Effect.BackToTop)
+            emitEffect(ExploreMvi.Effect.SelectForeignInstanceSuccess)
+            emitEffect(ExploreMvi.Effect.BackToTop)
             refresh()
         }
     }

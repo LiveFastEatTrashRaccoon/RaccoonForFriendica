@@ -15,8 +15,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.Them
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.BarColorProvider
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ColorSchemeProvider
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appicon.AppIconManager
@@ -83,9 +83,9 @@ class SettingsViewModel(
     private val customTabsHelper: CustomTabsHelper,
     private val translationProviderConfigStore: TranslationProviderConfigStore,
 ) : ViewModel(),
-    MviModelDelegate<SettingsMviModel.Intent, SettingsMviModel.State, SettingsMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = SettingsMviModel.State()),
-    SettingsMviModel {
+    MviDelegate<SettingsMvi.Intent, SettingsMvi.State, SettingsMvi.Effect>
+    by DefaultMviDelegate(initialState = SettingsMvi.State()),
+    SettingsMvi {
 
     private val permissionController = args.controller
 
@@ -286,146 +286,146 @@ class SettingsViewModel(
         }
     }
 
-    override fun reduce(intent: SettingsMviModel.Intent) {
+    override fun reduce(intent: SettingsMvi.Intent) {
         when (intent) {
-            is SettingsMviModel.Intent.ChangeLanguage ->
+            is SettingsMvi.Intent.ChangeLanguage ->
                 viewModelScope.launch {
                     changeLanguage(intent.lang)
                 }
 
-            is SettingsMviModel.Intent.ChangeTheme ->
+            is SettingsMvi.Intent.ChangeTheme ->
                 viewModelScope.launch {
                     changeTheme(intent.theme)
                 }
 
-            is SettingsMviModel.Intent.ChangeCommentBarTheme ->
+            is SettingsMvi.Intent.ChangeCommentBarTheme ->
                 viewModelScope.launch {
                     changeCommentBarTheme(intent.commentBarTheme)
                 }
 
-            is SettingsMviModel.Intent.ChangeDynamicColors ->
+            is SettingsMvi.Intent.ChangeDynamicColors ->
                 viewModelScope.launch {
                     changeDynamicColors(intent.dynamicColors)
                 }
 
-            is SettingsMviModel.Intent.ChangeFontFamily ->
+            is SettingsMvi.Intent.ChangeFontFamily ->
                 viewModelScope.launch {
                     changeFontFamily(intent.fontFamily)
                 }
 
-            is SettingsMviModel.Intent.ChangeFontScale ->
+            is SettingsMvi.Intent.ChangeFontScale ->
                 viewModelScope.launch {
                     changeFontScale(intent.scale)
                 }
 
-            is SettingsMviModel.Intent.ChangeThemeColor ->
+            is SettingsMvi.Intent.ChangeThemeColor ->
                 viewModelScope.launch {
                     changeThemeColor(intent.themeColor)
                 }
 
-            is SettingsMviModel.Intent.ChangeDefaultTimelineType ->
+            is SettingsMvi.Intent.ChangeDefaultTimelineType ->
                 viewModelScope.launch {
                     changeDefaultTimelineType(intent.type)
                 }
 
-            is SettingsMviModel.Intent.ChangeIncludeNsfw ->
+            is SettingsMvi.Intent.ChangeIncludeNsfw ->
                 viewModelScope.launch {
-                    changeIncludeNsfw(intent.value)
+                    changeIncludeNsfw(intent.include)
                 }
 
-            is SettingsMviModel.Intent.ChangeBlurNsfw ->
+            is SettingsMvi.Intent.ChangeBlurNsfw ->
                 viewModelScope.launch {
-                    changeBlurNsfw(intent.value)
+                    changeBlurNsfw(intent.blur)
                 }
 
-            is SettingsMviModel.Intent.ChangeUrlOpeningMode ->
+            is SettingsMvi.Intent.ChangeUrlOpeningMode ->
                 viewModelScope.launch {
                     changeUrlOpeningMode(intent.mode)
                 }
 
-            is SettingsMviModel.Intent.ChangeDefaultPostVisibility ->
+            is SettingsMvi.Intent.ChangeDefaultPostVisibility ->
                 viewModelScope.launch {
                     changeDefaultPostVisibility(intent.visibility)
                 }
 
-            is SettingsMviModel.Intent.ChangeDefaultReplyVisibility ->
+            is SettingsMvi.Intent.ChangeDefaultReplyVisibility ->
                 viewModelScope.launch {
                     changeDefaultReplyVisibility(intent.visibility)
                 }
 
-            is SettingsMviModel.Intent.ChangeExcludeRepliesFromTimeline ->
+            is SettingsMvi.Intent.ChangeExcludeRepliesFromTimeline ->
                 viewModelScope.launch {
-                    changeExcludeRepliesFromTimeline(intent.value)
+                    changeExcludeRepliesFromTimeline(intent.exclude)
                 }
 
-            is SettingsMviModel.Intent.ChangeOpenGroupsInForumModeByDefault ->
+            is SettingsMvi.Intent.ChangeOpenGroupsInForumModeByDefault ->
                 viewModelScope.launch {
-                    changeOpenGroupsInForumModeByDefault(intent.value)
+                    changeOpenGroupsInForumModeByDefault(intent.openByDefault)
                 }
 
-            is SettingsMviModel.Intent.ChangeMarkupMode ->
+            is SettingsMvi.Intent.ChangeMarkupMode ->
                 viewModelScope.launch {
                     changeMarkupMode(intent.mode)
                 }
 
-            is SettingsMviModel.Intent.ChangeMaxPostBodyLines ->
+            is SettingsMvi.Intent.ChangeMaxPostBodyLines ->
                 viewModelScope.launch {
-                    changeMaxPostBodyLines(intent.value)
+                    changeMaxPostBodyLines(intent.lines)
                 }
 
-            is SettingsMviModel.Intent.ChangeBackgroundNotificationCheckInterval ->
+            is SettingsMvi.Intent.ChangeBackgroundNotificationCheckInterval ->
                 viewModelScope.launch {
                     changePullNotificationCheckInterval(intent.duration)
                 }
 
-            is SettingsMviModel.Intent.ChangeAutoloadImages ->
+            is SettingsMvi.Intent.ChangeAutoloadImages ->
                 viewModelScope.launch {
                     changeAutoloadImages(intent.mode)
                 }
 
-            is SettingsMviModel.Intent.ChangeNotificationMode ->
+            is SettingsMvi.Intent.ChangeNotificationMode ->
                 viewModelScope.launch {
                     changeNotificationMode(intent.mode)
                 }
 
-            is SettingsMviModel.Intent.SelectPushDistributor ->
+            is SettingsMvi.Intent.SelectPushDistributor ->
                 viewModelScope.launch {
-                    selectPushDistributor(intent.value)
+                    selectPushDistributor(intent.name)
                 }
 
-            SettingsMviModel.Intent.GrantPushNotificationsPermission ->
+            SettingsMvi.Intent.GrantPushNotificationsPermission ->
                 viewModelScope.launch {
                     grantPushNotificationPermission()
                 }
 
-            is SettingsMviModel.Intent.ChangeCrashReportEnabled ->
-                changeCrashReportEnabled(intent.value)
+            is SettingsMvi.Intent.ChangeCrashReportEnabled ->
+                changeCrashReportEnabled(intent.enabled)
 
-            is SettingsMviModel.Intent.ChangeHideNavigationBarWhileScrolling ->
+            is SettingsMvi.Intent.ChangeHideNavigationBarWhileScrolling ->
                 viewModelScope.launch {
-                    changeHideNavigationBarWhileScrolling(intent.value)
+                    changeHideNavigationBarWhileScrolling(intent.hide)
                 }
 
-            is SettingsMviModel.Intent.ChangeAppIcon ->
+            is SettingsMvi.Intent.ChangeAppIcon ->
                 viewModelScope.launch {
                     changeAppIcon(intent.variant)
                 }
 
-            is SettingsMviModel.Intent.ChangeBarTheme ->
+            is SettingsMvi.Intent.ChangeBarTheme ->
                 viewModelScope.launch {
                     changeBarTheme(intent.theme)
                 }
 
-            is SettingsMviModel.Intent.ChangeTimelineLayout ->
+            is SettingsMvi.Intent.ChangeTimelineLayout ->
                 viewModelScope.launch {
                     changeTimelineLayout(intent.layout)
                 }
 
-            is SettingsMviModel.Intent.ExportSettings -> handleExportSettings()
+            is SettingsMvi.Intent.ExportSettings -> handleExportSettings()
 
-            is SettingsMviModel.Intent.ImportSettings -> handleImportSettings(intent.content)
+            is SettingsMvi.Intent.ImportSettings -> handleImportSettings(intent.content)
 
-            is SettingsMviModel.Intent.ChangeReplyDepth ->
+            is SettingsMvi.Intent.ChangeReplyDepth ->
                 viewModelScope.launch {
                     changeReplyDepth(intent.depth)
                 }
@@ -634,7 +634,7 @@ class SettingsViewModel(
             updateState { it.copy(loading = true) }
             val content = exportSettings()
             updateState { it.copy(loading = false) }
-            emitEffect(SettingsMviModel.Effect.SaveSettings(content))
+            emitEffect(SettingsMvi.Effect.SaveSettings(content))
         }
     }
 

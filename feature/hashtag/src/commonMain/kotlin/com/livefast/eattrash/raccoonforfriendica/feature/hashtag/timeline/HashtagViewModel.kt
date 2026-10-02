@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
@@ -69,9 +69,9 @@ class HashtagViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<HashtagMviModel.Intent, HashtagMviModel.State, HashtagMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = HashtagMviModel.State()),
-    HashtagMviModel {
+    MviDelegate<HashtagMvi.Intent, HashtagMvi.State, HashtagMvi.Effect>
+    by DefaultMviDelegate(initialState = HashtagMvi.State()),
+    HashtagMvi {
 
     private val tag = args.tag
 
@@ -136,31 +136,31 @@ class HashtagViewModel(
         }
     }
 
-    override fun reduce(intent: HashtagMviModel.Intent) {
+    override fun reduce(intent: HashtagMvi.Intent) {
         when (intent) {
-            HashtagMviModel.Intent.Refresh ->
+            HashtagMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            HashtagMviModel.Intent.LoadNextPage ->
+            HashtagMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is HashtagMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is HashtagMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is HashtagMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is HashtagMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is HashtagMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is HashtagMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is HashtagMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is HashtagMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is HashtagMviModel.Intent.ToggleTagFollow -> toggleTagFollow(intent.newValue)
+            is HashtagMvi.Intent.ToggleTagFollow -> toggleTagFollow(intent.newValue)
 
-            is HashtagMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is HashtagMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is HashtagMviModel.Intent.MuteUser ->
+            is HashtagMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -168,30 +168,30 @@ class HashtagViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is HashtagMviModel.Intent.BlockUser ->
+            is HashtagMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is HashtagMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is HashtagMvi.Intent.TogglePin -> togglePin(intent.entry)
 
-            is HashtagMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is HashtagMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is HashtagMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is HashtagMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is HashtagMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is HashtagMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is HashtagMviModel.Intent.WillOpenDetail ->
+            is HashtagMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(HashtagMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(HashtagMvi.Effect.OpenDetail(intent.entry))
                 }
 
-            is HashtagMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is HashtagMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is HashtagMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is HashtagMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -480,7 +480,7 @@ class HashtagViewModel(
                 updateEntryInState(entry.id) { it.copy(poll = newPoll) }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(HashtagMviModel.Effect.PollVoteFailure)
+                emitEffect(HashtagMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -497,7 +497,7 @@ class HashtagViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(HashtagMviModel.Effect.TriggerCopy(text))
+                emitEffect(HashtagMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -545,7 +545,7 @@ class HashtagViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(HashtagMviModel.Effect.OpenUrl(url))
+                emitEffect(HashtagMvi.Effect.OpenUrl(url))
             }
         }
     }

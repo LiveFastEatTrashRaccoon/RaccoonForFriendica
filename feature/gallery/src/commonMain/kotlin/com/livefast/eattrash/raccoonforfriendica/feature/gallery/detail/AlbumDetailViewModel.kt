@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
@@ -37,9 +37,9 @@ class AlbumDetailViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<AlbumDetailMviModel.Intent, AlbumDetailMviModel.State, AlbumDetailMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = AlbumDetailMviModel.State()),
-    AlbumDetailMviModel {
+    MviDelegate<AlbumDetailMvi.Intent, AlbumDetailMvi.State, AlbumDetailMvi.Effect>
+    by DefaultMviDelegate(initialState = AlbumDetailMvi.State()),
+    AlbumDetailMvi {
 
     private val albumName = args.albumName
 
@@ -78,21 +78,21 @@ class AlbumDetailViewModel(
         }
     }
 
-    override fun reduce(intent: AlbumDetailMviModel.Intent) {
+    override fun reduce(intent: AlbumDetailMvi.Intent) {
         when (intent) {
-            AlbumDetailMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
+            AlbumDetailMvi.Intent.Refresh -> viewModelScope.launch { refresh() }
 
-            AlbumDetailMviModel.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
+            AlbumDetailMvi.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
 
-            is AlbumDetailMviModel.Intent.Create -> upload(intent.byteArray)
+            is AlbumDetailMvi.Intent.Create -> upload(intent.byteArray)
 
-            is AlbumDetailMviModel.Intent.EditDescription ->
+            is AlbumDetailMvi.Intent.EditDescription ->
                 updateDescription(attachment = intent.attachment, description = intent.description)
 
-            is AlbumDetailMviModel.Intent.Move ->
+            is AlbumDetailMvi.Intent.Move ->
                 moveToOtherAlbum(attachment = intent.attachment, otherAlbum = intent.album)
 
-            is AlbumDetailMviModel.Intent.Delete -> delete(intent.id)
+            is AlbumDetailMvi.Intent.Delete -> delete(intent.id)
         }
     }
 
@@ -121,7 +121,7 @@ class AlbumDetailViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(AlbumDetailMviModel.Effect.BackToTop)
+                emitEffect(AlbumDetailMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -175,7 +175,7 @@ class AlbumDetailViewModel(
                 updateItemInState(localId) { attachment }
             } else {
                 removeItemFromState(localId)
-                emitEffect(AlbumDetailMviModel.Effect.Failure)
+                emitEffect(AlbumDetailMvi.Effect.Failure)
             }
         }
     }
@@ -195,7 +195,7 @@ class AlbumDetailViewModel(
                     it.copy(description = description)
                 }
             } else {
-                emitEffect(AlbumDetailMviModel.Effect.Failure)
+                emitEffect(AlbumDetailMvi.Effect.Failure)
             }
         }
     }
@@ -218,7 +218,7 @@ class AlbumDetailViewModel(
                 removeItemFromState(attachment.id)
                 notificationCenter.send(AlbumsUpdatedEvent)
             } else {
-                emitEffect(AlbumDetailMviModel.Effect.Failure)
+                emitEffect(AlbumDetailMvi.Effect.Failure)
             }
         }
     }
@@ -231,7 +231,7 @@ class AlbumDetailViewModel(
             if (success) {
                 removeItemFromState(id)
             } else {
-                emitEffect(AlbumDetailMviModel.Effect.Failure)
+                emitEffect(AlbumDetailMvi.Effect.Failure)
             }
         }
     }

@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -25,9 +25,9 @@ class EventDetailViewModel(
     eventCache: LocalItemCache<EventModel>,
     private val settingsRepository: SettingsRepository,
 ) : ViewModel(),
-    MviModelDelegate<EventDetailMviModel.Intent, EventDetailMviModel.State, EventDetailMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = EventDetailMviModel.State()),
-    EventDetailMviModel {
+    MviDelegate<EventDetailMvi.Intent, EventDetailMvi.State, EventDetailMvi.Effect>
+    by DefaultMviDelegate(initialState = EventDetailMvi.State()),
+    EventDetailMvi {
 
     private val eventId = args.id
 

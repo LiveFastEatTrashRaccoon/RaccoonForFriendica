@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import dev.zacsweers.metro.AppScope
@@ -21,9 +21,9 @@ class CircleEditorViewModel(
     @Assisted args: CircleEditorViewModelArgs,
     private val circlesRepository: CirclesRepository,
 ) : ViewModel(),
-    MviModelDelegate<CircleEditorMviModel.Intent, CircleEditorMviModel.State, CircleEditorMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = CircleEditorMviModel.State()),
-    CircleEditorMviModel {
+    MviDelegate<CircleEditorMvi.Intent, CircleEditorMvi.State, CircleEditorMvi.Effect>
+    by DefaultMviDelegate(initialState = CircleEditorMvi.State()),
+    CircleEditorMvi {
 
     init {
         viewModelScope.launch {
@@ -33,11 +33,11 @@ class CircleEditorViewModel(
         }
     }
 
-    override fun reduce(intent: CircleEditorMviModel.Intent) {
+    override fun reduce(intent: CircleEditorMvi.Intent) {
         when (intent) {
-            is CircleEditorMviModel.Intent.Submit -> submit()
+            is CircleEditorMvi.Intent.Submit -> submit()
 
-            is CircleEditorMviModel.Intent.UpdateData -> viewModelScope.launch {
+            is CircleEditorMvi.Intent.UpdateData -> viewModelScope.launch {
                 updateState {
                     it.copy(data = intent.data)
                 }
@@ -69,9 +69,9 @@ class CircleEditorViewModel(
                         replyPolicy = data.replyPolicy,
                     )
                 if (item != null) {
-                    emitEffect(CircleEditorMviModel.Effect.Success(item))
+                    emitEffect(CircleEditorMvi.Effect.Success(item))
                 } else {
-                    emitEffect(CircleEditorMviModel.Effect.Failure)
+                    emitEffect(CircleEditorMvi.Effect.Failure)
                 }
             } else {
                 val item =
@@ -81,9 +81,9 @@ class CircleEditorViewModel(
                         replyPolicy = data.replyPolicy,
                     )
                 if (item != null) {
-                    emitEffect(CircleEditorMviModel.Effect.Success(item))
+                    emitEffect(CircleEditorMvi.Effect.Success(item))
                 } else {
-                    emitEffect(CircleEditorMviModel.Effect.Failure)
+                    emitEffect(CircleEditorMvi.Effect.Failure)
                 }
             }
         }

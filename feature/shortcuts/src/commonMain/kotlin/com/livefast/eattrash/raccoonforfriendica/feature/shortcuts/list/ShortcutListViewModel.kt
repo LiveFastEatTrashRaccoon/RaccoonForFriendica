@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.InstanceShortcutRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -26,9 +26,9 @@ class ShortcutListViewModel(
     private val accountRepository: AccountRepository,
     private val settingsRepository: SettingsRepository,
 ) : ViewModel(),
-    MviModelDelegate<ShortcutListMviModel.Intent, ShortcutListMviModel.State, ShortcutListMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ShortcutListMviModel.State()),
-    ShortcutListMviModel {
+    MviDelegate<ShortcutListMvi.Intent, ShortcutListMvi.State, ShortcutListMvi.Effect>
+    by DefaultMviDelegate(initialState = ShortcutListMvi.State()),
+    ShortcutListMvi {
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -47,14 +47,14 @@ class ShortcutListViewModel(
         }
     }
 
-    override fun reduce(intent: ShortcutListMviModel.Intent) {
+    override fun reduce(intent: ShortcutListMvi.Intent) {
         when (intent) {
-            ShortcutListMviModel.Intent.Refresh ->
+            ShortcutListMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is ShortcutListMviModel.Intent.Delete -> delete(intent.node)
+            is ShortcutListMvi.Intent.Delete -> delete(intent.node)
         }
     }
 

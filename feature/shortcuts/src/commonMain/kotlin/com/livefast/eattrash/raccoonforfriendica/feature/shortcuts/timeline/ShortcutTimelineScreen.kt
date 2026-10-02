@@ -67,7 +67,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
-    val model: ShortcutTimelineMviModel = assistedMetroViewModel<ShortcutTimelineViewModel>(
+    val model: ShortcutTimelineMvi = assistedMetroViewModel<ShortcutTimelineViewModel>(
         extras = ShortcutTimelineViewModel.getExtras(ShortcutTimelineViewModelArgs(name = node)),
     )
     val uiState by model.uiState.collectAsState()
@@ -104,20 +104,20 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    ShortcutTimelineMviModel.Effect.BackToTop -> goBackToTop()
+                    ShortcutTimelineMvi.Effect.BackToTop -> goBackToTop()
 
-                    ShortcutTimelineMviModel.Effect.PollVoteFailure ->
+                    ShortcutTimelineMvi.Effect.PollVoteFailure ->
                         pollErrorDialogOpened = true
 
-                    ShortcutTimelineMviModel.Effect.Failure ->
+                    ShortcutTimelineMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(message = genericError)
 
-                    is ShortcutTimelineMviModel.Effect.TriggerCopy -> {
+                    is ShortcutTimelineMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is ShortcutTimelineMviModel.Effect.OpenDetail -> {
+                    is ShortcutTimelineMvi.Effect.OpenDetail -> {
                         mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
@@ -125,7 +125,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         )
                     }
 
-                    is ShortcutTimelineMviModel.Effect.OpenUrl ->
+                    is ShortcutTimelineMvi.Effect.OpenUrl ->
                         uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
@@ -195,7 +195,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ShortcutTimelineMviModel.Intent.Refresh)
+                model.reduce(ShortcutTimelineMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -238,7 +238,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         onClick = { e ->
-                            model.reduce(ShortcutTimelineMviModel.Intent.WillOpenDetail(e))
+                            model.reduce(ShortcutTimelineMvi.Intent.WillOpenDetail(e))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -259,7 +259,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         },
                         onShowOriginal = {
                             model.reduce(
-                                ShortcutTimelineMviModel.Intent.ToggleTranslation(entry.original),
+                                ShortcutTimelineMvi.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -327,21 +327,21 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
-                                        ShortcutTimelineMviModel.Intent.CopyToClipboard(
+                                        ShortcutTimelineMvi.Intent.CopyToClipboard(
                                             entry.original,
                                         ),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        ShortcutTimelineMviModel.Intent.ToggleTranslation(
+                                        ShortcutTimelineMvi.Intent.ToggleTranslation(
                                             entry.original,
                                         ),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        ShortcutTimelineMviModel.Intent.OpenInBrowser(entry),
+                                        ShortcutTimelineMvi.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -356,7 +356,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(ShortcutTimelineMviModel.Intent.LoadNextPage)
+                        model.reduce(ShortcutTimelineMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -394,7 +394,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(ShortcutTimelineMviModel.Intent.ToggleReblog(e))
+                    model.reduce(ShortcutTimelineMvi.Intent.ToggleReblog(e))
                 }
             },
         )

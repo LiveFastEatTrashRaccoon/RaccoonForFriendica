@@ -84,7 +84,7 @@ import kotlin.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroViewModel<SearchViewModel>()) {
+fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewModel<SearchViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
@@ -123,16 +123,16 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
         model.effects
             .onEach { event ->
                 when (event) {
-                    SearchMviModel.Effect.BackToTop -> goBackToTop()
+                    SearchMvi.Effect.BackToTop -> goBackToTop()
 
-                    SearchMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    SearchMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is SearchMviModel.Effect.TriggerCopy -> {
+                    is SearchMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is SearchMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is SearchMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -152,10 +152,10 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                         value = uiState.query,
                         hint = LocalStrings.current.searchPlaceholder,
                         onClear = {
-                            model.reduce(SearchMviModel.Intent.SetSearch(""))
+                            model.reduce(SearchMvi.Intent.SetSearch(""))
                         },
                         onValueChange = {
-                            model.reduce(SearchMviModel.Intent.SetSearch(it))
+                            model.reduce(SearchMvi.Intent.SetSearch(it))
                         },
                     )
                 },
@@ -201,7 +201,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(SearchMviModel.Intent.Refresh)
+                model.reduce(SearchMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -228,7 +228,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                         currentSection = titles.indexOf(uiState.section),
                         onSelectSection = {
                             model.reduce(
-                                SearchMviModel.Intent.ChangeSection(titles[it]),
+                                SearchMvi.Intent.ChangeSection(titles[it]),
                             )
                         },
                     )
@@ -345,21 +345,21 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
 
                                         else ->
                                             model.reduce(
-                                                SearchMviModel.Intent.ToggleReblog(e),
+                                                SearchMvi.Intent.ToggleReblog(e),
                                             )
                                     }
                                 }.takeIf { actionRepository.canReblog(item.entry.original) },
                                 onBookmark =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(SearchMviModel.Intent.ToggleBookmark(e))
+                                    model.reduce(SearchMvi.Intent.ToggleBookmark(e))
                                 }.takeIf { actionRepository.canBookmark(item.entry.original) },
                                 onFavorite =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(SearchMviModel.Intent.ToggleFavorite(e))
+                                    model.reduce(SearchMvi.Intent.ToggleFavorite(e))
                                 }.takeIf { actionRepository.canFavorite(item.entry.original) },
                                 onDislike =
                                 { e: TimelineEntryModel ->
-                                    model.reduce(SearchMviModel.Intent.ToggleDislike(e))
+                                    model.reduce(SearchMvi.Intent.ToggleDislike(e))
                                 }.takeIf { actionRepository.canDislike(item.entry.original) },
                                 onReply =
                                 { e: TimelineEntryModel ->
@@ -372,7 +372,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                                 uiState.currentUserId?.let {
                                     { e, choices ->
                                         model.reduce(
-                                            SearchMviModel.Intent.SubmitPollVote(
+                                            SearchMvi.Intent.SubmitPollVote(
                                                 entry = e,
                                                 choices = choices,
                                             ),
@@ -381,7 +381,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                                 },
                                 onShowOriginal = {
                                     model.reduce(
-                                        SearchMviModel.Intent.ToggleTranslation(
+                                        SearchMvi.Intent.ToggleTranslation(
                                             item.entry.original,
                                         ),
                                     )
@@ -490,7 +490,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
 
                                         OptionId.Pin, OptionId.Unpin ->
                                             model.reduce(
-                                                SearchMviModel.Intent.TogglePin(item.entry),
+                                                SearchMvi.Intent.TogglePin(item.entry),
                                             )
 
                                         OptionId.ReportUser ->
@@ -521,28 +521,28 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
 
                                         OptionId.CopyToClipboard ->
                                             model.reduce(
-                                                SearchMviModel.Intent.CopyToClipboard(
+                                                SearchMvi.Intent.CopyToClipboard(
                                                     item.entry.original,
                                                 ),
                                             )
 
                                         OptionId.Translate ->
                                             model.reduce(
-                                                SearchMviModel.Intent.ToggleTranslation(
+                                                SearchMvi.Intent.ToggleTranslation(
                                                     item.entry.original,
                                                 ),
                                             )
 
                                         OptionId.AddShortcut ->
                                             model.reduce(
-                                                SearchMviModel.Intent.AddInstanceShortcut(
+                                                SearchMvi.Intent.AddInstanceShortcut(
                                                     item.entry.nodeName,
                                                 ),
                                             )
 
                                         OptionId.OpenInBrowser ->
                                             model.reduce(
-                                                SearchMviModel.Intent.OpenInBrowser(item.entry),
+                                                SearchMvi.Intent.OpenInBrowser(item.entry),
                                             )
 
                                         else -> Unit
@@ -587,11 +587,11 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                                         }
 
                                         RelationshipStatusNextAction.Follow -> {
-                                            model.reduce(SearchMviModel.Intent.Follow(item.user.id))
+                                            model.reduce(SearchMvi.Intent.Follow(item.user.id))
                                         }
 
                                         RelationshipStatusNextAction.Unfollow -> {
-                                            model.reduce(SearchMviModel.Intent.Unfollow(item.user.id))
+                                            model.reduce(SearchMvi.Intent.Unfollow(item.user.id))
                                         }
                                     }
                                 },
@@ -606,7 +606,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(SearchMviModel.Intent.LoadNextPage)
+                        model.reduce(SearchMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -635,7 +635,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                 val userId = confirmUnfollowDialogUserId
                 confirmUnfollowDialogUserId = null
                 if (confirm && userId != null) {
-                    model.reduce(SearchMviModel.Intent.Unfollow(userId))
+                    model.reduce(SearchMvi.Intent.Unfollow(userId))
                 }
             },
         )
@@ -648,7 +648,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                 val userId = confirmUnfollowDialogUserId
                 confirmUnfollowDialogUserId = null
                 if (confirm && userId != null) {
-                    model.reduce(SearchMviModel.Intent.Unfollow(userId))
+                    model.reduce(SearchMvi.Intent.Unfollow(userId))
                 }
             },
         )
@@ -661,7 +661,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                 val entryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && entryId != null) {
-                    model.reduce(SearchMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(SearchMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -678,7 +678,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                SearchMviModel.Intent.MuteUser(
+                                SearchMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -709,7 +709,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        SearchMviModel.Intent.BlockUser(
+                        SearchMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -735,7 +735,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMviModel = metroVie
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(SearchMviModel.Intent.ToggleReblog(e))
+                    model.reduce(SearchMvi.Intent.ToggleReblog(e))
                 }
             },
         )

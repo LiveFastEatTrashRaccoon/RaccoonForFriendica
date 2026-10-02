@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationSpecification
 import dev.zacsweers.metro.AppScope
@@ -30,9 +30,9 @@ class CircleAddUserViewModel(
     @Assisted private val args: CircleAddUserViewModelArgs,
     private val searchPaginationManager: UserPaginationManager,
 ) : ViewModel(),
-    MviModelDelegate<CircleAddUserMviModel.Intent, CircleAddUserMviModel.State, CircleAddUserMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = CircleAddUserMviModel.State()),
-    CircleAddUserMviModel {
+    MviDelegate<CircleAddUserMvi.Intent, CircleAddUserMvi.State, CircleAddUserMvi.Effect>
+    by DefaultMviDelegate(initialState = CircleAddUserMvi.State()),
+    CircleAddUserMvi {
 
     init {
         viewModelScope.launch {
@@ -47,14 +47,14 @@ class CircleAddUserViewModel(
         }
     }
 
-    override fun reduce(intent: CircleAddUserMviModel.Intent) {
+    override fun reduce(intent: CircleAddUserMvi.Intent) {
         when (intent) {
-            is CircleAddUserMviModel.Intent.SetQuery ->
+            is CircleAddUserMvi.Intent.SetQuery ->
                 viewModelScope.launch {
                     updateState { it.copy(query = intent.text) }
                 }
 
-            CircleAddUserMviModel.Intent.LoadNextPage ->
+            CircleAddUserMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPageSearchUsers()
                 }

@@ -100,7 +100,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Pol
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.QuotedInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SuggestionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.gallerypicker.GalleryPickerMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.gallerypicker.GalleryPickerMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.gallerypicker.GalleryPickerViewModel
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
@@ -124,7 +124,7 @@ fun ComposerScreen(
     initialText: String? = null,
     hasInitialAttachment: Boolean = false,
 ) {
-    val model: ComposerMviModel = assistedMetroViewModel<ComposerViewModel>(
+    val model: ComposerMvi = assistedMetroViewModel<ComposerViewModel>(
         extras = ComposerViewModel.getExtras(
             ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId),
         ),
@@ -151,10 +151,10 @@ fun ComposerScreen(
             if (bytes.isNotEmpty()) {
                 when (originalRequest) {
                     ImagePickerRequest.Attachment ->
-                        model.reduce(ComposerMviModel.Intent.AddAttachment(bytes))
+                        model.reduce(ComposerMvi.Intent.AddAttachment(bytes))
 
                     ImagePickerRequest.InlineImage ->
-                        model.reduce(ComposerMviModel.Intent.AddInlineImageStep1(bytes))
+                        model.reduce(ComposerMvi.Intent.AddInlineImageStep1(bytes))
 
                     else -> Unit
                 }
@@ -193,36 +193,36 @@ fun ComposerScreen(
     LaunchedEffect(model) {
         when {
             draftId != null ->
-                model.reduce(ComposerMviModel.Intent.LoadDraft(draftId))
+                model.reduce(ComposerMvi.Intent.LoadDraft(draftId))
 
             scheduledPostId != null ->
-                model.reduce(ComposerMviModel.Intent.LoadScheduled(scheduledPostId))
+                model.reduce(ComposerMvi.Intent.LoadScheduled(scheduledPostId))
 
             editedPostId != null ->
-                model.reduce(ComposerMviModel.Intent.LoadEditedPost(editedPostId))
+                model.reduce(ComposerMvi.Intent.LoadEditedPost(editedPostId))
 
             !groupHandle.isNullOrEmpty() ->
-                model.reduce(ComposerMviModel.Intent.AddGroupReference(groupHandle))
+                model.reduce(ComposerMvi.Intent.AddGroupReference(groupHandle))
 
             !urlToShare.isNullOrEmpty() ->
-                model.reduce(ComposerMviModel.Intent.AddShareUrl(urlToShare))
+                model.reduce(ComposerMvi.Intent.AddShareUrl(urlToShare))
 
             !initialText.isNullOrEmpty() ->
                 model.reduce(
-                    ComposerMviModel.Intent.SetFieldValue(
+                    ComposerMvi.Intent.SetFieldValue(
                         value = TextFieldValue(text = initialText),
                         fieldType = ComposerFieldType.Body,
                     ),
                 )
 
             hasInitialAttachment ->
-                model.reduce(ComposerMviModel.Intent.AddInitialAttachment)
+                model.reduce(ComposerMvi.Intent.AddInitialAttachment)
 
             inReplyToId != null ->
-                model.reduce(ComposerMviModel.Intent.AddInitialMentions(initialHandle = inReplyToHandle))
+                model.reduce(ComposerMvi.Intent.AddInitialMentions(initialHandle = inReplyToHandle))
 
             !inReplyToHandle.isNullOrEmpty() ->
-                model.reduce(ComposerMviModel.Intent.AddMention(inReplyToHandle))
+                model.reduce(ComposerMvi.Intent.AddMention(inReplyToHandle))
 
             else -> Unit
         }
@@ -231,38 +231,38 @@ fun ComposerScreen(
     LaunchedEffect(model) {
         model.effects.onEach { event ->
             when (event) {
-                is ComposerMviModel.Effect.Failure ->
+                is ComposerMvi.Effect.Failure ->
                     snackbarHostState.showSnackbar(message = event.message ?: genericError)
 
-                ComposerMviModel.Effect.ValidationError.TextOrImagesOrPollMandatory ->
+                ComposerMvi.Effect.ValidationError.TextOrImagesOrPollMandatory ->
                     snackbarHostState.showSnackbar(message = missingDataError)
 
-                ComposerMviModel.Effect.ValidationError.InvalidVisibility ->
+                ComposerMvi.Effect.ValidationError.InvalidVisibility ->
                     snackbarHostState.showSnackbar(message = invalidVisibilityError)
 
-                ComposerMviModel.Effect.ValidationError.CharacterLimitExceeded ->
+                ComposerMvi.Effect.ValidationError.CharacterLimitExceeded ->
                     snackbarHostState.showSnackbar(message = characterLimitExceededError)
 
-                ComposerMviModel.Effect.ValidationError.ScheduleDateInThePast ->
+                ComposerMvi.Effect.ValidationError.ScheduleDateInThePast ->
                     snackbarHostState.showSnackbar(message = pastScheduleDateError)
 
-                ComposerMviModel.Effect.ValidationError.InvalidPoll ->
+                ComposerMvi.Effect.ValidationError.InvalidPoll ->
                     snackbarHostState.showSnackbar(message = invalidPollError)
 
-                ComposerMviModel.Effect.ValidationError.AltTextMissing ->
+                ComposerMvi.Effect.ValidationError.AltTextMissing ->
                     publishWithoutAltTextCheckDialogOpen = true
 
-                ComposerMviModel.Effect.ValidationError.VisibilityGreaterThanParent ->
+                ComposerMvi.Effect.ValidationError.VisibilityGreaterThanParent ->
                     confirmPublishWithVisibilityGreaterThanParentDialogOpened = true
 
-                ComposerMviModel.Effect.Success -> navigationCoordinator.pop()
+                ComposerMvi.Effect.Success -> navigationCoordinator.pop()
 
-                is ComposerMviModel.Effect.OpenPreview -> previewEntry = event.entry
+                is ComposerMvi.Effect.OpenPreview -> previewEntry = event.entry
 
-                is ComposerMviModel.Effect.TriggerAttachmentEdit ->
+                is ComposerMvi.Effect.TriggerAttachmentEdit ->
                     attachmentBeingEdited = event.attachment
 
-                is ComposerMviModel.Effect.TriggerInlineImageEdit ->
+                is ComposerMvi.Effect.TriggerInlineImageEdit ->
                     inlineImageBeingEdited = event.attachment
             }
         }.launchIn(this)
@@ -482,39 +482,39 @@ fun ComposerScreen(
 
                                             CustomOptions.PublishDefault ->
                                                 model.reduce(
-                                                    ComposerMviModel.Intent.ChangePublicationType(
+                                                    ComposerMvi.Intent.ChangePublicationType(
                                                         PublicationType.Default,
                                                     ),
                                                 )
 
                                             CustomOptions.SaveDraft ->
                                                 model.reduce(
-                                                    ComposerMviModel.Intent.ChangePublicationType(
+                                                    ComposerMvi.Intent.ChangePublicationType(
                                                         PublicationType.Draft,
                                                     ),
                                                 )
 
                                             CustomOptions.TogglePoll ->
                                                 if (uiState.poll == null) {
-                                                    model.reduce(ComposerMviModel.Intent.AddPoll)
+                                                    model.reduce(ComposerMvi.Intent.AddPoll)
                                                 } else {
-                                                    model.reduce(ComposerMviModel.Intent.RemovePoll)
+                                                    model.reduce(ComposerMvi.Intent.RemovePoll)
                                                 }
 
                                             CustomOptions.ToggleTitle ->
-                                                model.reduce(ComposerMviModel.Intent.ToggleHasTitle)
+                                                model.reduce(ComposerMvi.Intent.ToggleHasTitle)
 
                                             CustomOptions.ToggleSpoiler ->
-                                                model.reduce(ComposerMviModel.Intent.ToggleHasSpoiler)
+                                                model.reduce(ComposerMvi.Intent.ToggleHasSpoiler)
 
                                             CustomOptions.InsertCustomEmoji ->
                                                 insertEmojiModalOpen = true
 
                                             CustomOptions.OpenPreview ->
-                                                model.reduce(ComposerMviModel.Intent.CreatePreview)
+                                                model.reduce(ComposerMvi.Intent.CreatePreview)
 
                                             CustomOptions.InsertList ->
-                                                model.reduce(ComposerMviModel.Intent.InsertList)
+                                                model.reduce(ComposerMvi.Intent.InsertList)
 
                                             CustomOptions.ChangeMarkupMode ->
                                                 confirmChangeMarkupModeDialogOpen = true
@@ -558,7 +558,7 @@ fun ComposerScreen(
                         loadingMessage = LocalStrings.current.messageLoadingUsers,
                         onSelect = { idx ->
                             users[idx].handle?.takeIf { it.isNotEmpty() }?.also { handle ->
-                                model.reduce(ComposerMviModel.Intent.CompleteMention(handle))
+                                model.reduce(ComposerMvi.Intent.CompleteMention(handle))
                             }
                         },
                     )
@@ -570,7 +570,7 @@ fun ComposerScreen(
                         loadingMessage = LocalStrings.current.messageLoadingHashtags,
                         onSelect = { idx ->
                             hashtags[idx].name.also { name ->
-                                model.reduce(ComposerMviModel.Intent.CompleteHashtag(name))
+                                model.reduce(ComposerMvi.Intent.CompleteHashtag(name))
                             }
                         },
                     )
@@ -599,7 +599,7 @@ fun ComposerScreen(
                     },
                     onClickBold = {
                         model.reduce(
-                            ComposerMviModel.Intent.AddBoldFormat(
+                            ComposerMvi.Intent.AddBoldFormat(
                                 fieldType =
                                 when {
                                     hasTitleFocus -> ComposerFieldType.Title
@@ -611,7 +611,7 @@ fun ComposerScreen(
                     },
                     onClickItalic = {
                         model.reduce(
-                            ComposerMviModel.Intent.AddItalicFormat(
+                            ComposerMvi.Intent.AddItalicFormat(
                                 fieldType =
                                 when {
                                     hasTitleFocus -> ComposerFieldType.Title
@@ -623,7 +623,7 @@ fun ComposerScreen(
                     },
                     onClickUnderline = {
                         model.reduce(
-                            ComposerMviModel.Intent.AddUnderlineFormat(
+                            ComposerMvi.Intent.AddUnderlineFormat(
                                 fieldType =
                                 when {
                                     hasTitleFocus -> ComposerFieldType.Title
@@ -635,7 +635,7 @@ fun ComposerScreen(
                     },
                     onClickStrikethrough = {
                         model.reduce(
-                            ComposerMviModel.Intent.AddStrikethroughFormat(
+                            ComposerMvi.Intent.AddStrikethroughFormat(
                                 fieldType =
                                 when {
                                     hasTitleFocus -> ComposerFieldType.Title
@@ -647,7 +647,7 @@ fun ComposerScreen(
                     },
                     onClickCode = {
                         model.reduce(
-                            ComposerMviModel.Intent.AddCodeFormat(
+                            ComposerMvi.Intent.AddCodeFormat(
                                 fieldType =
                                 when {
                                     hasTitleFocus -> ComposerFieldType.Title
@@ -658,7 +658,7 @@ fun ComposerScreen(
                         )
                     },
                     onSubmit = {
-                        model.reduce(ComposerMviModel.Intent.Submit())
+                        model.reduce(ComposerMvi.Intent.Submit())
                     },
                 )
             }
@@ -720,7 +720,7 @@ fun ComposerScreen(
                     if (visibility is Visibility.Circle) {
                         selectCircleDialogOpen = true
                     } else {
-                        model.reduce(ComposerMviModel.Intent.SetVisibility(visibility))
+                        model.reduce(ComposerMvi.Intent.SetVisibility(visibility))
                     }
                 },
             )
@@ -765,7 +765,7 @@ fun ComposerScreen(
                     ),
                     onValueChange = {
                         model.reduce(
-                            ComposerMviModel.Intent.SetFieldValue(
+                            ComposerMvi.Intent.SetFieldValue(
                                 value = it,
                                 fieldType = ComposerFieldType.Spoiler,
                             ),
@@ -803,7 +803,7 @@ fun ComposerScreen(
                     ),
                     onValueChange = { value ->
                         model.reduce(
-                            ComposerMviModel.Intent.SetFieldValue(
+                            ComposerMvi.Intent.SetFieldValue(
                                 value = value,
                                 fieldType = ComposerFieldType.Title,
                             ),
@@ -830,7 +830,7 @@ fun ComposerScreen(
                 ),
                 onValueChange = { value ->
                     model.reduce(
-                        ComposerMviModel.Intent.SetFieldValue(
+                        ComposerMvi.Intent.SetFieldValue(
                             value = value,
                             fieldType = ComposerFieldType.Body,
                         ),
@@ -843,7 +843,7 @@ fun ComposerScreen(
                 title = LocalStrings.current.postSensitive,
                 value = uiState.sensitive,
                 onValueChange = {
-                    model.reduce(ComposerMviModel.Intent.SetSensitive(it))
+                    model.reduce(ComposerMvi.Intent.SetSensitive(it))
                 },
             )
 
@@ -859,7 +859,7 @@ fun ComposerScreen(
                     attachments = uiState.attachments,
                     autoloadImages = uiState.autoloadImages,
                     onDelete = { attachment ->
-                        model.reduce(ComposerMviModel.Intent.RemoveAttachment(attachment))
+                        model.reduce(ComposerMvi.Intent.RemoveAttachment(attachment))
                     },
                     onEditDescription = { attachment ->
                         attachmentBeingEdited = attachment
@@ -873,16 +873,16 @@ fun ComposerScreen(
                     poll = poll,
                     optionLimit = uiState.pollOptionLimit ?: Int.MAX_VALUE,
                     onChangeMultiple = {
-                        model.reduce(ComposerMviModel.Intent.SetPollMultiple(it))
+                        model.reduce(ComposerMvi.Intent.SetPollMultiple(it))
                     },
                     onAddOption = {
-                        model.reduce(ComposerMviModel.Intent.AddPollOption)
+                        model.reduce(ComposerMvi.Intent.AddPollOption)
                     },
                     onEditOption = { idx, text ->
-                        model.reduce(ComposerMviModel.Intent.EditPollOption(idx, text))
+                        model.reduce(ComposerMvi.Intent.EditPollOption(idx, text))
                     },
                     onRemoveOption = { idx ->
-                        model.reduce(ComposerMviModel.Intent.RemovePollOption(idx))
+                        model.reduce(ComposerMvi.Intent.RemovePollOption(idx))
                     },
                     onEditExpirationDate = {
                         pollExpirationMillis =
@@ -912,7 +912,7 @@ fun ComposerScreen(
                 onClose = { link ->
                     linkDialogOpen = false
                     if (link != null) {
-                        model.reduce(ComposerMviModel.Intent.AddLink(link))
+                        model.reduce(ComposerMvi.Intent.AddLink(link))
                     }
                 },
             )
@@ -926,7 +926,7 @@ fun ComposerScreen(
                 onClose = { newValue ->
                     if (newValue != null) {
                         model.reduce(
-                            ComposerMviModel.Intent.EditAttachmentDescription(
+                            ComposerMvi.Intent.EditAttachmentDescription(
                                 attachment = editedAttachment,
                                 description = newValue,
                             ),
@@ -941,7 +941,7 @@ fun ComposerScreen(
                 onClose = { newValue ->
                     if (newValue != null) {
                         model.reduce(
-                            ComposerMviModel.Intent.AddInlineImageStep2(
+                            ComposerMvi.Intent.AddInlineImageStep2(
                                 attachment = editedInlineImage,
                                 description = newValue,
                             ),
@@ -978,7 +978,7 @@ fun ComposerScreen(
                     if (index != null) {
                         val circle = uiState.availableCircles[index]
                         model.reduce(
-                            ComposerMviModel.Intent.SetVisibility(
+                            ComposerMvi.Intent.SetVisibility(
                                 Visibility.Circle(
                                     id = circle.id,
                                     name = circle.name,
@@ -992,7 +992,7 @@ fun ComposerScreen(
 
         if (photoGalleryPickerOpen) {
             val viewModelStoreOwner = rememberViewModelStoreOwner()
-            val galleryPickerModel: GalleryPickerMviModel = metroViewModel<GalleryPickerViewModel>(viewModelStoreOwner)
+            val galleryPickerModel: GalleryPickerMvi = metroViewModel<GalleryPickerViewModel>(viewModelStoreOwner)
             val dialogUiState by galleryPickerModel.uiState.collectAsState()
 
             GalleryPickerDialog(
@@ -1007,18 +1007,18 @@ fun ComposerScreen(
                 loading = dialogUiState.loading,
                 photos = dialogUiState.currentAlbumPhotos,
                 onInitialLoad = {
-                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.InitialLoad)
+                    galleryPickerModel.reduce(GalleryPickerMvi.Intent.InitialLoad)
                 },
                 onLoadMorePhotos = {
-                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.LoadMorePhotos)
+                    galleryPickerModel.reduce(GalleryPickerMvi.Intent.LoadMorePhotos)
                 },
                 onChangeAlbum = { album ->
-                    galleryPickerModel.reduce(GalleryPickerMviModel.Intent.SelectAlbum(album))
+                    galleryPickerModel.reduce(GalleryPickerMvi.Intent.SelectAlbum(album))
                 },
                 onClose = { attachments ->
                     photoGalleryPickerOpen = false
                     if (attachments != null) {
-                        model.reduce(ComposerMviModel.Intent.AddAttachmentsFromGallery(attachments))
+                        model.reduce(ComposerMvi.Intent.AddAttachmentsFromGallery(attachments))
                     }
                 },
             )
@@ -1032,7 +1032,7 @@ fun ComposerScreen(
                     scheduleDateMillis = null
                     if (date != null) {
                         model.reduce(
-                            ComposerMviModel.Intent.ChangePublicationType(
+                            ComposerMvi.Intent.ChangePublicationType(
                                 PublicationType.Scheduled(date),
                             ),
                         )
@@ -1049,7 +1049,7 @@ fun ComposerScreen(
                     pollExpirationMillis = null
                     if (date != null) {
                         model.reduce(
-                            ComposerMviModel.Intent.SetPollExpirationDate(date),
+                            ComposerMvi.Intent.SetPollExpirationDate(date),
                         )
                     }
                 },
@@ -1064,7 +1064,7 @@ fun ComposerScreen(
                 },
                 onInsert = { emoji ->
                     model.reduce(
-                        ComposerMviModel.Intent.InsertCustomEmoji(
+                        ComposerMvi.Intent.InsertCustomEmoji(
                             fieldType =
                             when {
                                 hasTitleFocus -> ComposerFieldType.Title
@@ -1110,7 +1110,7 @@ fun ComposerScreen(
                 onClose = { confirm ->
                     publishWithoutAltTextCheckDialogOpen = false
                     if (confirm) {
-                        model.reduce(ComposerMviModel.Intent.Submit(enableAltTextCheck = false))
+                        model.reduce(ComposerMvi.Intent.Submit(enableAltTextCheck = false))
                     }
                 },
             )
@@ -1125,7 +1125,7 @@ fun ComposerScreen(
                     confirmPublishWithVisibilityGreaterThanParentDialogOpened = false
                     if (confirm) {
                         model.reduce(
-                            ComposerMviModel.Intent.Submit(enableParentVisibilityCheck = false),
+                            ComposerMvi.Intent.Submit(enableParentVisibilityCheck = false),
                         )
                     }
                 },
@@ -1164,7 +1164,7 @@ fun ComposerScreen(
                 onSelect = { index ->
                     changeMarkupModeBottomSheetOpen = false
                     if (index != null) {
-                        model.reduce(ComposerMviModel.Intent.ChangeMarkupMode(modes[index]))
+                        model.reduce(ComposerMvi.Intent.ChangeMarkupMode(modes[index]))
                     }
                 },
             )
@@ -1178,7 +1178,7 @@ fun ComposerScreen(
                 onSelect = { index ->
                     quotePolicyBottomSheetOpen = false
                     if (index != null) {
-                        model.reduce(ComposerMviModel.Intent.ChangeQuotePolicy(policies[index]))
+                        model.reduce(ComposerMvi.Intent.ChangeQuotePolicy(policies[index]))
                     }
                 },
             )

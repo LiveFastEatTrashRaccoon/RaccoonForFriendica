@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -27,9 +27,9 @@ class SwitchAccountViewModel(
     accountRepository: AccountRepository,
     private val switchAccountUseCase: SwitchAccountUseCase,
 ) : ViewModel(),
-    MviModelDelegate<SwitchAccountMviModel.Intent, SwitchAccountMviModel.State, SwitchAccountMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = SwitchAccountMviModel.State()),
-    SwitchAccountMviModel {
+    MviDelegate<SwitchAccountMvi.Intent, SwitchAccountMvi.State, SwitchAccountMvi.Effect>
+    by DefaultMviDelegate(initialState = SwitchAccountMvi.State()),
+    SwitchAccountMvi {
 
     init {
         identityRepository.currentUser
@@ -48,9 +48,9 @@ class SwitchAccountViewModel(
             }.launchIn(viewModelScope)
     }
 
-    override fun reduce(intent: SwitchAccountMviModel.Intent) {
+    override fun reduce(intent: SwitchAccountMvi.Intent) {
         when (intent) {
-            is SwitchAccountMviModel.Intent.SwitchAccount -> switchAccount(intent.account)
+            is SwitchAccountMvi.Intent.SwitchAccount -> switchAccount(intent.account)
         }
     }
 
@@ -61,7 +61,7 @@ class SwitchAccountViewModel(
         }
         viewModelScope.launch {
             switchAccountUseCase(account)
-            emitEffect(SwitchAccountMviModel.Effect.AccountChangeSuccess)
+            emitEffect(SwitchAccountMvi.Effect.AccountChangeSuccess)
         }
     }
 }

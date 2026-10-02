@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.switchaccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
@@ -30,8 +30,8 @@ class SwitchAccountViewModel(
     private val switchAccountUseCase: SwitchAccountUseCase,
     private val authManager: AuthManager,
 ) : ViewModel(),
-    MviModelDelegate<SwitchAccountMviModel.Intent, SwitchAccountMviModel.State, SwitchAccountMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = SwitchAccountMviModel.State()), SwitchAccountMviModel {
+    MviDelegate<SwitchAccountMvi.Intent, SwitchAccountMvi.State, SwitchAccountMvi.Effect>
+    by DefaultMviDelegate(initialState = SwitchAccountMvi.State()), SwitchAccountMvi {
 
     init {
         identityRepository.currentUser
@@ -50,10 +50,10 @@ class SwitchAccountViewModel(
             }.launchIn(viewModelScope)
     }
 
-    override fun reduce(intent: SwitchAccountMviModel.Intent) {
+    override fun reduce(intent: SwitchAccountMvi.Intent) {
         when (intent) {
-            is SwitchAccountMviModel.Intent.SwitchAccount -> switchAccount(intent.account)
-            SwitchAccountMviModel.Intent.AddAccount -> authManager.openNewAccount()
+            is SwitchAccountMvi.Intent.SwitchAccount -> switchAccount(intent.account)
+            SwitchAccountMvi.Intent.AddAccount -> authManager.openNewAccount()
         }
     }
 
@@ -64,7 +64,7 @@ class SwitchAccountViewModel(
         }
         viewModelScope.launch {
             switchAccountUseCase(account)
-            emitEffect(SwitchAccountMviModel.Effect.AccountChangeSuccess)
+            emitEffect(SwitchAccountMvi.Effect.AccountChangeSuccess)
         }
     }
 }

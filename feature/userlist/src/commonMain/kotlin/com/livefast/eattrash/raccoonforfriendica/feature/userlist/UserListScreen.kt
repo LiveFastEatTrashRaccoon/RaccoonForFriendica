@@ -76,7 +76,7 @@ fun UserListScreen(
     enableExport: Boolean = false,
     otherInstance: String? = null,
 ) {
-    val model: UserListMviModel = assistedMetroViewModel<UserListViewModel>(
+    val model: UserListMvi = assistedMetroViewModel<UserListViewModel>(
         extras = UserListViewModel.getExtras(
             UserListViewModelArgs(
                 type = type.toUserListType(),
@@ -118,9 +118,9 @@ fun UserListScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    UserListMviModel.Effect.BackToTop -> goBackToTop()
+                    UserListMvi.Effect.BackToTop -> goBackToTop()
 
-                    is UserListMviModel.Effect.SaveList -> {
+                    is UserListMvi.Effect.SaveList -> {
                         if (event.content.isEmpty()) {
                             snackbarHostState.showSnackbar(errorMessage)
                         } else {
@@ -256,7 +256,7 @@ fun UserListScreen(
                                             optionsMenuOpen = false
                                             when (option.id) {
                                                 CustomOptions.Export -> {
-                                                    model.reduce(UserListMviModel.Intent.Export)
+                                                    model.reduce(UserListMvi.Intent.Export)
                                                 }
 
                                                 else -> Unit
@@ -296,7 +296,7 @@ fun UserListScreen(
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(UserListMviModel.Intent.Refresh)
+                model.reduce(UserListMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -347,11 +347,11 @@ fun UserListScreen(
                                 }
 
                                 RelationshipStatusNextAction.Follow -> {
-                                    model.reduce(UserListMviModel.Intent.Follow(user.id))
+                                    model.reduce(UserListMvi.Intent.Follow(user.id))
                                 }
 
                                 RelationshipStatusNextAction.Unfollow -> {
-                                    model.reduce(UserListMviModel.Intent.Unfollow(user.id))
+                                    model.reduce(UserListMvi.Intent.Unfollow(user.id))
                                 }
                             }
                         }.takeIf { isHomeInstance },
@@ -362,7 +362,7 @@ fun UserListScreen(
                     val canFetchMore =
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(UserListMviModel.Intent.LoadNextPage)
+                        model.reduce(UserListMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -395,7 +395,7 @@ fun UserListScreen(
                 val unfollowUserId = confirmUnfollowDialogUserId
                 confirmUnfollowDialogUserId = null
                 if (confirm && unfollowUserId != null) {
-                    model.reduce(UserListMviModel.Intent.Unfollow(unfollowUserId))
+                    model.reduce(UserListMvi.Intent.Unfollow(unfollowUserId))
                 }
             },
         )
@@ -408,7 +408,7 @@ fun UserListScreen(
                 val deleteUserId = confirmDeleteFollowRequestDialogUserId
                 confirmDeleteFollowRequestDialogUserId = null
                 if (confirm && deleteUserId != null) {
-                    model.reduce(UserListMviModel.Intent.Unfollow(deleteUserId))
+                    model.reduce(UserListMvi.Intent.Unfollow(deleteUserId))
                 }
             },
         )

@@ -78,7 +78,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAccountScreen(
-    model: MyAccountMviModel,
+    model: MyAccountMvi,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
@@ -129,16 +129,16 @@ fun MyAccountScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    MyAccountMviModel.Effect.BackToTop -> goBackToTop()
-                    MyAccountMviModel.Effect.Failure ->
+                    MyAccountMvi.Effect.BackToTop -> goBackToTop()
+                    MyAccountMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(message = genericError)
 
-                    is MyAccountMviModel.Effect.TriggerCopy -> {
+                    is MyAccountMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is MyAccountMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is MyAccountMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -170,7 +170,7 @@ fun MyAccountScreen(
                 ),
         isRefreshing = uiState.refreshing,
         onRefresh = {
-            model.reduce(MyAccountMviModel.Intent.Refresh)
+            model.reduce(MyAccountMvi.Intent.Refresh)
         },
     ) {
         LazyColumn(
@@ -243,7 +243,7 @@ fun MyAccountScreen(
                                     LinkAnnotation.Clickable(
                                         tag = "action-refresh",
                                         linkInteractionListener = {
-                                            model.reduce(MyAccountMviModel.Intent.Refresh)
+                                            model.reduce(MyAccountMvi.Intent.Refresh)
                                         },
                                     ),
                                 )
@@ -256,7 +256,7 @@ fun MyAccountScreen(
                                     LinkAnnotation.Clickable(
                                         tag = "action-login",
                                         linkInteractionListener = {
-                                            model.reduce(MyAccountMviModel.Intent.Logout)
+                                            model.reduce(MyAccountMvi.Intent.Logout)
                                         },
                                     ),
                                 )
@@ -345,7 +345,7 @@ fun MyAccountScreen(
                     currentSection = titles.indexOf(uiState.section),
                     onSelectSection = {
                         model.reduce(
-                            MyAccountMviModel.Intent.ChangeSection(titles[it]),
+                            MyAccountMvi.Intent.ChangeSection(titles[it]),
                         )
                     },
                 )
@@ -394,15 +394,15 @@ fun MyAccountScreen(
                     },
                     onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(MyAccountMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(MyAccountMvi.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) },
                     onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(MyAccountMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(MyAccountMvi.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) },
                     onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(MyAccountMviModel.Intent.ToggleDislike(e))
+                            model.reduce(MyAccountMvi.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) },
                     onReply =
                         { e: TimelineEntryModel ->
@@ -473,7 +473,7 @@ fun MyAccountScreen(
 
                             OptionId.Pin, OptionId.Unpin ->
                                 model.reduce(
-                                    MyAccountMviModel.Intent.TogglePin(entry),
+                                    MyAccountMvi.Intent.TogglePin(entry),
                                 )
 
                             OptionId.ViewDetails -> seeDetailsEntry = entry.original
@@ -488,12 +488,12 @@ fun MyAccountScreen(
 
                             OptionId.CopyToClipboard ->
                                 model.reduce(
-                                    MyAccountMviModel.Intent.CopyToClipboard(entry.original),
+                                    MyAccountMvi.Intent.CopyToClipboard(entry.original),
                                 )
 
                             OptionId.OpenInBrowser ->
                                 model.reduce(
-                                    MyAccountMviModel.Intent.OpenInBrowser(entry),
+                                    MyAccountMvi.Intent.OpenInBrowser(entry),
                                 )
 
                             else -> Unit
@@ -508,7 +508,7 @@ fun MyAccountScreen(
                     !uiState.initial && !uiState.loading && uiState.canFetchMore
                 val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                 if (isNearTheEnd && canFetchMore) {
-                    model.reduce(MyAccountMviModel.Intent.LoadNextPage)
+                    model.reduce(MyAccountMvi.Intent.LoadNextPage)
                 }
             }
             if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty() &&
@@ -562,7 +562,7 @@ fun MyAccountScreen(
                 val entryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && entryId != null) {
-                    model.reduce(MyAccountMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(MyAccountMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -576,7 +576,7 @@ fun MyAccountScreen(
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(MyAccountMviModel.Intent.ToggleReblog(e))
+                    model.reduce(MyAccountMvi.Intent.ToggleReblog(e))
                 }
             },
         )

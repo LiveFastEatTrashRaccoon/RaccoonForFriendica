@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.repository.AcknowledgementsRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -19,18 +19,18 @@ import kotlinx.coroutines.launch
 @Inject
 class AcknowledgementsViewModel(private val acknowledgementsRepository: AcknowledgementsRepository) :
     ViewModel(),
-    MviModelDelegate<AcknowledgementsMviModel.Intent, AcknowledgementsMviModel.State, AcknowledgementsMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = AcknowledgementsMviModel.State()),
-    AcknowledgementsMviModel {
+    MviDelegate<AcknowledgementsMvi.Intent, AcknowledgementsMvi.State, AcknowledgementsMvi.Effect>
+    by DefaultMviDelegate(initialState = AcknowledgementsMvi.State()),
+    AcknowledgementsMvi {
     init {
         viewModelScope.launch {
             refresh(initial = true)
         }
     }
 
-    override fun reduce(intent: AcknowledgementsMviModel.Intent) {
+    override fun reduce(intent: AcknowledgementsMvi.Intent) {
         when (intent) {
-            AcknowledgementsMviModel.Intent.Refresh ->
+            AcknowledgementsMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }

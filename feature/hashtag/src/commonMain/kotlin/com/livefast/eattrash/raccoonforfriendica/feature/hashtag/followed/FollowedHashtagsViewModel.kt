@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
@@ -35,9 +35,9 @@ class FollowedHashtagsViewModel(
     private val hapticFeedback: HapticFeedback,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<FollowedHashtagsMviModel.Intent, FollowedHashtagsMviModel.State, FollowedHashtagsMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = FollowedHashtagsMviModel.State()),
-    FollowedHashtagsMviModel {
+    MviDelegate<FollowedHashtagsMvi.Intent, FollowedHashtagsMvi.State, FollowedHashtagsMvi.Effect>
+    by DefaultMviDelegate(initialState = FollowedHashtagsMvi.State()),
+    FollowedHashtagsMvi {
     init {
         viewModelScope.launch {
             notificationCenter
@@ -72,19 +72,19 @@ class FollowedHashtagsViewModel(
         }
     }
 
-    override fun reduce(intent: FollowedHashtagsMviModel.Intent) {
+    override fun reduce(intent: FollowedHashtagsMvi.Intent) {
         when (intent) {
-            FollowedHashtagsMviModel.Intent.Refresh ->
+            FollowedHashtagsMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            FollowedHashtagsMviModel.Intent.LoadNextPage ->
+            FollowedHashtagsMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is FollowedHashtagsMviModel.Intent.ToggleTagFollow ->
+            is FollowedHashtagsMvi.Intent.ToggleTagFollow ->
                 toggleTagFollow(
                     intent.name,
                     intent.newValue,

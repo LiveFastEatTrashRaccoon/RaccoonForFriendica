@@ -73,7 +73,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
-fun NodeInfoScreen(model: NodeInfoMviModel, modifier: Modifier = Modifier) {
+fun NodeInfoScreen(model: NodeInfoMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }
@@ -83,7 +83,7 @@ fun NodeInfoScreen(model: NodeInfoMviModel, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    NodeInfoMviModel.Effect.AnonymousChangeNodeSuccess -> {
+                    NodeInfoMvi.Effect.AnonymousChangeNodeSuccess -> {
                         changeInstanceDialogOpened = false
                         navigationCoordinator.showGlobalMessage(successMessage)
                     }
@@ -108,10 +108,10 @@ fun NodeInfoScreen(model: NodeInfoMviModel, modifier: Modifier = Modifier) {
                 changeInstanceDialogOpened = false
             },
             onNodeChange = { value ->
-                model.reduce(NodeInfoMviModel.Intent.SetAnonymousChangeNode(value))
+                model.reduce(NodeInfoMvi.Intent.SetAnonymousChangeNode(value))
             },
             onSubmit = {
-                model.reduce(NodeInfoMviModel.Intent.SubmitAnonymousChangeNode)
+                model.reduce(NodeInfoMvi.Intent.SubmitAnonymousChangeNode)
             },
         )
     }
@@ -121,7 +121,7 @@ fun NodeInfoScreen(model: NodeInfoMviModel, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @VisibleForTesting
 fun NodeInfoScreenScaffold(
-    uiState: NodeInfoMviModel.State,
+    uiState: NodeInfoMvi.State,
     modifier: Modifier = Modifier,
     onOpenChangeInstance: (() -> Unit)? = null,
 ) {

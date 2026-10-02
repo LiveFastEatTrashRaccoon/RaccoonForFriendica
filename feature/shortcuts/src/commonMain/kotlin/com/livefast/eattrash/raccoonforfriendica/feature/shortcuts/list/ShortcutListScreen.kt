@@ -55,7 +55,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifier) {
+fun ShortcutListScreen(model: ShortcutListMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -84,7 +84,7 @@ fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifie
         model.effects
             .onEach { event ->
                 when (event) {
-                    ShortcutListMviModel.Effect.Failure ->
+                    ShortcutListMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
                 }
             }.launchIn(this)
@@ -145,7 +145,7 @@ fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifie
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ShortcutListMviModel.Intent.Refresh)
+                model.reduce(ShortcutListMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -207,7 +207,7 @@ fun ShortcutListScreen(model: ShortcutListMviModel, modifier: Modifier = Modifie
                 val item = confirmDeleteItem
                 confirmDeleteItem = null
                 if (confirm && item != null) {
-                    model.reduce(ShortcutListMviModel.Intent.Delete(item))
+                    model.reduce(ShortcutListMvi.Intent.Delete(item))
                 }
             },
         )

@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.navigation
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -15,60 +14,60 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListTy
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.main.AcknowledgementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.editmembers.CircleMembersScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.manage.ManageUserCirclesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.timeline.CircleTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.ComposerScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.ConversationScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModelArgs
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMvi
+import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.detail.AlbumDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.timeline.HashtagScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.imagedetail.ImageDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.LicencesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.legacy.LegacyLoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.login.oauth.LoginScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBlocksScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount.NewAccountScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline.ShortcutTimelineScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.thread.ThreadScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
-import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMvi
+import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.userdetail.classic.UserDetailScreen
@@ -89,26 +88,26 @@ internal val NavKey.isDetailDestination: Boolean
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 internal fun getEntryProvider(
-    timelineViewModel: TimelineMviModel,
+    timelineViewModel: TimelineMvi,
     timelineLazyListState: LazyListState,
-    exploreViewModel: ExploreMviModel,
+    exploreViewModel: ExploreMvi,
     exploreLazyListState: LazyListState,
-    inboxViewModel: InboxMviModel,
+    inboxViewModel: InboxMvi,
     inboxLazyListState: LazyListState,
-    profileViewModel: ProfileMviModel,
-    myAccountViewModel: MyAccountMviModel,
+    profileViewModel: ProfileMvi,
+    myAccountViewModel: MyAccountMvi,
     myAccountLazyListState: LazyListState,
-    favoritesViewModel: EntryListMviModel? = null,
-    bookmarksViewModel: EntryListMviModel? = null,
-    followedHashtagsViewModel: FollowedHashtagsMviModel? = null,
-    followRequestsViewModel: FollowRequestsMviModel? = null,
-    circlesViewModel: CirclesMviModel? = null,
-    conversationListViewModel: ConversationListMviModel? = null,
-    galleryViewModel: GalleryMviModel? = null,
-    unpublishedViewModel: UnpublishedMviModel? = null,
-    calendarViewModel: CalendarMviModel? = null,
-    shortcutListViewModel: ShortcutListMviModel? = null,
-    nodeInfoViewModel: NodeInfoMviModel? = null,
+    favoritesViewModel: EntryListMvi? = null,
+    bookmarksViewModel: EntryListMvi? = null,
+    followedHashtagsViewModel: FollowedHashtagsMvi? = null,
+    followRequestsViewModel: FollowRequestsMvi? = null,
+    circlesViewModel: CirclesMvi? = null,
+    conversationListViewModel: ConversationListMvi? = null,
+    galleryViewModel: GalleryMvi? = null,
+    unpublishedViewModel: UnpublishedMvi? = null,
+    calendarViewModel: CalendarMvi? = null,
+    shortcutListViewModel: ShortcutListMvi? = null,
+    nodeInfoViewModel: NodeInfoMvi? = null,
 ): (NavKey) -> NavEntry<NavKey> = entryProvider {
     entry<Destination.Main>(metadata = ListDetailSceneStrategy.listPane()) {
         MainScreen(
@@ -163,7 +162,7 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.Favorites>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMviModel = favoritesViewModel ?: assistedMetroViewModel<EntryListViewModel>(
+        val model: EntryListMvi = favoritesViewModel ?: assistedMetroViewModel<EntryListViewModel>(
             extras = EntryListViewModel.getExtras(EntryListViewModelArgs(type = EntryListType.Favorites))
         )
         EntryListScreen(
@@ -172,7 +171,7 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.Bookmarks>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMviModel = bookmarksViewModel ?: assistedMetroViewModel<EntryListViewModel>(
+        val model: EntryListMvi = bookmarksViewModel ?: assistedMetroViewModel<EntryListViewModel>(
             extras = EntryListViewModel.getExtras(EntryListViewModelArgs(type = EntryListType.Bookmarks))
         )
         EntryListScreen(
@@ -181,7 +180,7 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.QuotingEntries>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMviModel = assistedMetroViewModel<EntryListViewModel>(
+        val model: EntryListMvi = assistedMetroViewModel<EntryListViewModel>(
             extras = EntryListViewModel.getExtras(
                 EntryListViewModelArgs(
                     type = EntryListType.Quoting(entryId = it.entryId, otherInstance = it.otherInstance),
@@ -195,7 +194,7 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.FollowedHashtags>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: FollowedHashtagsMviModel = followedHashtagsViewModel ?: metroViewModel<FollowedHashtagsViewModel>()
+        val model: FollowedHashtagsMvi = followedHashtagsViewModel ?: metroViewModel<FollowedHashtagsViewModel>()
         FollowedHashtagsScreen(model = model)
     }
     entry<Destination.Composer> {
@@ -235,7 +234,7 @@ internal fun getEntryProvider(
         ManageBlocksScreen()
     }
     entry<Destination.Circles>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: CirclesMviModel = circlesViewModel ?: metroViewModel<CirclesViewModel>()
+        val model: CirclesMvi = circlesViewModel ?: metroViewModel<CirclesViewModel>()
         CirclesScreen(model = model)
     }
     entry<Destination.CircleMembers>(metadata = ListDetailSceneStrategy.detailPane()) {
@@ -245,18 +244,18 @@ internal fun getEntryProvider(
         CircleTimelineScreen(id = it.circleId)
     }
     entry<Destination.FollowRequests>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: FollowRequestsMviModel = followRequestsViewModel ?: metroViewModel<FollowRequestsViewModel>()
+        val model: FollowRequestsMvi = followRequestsViewModel ?: metroViewModel<FollowRequestsViewModel>()
         FollowRequestsScreen(model = model)
     }
     entry<Destination.EditProfile> {
         EditProfileScreen()
     }
     entry<Destination.NodeInfo> {
-        val model: NodeInfoMviModel = nodeInfoViewModel ?: metroViewModel<NodeInfoViewModel>()
+        val model: NodeInfoMvi = nodeInfoViewModel ?: metroViewModel<NodeInfoViewModel>()
         NodeInfoScreen(model = model)
     }
     entry<Destination.ConversationList>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: ConversationListMviModel = conversationListViewModel ?: metroViewModel<ConversationListViewModel>()
+        val model: ConversationListMvi = conversationListViewModel ?: metroViewModel<ConversationListViewModel>()
         ConversationListScreen(model = model)
     }
     entry<Destination.Conversation>(metadata = ListDetailSceneStrategy.detailPane()) {
@@ -266,14 +265,14 @@ internal fun getEntryProvider(
         )
     }
     entry<Destination.Gallery>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: GalleryMviModel = galleryViewModel ?: metroViewModel<GalleryViewModel>()
+        val model: GalleryMvi = galleryViewModel ?: metroViewModel<GalleryViewModel>()
         GalleryScreen(model = model)
     }
     entry<Destination.AlbumDetail>(metadata = ListDetailSceneStrategy.detailPane()) {
         AlbumDetailScreen(name = it.name)
     }
     entry<Destination.Unpublished>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: UnpublishedMviModel = unpublishedViewModel ?: metroViewModel<UnpublishedViewModel>()
+        val model: UnpublishedMvi = unpublishedViewModel ?: metroViewModel<UnpublishedViewModel>()
         UnpublishedScreen(model = model)
     }
     entry<Destination.CreateReport> {
@@ -286,7 +285,7 @@ internal fun getEntryProvider(
         UserFeedbackScreen()
     }
     entry<Destination.Calendar>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: CalendarMviModel = calendarViewModel ?: metroViewModel<CalendarViewModel>()
+        val model: CalendarMvi = calendarViewModel ?: metroViewModel<CalendarViewModel>()
         CalendarScreen(model = model)
     }
     entry<Destination.EventDetail>(metadata = ListDetailSceneStrategy.detailPane()) {
@@ -305,7 +304,7 @@ internal fun getEntryProvider(
         AcknowledgementsScreen()
     }
     entry<Destination.ShortcutList>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: ShortcutListMviModel = shortcutListViewModel ?: metroViewModel<ShortcutListViewModel>()
+        val model: ShortcutListMvi = shortcutListViewModel ?: metroViewModel<ShortcutListViewModel>()
         ShortcutListScreen(model = model)
     }
     entry<Destination.ShortcutTimeline>(metadata = ListDetailSceneStrategy.listPane()) {

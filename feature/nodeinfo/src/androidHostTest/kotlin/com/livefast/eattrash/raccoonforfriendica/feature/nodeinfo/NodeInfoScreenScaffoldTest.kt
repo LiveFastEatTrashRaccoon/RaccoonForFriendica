@@ -50,7 +50,7 @@ class NodeInfoScreenScaffoldTest {
     fun `given all data present when displayed then content is as expected`() {
         with(composeTestRule) {
             setup(
-                NodeInfoMviModel.State(
+                NodeInfoMvi.State(
                     info =
                     NodeInfoModel(
                         title = "Instance title",
@@ -86,9 +86,8 @@ class NodeInfoScreenScaffoldTest {
     fun `given no contact when displayed then content is as expected`() {
         with(composeTestRule) {
             setup(
-                NodeInfoMviModel.State(
-                    info =
-                    NodeInfoModel(
+                NodeInfoMvi.State(
+                    info = NodeInfoModel(
                         title = "Instance title",
                         description = "Instance description",
                         rules =
@@ -120,9 +119,8 @@ class NodeInfoScreenScaffoldTest {
     fun `given no rules when displayed then content is as expected`() {
         with(composeTestRule) {
             setup(
-                NodeInfoMviModel.State(
-                    info =
-                    NodeInfoModel(
+                NodeInfoMvi.State(
+                    info = NodeInfoModel(
                         title = "Instance title",
                         description = "Instance description",
                         contact = UserModel(id = "1", displayName = "Admin"),
@@ -145,7 +143,7 @@ class NodeInfoScreenScaffoldTest {
         }
     }
 
-    private fun ComposeContentTestRule.setup(state: NodeInfoMviModel.State) {
+    private fun ComposeContentTestRule.setup(state: NodeInfoMvi.State) {
         setContent {
             ProvideAppCompositionLocals(
                 uiDeps = uiDeps,

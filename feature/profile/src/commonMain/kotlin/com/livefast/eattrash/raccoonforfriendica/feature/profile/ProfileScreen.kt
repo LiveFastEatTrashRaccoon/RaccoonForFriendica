@@ -49,12 +49,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.delete.DeleteAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.delete.DeleteAccountMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.delete.DeleteAccountViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.switchaccount.SwitchAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.switchaccount.SwitchAccountMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.switchaccount.SwitchAccountViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -64,8 +64,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    model: ProfileMviModel,
-    myAccountModel: MyAccountMviModel,
+    model: ProfileMvi,
+    myAccountModel: MyAccountMvi,
     modifier: Modifier = Modifier,
     myAccountLazyListState: LazyListState = rememberLazyListState(),
 ) {
@@ -169,13 +169,13 @@ fun ProfileScreen(
 
     if (manageAccountsDialogOpened) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
-        val  switchAccountModel: SwitchAccountMviModel = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
+        val  switchAccountModel: SwitchAccountMvi = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
         val dialogUiState by switchAccountModel.uiState.collectAsState()
 
         LaunchedEffect(switchAccountModel) {
             switchAccountModel.effects.onEach { effect ->
                 when (effect) {
-                    SwitchAccountMviModel.Effect.AccountChangeSuccess -> {
+                    SwitchAccountMvi.Effect.AccountChangeSuccess -> {
                         navigationCoordinator.showGlobalMessage(successMessage)
                     }
                 }
@@ -242,9 +242,9 @@ fun ProfileScreen(
                     val accounts = dialogUiState.availableAccounts
                     if (index in accounts.indices) {
                         val selectedAccount = accounts[index]
-                        switchAccountModel.reduce(SwitchAccountMviModel.Intent.SwitchAccount(selectedAccount))
+                        switchAccountModel.reduce(SwitchAccountMvi.Intent.SwitchAccount(selectedAccount))
                     } else {
-                        switchAccountModel.reduce(SwitchAccountMviModel.Intent.AddAccount)
+                        switchAccountModel.reduce(SwitchAccountMvi.Intent.AddAccount)
                     }
                 }
             },
@@ -260,11 +260,11 @@ fun ProfileScreen(
 
     if (confirmDeleteAccount != null) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
-        val deleteAccountModel: DeleteAccountMviModel = metroViewModel<DeleteAccountViewModel>(viewModelStoreOwner)
+        val deleteAccountModel: DeleteAccountMvi = metroViewModel<DeleteAccountViewModel>(viewModelStoreOwner)
         LaunchedEffect(deleteAccountModel) {
             deleteAccountModel.effects.onEach { effect ->
                 when (effect) {
-                    DeleteAccountMviModel.Effect.Success -> {
+                    DeleteAccountMvi.Effect.Success -> {
                         confirmDeleteAccount = null
                     }
                 }
@@ -275,7 +275,7 @@ fun ProfileScreen(
             onClose = { confirm ->
                 val account = confirmDeleteAccount
                 if (confirm && account != null) {
-                    deleteAccountModel.reduce(DeleteAccountMviModel.Intent.Submit(account))
+                    deleteAccountModel.reduce(DeleteAccountMvi.Intent.Submit(account))
                 }
             },
         )
@@ -287,7 +287,7 @@ fun ProfileScreen(
             onClose = { confirm ->
                 confirmLogoutDialogOpened = false
                 if (confirm) {
-                    model.reduce(ProfileMviModel.Intent.Logout)
+                    model.reduce(ProfileMvi.Intent.Logout)
                 }
             },
         )

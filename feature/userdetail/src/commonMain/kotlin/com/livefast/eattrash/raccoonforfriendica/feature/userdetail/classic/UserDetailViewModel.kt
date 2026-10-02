@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -77,9 +77,9 @@ class UserDetailViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<UserDetailMviModel.Intent, UserDetailMviModel.State, UserDetailMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = UserDetailMviModel.State()),
-    UserDetailMviModel {
+    MviDelegate<UserDetailMvi.Intent, UserDetailMvi.State, UserDetailMvi.Effect>
+    by DefaultMviDelegate(initialState = UserDetailMvi.State()),
+    UserDetailMvi {
 
     private val id = args.id
 
@@ -131,81 +131,81 @@ class UserDetailViewModel(
         }
     }
 
-    override fun reduce(intent: UserDetailMviModel.Intent) {
+    override fun reduce(intent: UserDetailMvi.Intent) {
         when (intent) {
-            is UserDetailMviModel.Intent.ChangeSection ->
+            is UserDetailMvi.Intent.ChangeSection ->
                 viewModelScope.launch {
                     if (uiState.value.loading) {
                         return@launch
                     }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(UserDetailMviModel.Effect.BackToTop)
+                    emitEffect(UserDetailMvi.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            UserDetailMviModel.Intent.LoadNextPage ->
+            UserDetailMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            UserDetailMviModel.Intent.Refresh ->
+            UserDetailMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            UserDetailMviModel.Intent.Follow -> follow()
+            UserDetailMvi.Intent.Follow -> follow()
 
-            UserDetailMviModel.Intent.Unfollow -> unfollow()
+            UserDetailMvi.Intent.Unfollow -> unfollow()
 
-            is UserDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is UserDetailMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is UserDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is UserDetailMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is UserDetailMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is UserDetailMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is UserDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is UserDetailMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            UserDetailMviModel.Intent.DisableNotifications -> toggleNotifications(enabled = false)
+            UserDetailMvi.Intent.DisableNotifications -> toggleNotifications(enabled = false)
 
-            UserDetailMviModel.Intent.EnableNotifications -> toggleNotifications(enabled = true)
+            UserDetailMvi.Intent.EnableNotifications -> toggleNotifications(enabled = true)
 
-            is UserDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is UserDetailMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is UserDetailMviModel.Intent.ToggleBlock -> toggleBlock(intent.blocked)
+            is UserDetailMvi.Intent.ToggleBlock -> toggleBlock(intent.blocked)
 
-            is UserDetailMviModel.Intent.ToggleMute ->
+            is UserDetailMvi.Intent.ToggleMute ->
                 toggleMute(
                     muted = intent.muted,
                     duration = intent.duration,
                     disableNotifications = intent.disableNotifications,
                 )
 
-            UserDetailMviModel.Intent.TogglePersonalNoteEditMode ->
+            UserDetailMvi.Intent.TogglePersonalNoteEditMode ->
                 toggleEditPersonalNote()
 
-            is UserDetailMviModel.Intent.SetPersonalNote ->
+            is UserDetailMvi.Intent.SetPersonalNote ->
                 viewModelScope.launch {
                     updateState { it.copy(personalNote = intent.note) }
                 }
 
-            UserDetailMviModel.Intent.SubmitPersonalNote -> updatePersonalNote()
+            UserDetailMvi.Intent.SubmitPersonalNote -> updatePersonalNote()
 
-            is UserDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is UserDetailMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is UserDetailMviModel.Intent.SetRateLimit -> setRateLimit(intent.value)
+            is UserDetailMvi.Intent.SetRateLimit -> setRateLimit(intent.rateLimit)
 
-            is UserDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is UserDetailMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is UserDetailMviModel.Intent.WillOpenDetail ->
+            is UserDetailMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(UserDetailMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(UserDetailMvi.Effect.OpenDetail(intent.entry))
                 }
 
-            is UserDetailMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is UserDetailMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is UserDetailMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is UserDetailMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -527,7 +527,7 @@ class UserDetailViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(UserDetailMviModel.Effect.PollVoteFailure)
+                emitEffect(UserDetailMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -612,7 +612,7 @@ class UserDetailViewModel(
                     it.copy(personalNoteEditEnabled = false)
                 }
             } else {
-                emitEffect(UserDetailMviModel.Effect.Failure)
+                emitEffect(UserDetailMvi.Effect.Failure)
             }
         }
     }
@@ -629,7 +629,7 @@ class UserDetailViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(UserDetailMviModel.Effect.TriggerCopy(text))
+                emitEffect(UserDetailMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -715,7 +715,7 @@ class UserDetailViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(UserDetailMviModel.Effect.OpenUrl(url))
+                emitEffect(UserDetailMvi.Effect.OpenUrl(url))
             }
         }
     }

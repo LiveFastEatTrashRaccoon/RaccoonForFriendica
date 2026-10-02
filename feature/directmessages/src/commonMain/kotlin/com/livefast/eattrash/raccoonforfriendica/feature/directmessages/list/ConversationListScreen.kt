@@ -53,7 +53,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.components.ConversationItem
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.selectuser.SelectUserMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.selectuser.SelectUserMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.selectuser.SelectUserViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -63,7 +63,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier = Modifier) {
+fun ConversationListScreen(model: ConversationListMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
@@ -92,7 +92,7 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
         model.effects
             .onEach { event ->
                 when (event) {
-                    ConversationListMviModel.Effect.BackToTop -> goBackToTop()
+                    ConversationListMvi.Effect.BackToTop -> goBackToTop()
                 }
             }.launchIn(this)
     }
@@ -181,7 +181,7 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(ConversationListMviModel.Intent.Refresh)
+                model.reduce(ConversationListMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -219,7 +219,7 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
                             val parentUri = conversation.lastMessage.parentUri
                             if (parentUri != null) {
                                 model.reduce(
-                                    ConversationListMviModel.Intent.MarkConversationAsRead(idx),
+                                    ConversationListMvi.Intent.MarkConversationAsRead(idx),
                                 )
                                 mainRouter.openConversation(
                                     otherUser = conversation.otherUser,
@@ -236,7 +236,7 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(ConversationListMviModel.Intent.LoadNextPage)
+                        model.reduce(ConversationListMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -260,7 +260,7 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
 
     if (selectUserToCreateConversationDialogOpen) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
-        val selectUserModel: SelectUserMviModel = metroViewModel<SelectUserViewModel>(viewModelStoreOwner)
+        val selectUserModel: SelectUserMvi = metroViewModel<SelectUserViewModel>(viewModelStoreOwner)
         val dialogUiState by selectUserModel.uiState.collectAsState()
 
         SelectUserDialog(
@@ -270,14 +270,14 @@ fun ConversationListScreen(model: ConversationListMviModel, modifier: Modifier =
             loading = dialogUiState.loading,
             canFetchMore = dialogUiState.canFetchMore,
             onSearch = {
-                selectUserModel.reduce(SelectUserMviModel.Intent.SetQuery(it))
+                selectUserModel.reduce(SelectUserMvi.Intent.SetQuery(it))
             },
             onLoadMoreUsers = {
-                selectUserModel.reduce(SelectUserMviModel.Intent.LoadNextPage)
+                selectUserModel.reduce(SelectUserMvi.Intent.LoadNextPage)
             },
             onClose = { user ->
-                selectUserModel.reduce(SelectUserMviModel.Intent.SetQuery(""))
-                selectUserModel.reduce(SelectUserMviModel.Intent.Clear)
+                selectUserModel.reduce(SelectUserMvi.Intent.SetQuery(""))
+                selectUserModel.reduce(SelectUserMvi.Intent.Clear)
                 selectUserToCreateConversationDialogOpen = false
                 val userId = user?.id
                 if (userId != null) {

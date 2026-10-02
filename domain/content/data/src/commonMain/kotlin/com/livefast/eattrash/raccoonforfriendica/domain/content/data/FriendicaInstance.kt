@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
-data class FriendicaInstance(val lang: String = "", val value: String)
+data class FriendicaInstance(val lang: String = "", val node: String)
 
 /**
  * List of predefined Friendica instances in the drop-down menu.
@@ -10,41 +10,41 @@ val DefaultFriendicaInstances =
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
-                value = "social.trom.tf",
+                node = "social.trom.tf",
             )
         this +=
             FriendicaInstance(
                 lang = "🇮🇹",
-                value = "poliverso.org",
+                node = "poliverso.org",
             )
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
-                value = "friendica.world",
+                node = "friendica.world",
             )
         this +=
             FriendicaInstance(
                 lang = "🇩🇪",
-                value = "nerdica.net",
+                node = "nerdica.net",
             )
         this +=
             FriendicaInstance(
                 lang = "🇩🇪",
-                value = "opensocial.at",
+                node = "opensocial.at",
             )
         this +=
             FriendicaInstance(
                 lang = "🇩🇪",
-                value = "inne.city",
+                node = "inne.city",
             )
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
-                value = "friendica.xyz",
+                node = "friendica.xyz",
             )
         this +=
             FriendicaInstance(
                 lang = "🇬🇧",
-                value = "friendica.me",
+                node = "friendica.me",
             )
     }

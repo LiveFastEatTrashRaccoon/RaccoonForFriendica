@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.announcements
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AnnouncementModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
@@ -33,9 +33,9 @@ class AnnouncementsViewModel(
     private val announcementsManager: AnnouncementsManager,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<AnnouncementsMviModel.Intent, AnnouncementsMviModel.State, AnnouncementsMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = AnnouncementsMviModel.State()),
-    AnnouncementsMviModel {
+    MviDelegate<AnnouncementsMvi.Intent, AnnouncementsMvi.State, AnnouncementsMvi.Effect>
+    by DefaultMviDelegate(initialState = AnnouncementsMvi.State()),
+    AnnouncementsMvi {
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -75,20 +75,20 @@ class AnnouncementsViewModel(
         }
     }
 
-    override fun reduce(intent: AnnouncementsMviModel.Intent) {
+    override fun reduce(intent: AnnouncementsMvi.Intent) {
         when (intent) {
-            AnnouncementsMviModel.Intent.Refresh ->
+            AnnouncementsMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is AnnouncementsMviModel.Intent.AddReaction ->
+            is AnnouncementsMvi.Intent.AddReaction ->
                 addReaction(
                     id = intent.id,
                     name = intent.name,
                 )
 
-            is AnnouncementsMviModel.Intent.RemoveReaction ->
+            is AnnouncementsMvi.Intent.RemoveReaction ->
                 removeReaction(
                     id = intent.id,
                     name = intent.name,
@@ -113,7 +113,7 @@ class AnnouncementsViewModel(
             )
         }
         if (initial) {
-            emitEffect(AnnouncementsMviModel.Effect.BackToTop)
+            emitEffect(AnnouncementsMvi.Effect.BackToTop)
         }
     }
 

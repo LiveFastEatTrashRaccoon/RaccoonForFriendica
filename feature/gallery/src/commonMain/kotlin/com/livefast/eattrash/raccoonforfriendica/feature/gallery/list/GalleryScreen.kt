@@ -65,7 +65,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
+fun GalleryScreen(model: GalleryMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
@@ -98,9 +98,9 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    GalleryMviModel.Effect.BackToTop -> goBackToTop()
+                    GalleryMvi.Effect.BackToTop -> goBackToTop()
 
-                    GalleryMviModel.Effect.Failure ->
+                    GalleryMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
                 }
             }.launchIn(this)
@@ -201,7 +201,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(GalleryMviModel.Intent.Refresh)
+                model.reduce(GalleryMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -258,7 +258,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.items)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(GalleryMviModel.Intent.LoadNextPage)
+                        model.reduce(GalleryMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -306,7 +306,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
                 albumToEditName = null
                 if (!newName.isNullOrBlank()) {
                     model.reduce(
-                        GalleryMviModel.Intent.UpdateAlbum(
+                        GalleryMvi.Intent.UpdateAlbum(
                             oldName = oldName,
                             newName = newName,
                         ),
@@ -322,7 +322,7 @@ fun GalleryScreen(model: GalleryMviModel, modifier: Modifier = Modifier) {
                 val albumName = albumToDeleteName
                 albumToDeleteName = null
                 if (confirm && albumName != null) {
-                    model.reduce(GalleryMviModel.Intent.DeleteAlbum(albumName))
+                    model.reduce(GalleryMvi.Intent.DeleteAlbum(albumName))
                 }
             },
         )

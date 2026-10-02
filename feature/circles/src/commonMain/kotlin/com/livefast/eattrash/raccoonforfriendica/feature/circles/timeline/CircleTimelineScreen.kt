@@ -72,7 +72,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
-    val model: CircleTimelineMviModel = assistedMetroViewModel<CircleTimelineViewModel>(
+    val model: CircleTimelineMvi = assistedMetroViewModel<CircleTimelineViewModel>(
         extras = CircleTimelineViewModel.getExtras(CircleTimelineViewModelArgs(id)),
     )
     val uiState by model.uiState.collectAsState()
@@ -111,25 +111,25 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    CircleTimelineMviModel.Effect.BackToTop -> goBackToTop()
+                    CircleTimelineMvi.Effect.BackToTop -> goBackToTop()
 
-                    CircleTimelineMviModel.Effect.PollVoteFailure ->
+                    CircleTimelineMvi.Effect.PollVoteFailure ->
                         pollErrorDialogOpened =
                             true
 
-                    is CircleTimelineMviModel.Effect.TriggerCopy -> {
+                    is CircleTimelineMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is CircleTimelineMviModel.Effect.OpenDetail -> {
+                    is CircleTimelineMvi.Effect.OpenDetail -> {
                         mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
                     }
 
-                    is CircleTimelineMviModel.Effect.OpenUrl ->
+                    is CircleTimelineMvi.Effect.OpenUrl ->
                         uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
@@ -199,7 +199,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(CircleTimelineMviModel.Intent.Refresh)
+                model.reduce(CircleTimelineMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -237,7 +237,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         onClick = { e ->
-                            model.reduce(CircleTimelineMviModel.Intent.WillOpenDetail(e))
+                            model.reduce(CircleTimelineMvi.Intent.WillOpenDetail(e))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -268,21 +268,21 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
 
                                 else ->
                                     model.reduce(
-                                        CircleTimelineMviModel.Intent.ToggleReblog(e),
+                                        CircleTimelineMvi.Intent.ToggleReblog(e),
                                     )
                             }
                         }.takeIf { actionRepository.canReblog(entry.original) },
                         onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(CircleTimelineMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(CircleTimelineMvi.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) },
                         onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(CircleTimelineMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(CircleTimelineMvi.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) },
                         onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(CircleTimelineMviModel.Intent.ToggleDislike(e))
+                            model.reduce(CircleTimelineMvi.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
@@ -295,7 +295,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         uiState.currentUserId?.let {
                             { e, choices ->
                                 model.reduce(
-                                    CircleTimelineMviModel.Intent.SubmitPollVote(
+                                    CircleTimelineMvi.Intent.SubmitPollVote(
                                         entry = e,
                                         choices = choices,
                                     ),
@@ -304,7 +304,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         },
                         onShowOriginal = {
                             model.reduce(
-                                CircleTimelineMviModel.Intent.ToggleTranslation(entry.original),
+                                CircleTimelineMvi.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -406,7 +406,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                                 OptionId.Block -> confirmBlockEntry = entry
 
                                 OptionId.Pin, OptionId.Unpin ->
-                                    model.reduce(CircleTimelineMviModel.Intent.TogglePin(entry))
+                                    model.reduce(CircleTimelineMvi.Intent.TogglePin(entry))
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
@@ -435,28 +435,28 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
-                                        CircleTimelineMviModel.Intent.CopyToClipboard(
+                                        CircleTimelineMvi.Intent.CopyToClipboard(
                                             entry.original,
                                         ),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        CircleTimelineMviModel.Intent.ToggleTranslation(
+                                        CircleTimelineMvi.Intent.ToggleTranslation(
                                             entry.original,
                                         ),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        CircleTimelineMviModel.Intent.AddInstanceShortcut(
+                                        CircleTimelineMvi.Intent.AddInstanceShortcut(
                                             entry.nodeName,
                                         ),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        CircleTimelineMviModel.Intent.OpenInBrowser(entry),
+                                        CircleTimelineMvi.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -471,7 +471,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(CircleTimelineMviModel.Intent.LoadNextPage)
+                        model.reduce(CircleTimelineMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -500,7 +500,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                 val entryId = confirmDeleteEntryId ?: ""
                 confirmDeleteEntryId = null
                 if (confirm && entryId.isNotEmpty()) {
-                    model.reduce(CircleTimelineMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(CircleTimelineMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -517,7 +517,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                CircleTimelineMviModel.Intent.MuteUser(
+                                CircleTimelineMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -549,7 +549,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        CircleTimelineMviModel.Intent.BlockUser(
+                        CircleTimelineMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -575,7 +575,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(CircleTimelineMviModel.Intent.ToggleReblog(e))
+                    model.reduce(CircleTimelineMvi.Intent.ToggleReblog(e))
                 }
             },
         )

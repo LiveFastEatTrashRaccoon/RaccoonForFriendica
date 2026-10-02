@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.followrequests
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowRequestPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -30,9 +30,9 @@ class FollowRequestsViewModel(
     private val settingsRepository: SettingsRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
-    MviModelDelegate<FollowRequestsMviModel.Intent, FollowRequestsMviModel.State, FollowRequestsMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = FollowRequestsMviModel.State()),
-    FollowRequestsMviModel {
+    MviDelegate<FollowRequestsMvi.Intent, FollowRequestsMvi.State, FollowRequestsMvi.Effect>
+    by DefaultMviDelegate(initialState = FollowRequestsMvi.State()),
+    FollowRequestsMvi {
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -60,21 +60,21 @@ class FollowRequestsViewModel(
         }
     }
 
-    override fun reduce(intent: FollowRequestsMviModel.Intent) {
+    override fun reduce(intent: FollowRequestsMvi.Intent) {
         when (intent) {
-            FollowRequestsMviModel.Intent.Refresh ->
+            FollowRequestsMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            FollowRequestsMviModel.Intent.LoadNextPage ->
+            FollowRequestsMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is FollowRequestsMviModel.Intent.Accept -> accept(intent.id)
+            is FollowRequestsMvi.Intent.Accept -> accept(intent.id)
 
-            is FollowRequestsMviModel.Intent.Reject -> reject(intent.id)
+            is FollowRequestsMvi.Intent.Reject -> reject(intent.id)
         }
     }
 
@@ -139,7 +139,7 @@ class FollowRequestsViewModel(
                 removeItemFromState(id)
             } else {
                 updateItemInState(id) { it.copy(relationshipStatusPending = false) }
-                emitEffect(FollowRequestsMviModel.Effect.Failure)
+                emitEffect(FollowRequestsMvi.Effect.Failure)
             }
         }
     }
@@ -152,7 +152,7 @@ class FollowRequestsViewModel(
                 removeItemFromState(id)
             } else {
                 updateItemInState(id) { it.copy(relationshipStatusPending = false) }
-                emitEffect(FollowRequestsMviModel.Effect.Failure)
+                emitEffect(FollowRequestsMvi.Effect.Failure)
             }
         }
     }

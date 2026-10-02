@@ -67,10 +67,7 @@ import kotlinx.coroutines.flow.onEach
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LegacyLoginScreen(
-    modifier: Modifier = Modifier,
-    model: LegacyLoginMviModel = metroViewModel<LegacyLoginViewModel>(),
-) {
+fun LegacyLoginScreen(modifier: Modifier = Modifier, model: LegacyLoginMvi = metroViewModel<LegacyLoginViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -85,11 +82,11 @@ fun LegacyLoginScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    is LegacyLoginMviModel.Effect.Failure -> {
+                    is LegacyLoginMvi.Effect.Failure -> {
                         snackbarHostState.showSnackbar(message = event.message ?: genericError)
                     }
 
-                    LegacyLoginMviModel.Effect.Success -> {
+                    LegacyLoginMvi.Effect.Success -> {
                         snackbarHostState.showSnackbar(message = successMessage)
                         navigationCoordinator.pop()
                     }
@@ -170,11 +167,11 @@ fun LegacyLoginScreen(
                     for (instance in DefaultFriendicaInstances) {
                         this += SpinnerValue(
                             title = buildString {
-                                append(instance.value)
+                                append(instance.node)
                                 append("  ")
                                 append(instance.lang)
                             },
-                            value = instance.value,
+                            value = instance.node,
                         )
                     }
                     this += SpinnerValue(title = LocalStrings.current.itemOther, value = "")
@@ -194,7 +191,7 @@ fun LegacyLoginScreen(
                     imeAction = ImeAction.Next,
                 ),
                 onValueChange = { value ->
-                    model.reduce(LegacyLoginMviModel.Intent.SetNodeName(value))
+                    model.reduce(LegacyLoginMvi.Intent.SetNodeName(value))
                 },
                 supportingText = {
                     val error = uiState.nodeNameError
@@ -231,7 +228,7 @@ fun LegacyLoginScreen(
                     imeAction = ImeAction.Next,
                 ),
                 onValueChange = { value ->
-                    model.reduce(LegacyLoginMviModel.Intent.SetUsername(value))
+                    model.reduce(LegacyLoginMvi.Intent.SetUsername(value))
                 },
                 supportingText = {
                     val error = uiState.usernameError
@@ -267,11 +264,11 @@ fun LegacyLoginScreen(
                 keyboardActions =
                 KeyboardActions(
                     onDone = {
-                        model.reduce(LegacyLoginMviModel.Intent.Submit)
+                        model.reduce(LegacyLoginMvi.Intent.Submit)
                     },
                 ),
                 onValueChange = { value ->
-                    model.reduce(LegacyLoginMviModel.Intent.SetPassword(value))
+                    model.reduce(LegacyLoginMvi.Intent.SetPassword(value))
                 },
                 visualTransformation = transformation,
                 trailingIcon = {
@@ -310,7 +307,7 @@ fun LegacyLoginScreen(
                 modifier = Modifier.padding(top = Spacing.l),
                 onClick = {
                     focusManager.clearFocus()
-                    model.reduce(LegacyLoginMviModel.Intent.Submit)
+                    model.reduce(LegacyLoginMvi.Intent.Submit)
                 },
             ) {
                 Row(

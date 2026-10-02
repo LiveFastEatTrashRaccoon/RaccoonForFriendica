@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
@@ -73,9 +73,9 @@ class EntryDetailViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<EntryDetailMviModel.Intent, EntryDetailMviModel.State, EntryDetailMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = EntryDetailMviModel.State()),
-    EntryDetailMviModel {
+    MviDelegate<EntryDetailMvi.Intent, EntryDetailMvi.State, EntryDetailMvi.Effect>
+    by DefaultMviDelegate(initialState = EntryDetailMvi.State()),
+    EntryDetailMvi {
 
     private val id = args.id
     private val swipeNavigationEnabled = args.swipeNavigationEnabled
@@ -140,29 +140,29 @@ class EntryDetailViewModel(
         }
     }
 
-    override fun reduce(intent: EntryDetailMviModel.Intent) {
+    override fun reduce(intent: EntryDetailMvi.Intent) {
         when (intent) {
-            EntryDetailMviModel.Intent.Refresh ->
+            EntryDetailMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is EntryDetailMviModel.Intent.LoadMoreReplies ->
+            is EntryDetailMvi.Intent.LoadMoreReplies ->
                 viewModelScope.launch {
                     loadMoreReplies(intent.entry)
                 }
 
-            is EntryDetailMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is EntryDetailMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is EntryDetailMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is EntryDetailMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is EntryDetailMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is EntryDetailMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is EntryDetailMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is EntryDetailMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is EntryDetailMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is EntryDetailMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is EntryDetailMviModel.Intent.MuteUser ->
+            is EntryDetailMvi.Intent.MuteUser ->
                 mute(
                     entryId = intent.entryId,
                     userId = intent.entryId,
@@ -170,26 +170,26 @@ class EntryDetailViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is EntryDetailMviModel.Intent.BlockUser ->
+            is EntryDetailMvi.Intent.BlockUser ->
                 block(
                     entryId = intent.entryId,
                     userId = intent.entryId,
                 )
 
-            is EntryDetailMviModel.Intent.TogglePin -> togglePin(intent.entry)
+            is EntryDetailMvi.Intent.TogglePin -> togglePin(intent.entry)
 
-            is EntryDetailMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is EntryDetailMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is EntryDetailMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is EntryDetailMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is EntryDetailMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is EntryDetailMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is EntryDetailMviModel.Intent.ChangeNavigationIndex ->
+            is EntryDetailMvi.Intent.ChangeNavigationIndex ->
                 changeNavigationIndex(intent.index)
 
-            is EntryDetailMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is EntryDetailMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is EntryDetailMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is EntryDetailMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -237,7 +237,7 @@ class EntryDetailViewModel(
             val currentState = uiState.value
             val currentEntryList = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
             val index = currentEntryList.indexOf(currentState.mainEntry).takeIf { it > 0 } ?: 0
-            emitEffect(EntryDetailMviModel.Effect.ScrollToItem(index))
+            emitEffect(EntryDetailMvi.Effect.ScrollToItem(index))
         }
     }
 
@@ -623,7 +623,7 @@ class EntryDetailViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(EntryDetailMviModel.Effect.PollVoteFailure)
+                emitEffect(EntryDetailMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -640,7 +640,7 @@ class EntryDetailViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(EntryDetailMviModel.Effect.TriggerCopy(text))
+                emitEffect(EntryDetailMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -777,7 +777,7 @@ class EntryDetailViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(EntryDetailMviModel.Effect.OpenUrl(url))
+                emitEffect(EntryDetailMvi.Effect.OpenUrl(url))
             }
         }
     }

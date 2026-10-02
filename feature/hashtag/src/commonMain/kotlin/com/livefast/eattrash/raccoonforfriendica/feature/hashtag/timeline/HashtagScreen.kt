@@ -72,7 +72,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
-    val model: HashtagMviModel = assistedMetroViewModel<HashtagViewModel>(
+    val model: HashtagMvi = assistedMetroViewModel<HashtagViewModel>(
         extras = HashtagViewModel.getExtras(HashtagViewModelArgs(tag = tag)),
     )
     val uiState by model.uiState.collectAsState()
@@ -114,14 +114,14 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
         model.effects
             .onEach { event ->
                 when (event) {
-                    HashtagMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    HashtagMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is HashtagMviModel.Effect.TriggerCopy -> {
+                    is HashtagMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is HashtagMviModel.Effect.OpenDetail -> {
+                    is HashtagMvi.Effect.OpenDetail -> {
                         mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
@@ -129,7 +129,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                         )
                     }
 
-                    is HashtagMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is HashtagMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -160,7 +160,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                                     if (notFollowing) {
                                         confirmUnfollowHashtagDialogOpen = true
                                     } else {
-                                        model.reduce(HashtagMviModel.Intent.ToggleTagFollow(true))
+                                        model.reduce(HashtagMvi.Intent.ToggleTagFollow(true))
                                     }
                                 },
                             )
@@ -209,7 +209,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                 ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(HashtagMviModel.Intent.Refresh)
+                model.reduce(HashtagMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -249,7 +249,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         onClick = { e ->
-                            model.reduce(HashtagMviModel.Intent.WillOpenDetail(e))
+                            model.reduce(HashtagMvi.Intent.WillOpenDetail(e))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -280,21 +280,21 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
 
                                 else ->
                                     model.reduce(
-                                        HashtagMviModel.Intent.ToggleReblog(e),
+                                        HashtagMvi.Intent.ToggleReblog(e),
                                     )
                             }
                         }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(HashtagMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(HashtagMvi.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(HashtagMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(HashtagMvi.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(HashtagMviModel.Intent.ToggleDislike(e))
+                            model.reduce(HashtagMvi.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
@@ -307,7 +307,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                         uiState.currentUserId?.let {
                             { e, choices ->
                                 model.reduce(
-                                    HashtagMviModel.Intent.SubmitPollVote(
+                                    HashtagMvi.Intent.SubmitPollVote(
                                         entry = e,
                                         choices = choices,
                                     ),
@@ -316,7 +316,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                         },
                         onShowOriginal = {
                             model.reduce(
-                                HashtagMviModel.Intent.ToggleTranslation(entry.original),
+                                HashtagMvi.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -418,7 +418,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                                 OptionId.Block -> confirmBlockEntry = entry
 
                                 OptionId.Pin, OptionId.Unpin ->
-                                    model.reduce(HashtagMviModel.Intent.TogglePin(entry))
+                                    model.reduce(HashtagMvi.Intent.TogglePin(entry))
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
@@ -448,22 +448,22 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
-                                        HashtagMviModel.Intent.CopyToClipboard(entry.original),
+                                        HashtagMvi.Intent.CopyToClipboard(entry.original),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        HashtagMviModel.Intent.ToggleTranslation(entry.original),
+                                        HashtagMvi.Intent.ToggleTranslation(entry.original),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        HashtagMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        HashtagMvi.Intent.AddInstanceShortcut(entry.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        HashtagMviModel.Intent.OpenInBrowser(entry),
+                                        HashtagMvi.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -478,7 +478,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(HashtagMviModel.Intent.LoadNextPage)
+                        model.reduce(HashtagMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -506,7 +506,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
             onClose = { confirm ->
                 confirmUnfollowHashtagDialogOpen = false
                 if (confirm) {
-                    model.reduce(HashtagMviModel.Intent.ToggleTagFollow(false))
+                    model.reduce(HashtagMvi.Intent.ToggleTagFollow(false))
                 }
             },
         )
@@ -519,7 +519,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                 val entryId = confirmDeleteEntryId
                 confirmDeleteEntryId = null
                 if (confirm && entryId != null) {
-                    model.reduce(HashtagMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(HashtagMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -536,7 +536,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                HashtagMviModel.Intent.MuteUser(
+                                HashtagMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -567,7 +567,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        HashtagMviModel.Intent.BlockUser(
+                        HashtagMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -593,7 +593,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(HashtagMviModel.Intent.ToggleReblog(e))
+                    model.reduce(HashtagMvi.Intent.ToggleReblog(e))
                 }
             },
         )

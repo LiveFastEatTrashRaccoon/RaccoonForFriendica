@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.login.legacy
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiCredentials
@@ -27,9 +27,9 @@ class LegacyLoginViewModel(
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val loginUseCase: LoginUseCase,
 ) : ViewModel(),
-    MviModelDelegate<LegacyLoginMviModel.Intent, LegacyLoginMviModel.State, LegacyLoginMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = LegacyLoginMviModel.State()),
-    LegacyLoginMviModel {
+    MviDelegate<LegacyLoginMvi.Intent, LegacyLoginMvi.State, LegacyLoginMvi.Effect>
+    by DefaultMviDelegate(initialState = LegacyLoginMvi.State()),
+    LegacyLoginMvi {
     init {
         viewModelScope.launch {
             val currentNode = apiConfigurationRepository.node.value
@@ -37,24 +37,24 @@ class LegacyLoginViewModel(
         }
     }
 
-    override fun reduce(intent: LegacyLoginMviModel.Intent) {
+    override fun reduce(intent: LegacyLoginMvi.Intent) {
         when (intent) {
-            is LegacyLoginMviModel.Intent.SetNodeName ->
+            is LegacyLoginMvi.Intent.SetNodeName ->
                 viewModelScope.launch {
                     updateState { it.copy(nodeName = intent.name) }
                 }
 
-            is LegacyLoginMviModel.Intent.SetUsername ->
+            is LegacyLoginMvi.Intent.SetUsername ->
                 viewModelScope.launch {
                     updateState { it.copy(username = intent.username) }
                 }
 
-            is LegacyLoginMviModel.Intent.SetPassword ->
+            is LegacyLoginMvi.Intent.SetPassword ->
                 viewModelScope.launch {
                     updateState { it.copy(password = intent.password) }
                 }
 
-            LegacyLoginMviModel.Intent.Submit -> submit()
+            LegacyLoginMvi.Intent.Submit -> submit()
         }
     }
 
@@ -115,11 +115,11 @@ class LegacyLoginViewModel(
                     credentials = credentials,
                 )
                 updateState { it.copy(loading = false) }
-                emitEffect(LegacyLoginMviModel.Effect.Success)
+                emitEffect(LegacyLoginMvi.Effect.Success)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
-                emitEffect(LegacyLoginMviModel.Effect.Failure(e.message))
+                emitEffect(LegacyLoginMvi.Effect.Failure(e.message))
             }
         }
     }

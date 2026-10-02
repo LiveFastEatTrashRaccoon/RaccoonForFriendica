@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.gallery.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
@@ -29,9 +29,9 @@ class GalleryViewModel(
     private val settingsRepository: SettingsRepository,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<GalleryMviModel.Intent, GalleryMviModel.State, GalleryMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = GalleryMviModel.State()),
-    GalleryMviModel {
+    MviDelegate<GalleryMvi.Intent, GalleryMvi.State, GalleryMvi.Effect>
+    by DefaultMviDelegate(initialState = GalleryMvi.State()),
+    GalleryMvi {
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -58,12 +58,12 @@ class GalleryViewModel(
         }
     }
 
-    override fun reduce(intent: GalleryMviModel.Intent) {
+    override fun reduce(intent: GalleryMvi.Intent) {
         when (intent) {
-            GalleryMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
-            GalleryMviModel.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
-            is GalleryMviModel.Intent.UpdateAlbum -> updateAlbum(intent.oldName, intent.newName)
-            is GalleryMviModel.Intent.DeleteAlbum -> deleteAlbum(intent.name)
+            GalleryMvi.Intent.Refresh -> viewModelScope.launch { refresh() }
+            GalleryMvi.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
+            is GalleryMvi.Intent.UpdateAlbum -> updateAlbum(intent.oldName, intent.newName)
+            is GalleryMvi.Intent.DeleteAlbum -> deleteAlbum(intent.name)
         }
     }
 
@@ -91,7 +91,7 @@ class GalleryViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(GalleryMviModel.Effect.BackToTop)
+                emitEffect(GalleryMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -130,7 +130,7 @@ class GalleryViewModel(
             if (res) {
                 updateItemInState(oldName) { it.copy(name = newName) }
             } else {
-                emitEffect(GalleryMviModel.Effect.Failure)
+                emitEffect(GalleryMvi.Effect.Failure)
             }
         }
     }
@@ -143,7 +143,7 @@ class GalleryViewModel(
             if (res) {
                 removeItemFromState(name)
             } else {
-                emitEffect(GalleryMviModel.Effect.Failure)
+                emitEffect(GalleryMvi.Effect.Failure)
             }
         }
     }

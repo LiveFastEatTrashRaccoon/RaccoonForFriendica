@@ -30,7 +30,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -52,40 +51,40 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListTy
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.di.RootGraph
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
-import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.list.CalendarViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.list.CirclesViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.PermanentDrawerContent
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModelArgs
-import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.gallery.list.GalleryViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.hashtag.followed.FollowedHashtagsViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.inbox.InboxViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.timeline.TimelineViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.unpublished.UnpublishedViewModel
-import com.livefast.eattrash.raccoonforfriendica.main.RootMviModel
+import com.livefast.eattrash.raccoonforfriendica.main.RootMvi
 import com.livefast.eattrash.raccoonforfriendica.main.RootViewModel
 import com.livefast.eattrash.raccoonforfriendica.navigation.getEntryProvider
 import com.livefast.eattrash.raccoonforfriendica.navigation.isDetailDestination
@@ -169,13 +168,13 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
     CompositionLocalProvider(
         LocalMetroViewModelFactory provides graph.metroViewModelFactory
     ) {
-        val model: RootMviModel = metroViewModel<RootViewModel>()
+        val model: RootMvi = metroViewModel<RootViewModel>()
         val uiState by model.uiState.collectAsState()
 
         LaunchedEffect(model) {
             model.effects.onEach { effect ->
                 when (effect) {
-                    RootMviModel.Effect.InitializationFinished -> onLoadingFinished?.invoke()
+                    RootMvi.Effect.InitializationFinished -> onLoadingFinished?.invoke()
                 }
             }.launchIn(this)
         }
@@ -215,11 +214,11 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                         )
                         ProvideCustomFontScale(fontScale = uiState.currentSettings?.fontScale) {
                             // preload ViewModels for all top-level sections
-                            val timelineModel: TimelineMviModel = metroViewModel<TimelineViewModel>()
-                            val exploreModel: ExploreMviModel = metroViewModel<ExploreViewModel>()
-                            val inboxModel: InboxMviModel = metroViewModel<InboxViewModel>()
-                            val profileModel: ProfileMviModel = metroViewModel<ProfileViewModel>()
-                            val myAccountModel: MyAccountMviModel = metroViewModel<MyAccountViewModel>()
+                            val timelineModel: TimelineMvi = metroViewModel<TimelineViewModel>()
+                            val exploreModel: ExploreMvi = metroViewModel<ExploreViewModel>()
+                            val inboxModel: InboxMvi = metroViewModel<InboxViewModel>()
+                            val profileModel: ProfileMvi = metroViewModel<ProfileViewModel>()
+                            val myAccountModel: MyAccountMvi = metroViewModel<MyAccountViewModel>()
                             val timelineLazyListState = rememberLazyListState()
                             val exploreLazyListState = rememberLazyListState()
                             val inboxLazyListState = rememberLazyListState()
@@ -272,12 +271,12 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                         },
                                     ) {
                                         // preload ViewModels for all top-level sections
-                                        val timelineViewModel: TimelineMviModel = metroViewModel<TimelineViewModel>()
-                                        val exploreViewModel: ExploreMviModel = metroViewModel<ExploreViewModel>()
-                                        val inboxViewModel: InboxMviModel = metroViewModel<InboxViewModel>()
-                                        val profileViewModel: ProfileMviModel = metroViewModel<ProfileViewModel>()
-                                        val myAccountViewModel: MyAccountMviModel = metroViewModel<MyAccountViewModel>()
-                                        val favoritesViewModel: EntryListMviModel =
+                                        val timelineViewModel: TimelineMvi = metroViewModel<TimelineViewModel>()
+                                        val exploreViewModel: ExploreMvi = metroViewModel<ExploreViewModel>()
+                                        val inboxViewModel: InboxMvi = metroViewModel<InboxViewModel>()
+                                        val profileViewModel: ProfileMvi = metroViewModel<ProfileViewModel>()
+                                        val myAccountViewModel: MyAccountMvi = metroViewModel<MyAccountViewModel>()
+                                        val favoritesViewModel: EntryListMvi =
                                             assistedMetroViewModel<EntryListViewModel>(
                                                 extras = EntryListViewModel.getExtras(
                                                     EntryListViewModelArgs(
@@ -285,26 +284,26 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                                     )
                                                 ),
                                             )
-                                        val bookmarksViewModel: EntryListMviModel =
+                                        val bookmarksViewModel: EntryListMvi =
                                             assistedMetroViewModel<EntryListViewModel>(
                                                 extras = EntryListViewModel.getExtras(
                                                     EntryListViewModelArgs(type = EntryListType.Bookmarks)
                                                 ),
                                             )
-                                        val followedHashtagsViewModel: FollowedHashtagsMviModel =
+                                        val followedHashtagsViewModel: FollowedHashtagsMvi =
                                             metroViewModel<FollowedHashtagsViewModel>()
-                                        val followRequestsViewModel: FollowRequestsMviModel =
+                                        val followRequestsViewModel: FollowRequestsMvi =
                                             metroViewModel<FollowRequestsViewModel>()
-                                        val circlesViewModel: CirclesMviModel = metroViewModel<CirclesViewModel>()
-                                        val conversationListViewModel: ConversationListMviModel =
+                                        val circlesViewModel: CirclesMvi = metroViewModel<CirclesViewModel>()
+                                        val conversationListViewModel: ConversationListMvi =
                                             metroViewModel<ConversationListViewModel>()
-                                        val galleryViewModel: GalleryMviModel = metroViewModel<GalleryViewModel>()
-                                        val unpublishedViewModel: UnpublishedMviModel =
+                                        val galleryViewModel: GalleryMvi = metroViewModel<GalleryViewModel>()
+                                        val unpublishedViewModel: UnpublishedMvi =
                                             metroViewModel<UnpublishedViewModel>()
-                                        val calendarViewModel: CalendarMviModel = metroViewModel<CalendarViewModel>()
-                                        val shortcutListViewModel: ShortcutListMviModel =
+                                        val calendarViewModel: CalendarMvi = metroViewModel<CalendarViewModel>()
+                                        val shortcutListViewModel: ShortcutListMvi =
                                             metroViewModel<ShortcutListViewModel>()
-                                        val nodeInfoViewModel: NodeInfoMviModel = metroViewModel<NodeInfoViewModel>()
+                                        val nodeInfoViewModel: NodeInfoMvi = metroViewModel<NodeInfoViewModel>()
                                         val timelineLazyListState = rememberLazyListState()
                                         val exploreLazyListState = rememberLazyListState()
                                         val inboxLazyListState = rememberLazyListState()

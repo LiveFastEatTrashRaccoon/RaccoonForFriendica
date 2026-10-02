@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
@@ -62,9 +62,9 @@ class ShortcutTimelineViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<ShortcutTimelineMviModel.Intent, ShortcutTimelineMviModel.State, ShortcutTimelineMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ShortcutTimelineMviModel.State()),
-    ShortcutTimelineMviModel {
+    MviDelegate<ShortcutTimelineMvi.Intent, ShortcutTimelineMvi.State, ShortcutTimelineMvi.Effect>
+    by DefaultMviDelegate(initialState = ShortcutTimelineMvi.State()),
+    ShortcutTimelineMvi {
 
     private val node = args.name
 
@@ -112,44 +112,44 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    override fun reduce(intent: ShortcutTimelineMviModel.Intent) {
+    override fun reduce(intent: ShortcutTimelineMvi.Intent) {
         when (intent) {
-            ShortcutTimelineMviModel.Intent.Refresh ->
+            ShortcutTimelineMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            ShortcutTimelineMviModel.Intent.LoadNextPage ->
+            ShortcutTimelineMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            is ShortcutTimelineMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is ShortcutTimelineMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is ShortcutTimelineMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is ShortcutTimelineMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is ShortcutTimelineMviModel.Intent.SubmitPollVote ->
+            is ShortcutTimelineMvi.Intent.SubmitPollVote ->
                 submitPoll(
                     intent.entry,
                     intent.choices,
                 )
 
-            is ShortcutTimelineMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is ShortcutTimelineMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is ShortcutTimelineMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is ShortcutTimelineMviModel.Intent.WillOpenDetail ->
+            is ShortcutTimelineMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
                     val state = paginationManager.extractState()
                     timelineNavigationManager.push(state)
-                    emitEffect(ShortcutTimelineMviModel.Effect.OpenDetail(intent.entry))
+                    emitEffect(ShortcutTimelineMvi.Effect.OpenDetail(intent.entry))
                 }
 
-            is ShortcutTimelineMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is ShortcutTimelineMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -187,7 +187,7 @@ class ShortcutTimelineViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(ShortcutTimelineMviModel.Effect.BackToTop)
+                emitEffect(ShortcutTimelineMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
@@ -266,7 +266,7 @@ class ShortcutTimelineViewModel(
                 updateEntryInState(entry.id) {
                     it.copy(reblogLoading = false)
                 }
-                emitEffect(ShortcutTimelineMviModel.Effect.Failure)
+                emitEffect(ShortcutTimelineMvi.Effect.Failure)
             }
         }
     }
@@ -301,7 +301,7 @@ class ShortcutTimelineViewModel(
                 updateEntryInState(entry.id) {
                     it.copy(favoriteLoading = false)
                 }
-                emitEffect(ShortcutTimelineMviModel.Effect.Failure)
+                emitEffect(ShortcutTimelineMvi.Effect.Failure)
             }
         }
     }
@@ -358,7 +358,7 @@ class ShortcutTimelineViewModel(
                 updateEntryInState(entry.id) {
                     it.copy(bookmarkLoading = false)
                 }
-                emitEffect(ShortcutTimelineMviModel.Effect.Failure)
+                emitEffect(ShortcutTimelineMvi.Effect.Failure)
             }
         }
     }
@@ -382,7 +382,7 @@ class ShortcutTimelineViewModel(
                 }
             } else {
                 updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
-                emitEffect(ShortcutTimelineMviModel.Effect.PollVoteFailure)
+                emitEffect(ShortcutTimelineMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -399,7 +399,7 @@ class ShortcutTimelineViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(ShortcutTimelineMviModel.Effect.TriggerCopy(text))
+                emitEffect(ShortcutTimelineMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -436,7 +436,7 @@ class ShortcutTimelineViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(ShortcutTimelineMviModel.Effect.OpenUrl(url))
+                emitEffect(ShortcutTimelineMvi.Effect.OpenUrl(url))
             }
         }
     }

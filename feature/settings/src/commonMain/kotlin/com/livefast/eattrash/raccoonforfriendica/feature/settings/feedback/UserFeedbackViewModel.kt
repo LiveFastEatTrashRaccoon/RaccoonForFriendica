@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportTag
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
@@ -23,22 +23,22 @@ import kotlinx.coroutines.launch
 @Inject
 class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) :
     ViewModel(),
-    MviModelDelegate<UserFeedbackMviModel.Intent, UserFeedbackMviModel.State, UserFeedbackMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = UserFeedbackMviModel.State()),
-    UserFeedbackMviModel {
-    override fun reduce(intent: UserFeedbackMviModel.Intent) {
+    MviDelegate<UserFeedbackMvi.Intent, UserFeedbackMvi.State, UserFeedbackMvi.Effect>
+    by DefaultMviDelegate(initialState = UserFeedbackMvi.State()),
+    UserFeedbackMvi {
+    override fun reduce(intent: UserFeedbackMvi.Intent) {
         when (intent) {
-            is UserFeedbackMviModel.Intent.SetComment ->
+            is UserFeedbackMvi.Intent.SetComment ->
                 viewModelScope.launch {
                     updateState { it.copy(comment = intent.comment) }
                 }
 
-            is UserFeedbackMviModel.Intent.SetEmail ->
+            is UserFeedbackMvi.Intent.SetEmail ->
                 viewModelScope.launch {
                     updateState { it.copy(email = intent.email) }
                 }
 
-            UserFeedbackMviModel.Intent.Submit -> submit()
+            UserFeedbackMvi.Intent.Submit -> submit()
         }
     }
 
@@ -79,11 +79,11 @@ class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) 
                     email = email.takeIf { it.isNotBlank() },
                     comment = comment,
                 )
-                emitEffect(UserFeedbackMviModel.Effect.Success)
+                emitEffect(UserFeedbackMvi.Effect.Success)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 updateState { it.copy(loading = false) }
-                emitEffect(UserFeedbackMviModel.Effect.Failure(e.message))
+                emitEffect(UserFeedbackMvi.Effect.Failure(e.message))
             }
         }
     }

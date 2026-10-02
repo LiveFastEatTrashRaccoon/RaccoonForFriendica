@@ -65,7 +65,7 @@ import kotlinx.coroutines.flow.onEach
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
-    val model: LoginMviModel = assistedMetroViewModel<LoginViewModel>(
+    val model: LoginMvi = assistedMetroViewModel<LoginViewModel>(
         extras = LoginViewModel.getExtras(LoginViewModelArgs(type = loginType.toLoginType())),
     )
     val uiState by model.uiState.collectAsState()
@@ -83,18 +83,18 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    is LoginMviModel.Effect.OpenUrl ->
+                    is LoginMvi.Effect.OpenUrl ->
                         uriHandler.openUri(event.url)
 
-                    is LoginMviModel.Effect.Failure ->
+                    is LoginMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(message = event.message ?: genericError)
 
-                    LoginMviModel.Effect.Success -> {
+                    LoginMvi.Effect.Success -> {
                         snackbarHostState.showSnackbar(message = successMessage)
                         navigationCoordinator.popUntilRoot()
                     }
 
-                    is LoginMviModel.Effect.OpenWebRegistration ->
+                    is LoginMvi.Effect.OpenWebRegistration ->
                         uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
@@ -163,7 +163,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
             val keyboardActions =
                 KeyboardActions(
                     onNext = {
-                        model.reduce(LoginMviModel.Intent.Submit)
+                        model.reduce(LoginMvi.Intent.Submit)
                     },
                 )
             val label = @Composable {
@@ -199,11 +199,11 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                         for (instance in DefaultFriendicaInstances) {
                             this += SpinnerValue(
                                 title = buildString {
-                                    append(instance.value)
+                                    append(instance.node)
                                     append("  ")
                                     append(instance.lang)
                                 },
-                                value = instance.value,
+                                value = instance.node,
                             )
                         }
                         this += SpinnerValue(title = LocalStrings.current.itemOther, value = "")
@@ -214,7 +214,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                     keyboardActions =
                     keyboardActions,
                     onValueChange = { value ->
-                        model.reduce(LoginMviModel.Intent.SetNodeName(value))
+                        model.reduce(LoginMvi.Intent.SetNodeName(value))
                     },
                     supportingText = supportingText,
                 )
@@ -240,7 +240,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                     keyboardOptions,
                     keyboardActions = keyboardActions,
                     onValueChange = { value ->
-                        model.reduce(LoginMviModel.Intent.SetNodeName(value))
+                        model.reduce(LoginMvi.Intent.SetNodeName(value))
                     },
                 )
             }
@@ -269,7 +269,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                                 ),
                             ),
                             linkInteractionListener = {
-                                model.reduce(LoginMviModel.Intent.SignUp)
+                                model.reduce(LoginMvi.Intent.SignUp)
                             },
                         ),
                     ) {
@@ -283,7 +283,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(top = Spacing.l),
                 onClick = {
                     focusManager.clearFocus()
-                    model.reduce(LoginMviModel.Intent.Submit)
+                    model.reduce(LoginMvi.Intent.Submit)
                 },
             ) {
                 Row(

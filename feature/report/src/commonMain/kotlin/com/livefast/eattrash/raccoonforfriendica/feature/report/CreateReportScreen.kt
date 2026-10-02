@@ -57,7 +57,7 @@ import kotlinx.coroutines.flow.onEach
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Modifier) {
-    val model: CreateReportMviModel = assistedMetroViewModel<CreateReportViewModel>(
+    val model: CreateReportMvi = assistedMetroViewModel<CreateReportViewModel>(
         extras = CreateReportViewModel.getExtras(
             CreateReportViewModelArgs(userId = userId, entryId = entryId.orEmpty()),
         ),
@@ -77,13 +77,13 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
         model.effects
             .onEach { event ->
                 when (event) {
-                    CreateReportMviModel.Effect.ValidationError.MissingRules ->
+                    CreateReportMvi.Effect.ValidationError.MissingRules ->
                         snackbarHostState.showSnackbar(message = missingRulesError)
 
-                    CreateReportMviModel.Effect.Failure ->
+                    CreateReportMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(message = genericError)
 
-                    CreateReportMviModel.Effect.Success -> navigationCoordinator.pop()
+                    CreateReportMvi.Effect.Success -> navigationCoordinator.pop()
                 }
             }.launchIn(this)
     }
@@ -133,7 +133,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                 actions = {
                     FilledIconButton(
                         onClick = {
-                            model.reduce(CreateReportMviModel.Intent.Submit)
+                            model.reduce(CreateReportMvi.Intent.Submit)
                         },
                     ) {
                         Icon(
@@ -208,7 +208,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                 ),
                 onValueChange = { value ->
                     model.reduce(
-                        CreateReportMviModel.Intent.SetComment(
+                        CreateReportMvi.Intent.SetComment(
                             value = value,
                         ),
                     )
@@ -220,7 +220,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                 title = LocalStrings.current.createReportItemForward,
                 value = uiState.forward,
                 onValueChange = {
-                    model.reduce(CreateReportMviModel.Intent.ChangeForward(it))
+                    model.reduce(CreateReportMvi.Intent.ChangeForward(it))
                 },
             )
         }
@@ -241,7 +241,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                 val categories = uiState.availableCategories
                 if (idx != null && idx in categories.indices) {
                     val category = categories[idx]
-                    model.reduce(CreateReportMviModel.Intent.ChangeCategory(category))
+                    model.reduce(CreateReportMvi.Intent.ChangeCategory(category))
                 }
             },
         )
@@ -254,7 +254,7 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
             onClose = { ruleIds ->
                 ruleSelectionOpened = false
                 if (ruleIds != null) {
-                    model.reduce(CreateReportMviModel.Intent.ChangeViolatedRules(ruleIds))
+                    model.reduce(CreateReportMvi.Intent.ChangeViolatedRules(ruleIds))
                 }
             },
         )

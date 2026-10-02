@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import dev.zacsweers.metro.AppScope
@@ -22,10 +22,10 @@ import kotlinx.coroutines.launch
 @Inject
 class MainViewModel(private val inboxManager: InboxManager) :
     ViewModel(),
-    MviModelDelegate<MainMviModel.Intent, MainMviModel.UiState, MainMviModel.Effect> by DefaultMviModelDelegate(
-        initialState = MainMviModel.UiState(),
+    MviDelegate<MainMvi.Intent, MainMvi.UiState, MainMvi.Effect> by DefaultMviDelegate(
+        initialState = MainMvi.UiState(),
     ),
-    MainMviModel {
+    MainMvi {
     init {
         viewModelScope.launch {
             inboxManager.unreadCount
@@ -37,11 +37,11 @@ class MainViewModel(private val inboxManager: InboxManager) :
         }
     }
 
-    override fun reduce(intent: MainMviModel.Intent) {
+    override fun reduce(intent: MainMvi.Intent) {
         when (intent) {
-            is MainMviModel.Intent.SetBottomBarOffsetHeightPx -> {
+            is MainMvi.Intent.SetBottomBarOffsetHeightPx -> {
                 viewModelScope.launch {
-                    updateState { it.copy(bottomBarOffsetHeightPx = intent.value) }
+                    updateState { it.copy(bottomBarOffsetHeightPx = intent.px) }
                 }
             }
         }

@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer.switchinstance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.ValidationError
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
@@ -25,20 +25,20 @@ class SwitchInstanceViewModel(
     private val credentialsRepository: CredentialsRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
 ) : ViewModel(),
-    MviModelDelegate<SwitchInstanceMviModel.Intent, SwitchInstanceMviModel.State, SwitchInstanceMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = SwitchInstanceMviModel.State()),
-    SwitchInstanceMviModel {
+    MviDelegate<SwitchInstanceMvi.Intent, SwitchInstanceMvi.State, SwitchInstanceMvi.Effect>
+    by DefaultMviDelegate(initialState = SwitchInstanceMvi.State()),
+    SwitchInstanceMvi {
 
-    override fun reduce(intent: SwitchInstanceMviModel.Intent) {
+    override fun reduce(intent: SwitchInstanceMvi.Intent) {
         when (intent) {
-            is SwitchInstanceMviModel.Intent.SetInstanceName ->
+            is SwitchInstanceMvi.Intent.SetInstanceName ->
                 viewModelScope.launch {
                     updateState { it.copy(node = intent.name) }
                 }
 
-            SwitchInstanceMviModel.Intent.Submit -> submitChangeNode()
+            SwitchInstanceMvi.Intent.Submit -> submitChangeNode()
 
-            SwitchInstanceMviModel.Intent.Reset -> reset()
+            SwitchInstanceMvi.Intent.Reset -> reset()
         }
     }
 
@@ -85,7 +85,7 @@ class SwitchInstanceViewModel(
             apiConfigurationRepository.changeNode(newNode)
             supportedFeatureRepository.refresh()
             updateState { it.copy(node = "") }
-            emitEffect(SwitchInstanceMviModel.Effect.ChangeInstanceSuccess)
+            emitEffect(SwitchInstanceMvi.Effect.ChangeInstanceSuccess)
         }
     }
 }

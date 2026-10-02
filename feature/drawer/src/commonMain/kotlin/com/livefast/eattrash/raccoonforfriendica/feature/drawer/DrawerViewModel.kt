@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
@@ -31,9 +31,9 @@ class DrawerViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     accountRepository: AccountRepository,
 ) : ViewModel(),
-    MviModelDelegate<DrawerMviModel.Intent, DrawerMviModel.State, DrawerMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = DrawerMviModel.State()),
-    DrawerMviModel {
+    MviDelegate<DrawerMvi.Intent, DrawerMvi.State, DrawerMvi.Effect>
+    by DefaultMviDelegate(initialState = DrawerMvi.State()),
+    DrawerMvi {
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -80,5 +80,5 @@ class DrawerViewModel(
         }
     }
 
-    override fun reduce(intent: DrawerMviModel.Intent) = Unit
+    override fun reduce(intent: DrawerMvi.Intent) = Unit
 }

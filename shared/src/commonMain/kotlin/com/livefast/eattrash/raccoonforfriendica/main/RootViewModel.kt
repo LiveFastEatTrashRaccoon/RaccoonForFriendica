@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -37,10 +37,10 @@ class RootViewModel(
     private val setupAccountUseCase: SetupAccountUseCase,
     private val crashReportManager: CrashReportManager,
 ) : ViewModel(),
-    MviModelDelegate<RootMviModel.Intent, RootMviModel.UiState, RootMviModel.Effect> by DefaultMviModelDelegate(
-        initialState = RootMviModel.UiState(),
+    MviDelegate<RootMvi.Intent, RootMvi.UiState, RootMvi.Effect> by DefaultMviDelegate(
+        initialState = RootMvi.UiState(),
     ),
-    RootMviModel {
+    RootMvi {
         private val mutex = Mutex()
         private var isInitialized = false
 
@@ -76,12 +76,12 @@ class RootViewModel(
             }
         }
 
-    override fun reduce(intent: RootMviModel.Intent)  = Unit
+    override fun reduce(intent: RootMvi.Intent)  = Unit
 
     private suspend fun finishInitialization() = mutex.withLock {
         if (!isInitialized) {
             isInitialized = true
-            emitEffect(RootMviModel.Effect.InitializationFinished)
+            emitEffect(RootMvi.Effect.InitializationFinished)
         }
     }
 }

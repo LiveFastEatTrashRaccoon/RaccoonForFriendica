@@ -61,7 +61,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.Circ
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.components.CircleItemPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorData
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorDialog
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorMviModel
+import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorViewModelArgs
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
@@ -72,11 +72,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CirclesScreen(
-    model: CirclesMviModel,
-    modifier: Modifier = Modifier,
-    customOpenAction: ((String) -> Unit)? = null,
-) {
+fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAction: ((String) -> Unit)? = null) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -109,13 +105,13 @@ fun CirclesScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    CirclesMviModel.Effect.Failure ->
+                    CirclesMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
 
-                    is CirclesMviModel.Effect.OpenUser ->
+                    is CirclesMvi.Effect.OpenUser ->
                         mainRouter.openUserDetail(event.user)
 
-                    is CirclesMviModel.Effect.OpenCircle ->
+                    is CirclesMvi.Effect.OpenCircle ->
                         mainRouter.openCircleTimeline(event.circle)
                 }
             }.launchIn(this)
@@ -221,7 +217,7 @@ fun CirclesScreen(
                 ).nestedScroll(fabNestedScrollConnection),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(CirclesMviModel.Intent.Refresh)
+                model.reduce(CirclesMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -255,7 +251,7 @@ fun CirclesScreen(
                                 modifier = Modifier.padding(bottom = Spacing.interItem),
                                 circle = item.circle,
                                 onClick = {
-                                    model.reduce(CirclesMviModel.Intent.OpenDetail(item.circle))
+                                    model.reduce(CirclesMvi.Intent.OpenDetail(item.circle))
                                 },
                                 options =
                                 buildList {
@@ -336,7 +332,7 @@ fun CirclesScreen(
                 val itemId = confirmDeleteItemId
                 confirmDeleteItemId = null
                 if (confirm && itemId != null) {
-                    model.reduce(CirclesMviModel.Intent.Delete(itemId))
+                    model.reduce(CirclesMvi.Intent.Delete(itemId))
                 }
             },
         )
@@ -344,7 +340,7 @@ fun CirclesScreen(
 
     if (editorData != null) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
-        val editorModel: CircleEditorMviModel = assistedMetroViewModel<CircleEditorViewModel>(
+        val editorModel: CircleEditorMvi = assistedMetroViewModel<CircleEditorViewModel>(
             viewModelStoreOwner = viewModelStoreOwner,
             extras = CircleEditorViewModel.getExtras(
                 CircleEditorViewModelArgs(data = editorData as CircleEditorData),
@@ -355,12 +351,12 @@ fun CirclesScreen(
         LaunchedEffect(editorModel) {
             editorModel.effects.onEach { effect ->
                 when (effect) {
-                    is CircleEditorMviModel.Effect.Success -> {
+                    is CircleEditorMvi.Effect.Success -> {
                         editorData = null
-                        model.reduce(CirclesMviModel.Intent.Upsert(effect.circle))
+                        model.reduce(CirclesMvi.Intent.Upsert(effect.circle))
                     }
 
-                    CircleEditorMviModel.Effect.Failure -> {
+                    CircleEditorMvi.Effect.Failure -> {
                         snackbarHostState.showSnackbar(genericError)
                     }
                 }
@@ -370,11 +366,11 @@ fun CirclesScreen(
         CircleEditorDialog(
             data = dialogUiState.data,
             onDataChange = { newData ->
-                editorModel.reduce(CircleEditorMviModel.Intent.UpdateData(newData))
+                editorModel.reduce(CircleEditorMvi.Intent.UpdateData(newData))
             },
             onClose = { success ->
                 if (success) {
-                    editorModel.reduce(CircleEditorMviModel.Intent.Submit)
+                    editorModel.reduce(CircleEditorMvi.Intent.Submit)
                 } else {
                     editorData = null
                 }

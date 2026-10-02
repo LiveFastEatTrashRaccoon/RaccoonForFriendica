@@ -91,7 +91,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun EditProfileScreen(modifier: Modifier = Modifier) {
-    val model: EditProfileMviModel = metroViewModel<EditProfileViewModel>()
+    val model: EditProfileMvi = metroViewModel<EditProfileViewModel>()
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -130,13 +130,13 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
         model.effects
             .onEach { event ->
                 when (event) {
-                    EditProfileMviModel.Effect.Failure ->
+                    EditProfileMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(genericError)
 
-                    EditProfileMviModel.Effect.Success ->
+                    EditProfileMvi.Effect.Success ->
                         snackbarHostState.showSnackbar(messageSuccess)
 
-                    is EditProfileMviModel.Effect.OpenUrl ->
+                    is EditProfileMvi.Effect.OpenUrl ->
                         uriHandler.openUri(event.url)
                 }
             }.launchIn(this)
@@ -250,7 +250,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
 
                                                 CustomOptions.DeleteAccount -> {
                                                     model.reduce(
-                                                        EditProfileMviModel.Intent.DeleteAccount,
+                                                        EditProfileMvi.Intent.DeleteAccount,
                                                     )
                                                 }
 
@@ -266,7 +266,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     Button(
                         enabled = uiState.hasUnsavedChanges,
                         onClick = {
-                            model.reduce(EditProfileMviModel.Intent.Submit)
+                            model.reduce(EditProfileMvi.Intent.Submit)
                         },
                     ) {
                         Text(text = LocalStrings.current.buttonSave)
@@ -333,7 +333,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             },
                         ),
                     onValueChange = {
-                        model.reduce(EditProfileMviModel.Intent.ChangeDisplayName(it))
+                        model.reduce(EditProfileMvi.Intent.ChangeDisplayName(it))
                     },
                 )
             }
@@ -363,7 +363,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             },
                         ),
                     onValueChange = {
-                        model.reduce(EditProfileMviModel.Intent.ChangeBio(it))
+                        model.reduce(EditProfileMvi.Intent.ChangeBio(it))
                     },
                 )
             }
@@ -412,7 +412,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                         IconButton(
                             enabled = uiState.canAddFields,
                             onClick = {
-                                model.reduce(EditProfileMviModel.Intent.AddField)
+                                model.reduce(EditProfileMvi.Intent.AddField)
                             },
                         ) {
                             Icon(
@@ -429,7 +429,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     field = field,
                     onValueChange = { key, value ->
                         model.reduce(
-                            EditProfileMviModel.Intent.EditField(
+                            EditProfileMvi.Intent.EditField(
                                 index = idx,
                                 key = key,
                                 value = value,
@@ -437,7 +437,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                         )
                     },
                     onDelete = {
-                        model.reduce(EditProfileMviModel.Intent.RemoveField(idx))
+                        model.reduce(EditProfileMvi.Intent.RemoveField(idx))
                     },
                 )
             }
@@ -452,7 +452,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.editProfileItemBot,
                     value = uiState.bot,
                     onValueChange = {
-                        model.reduce(EditProfileMviModel.Intent.ChangeBot(it))
+                        model.reduce(EditProfileMvi.Intent.ChangeBot(it))
                     },
                 )
             }
@@ -461,7 +461,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.editProfileItemLocked,
                     value = uiState.locked,
                     onValueChange = {
-                        model.reduce(EditProfileMviModel.Intent.ChangeLocked(it))
+                        model.reduce(EditProfileMvi.Intent.ChangeLocked(it))
                     },
                 )
             }
@@ -470,7 +470,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.editProfileItemDiscoverable,
                     value = uiState.discoverable,
                     onValueChange = {
-                        model.reduce(EditProfileMviModel.Intent.ChangeDiscoverable(it))
+                        model.reduce(EditProfileMvi.Intent.ChangeDiscoverable(it))
                     },
                 )
             }
@@ -479,7 +479,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.editProfileItemHideCollections,
                     value = uiState.hideCollections,
                     onValueChange = {
-                        model.reduce(EditProfileMviModel.Intent.ChangeHideCollections(it))
+                        model.reduce(EditProfileMvi.Intent.ChangeHideCollections(it))
                     },
                 )
             }
@@ -488,7 +488,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                     title = LocalStrings.current.editProfileItemNoIndex,
                     value = uiState.noIndex,
                     onValueChange = {
-                        model.reduce(EditProfileMviModel.Intent.ChangeNoIndex(it))
+                        model.reduce(EditProfileMvi.Intent.ChangeNoIndex(it))
                     },
                 )
             }
@@ -518,7 +518,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
         galleryHelper.getImageFromGallery { bytes ->
             openAvatarPicker = false
             if (bytes.isNotEmpty()) {
-                model.reduce(EditProfileMviModel.Intent.AvatarSelected(bytes))
+                model.reduce(EditProfileMvi.Intent.AvatarSelected(bytes))
             }
         }
     }
@@ -526,7 +526,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
         galleryHelper.getImageFromGallery { bytes ->
             openHeaderPicker = false
             if (bytes.isNotEmpty()) {
-                model.reduce(EditProfileMviModel.Intent.HeaderSelected(bytes))
+                model.reduce(EditProfileMvi.Intent.HeaderSelected(bytes))
             }
         }
     }
@@ -539,7 +539,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             },
             onInsert = { emoji ->
                 model.reduce(
-                    EditProfileMviModel.Intent.InsertCustomEmoji(
+                    EditProfileMvi.Intent.InsertCustomEmoji(
                         fieldType =
                             when {
                                 hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
@@ -574,7 +574,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             onSelect = { idx ->
                 quotePolicyBottomSheetOpen = false
                 if (idx != null) {
-                    model.reduce(EditProfileMviModel.Intent.ChangeQuotePolicy(policies[idx]))
+                    model.reduce(EditProfileMvi.Intent.ChangeQuotePolicy(policies[idx]))
                 }
             },
         )

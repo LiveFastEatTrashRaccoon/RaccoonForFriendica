@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.manageblocks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -43,9 +43,9 @@ class ManageBlocksViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val stopWordRepository: StopWordRepository,
 ) : ViewModel(),
-    MviModelDelegate<ManageBlocksMviModel.Intent, ManageBlocksMviModel.State, ManageBlocksMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ManageBlocksMviModel.State()),
-    ManageBlocksMviModel {
+    MviDelegate<ManageBlocksMvi.Intent, ManageBlocksMvi.State, ManageBlocksMvi.Effect>
+    by DefaultMviDelegate(initialState = ManageBlocksMvi.State()),
+    ManageBlocksMvi {
     private var originalStopWords: List<String> = emptyList()
     private val mutex = Mutex()
 
@@ -76,40 +76,40 @@ class ManageBlocksViewModel(
         }
     }
 
-    override fun reduce(intent: ManageBlocksMviModel.Intent) {
+    override fun reduce(intent: ManageBlocksMvi.Intent) {
         when (intent) {
-            is ManageBlocksMviModel.Intent.ChangeSection ->
+            is ManageBlocksMvi.Intent.ChangeSection ->
                 viewModelScope.launch {
                     if (uiState.value.loading) {
                         return@launch
                     }
                     updateState { it.copy(section = intent.section) }
-                    emitEffect(ManageBlocksMviModel.Effect.BackToTop)
+                    emitEffect(ManageBlocksMvi.Effect.BackToTop)
                     refresh(initial = true)
                 }
 
-            ManageBlocksMviModel.Intent.LoadNextPage ->
+            ManageBlocksMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     if (uiState.value.section != ManageBlocksSection.StopWords) {
                         loadNextUserPage()
                     }
                 }
 
-            ManageBlocksMviModel.Intent.Refresh -> viewModelScope.launch { refresh() }
+            ManageBlocksMvi.Intent.Refresh -> viewModelScope.launch { refresh() }
 
-            is ManageBlocksMviModel.Intent.ToggleMute -> unmute(intent.userId)
+            is ManageBlocksMvi.Intent.ToggleMute -> unmute(intent.userId)
 
-            is ManageBlocksMviModel.Intent.ToggleBlock -> unblock(intent.userId)
+            is ManageBlocksMvi.Intent.ToggleBlock -> unblock(intent.userId)
 
-            is ManageBlocksMviModel.Intent.SetRateLimit ->
+            is ManageBlocksMvi.Intent.SetRateLimit ->
                 setRateLimit(
                     handle = intent.handle,
                     value = intent.rate,
                 )
 
-            is ManageBlocksMviModel.Intent.AddStopWord -> addStopWord(intent.word)
+            is ManageBlocksMvi.Intent.AddStopWord -> addStopWord(intent.word)
 
-            is ManageBlocksMviModel.Intent.RemoveStopWord -> removeStopWord(intent.word)
+            is ManageBlocksMvi.Intent.RemoveStopWord -> removeStopWord(intent.word)
         }
     }
 

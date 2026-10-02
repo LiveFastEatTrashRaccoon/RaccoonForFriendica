@@ -33,7 +33,7 @@ fun PermanentDrawerContent(
     currentDestination: Destination,
     onSelectDestination: (Destination) -> Unit,
     modifier: Modifier = Modifier,
-    model: PermanentDrawerMviModel = metroViewModel<PermanentDrawerViewModel>(),
+    model: PermanentDrawerMvi = metroViewModel<PermanentDrawerViewModel>(),
 ) {
     val uiState by model.uiState.collectAsState()
     val destinations = buildList {
@@ -84,7 +84,7 @@ fun PermanentDrawerContent(
                     },
                 ),
             onClick = {
-                model.reduce(PermanentDrawerMviModel.Intent.ToggleExpanded)
+                model.reduce(PermanentDrawerMvi.Intent.ToggleExpanded)
             },
         ) {
             Icon(

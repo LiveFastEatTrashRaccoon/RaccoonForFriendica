@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
@@ -68,9 +68,9 @@ class ThreadViewModel(
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
-    MviModelDelegate<ThreadMviModel.Intent, ThreadMviModel.State, ThreadMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = ThreadMviModel.State()),
-    ThreadMviModel {
+    MviDelegate<ThreadMvi.Intent, ThreadMvi.State, ThreadMvi.Effect>
+    by DefaultMviDelegate(initialState = ThreadMvi.State()),
+    ThreadMvi {
 
     private val entryId = args.entryId
     private val swipeNavigationEnabled = args.swipeNavigationEnabled
@@ -127,29 +127,29 @@ class ThreadViewModel(
         }
     }
 
-    override fun reduce(intent: ThreadMviModel.Intent) {
+    override fun reduce(intent: ThreadMvi.Intent) {
         when (intent) {
-            ThreadMviModel.Intent.Refresh ->
+            ThreadMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
 
-            is ThreadMviModel.Intent.LoadMoreReplies ->
+            is ThreadMvi.Intent.LoadMoreReplies ->
                 viewModelScope.launch {
                     loadMoreReplies(intent.entry)
                 }
 
-            is ThreadMviModel.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ThreadMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
 
-            is ThreadMviModel.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ThreadMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
 
-            is ThreadMviModel.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is ThreadMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
 
-            is ThreadMviModel.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ThreadMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
 
-            is ThreadMviModel.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is ThreadMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
 
-            is ThreadMviModel.Intent.MuteUser ->
+            is ThreadMvi.Intent.MuteUser ->
                 mute(
                     userId = intent.userId,
                     entryId = intent.entryId,
@@ -157,24 +157,24 @@ class ThreadViewModel(
                     disableNotifications = intent.disableNotifications,
                 )
 
-            is ThreadMviModel.Intent.BlockUser ->
+            is ThreadMvi.Intent.BlockUser ->
                 block(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
 
-            is ThreadMviModel.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is ThreadMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
-            is ThreadMviModel.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is ThreadMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is ThreadMviModel.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is ThreadMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
 
-            is ThreadMviModel.Intent.ChangeNavigationIndex ->
+            is ThreadMvi.Intent.ChangeNavigationIndex ->
                 changeNavigationIndex(intent.index)
 
-            is ThreadMviModel.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is ThreadMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
 
-            is ThreadMviModel.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is ThreadMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
         }
     }
 
@@ -560,7 +560,7 @@ class ThreadViewModel(
                         notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
                     }
                 }
-                emitEffect(ThreadMviModel.Effect.PollVoteFailure)
+                emitEffect(ThreadMvi.Effect.PollVoteFailure)
             }
         }
     }
@@ -577,7 +577,7 @@ class ThreadViewModel(
                         }
                         append(source.content)
                     }
-                emitEffect(ThreadMviModel.Effect.TriggerCopy(text))
+                emitEffect(ThreadMvi.Effect.TriggerCopy(text))
             }
         }
     }
@@ -678,7 +678,7 @@ class ThreadViewModel(
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
-                emitEffect(ThreadMviModel.Effect.OpenUrl(url))
+                emitEffect(ThreadMvi.Effect.OpenUrl(url))
             }
         }
     }

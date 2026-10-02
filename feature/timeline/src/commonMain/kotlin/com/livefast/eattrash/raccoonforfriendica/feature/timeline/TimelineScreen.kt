@@ -93,7 +93,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimelineScreen(
-    model: TimelineMviModel,
+    model: TimelineMvi,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
@@ -139,23 +139,23 @@ fun TimelineScreen(
         model.effects
             .onEach { event ->
                 when (event) {
-                    TimelineMviModel.Effect.BackToTop -> goBackToTop()
+                    TimelineMvi.Effect.BackToTop -> goBackToTop()
 
-                    TimelineMviModel.Effect.PollVoteFailure -> pollErrorDialogOpened = true
+                    TimelineMvi.Effect.PollVoteFailure -> pollErrorDialogOpened = true
 
-                    is TimelineMviModel.Effect.TriggerCopy -> {
+                    is TimelineMvi.Effect.TriggerCopy -> {
                         clipboardHelper.setText(event.text)
                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                     }
 
-                    is TimelineMviModel.Effect.OpenDetail -> {
+                    is TimelineMvi.Effect.OpenDetail -> {
                         mainRouter.openEntryDetail(
                             entry = event.entry,
                             swipeNavigationEnabled = true,
                         )
                     }
 
-                    is TimelineMviModel.Effect.OpenUrl -> uriHandler.openExternally(event.url)
+                    is TimelineMvi.Effect.OpenUrl -> uriHandler.openExternally(event.url)
                 }
             }.launchIn(this)
     }
@@ -314,7 +314,7 @@ fun TimelineScreen(
                 ).nestedScroll(fabNestedScrollConnection),
             isRefreshing = uiState.refreshing,
             onRefresh = {
-                model.reduce(TimelineMviModel.Intent.Refresh)
+                model.reduce(TimelineMvi.Intent.Refresh)
             },
         ) {
             LazyColumn(
@@ -352,7 +352,7 @@ fun TimelineScreen(
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         onClick = { entry ->
-                            model.reduce(TimelineMviModel.Intent.WillOpenDetail(entry))
+                            model.reduce(TimelineMvi.Intent.WillOpenDetail(entry))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -383,21 +383,21 @@ fun TimelineScreen(
 
                                 else ->
                                     model.reduce(
-                                        TimelineMviModel.Intent.ToggleReblog(e),
+                                        TimelineMvi.Intent.ToggleReblog(e),
                                     )
                             }
                         }.takeIf { actionRepository.canReblog(entry.original) },
                         onBookmark =
                         { e: TimelineEntryModel ->
-                            model.reduce(TimelineMviModel.Intent.ToggleBookmark(e))
+                            model.reduce(TimelineMvi.Intent.ToggleBookmark(e))
                         }.takeIf { actionRepository.canBookmark(entry.original) },
                         onFavorite =
                         { e: TimelineEntryModel ->
-                            model.reduce(TimelineMviModel.Intent.ToggleFavorite(e))
+                            model.reduce(TimelineMvi.Intent.ToggleFavorite(e))
                         }.takeIf { actionRepository.canFavorite(entry.original) },
                         onDislike =
                         { e: TimelineEntryModel ->
-                            model.reduce(TimelineMviModel.Intent.ToggleDislike(e))
+                            model.reduce(TimelineMvi.Intent.ToggleDislike(e))
                         }.takeIf { actionRepository.canDislike(entry.original) },
                         onReply =
                         { e: TimelineEntryModel ->
@@ -410,7 +410,7 @@ fun TimelineScreen(
                         uiState.currentUserId?.let {
                             { e, choices ->
                                 model.reduce(
-                                    TimelineMviModel.Intent.SubmitPollVote(
+                                    TimelineMvi.Intent.SubmitPollVote(
                                         entry = e,
                                         choices = choices,
                                     ),
@@ -419,7 +419,7 @@ fun TimelineScreen(
                         },
                         onShowOriginal = {
                             model.reduce(
-                                TimelineMviModel.Intent.ToggleTranslation(entry.original),
+                                TimelineMvi.Intent.ToggleTranslation(entry.original),
                             )
                         },
                         onOpenQuote = { e ->
@@ -521,7 +521,7 @@ fun TimelineScreen(
                                 OptionId.Block -> confirmBlockEntry = entry
 
                                 OptionId.Pin, OptionId.Unpin ->
-                                    model.reduce(TimelineMviModel.Intent.TogglePin(entry))
+                                    model.reduce(TimelineMvi.Intent.TogglePin(entry))
 
                                 OptionId.ReportUser ->
                                     entry.original.creator?.also { userToReport ->
@@ -551,22 +551,22 @@ fun TimelineScreen(
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
-                                        TimelineMviModel.Intent.CopyToClipboard(entry.original),
+                                        TimelineMvi.Intent.CopyToClipboard(entry.original),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        TimelineMviModel.Intent.ToggleTranslation(entry.original),
+                                        TimelineMvi.Intent.ToggleTranslation(entry.original),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        TimelineMviModel.Intent.AddInstanceShortcut(entry.nodeName),
+                                        TimelineMvi.Intent.AddInstanceShortcut(entry.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        TimelineMviModel.Intent.OpenInBrowser(entry),
+                                        TimelineMvi.Intent.OpenInBrowser(entry),
                                     )
 
                                 else -> Unit
@@ -581,7 +581,7 @@ fun TimelineScreen(
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
                     val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
                     if (isNearTheEnd && canFetchMore) {
-                        model.reduce(TimelineMviModel.Intent.LoadNextPage)
+                        model.reduce(TimelineMvi.Intent.LoadNextPage)
                     }
                 }
 
@@ -625,7 +625,7 @@ fun TimelineScreen(
                 timelineTypeSelectorOpen = false
                 if (index != null) {
                     val type = items[index]
-                    model.reduce(TimelineMviModel.Intent.ChangeType(type))
+                    model.reduce(TimelineMvi.Intent.ChangeType(type))
                 }
             },
         )
@@ -638,7 +638,7 @@ fun TimelineScreen(
                 val entryId = confirmDeleteEntryId ?: ""
                 confirmDeleteEntryId = null
                 if (confirm && entryId.isNotEmpty()) {
-                    model.reduce(TimelineMviModel.Intent.DeleteEntry(entryId))
+                    model.reduce(TimelineMvi.Intent.DeleteEntry(entryId))
                 }
             },
         )
@@ -655,7 +655,7 @@ fun TimelineScreen(
                         val (duration, disableNotifications) = result
                         if (entryId != null) {
                             model.reduce(
-                                TimelineMviModel.Intent.MuteUser(
+                                TimelineMvi.Intent.MuteUser(
                                     userId = user.id,
                                     entryId = entryId,
                                     duration = duration,
@@ -687,7 +687,7 @@ fun TimelineScreen(
                 confirmBlockEntry = null
                 if (confirm && entryId != null && creatorId != null) {
                     model.reduce(
-                        TimelineMviModel.Intent.BlockUser(
+                        TimelineMvi.Intent.BlockUser(
                             userId = creatorId,
                             entryId = entryId,
                         ),
@@ -713,7 +713,7 @@ fun TimelineScreen(
                 val e = confirmReblogEntry
                 confirmReblogEntry = null
                 if (confirm && e != null) {
-                    model.reduce(TimelineMviModel.Intent.ToggleReblog(e))
+                    model.reduce(TimelineMvi.Intent.ToggleReblog(e))
                 }
             },
         )

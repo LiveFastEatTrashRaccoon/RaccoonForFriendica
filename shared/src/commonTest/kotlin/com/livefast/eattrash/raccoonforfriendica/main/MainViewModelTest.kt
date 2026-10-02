@@ -58,7 +58,7 @@ class MainViewModelTest {
     @Test
     fun `when SetBottomBarOffsetHeightPx then state is as expected`() {
         val bottomBarOffsetHeightPx = 2f
-        sut.reduce(MainMviModel.Intent.SetBottomBarOffsetHeightPx(bottomBarOffsetHeightPx))
+        sut.reduce(MainMvi.Intent.SetBottomBarOffsetHeightPx(bottomBarOffsetHeightPx))
 
         val state = sut.uiState.value
 

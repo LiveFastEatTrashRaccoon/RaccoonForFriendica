@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.drawer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -26,9 +26,9 @@ class PermanentDrawerViewModel(
     private val inboxManager: InboxManager,
     private val supportedFeatureRepository: SupportedFeatureRepository,
 ) : ViewModel(),
-    MviModelDelegate<PermanentDrawerMviModel.Intent, PermanentDrawerMviModel.State, PermanentDrawerMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = PermanentDrawerMviModel.State()),
-    PermanentDrawerMviModel {
+    MviDelegate<PermanentDrawerMvi.Intent, PermanentDrawerMvi.State, PermanentDrawerMvi.Effect>
+    by DefaultMviDelegate(initialState = PermanentDrawerMvi.State()),
+    PermanentDrawerMvi {
     init {
         viewModelScope.launch {
             identityRepository.currentUser.onEach { currentUser ->
@@ -56,9 +56,9 @@ class PermanentDrawerViewModel(
         }
     }
 
-    override fun reduce(intent: PermanentDrawerMviModel.Intent) {
+    override fun reduce(intent: PermanentDrawerMvi.Intent) {
         when (intent) {
-            PermanentDrawerMviModel.Intent.ToggleExpanded -> viewModelScope.launch {
+            PermanentDrawerMvi.Intent.ToggleExpanded -> viewModelScope.launch {
                 updateState {
                     it.copy(isExpanded = !it.isExpanded)
                 }

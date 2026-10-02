@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.feature.calendar.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviModelDelegate
-import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviModelDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.extractDatePart
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EventPaginationManager
@@ -30,9 +30,9 @@ class CalendarViewModel(
     private val settingsRepository: SettingsRepository,
     private val paginationManager: EventPaginationManager,
 ) : ViewModel(),
-    MviModelDelegate<CalendarMviModel.Intent, CalendarMviModel.State, CalendarMviModel.Effect>
-    by DefaultMviModelDelegate(initialState = CalendarMviModel.State()),
-    CalendarMviModel {
+    MviDelegate<CalendarMvi.Intent, CalendarMvi.State, CalendarMvi.Effect>
+    by DefaultMviDelegate(initialState = CalendarMvi.State()),
+    CalendarMvi {
     init {
         viewModelScope.launch {
             identityRepository.currentUser
@@ -52,14 +52,14 @@ class CalendarViewModel(
         }
     }
 
-    override fun reduce(intent: CalendarMviModel.Intent) {
+    override fun reduce(intent: CalendarMvi.Intent) {
         when (intent) {
-            CalendarMviModel.Intent.LoadNextPage ->
+            CalendarMvi.Intent.LoadNextPage ->
                 viewModelScope.launch {
                     loadNextPage()
                 }
 
-            CalendarMviModel.Intent.Refresh ->
+            CalendarMvi.Intent.Refresh ->
                 viewModelScope.launch {
                     refresh()
                 }
@@ -113,7 +113,7 @@ class CalendarViewModel(
                 )
             }
             if (wasRefreshing) {
-                emitEffect(CalendarMviModel.Effect.BackToTop)
+                emitEffect(CalendarMvi.Effect.BackToTop)
             }
         } catch (e: Exception) {
             updateState { it.copy(loading = false, refreshing = false) }
