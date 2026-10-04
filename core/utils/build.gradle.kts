@@ -30,6 +30,7 @@ kotlin {
                 implementation(libs.coil)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.connectivity.core)
+                implementation(libs.kermit)
                 implementation(libs.ktor.cio)
                 implementation(libs.sentry)
 
