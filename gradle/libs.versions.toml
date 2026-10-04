@@ -25,6 +25,7 @@ compose-navigationevent = "1.1.0"
 compose-plugin = "1.12.1"
 connectivity = "2.5.3"
 espresso = "3.7.0"
+kermit = "2.2.0"
 kotlin = "2.4.20"
 kotlinpoet = "2.4.0"
 kotlinx-coroutines = "1.11.0"
@@ -86,6 +87,7 @@ connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", ver
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
 espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -141,7 +143,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [bundles]
 compose-ui = ["compose-runtime", "compose-foundation", "compose-m3"]
-compose-adaptive = [ "compose-m3-adaptive", "compose-m3-adaptive-nav3", "compose-m3-wsc"]
+compose-adaptive = ["compose-m3-adaptive", "compose-m3-adaptive-nav3", "compose-m3-wsc"]
 compose-navigation = ["androidx-nav3-ui", "compose-navigationevent"]
 compose-test = ["compose-ui-test", "compose-ui-test-manifest"]
 androidx-device-test = ["androidx-test-core", "androidx-test-runner", "androidx-test-junit", "androidx-test-junit-ktx"]
