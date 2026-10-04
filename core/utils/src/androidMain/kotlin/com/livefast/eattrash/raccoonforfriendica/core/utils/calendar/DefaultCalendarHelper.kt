@@ -6,7 +6,6 @@ import android.provider.CalendarContract
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 import kotlin.coroutines.cancellation.CancellationException
 
 @ContributesBinding(AppScope::class)

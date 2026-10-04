@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.auth
 
 import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.ktor.server.cio.CIO

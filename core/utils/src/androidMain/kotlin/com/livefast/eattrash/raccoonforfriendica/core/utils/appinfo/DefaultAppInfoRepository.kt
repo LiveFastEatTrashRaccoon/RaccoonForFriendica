@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import android.os.Build
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
