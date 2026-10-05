@@ -22,7 +22,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.TagsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TimelineService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.TrendsService
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserService
-import com.livefast.eattrash.raccoonforfriendica.core.api.utils.defaultLogger
 import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -42,6 +41,7 @@ import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
@@ -61,6 +61,7 @@ class DefaultServiceProvider(
     private val engine: HttpClientEngine,
     private val appInfoRepository: AppInfoRepository,
     private val factory: ServiceFactory,
+    private val defaultLogger: Logger,
 ) : ServiceProvider {
 
     private val requestTimeout: Long = 600_000
