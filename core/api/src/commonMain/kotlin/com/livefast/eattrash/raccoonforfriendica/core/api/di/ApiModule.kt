@@ -12,6 +12,7 @@ import dev.zacsweers.metro.Named
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.logging.Logger
 import kotlinx.serialization.json.Json
 
 @BindingContainer
@@ -32,9 +33,11 @@ object ApiModule {
         engine: HttpClientEngine,
         appInfoRepository: AppInfoRepository,
         factory: ServiceFactory,
+        defaultLogger: Logger,
     ): ServiceProvider = DefaultServiceProvider(
         engine = engine,
         appInfoRepository = appInfoRepository,
         factory = factory,
+        defaultLogger = defaultLogger,
     )
 }

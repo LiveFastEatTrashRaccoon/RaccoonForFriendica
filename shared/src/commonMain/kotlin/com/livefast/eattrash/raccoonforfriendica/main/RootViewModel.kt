@@ -7,7 +7,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.Them
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.L10nManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.CrashReportManager
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.LogInitializer
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.ActiveAccountMonitor
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SetupAccountUseCase
@@ -17,6 +19,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -35,7 +38,9 @@ class RootViewModel(
     private val l10nManager: L10nManager,
     private val activeAccountMonitor: ActiveAccountMonitor,
     private val setupAccountUseCase: SetupAccountUseCase,
-    private val crashReportManager: CrashReportManager,
+    crashReportManager: CrashReportManager,
+    appInfoRepository: AppInfoRepository,
+    logInitializer: LogInitializer,
 ) : ViewModel(),
     MviDelegate<RootMvi.Intent, RootMvi.UiState, RootMvi.Effect> by DefaultMviDelegate(
         initialState = RootMvi.UiState(),
@@ -49,6 +54,9 @@ class RootViewModel(
             crashReportManager.initialize()
 
             viewModelScope.launch {
+                val isDebug = appInfoRepository.appInfo.first { it != null }?.isDebug ?: false
+                logInitializer.initialize(isDebug)
+
                 activeAccountMonitor.start()
                 setupAccountUseCase()
 
