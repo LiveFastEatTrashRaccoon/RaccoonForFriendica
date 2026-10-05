@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manag
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.logDebug
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.LogFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
@@ -30,11 +30,15 @@ class DefaultPushNotificationManager(
     private val pushNotificationRepository: PushNotificationRepository,
     private val nodeInfoRepository: NodeInfoRepository,
     private val accountRepository: AccountRepository,
+    logFactory: LogFactory,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : PushNotificationManager {
-    private val _state = MutableStateFlow<PushNotificationManagerState>(PushNotificationManagerState.Initializing)
 
-    override val state: StateFlow<PushNotificationManagerState> = _state
+    override val state: StateFlow<PushNotificationManagerState> field = MutableStateFlow<PushNotificationManagerState>(
+        PushNotificationManagerState.Initializing,
+    )
+
+    private val log = logFactory.create("DefaultPushNotificationManager")
 
     private val notificationManager by lazy { context.getSystemService(NotificationManager::class.java) }
 
@@ -43,43 +47,43 @@ class DefaultPushNotificationManager(
     }
 
     override suspend fun refreshState() {
-        logDebug("refreshState")
+        log.d { "refreshState" }
         val account = accountRepository.getActive() ?: return
         val availableDistributors = getAvailableDistributors()
         if (availableDistributors.isEmpty()) {
-            _state.update { PushNotificationManagerState.NoDistributors }
+            state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
         if (account.notificationEnabled) {
-            _state.update { PushNotificationManagerState.Idle }
+            state.update { PushNotificationManagerState.Idle }
             return
         }
 
         val selectedDistributor = getSelectedDistributor()
         if (selectedDistributor.isNullOrEmpty()) {
             if (availableDistributors.size == 1) {
-                _state.update { PushNotificationManagerState.Idle }
+                state.update { PushNotificationManagerState.Idle }
             } else {
-                _state.update { PushNotificationManagerState.NoDistributorSelected }
+                state.update { PushNotificationManagerState.NoDistributorSelected }
             }
         }
     }
 
     override suspend fun startup() {
-        logDebug("DefaultPushNotificationManager - startup")
+        log.d { "startup" }
         val account = accountRepository.getActive() ?: return
         createNotificationChannelsIfNeeded(account)
 
         if (account.notificationEnabled) {
             updateSubscription(account)
-            _state.update { PushNotificationManagerState.Enabled }
+            state.update { PushNotificationManagerState.Enabled }
             return
         }
 
         val availableDistributors = getAvailableDistributors()
         if (availableDistributors.isEmpty()) {
-            _state.update { PushNotificationManagerState.NoDistributors }
+            state.update { PushNotificationManagerState.NoDistributors }
             return
         }
 
@@ -98,7 +102,7 @@ class DefaultPushNotificationManager(
     }
 
     override suspend fun saveDistributor(distributor: String) = withContext(dispatcher) {
-        logDebug("DefaultPushNotificationManager - saveDistributor")
+        log.d { "saveDistributor" }
         UnifiedPush.saveDistributor(
             context = context,
             distributor = distributor,
@@ -106,34 +110,34 @@ class DefaultPushNotificationManager(
     }
 
     override suspend fun clearDistributor() = withContext(dispatcher) {
-        logDebug("DefaultPushNotificationManager - clearDistributor")
+        log.d { "clearDistributor" }
         UnifiedPush.removeDistributor(context)
     }
 
     override suspend fun enable() {
-        logDebug("DefaultPushNotificationManager - enable")
+        log.d { "enable" }
         val account = accountRepository.getActive() ?: return
         if (account.notificationEnabled) {
             return
         }
 
         registerForPushNotification(account)
-        _state.update { PushNotificationManagerState.Enabled }
+        state.update { PushNotificationManagerState.Enabled }
     }
 
     override suspend fun disable() {
-        logDebug("DefaultPushNotificationManager - disable")
+        log.d { "disable" }
         val account = accountRepository.getActive() ?: return
         if (!account.notificationEnabled) {
             return
         }
 
         unregisterForPushNotifications(account)
-        _state.update { PushNotificationManagerState.Initializing }
+        state.update { PushNotificationManagerState.Initializing }
     }
 
     override suspend fun registerEndpoint(account: AccountModel, endpointUrl: String, pubKey: String, auth: String) {
-        logDebug("DefaultPushNotificationManager - registerEndpoint")
+        log.d { "registerEndpoint" }
         val types = NotificationType.ALL.filter { it.isEnabled(account) }
         val policy = NotificationPolicy.Followed
         val serverKey =
@@ -156,7 +160,7 @@ class DefaultPushNotificationManager(
     }
 
     override suspend fun unregisterEndpoint(account: AccountModel) {
-        logDebug("DefaultPushNotificationManager - unregisterEndpoint")
+        log.d { "unregisterEndpoint" }
         pushNotificationRepository.delete()
         val updateAccount =
             account.copy(
@@ -166,7 +170,7 @@ class DefaultPushNotificationManager(
                 pushPrivKey = null,
                 unifiedPushUrl = null,
             )
-        logDebug("DefaultPushNotificationManager - subscription deleted")
+        log.d { "subscription deleted" }
         accountRepository.update(updateAccount)
     }
 
@@ -175,7 +179,7 @@ class DefaultPushNotificationManager(
     }
 
     private suspend fun registerForPushNotification(account: AccountModel) = withContext(dispatcher) {
-        logDebug("DefaultPushNotificationManager - registerForPushNotification")
+        log.d { "registerForPushNotification" }
         // remove "=" padding some Mastodon instances use
         val vapid = nodeInfoRepository.getInfo()?.vapidKey?.replace("=", "")
         UnifiedPush.register(
@@ -198,7 +202,7 @@ class DefaultPushNotificationManager(
     }
 
     private suspend fun updateSubscription(account: AccountModel) {
-        logDebug("DefaultPushNotificationManager - updateSubscription")
+        log.d { "updateSubscription" }
         val types = NotificationType.ALL.filter { it.isEnabled(account) }
         val policy = NotificationPolicy.Followed
         val serverKey =
@@ -211,7 +215,7 @@ class DefaultPushNotificationManager(
     }
 
     private suspend fun unregisterForPushNotifications(account: AccountModel) = withContext(dispatcher) {
-        logDebug("DefaultPushNotificationManager - unregisterForPushNotifications")
+        log.d { "unregisterForPushNotifications" }
         UnifiedPush.unregister(
             context = context,
             instance = account.channelId,

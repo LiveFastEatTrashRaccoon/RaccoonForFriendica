@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.common
 
 import android.content.Context
-import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.logDebug
+import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.LogFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
@@ -31,21 +31,23 @@ class DefaultUnifiedPushInteractor(
     private val pullNotificationManager: PullNotificationManager,
     private val pushNotificationManager: PushNotificationManager,
     private val accountRepository: AccountRepository,
+    logFactory: LogFactory,
 ) : UnifiedPushInteractor {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val log = logFactory.create("UnifiedPushInteractor")
 
     override fun onMessage(context: Context, message: PushMessage, instance: String) {
-        logDebug("UnifiedPushInteractor - onMessage")
+        log.d { "onMessage" }
         pullNotificationManager.oneshotCheck()
     }
 
     override fun onNewEndpoint(context: Context, endpoint: PushEndpoint, instance: String) {
-        logDebug("UnifiedPushInteractor - onNewEndpoint")
+        log.d { "onNewEndpoint" }
         val accountId = instance.toLongOrNull() ?: return
         scope.launch {
             val account = accountRepository.getBy(accountId) ?: return@launch
-            logDebug("UnifiedPushInteractor - calling registerEndpoint")
+            log.d { "calling registerEndpoint" }
             pushNotificationManager.registerEndpoint(
                 account = account,
                 endpointUrl = endpoint.url,
@@ -56,21 +58,21 @@ class DefaultUnifiedPushInteractor(
     }
 
     override fun onRegistrationFailed(context: Context, reason: FailedReason, instance: String) {
-        logDebug("UnifiedPushInteractor - onRegistrationFailed, reason = $reason")
+        log.d { "onRegistrationFailed, reason = $reason" }
         val accountId = instance.toLongOrNull() ?: return
         scope.launch {
             val account = accountRepository.getBy(accountId) ?: return@launch
-            logDebug("UnifiedPushInteractor - calling unregisterEndpoint")
+            log.d { "calling unregisterEndpoint" }
             pushNotificationManager.unregisterEndpoint(account)
         }
     }
 
     override fun onUnregistered(context: Context, instance: String) {
-        logDebug("UnifiedPushInteractor - onUnregistered")
+        log.d { "onUnregistered" }
         val accountId = instance.toLongOrNull() ?: return
         scope.launch {
             val account = accountRepository.getBy(accountId) ?: return@launch
-            logDebug("UnifiedPushInteractor - calling unregisterEndpoint")
+            log.d { "calling unregisterEndpoint" }
             pushNotificationManager.unregisterEndpoint(account)
         }
     }
