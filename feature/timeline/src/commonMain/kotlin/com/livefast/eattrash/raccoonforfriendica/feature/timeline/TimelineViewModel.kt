@@ -80,6 +80,7 @@ class TimelineViewModel(
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
     private val getTranslation: GetTranslationUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
+    private val getTimelineTypes: GetTimelineTypesUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val followedHashtagCache: FollowedHashtagCache,
     private val notificationCenter: NotificationCenter,
@@ -87,8 +88,6 @@ class TimelineViewModel(
     MviDelegate<TimelineMvi.Intent, TimelineMvi.State, TimelineMvi.Effect>
     by DefaultMviDelegate(initialState = TimelineMvi.State()),
     TimelineMvi {
-    private var circlesRefreshed = false
-
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -124,10 +123,36 @@ class TimelineViewModel(
                     }
                 }.launchIn(this)
 
+            getTimelineTypes()
+                .onEach { newTimelineTypes ->
+                    val settings = settingsRepository.current.value ?: SettingsModel()
+                    val currentTimelineType = uiState.value.timelineType
+                    val newTimelineType =
+                        if (currentTimelineType is TimelineType.Circle) {
+                            val currentCircleId = currentTimelineType.circle?.id
+                            val newCircleTimelineType = newTimelineTypes.firstOrNull {
+                                (it as? TimelineType.Circle)?.circle?.id == currentCircleId
+                            }
+                            newCircleTimelineType ?: run {
+                                // circle has been deleted
+                                settings.defaultTimelineType
+                                    .toTimelineType()
+                                    .takeIf { type -> type !is TimelineType.Circle } ?: TimelineType.Local
+                            }
+                        } else {
+                            currentTimelineType
+                        }
+                    updateState {
+                        it.copy(
+                            availableTimelineTypes = newTimelineTypes,
+                            timelineType = newTimelineType,
+                        )
+                    }
+                }.launchIn(this)
+
             identityRepository.currentUser
                 .onEach { currentUser ->
                     updateState { it.copy(currentUserId = currentUser?.id) }
-                    refreshCirclesInTimelineTypes(currentUser != null)
                 }.launchIn(this)
 
             notificationCenter
@@ -156,7 +181,6 @@ class TimelineViewModel(
                 .distinctUntilChanged()
                 .map { it.second }
                 .onEach { user ->
-                    circlesRefreshed = false
                     val cachedAuth = apiConfigurationRepository.hasCachedAuthCredentials()
                     val hasUser = user != null || !cachedAuth
                     if (hasUser) {
@@ -251,46 +275,6 @@ class TimelineViewModel(
         )
     }
 
-    private suspend fun refreshCirclesInTimelineTypes(isLogged: Boolean) {
-        val circles = circlesRepository.getAll().orEmpty()
-        val settings = settingsRepository.current.value ?: SettingsModel()
-        val defaultTimelineTypes =
-            buildList {
-                this += TimelineType.All
-                if (isLogged) {
-                    this += TimelineType.Subscriptions
-                }
-                this += TimelineType.Local
-            }
-        val newTimelineTypes =
-            defaultTimelineTypes + circles.map { TimelineType.Circle(circle = it) }
-        val currentTimelineType = uiState.value.timelineType
-        val newTimelineType =
-            if (currentTimelineType is TimelineType.Circle) {
-                val currentCircleId = currentTimelineType.circle?.id
-                val newCircle = circles.firstOrNull { it.id == currentCircleId }
-                if (newCircle == null) {
-                    // circle has been deleted
-                    settings.defaultTimelineType
-                        .toTimelineType()
-                        .takeIf { type ->
-                            type !is TimelineType.Circle || settings.defaultTimelineId != currentCircleId
-                        } ?: TimelineType.Local
-                } else {
-                    // circle has been renamed
-                    TimelineType.Circle(newCircle)
-                }
-            } else {
-                currentTimelineType
-            }
-        updateState {
-            it.copy(
-                availableTimelineTypes = newTimelineTypes,
-                timelineType = newTimelineType,
-            )
-        }
-    }
-
     private suspend fun refresh(initial: Boolean = false, forceRefresh: Boolean = false) {
         val timelineType = uiState.value.timelineType ?: return
 
@@ -300,20 +284,17 @@ class TimelineViewModel(
                 activeAccountMonitor.forceRefresh()
             } catch (_: Exception) {}
         }
-        if (circlesRefreshed) {
-            // needed as a last-resort to update circles if edited elsewhere
-            circlesRefreshed = true
-            val isLogged = identityRepository.currentUser.value != null
-            refreshCirclesInTimelineTypes(isLogged)
-        }
 
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val settings = settingsRepository.current.value ?: SettingsModel()
+
         if (!initial) {
             followedHashtagCache.refresh()
+            getTimelineTypes.refresh()
         }
+
+        val settings = settingsRepository.current.value ?: SettingsModel()
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
                 timelineType = timelineType,
