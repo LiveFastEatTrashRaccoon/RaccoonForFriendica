@@ -106,18 +106,6 @@ private fun AboutDialogContent(
                 )
             }
             item {
-                AboutItem(
-                    text = LocalStrings.current.settingsAboutChangelog,
-                    icon = LocalResources.current.article,
-                    textDecoration = TextDecoration.Underline,
-                    onClick = {
-                        handleAction {
-                            uriHandler.openUri(AboutConstants.CHANGELOG_URL)
-                        }
-                    },
-                )
-            }
-            item {
                 Button(
                     onClick = {
                         handleAction {
@@ -298,7 +286,6 @@ private fun AboutItem(
 }
 
 private object AboutConstants {
-    const val CHANGELOG_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/releases/latest"
     const val HOMEPAGE_URL = "https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica"
     const val BLOG_URL = "https://livefasteattrashraccoon.github.io/blog"
     const val GROUP_URL = "https://poliverso.org/profile/raccoonforfriendicaapp"
