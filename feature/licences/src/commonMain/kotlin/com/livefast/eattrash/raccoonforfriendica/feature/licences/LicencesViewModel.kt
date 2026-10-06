@@ -114,6 +114,13 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                     this +=
                         LicenceItem(
                             type = LicenceItemType.Library,
+                            title = "Kermit",
+                            subtitle = "Kermit the log - Kotlin Multiplatform Logging",
+                            url = LicenceUrls.KERMIT,
+                        )
+                    this +=
+                        LicenceItem(
+                            type = LicenceItemType.Library,
                             title = "Ksoup",
                             subtitle = "Kotlin Multiplatform HTML & XML Parser",
                             url = LicenceUrls.KSOUP,

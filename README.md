@@ -221,6 +221,7 @@ For the main app:
   for video playback;
 - [Connectivity](https://github.com/jordond/connectivity) to detect network state changes;
 - [Metro](https://github.com/ZacSweers/metro) for dependency injection;
+- [Kermit](https://kermit.touchlab.co) for logging;
 - [Ksoup](https://github.com/MohamedRejeb/Ksoup) for HTML parsing;
 - [Ktor](https://ktor.io/) for networking;
 - [Multiplatform Settings](https://github.com/russhwolf/multiplatform-settings) for preference storage;
