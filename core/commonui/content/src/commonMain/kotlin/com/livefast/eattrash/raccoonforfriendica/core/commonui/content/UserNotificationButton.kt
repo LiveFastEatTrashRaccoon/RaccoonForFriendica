@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
@@ -40,8 +41,8 @@ fun UserNotificationButton(
                     imageVector = status.toIcon(LocalResources.current),
                     contentDescription =
                     when (status) {
-                        NotificationStatus.Disabled -> "Notifications disabled"
-                        NotificationStatus.Enabled -> "Notifications enabled"
+                        NotificationStatus.Disabled -> LocalStrings.current.actionEnableNotifications
+                        NotificationStatus.Enabled -> LocalStrings.current.actionDisableNotifications
                     },
                 )
             }

@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,15 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -71,11 +76,13 @@ fun UserHeader(
                     Modifier
                         .padding(bottom = avatarSize * 0.8f)
                         .aspectRatio(if (isDesktop) 4f else 16 / 9f)
-                        .clickable {
-                            if (banner.isNotBlank()) {
-                                onOpenImage?.invoke(banner)
-                            }
-                        },
+                        .then(
+                            if (banner.isNotBlank() && onOpenImage != null) {
+                                Modifier.clickable { onOpenImage(banner) }
+                            } else {
+                                Modifier
+                            },
+                        ),
                     url = banner,
                     autoload = autoloadImages,
                     contentScale = ContentScale.Crop,
@@ -96,12 +103,16 @@ fun UserHeader(
                             Modifier
                                 .size(avatarSize)
                                 .clip(RoundedCornerShape(avatarSize / 2))
-                                .clickable {
-                                    onOpenImage?.invoke(avatar)
-                                },
+                                .then(
+                                    if (onOpenImage != null) {
+                                        Modifier.clickable { onOpenImage(avatar) }
+                                    } else {
+                                        Modifier
+                                    },
+                                ),
                             url = avatar,
                             quality = FilterQuality.Low,
-                            contentScale = ContentScale.FillBounds,
+                            contentScale = ContentScale.Crop,
                         )
                     } else {
                         PlaceholderImage(
@@ -126,11 +137,13 @@ fun UserHeader(
                                 modifier =
                                 Modifier
                                     .clip(RoundedCornerShape(CornerSize.xl))
-                                    .clickable {
-                                        if (followers > 0) {
-                                            onOpenFollowers?.invoke()
-                                        }
-                                    }.padding(horizontal = Spacing.s),
+                                    .then(
+                                        if (followers > 0 && onOpenFollowers != null) {
+                                            Modifier.clickable { onOpenFollowers() }
+                                        } else {
+                                            Modifier
+                                        },
+                                    ).padding(horizontal = Spacing.s),
                                 text = LocalStrings.current.accountFollower(followers),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = ancillaryColor,
@@ -144,11 +157,13 @@ fun UserHeader(
                                 modifier =
                                 Modifier
                                     .clip(RoundedCornerShape(CornerSize.xl))
-                                    .clickable {
-                                        if (following > 0) {
-                                            onOpenFollowing?.invoke()
-                                        }
-                                    }.padding(horizontal = Spacing.s),
+                                    .then(
+                                        if (following > 0 && onOpenFollowing != null) {
+                                            Modifier.clickable { onOpenFollowing() }
+                                        } else {
+                                            Modifier
+                                        },
+                                    ).padding(horizontal = Spacing.s),
                                 text = LocalStrings.current.accountFollowing(following),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = ancillaryColor,
@@ -222,5 +237,25 @@ fun UserHeader(
                 }
             }
         }
+    }
+}
+
+@Composable
+@Preview
+private fun UserHeaderPreview() {
+    PreviewWrapper {
+        UserHeader(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+            user = UserModel(
+                id = "1",
+                displayName = "John Doe",
+                handle = "@johndoe@example.com",
+                bio = "Hello world! This is a bio.",
+                followers = 1337,
+                following = 42,
+                relationshipStatus = RelationshipStatus.Following,
+                notificationStatus = NotificationStatus.Enabled,
+            ),
+        )
     }
 }

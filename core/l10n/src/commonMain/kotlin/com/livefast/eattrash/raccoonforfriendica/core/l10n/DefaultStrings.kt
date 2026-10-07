@@ -40,12 +40,14 @@ import raccoonforfriendica.core.l10n.generated.resources.action_create_thread_in
 import raccoonforfriendica.core.l10n.generated.resources.action_delete
 import raccoonforfriendica.core.l10n.generated.resources.action_delete_account
 import raccoonforfriendica.core.l10n.generated.resources.action_delete_follow_request
+import raccoonforfriendica.core.l10n.generated.resources.action_disable_notifications
 import raccoonforfriendica.core.l10n.generated.resources.action_dislike
 import raccoonforfriendica.core.l10n.generated.resources.action_dismiss_all_notifications
 import raccoonforfriendica.core.l10n.generated.resources.action_download
 import raccoonforfriendica.core.l10n.generated.resources.action_edit
 import raccoonforfriendica.core.l10n.generated.resources.action_edit_members
 import raccoonforfriendica.core.l10n.generated.resources.action_edit_personal_note
+import raccoonforfriendica.core.l10n.generated.resources.action_enable_notifications
 import raccoonforfriendica.core.l10n.generated.resources.action_export
 import raccoonforfriendica.core.l10n.generated.resources.action_filter
 import raccoonforfriendica.core.l10n.generated.resources.action_follow
@@ -552,6 +554,8 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.action_delete_account)
     override val actionDeleteFollowRequest: String
         @Composable get() = stringResource(Res.string.action_delete_follow_request)
+    override val actionDisableNotifications: String
+        @Composable get() = stringResource(Res.string.action_disable_notifications)
     override val actionDislike: String
         @Composable get() = stringResource(Res.string.action_dislike)
     override val actionDismissAllNotifications: String
@@ -564,6 +568,8 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.action_edit_members)
     override val actionEditPersonalNote: String
         @Composable get() = stringResource(Res.string.action_edit_personal_note)
+    override val actionEnableNotifications: String
+        @Composable get() = stringResource(Res.string.action_enable_notifications)
     override val actionExport: String
         @Composable get() = stringResource(Res.string.action_export)
     override val actionFilter: String
