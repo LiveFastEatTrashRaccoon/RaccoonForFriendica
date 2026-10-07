@@ -32,12 +32,14 @@ interface Strings {
     val actionDelete: String @Composable get
     val actionDeleteAccount: String @Composable get
     val actionDeleteFollowRequest: String @Composable get
+    val actionDisableNotifications: String @Composable get
     val actionDislike: String @Composable get
     val actionDismissAllNotifications: String @Composable get
     val actionDownload: String @Composable get
     val actionEdit: String @Composable get
     val actionEditMembers: String @Composable get
     val actionEditPersonalNote: String @Composable get
+    val actionEnableNotifications: String @Composable get
     val actionExport: String @Composable get
     val actionFilter: String @Composable get
     val actionFollow: String @Composable get

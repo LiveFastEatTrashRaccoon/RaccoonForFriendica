@@ -28,12 +28,14 @@
     <string name="action_delete">Delete</string>
     <string name="action_delete_account">Delete account</string>
     <string name="action_delete_follow_request">Cancel follow request</string>
+    <string name="action_disable_notifications">Disable notifications</string>
     <string name="action_dislike">Dislike</string>
     <string name="action_dismiss_all_notifications">Dismiss all notifications</string>
     <string name="action_download">Download</string>
     <string name="action_edit">Edit</string>
     <string name="action_edit_members">Edit members</string>
     <string name="action_edit_personal_note">Edit note</string>
+    <string name="action_enable_notifications">Enable notifications</string>
     <string name="action_export">Export</string>
     <string name="action_filter">Filter</string>
     <string name="action_follow">Follow</string>
