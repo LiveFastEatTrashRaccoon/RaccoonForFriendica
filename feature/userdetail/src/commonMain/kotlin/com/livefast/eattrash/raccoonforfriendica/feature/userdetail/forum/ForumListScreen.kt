@@ -5,6 +5,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,6 +49,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -55,6 +57,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GroupHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
@@ -73,6 +77,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDuration
 import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
@@ -108,6 +115,9 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
     val actionRepository = LocalUiDeps.current.entryActionRepository
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
+    var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
+    var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
+    var confirmMuteNotificationsDialogOpen by remember { mutableStateOf(false) }
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
     var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
     var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -203,6 +213,21 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                         LocalStrings.current.actionShortcut(nodeName),
                                     )
                             }
+                            uiState.user?.notificationStatus?.also { notificationStatus ->
+                                when (notificationStatus) {
+                                    NotificationStatus.Disabled -> {
+                                        this += CustomOptions.EnableNotifications.toOption(
+                                            label = LocalStrings.current.actionEnableNotifications,
+                                        )
+                                    }
+
+                                    NotificationStatus.Enabled -> {
+                                        this += CustomOptions.DisableNotifications.toOption(
+                                            label = LocalStrings.current.actionDisableNotifications,
+                                        )
+                                    }
+                                }
+                            }
                         }
                     Box {
                         var optionsOffset by remember { mutableStateOf(Offset.Zero) }
@@ -260,6 +285,14 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                                             .orEmpty(),
                                                     ),
                                                 )
+
+                                            CustomOptions.EnableNotifications -> {
+                                                model.reduce(ForumListMvi.Intent.EnableNotifications)
+                                            }
+
+                                            CustomOptions.DisableNotifications -> {
+                                                confirmMuteNotificationsDialogOpen = true
+                                            }
 
                                             else -> Unit
                                         }
@@ -356,6 +389,62 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
             LazyColumn(
                 state = lazyListState,
             ) {
+                if (uiState.user != null) {
+                    item {
+                        GroupHeader(
+                            user = uiState.user?.let { u ->
+                                u.copy(relationshipStatus = u.relationshipStatus.takeIf { isHomeInstance })
+                            },
+                            autoloadImages = uiState.autoloadImages,
+                            onOpenUrl = { url, allowOpenInternal ->
+                                if (allowOpenInternal) {
+                                    uriHandler.openUri(url)
+                                } else {
+                                    uriHandler.openExternally(url)
+                                }
+                            },
+                            onOpenImage = { url ->
+                                mainRouter.openImageDetail(url)
+                            },
+                            onRelationshipClick = { nextAction: RelationshipStatusNextAction ->
+                                when (nextAction) {
+                                    RelationshipStatusNextAction.AcceptRequest -> {
+                                        mainRouter.openFollowRequests()
+                                    }
+
+                                    RelationshipStatusNextAction.ConfirmUnfollow -> {
+                                        confirmUnfollowDialogOpen = true
+                                    }
+
+                                    RelationshipStatusNextAction.ConfirmDeleteFollowRequest -> {
+                                        confirmDeleteFollowRequestDialogOpen = true
+                                    }
+
+                                    RelationshipStatusNextAction.Follow -> {
+                                        model.reduce(ForumListMvi.Intent.Follow)
+                                    }
+
+                                    RelationshipStatusNextAction.Unfollow -> {
+                                        model.reduce(ForumListMvi.Intent.Unfollow)
+                                    }
+                                }
+                            }.takeIf { isHomeInstance },
+                            onOpenFollowers = {
+                                uiState.user?.also { user ->
+                                    mainRouter.openFollowers(user = user, otherInstance = otherInstance)
+                                }
+                            },
+                        )
+                    }
+                } else {
+                    item {
+                        GenericPlaceholder(modifier = Modifier.fillMaxWidth().height(100.dp))
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.xs))
+                }
+
                 if (uiState.initial) {
                     val placeholderCount = 5
                     items(placeholderCount) { idx ->
@@ -628,6 +717,42 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
         }
     }
 
+    if (confirmUnfollowDialogOpen) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionUnfollow,
+            onClose = { confirm ->
+                confirmUnfollowDialogOpen = false
+                if (confirm) {
+                    model.reduce(ForumListMvi.Intent.Unfollow)
+                }
+            },
+        )
+    }
+
+    if (confirmDeleteFollowRequestDialogOpen) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionDeleteFollowRequest,
+            onClose = { confirm ->
+                confirmDeleteFollowRequestDialogOpen = false
+                if (confirm) {
+                    model.reduce(ForumListMvi.Intent.Unfollow)
+                }
+            },
+        )
+    }
+
+    if (confirmMuteNotificationsDialogOpen) {
+        CustomConfirmDialog(
+            title = LocalStrings.current.actionMuteNotifications,
+            onClose = { confirm ->
+                confirmMuteNotificationsDialogOpen = false
+                if (confirm) {
+                    model.reduce(ForumListMvi.Intent.DisableNotifications)
+                }
+            },
+        )
+    }
+
     if (confirmDeleteEntryId != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
@@ -727,4 +852,6 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
 
 private sealed interface CustomOptions : OptionId.Custom {
     data object SwitchToClassicMode : CustomOptions
+    data object EnableNotifications : CustomOptions
+    data object DisableNotifications : CustomOptions
 }

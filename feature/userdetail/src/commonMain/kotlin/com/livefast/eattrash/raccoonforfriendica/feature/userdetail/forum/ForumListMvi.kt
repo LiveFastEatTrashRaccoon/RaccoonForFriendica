@@ -12,6 +12,14 @@ interface ForumListMvi : Mvi<ForumListMvi.Intent, ForumListMvi.State, ForumListM
 
         data object LoadNextPage : Intent
 
+        data object Follow : Intent
+
+        data object Unfollow : Intent
+
+        data object EnableNotifications : Intent
+
+        data object DisableNotifications : Intent
+
         data class ToggleReblog(val entry: TimelineEntryModel) : Intent
 
         data class ToggleFavorite(val entry: TimelineEntryModel) : Intent

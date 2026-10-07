@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
@@ -16,6 +17,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -156,6 +159,14 @@ class ForumListViewModel(
                     userId = intent.userId,
                     entryId = intent.entryId,
                 )
+
+            ForumListMvi.Intent.Follow -> follow()
+
+            ForumListMvi.Intent.Unfollow -> unfollow()
+
+            ForumListMvi.Intent.DisableNotifications -> toggleNotifications(enabled = false)
+
+            ForumListMvi.Intent.EnableNotifications -> toggleNotifications(enabled = true)
 
             is ForumListMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
 
@@ -471,15 +482,20 @@ class ForumListViewModel(
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val (translation, provider) =
-                when {
-                    !entry.isShowingTranslation && entry.translation == null -> {
-                        val result = getTranslation(entry = entry, targetLang = targetLang)
-                        result?.target to result?.provider
-                    }
-
-                    else -> entry.translation to entry.translationProvider
+            val translation: TimelineEntryModel?
+            val provider: String?
+            when {
+                !entry.isShowingTranslation && entry.translation == null -> {
+                    val result = getTranslation(entry = entry, targetLang = targetLang)
+                    translation = result?.target
+                    provider = result?.provider
                 }
+
+                else -> {
+                    translation = entry.translation
+                    provider = entry.translationProvider
+                }
+            }
             val newEntry =
                 entry.copy(
                     isShowingTranslation = translation != null && !entry.isShowingTranslation,
@@ -507,6 +523,77 @@ class ForumListViewModel(
             val url = getInnerUrl(entry)
             if (url != null) {
                 emitEffect(ForumListMvi.Effect.OpenUrl(url))
+            }
+        }
+    }
+
+    private fun follow() {
+        hapticFeedback.vibrate()
+        viewModelScope.launch {
+            updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
+            val newRelationship = userRepository.follow(args.id)
+            val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
+            updateState {
+                it.copy(
+                    user =
+                    it.user
+                        ?.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        )?.also { user ->
+                            notificationCenter.send(UserUpdatedEvent(user = user))
+                        },
+                )
+            }
+        }
+    }
+
+    private fun unfollow() {
+        hapticFeedback.vibrate()
+        viewModelScope.launch {
+            updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
+            val newRelationship = userRepository.unfollow(args.id)
+            val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
+            updateState {
+                it.copy(
+                    user =
+                    it.user
+                        ?.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        )?.also { user ->
+                            notificationCenter.send(UserUpdatedEvent(user = user))
+                        },
+                )
+            }
+        }
+    }
+
+    private fun toggleNotifications(enabled: Boolean) {
+        hapticFeedback.vibrate()
+        viewModelScope.launch {
+            updateState { it.copy(user = it.user?.copy(notificationStatusPending = true)) }
+            val newRelationship =
+                userRepository.follow(
+                    id = args.id,
+                    notifications = enabled,
+                )
+            val newNotificationStatus =
+                newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
+            updateState {
+                it.copy(
+                    user =
+                    it.user?.copy(
+                        notificationStatus = newNotificationStatus,
+                        notificationStatusPending = false,
+                    ),
+                )
             }
         }
     }
