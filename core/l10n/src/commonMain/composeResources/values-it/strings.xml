@@ -298,11 +298,11 @@
     <string name="settings_about_app_version">Versione</string>
     <string name="settings_about_changelog">Elenco modifiche</string>
     <string name="settings_about_licences">Licenze</string>
-    <string name="settings_about_matrix">Entra nella room Matrix</string>
+    <string name="settings_about_matrix">Stanza Matrix</string>
     <string name="settings_about_report_issue">Segnala un problema</string>
     <string name="settings_about_user_manual">Manuale utente</string>
-    <string name="settings_about_view_friendica">Vedi su Friendica</string>
-    <string name="settings_about_view_github">Vedi su GitHub</string>
+    <string name="settings_about_view_friendica">Gruppo Friendica</string>
+    <string name="settings_about_view_github">Codice sorgente</string>
     <string name="settings_autoload_images">Modalità caricamento immagini</string>
     <string name="settings_header_general">Generali</string>
     <string name="settings_header_look_and_feel">Aspetto</string>
@@ -520,4 +520,7 @@
     <string name="quote_policy_followers">Seguaci</string>
     <string name="quote_policy_nobody">Nessuno</string>
     <string name="quote_policy_public">Tutti</string>
+    <string name="action_disable_notifications">Disabilita notifiche</string>
+    <string name="action_enable_notifications">Abilita notifiche</string>
+    <string name="settings_about_read_blog">Blog</string>
 </resources>
