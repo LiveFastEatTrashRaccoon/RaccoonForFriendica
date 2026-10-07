@@ -590,15 +590,20 @@ class ThreadViewModel(
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val (translation, provider) =
-                when {
-                    !entry.isShowingTranslation && entry.translation == null -> {
-                        val result = getTranslation(entry = entry, targetLang = targetLang)
-                        result?.target to result?.provider
-                    }
-
-                    else -> entry.translation to entry.translationProvider
+            val translation: TimelineEntryModel?
+            val provider: String?
+            when {
+                !entry.isShowingTranslation && entry.translation == null -> {
+                    val result = getTranslation(entry = entry, targetLang = targetLang)
+                    translation = result?.target
+                    provider = result?.provider
                 }
+
+                else -> {
+                    translation = entry.translation
+                    provider = entry.translationProvider
+                }
+            }
             val newEntry =
                 entry.copy(
                     isShowingTranslation = translation != null && !entry.isShowingTranslation,
