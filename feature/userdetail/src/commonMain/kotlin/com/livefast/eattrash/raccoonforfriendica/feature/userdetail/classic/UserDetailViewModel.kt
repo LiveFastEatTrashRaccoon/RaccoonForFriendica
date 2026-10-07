@@ -54,7 +54,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class UserDetailViewModel(
-    @Assisted args: UserDetailViewModelArgs,
+    @Assisted private val args: UserDetailViewModelArgs,
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -80,8 +80,6 @@ class UserDetailViewModel(
     MviDelegate<UserDetailMvi.Intent, UserDetailMvi.State, UserDetailMvi.Effect>
     by DefaultMviDelegate(initialState = UserDetailMvi.State()),
     UserDetailMvi {
-
-    private val id = args.id
 
     init {
         viewModelScope.launch {
@@ -212,12 +210,12 @@ class UserDetailViewModel(
     private suspend fun loadUser() {
         val user =
             with(emojiHelper) {
-                userCache.get(id)?.withEmojisIfMissing()
+                userCache.get(args.id)?.withEmojisIfMissing()
             }
         updateState { it.copy(user = user) }
         val relationship =
-            if (id != uiState.value.currentUserId) {
-                userRepository.getRelationships(listOf(id))?.firstOrNull()
+            if (args.id != uiState.value.currentUserId) {
+                userRepository.getRelationships(listOf(args.id))?.firstOrNull()
             } else {
                 null
             }
@@ -250,7 +248,7 @@ class UserDetailViewModel(
         }
         paginationManager.reset(
             TimelinePaginationSpecification.User(
-                userId = id,
+                userId = args.id,
                 excludeReplies = uiState.value.section == UserSection.Posts,
                 onlyMedia = uiState.value.section == UserSection.Media,
                 pinned = uiState.value.section == UserSection.Pinned,
@@ -299,7 +297,7 @@ class UserDetailViewModel(
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
-            val newRelationship = userRepository.follow(id)
+            val newRelationship = userRepository.follow(args.id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
@@ -323,7 +321,7 @@ class UserDetailViewModel(
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
-            val newRelationship = userRepository.unfollow(id)
+            val newRelationship = userRepository.unfollow(args.id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
@@ -493,7 +491,7 @@ class UserDetailViewModel(
             updateState { it.copy(user = it.user?.copy(notificationStatusPending = true)) }
             val newRelationship =
                 userRepository.follow(
-                    id = id,
+                    id = args.id,
                     notifications = enabled,
                 )
             val newNotificationStatus =
@@ -537,12 +535,12 @@ class UserDetailViewModel(
             val relationship =
                 if (muted) {
                     userRepository.mute(
-                        id = id,
+                        id = args.id,
                         durationSeconds = duration.inWholeSeconds,
                         notifications = disableNotifications,
                     )
                 } else {
-                    userRepository.unmute(id)
+                    userRepository.unmute(args.id)
                 }
             if (relationship != null) {
                 updateState {
@@ -564,9 +562,9 @@ class UserDetailViewModel(
         viewModelScope.launch {
             val relationship =
                 if (blocked) {
-                    userRepository.block(id)
+                    userRepository.block(args.id)
                 } else {
-                    userRepository.unblock(id)
+                    userRepository.unblock(args.id)
                 }
             if (relationship != null) {
                 updateState {
@@ -592,7 +590,7 @@ class UserDetailViewModel(
                     it.copy(personalNoteEditEnabled = true)
                 }
             } else {
-                val relationship = userRepository.getRelationships(listOf(id))?.firstOrNull()
+                val relationship = userRepository.getRelationships(listOf(args.id))?.firstOrNull()
                 updateState {
                     it.copy(
                         personalNote = relationship?.note,
@@ -606,7 +604,7 @@ class UserDetailViewModel(
     private fun updatePersonalNote() {
         val note = uiState.value.personalNote ?: return
         viewModelScope.launch {
-            val relationShip = userRepository.updatePersonalNote(id, note)
+            val relationShip = userRepository.updatePersonalNote(args.id, note)
             if (relationShip != null) {
                 updateState {
                     it.copy(personalNoteEditEnabled = false)
@@ -680,15 +678,20 @@ class UserDetailViewModel(
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val (translation, provider) =
-                when {
-                    !entry.isShowingTranslation && entry.translation == null -> {
-                        val result = getTranslation(entry = entry, targetLang = targetLang)
-                        result?.target to result?.provider
-                    }
-
-                    else -> entry.translation to entry.translationProvider
+            val translation: TimelineEntryModel?
+            val provider: String?
+            when {
+                !entry.isShowingTranslation && entry.translation == null -> {
+                    val result = getTranslation(entry = entry, targetLang = targetLang)
+                    translation = result?.target
+                    provider = result?.provider
                 }
+
+                else -> {
+                    translation = entry.translation
+                    provider = entry.translationProvider
+                }
+            }
             val newEntry =
                 entry.copy(
                     isShowingTranslation = translation != null && !entry.isShowingTranslation,
