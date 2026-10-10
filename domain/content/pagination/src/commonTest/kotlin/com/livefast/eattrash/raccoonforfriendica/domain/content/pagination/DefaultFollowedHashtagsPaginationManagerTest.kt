@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.sequentiallyReturns
 import dev.mokkery.everySuspend
@@ -21,7 +21,7 @@ class DefaultFollowedHashtagsPaginationManagerTest {
 
     @Test
     fun `given no results when loadNextPage then result is as expected`() = runTest {
-        everySuspend { tagRepository.getFollowed(any()) } returns ListWithPageCursor()
+        everySuspend { tagRepository.getFollowed(any()) } returns PagedList()
 
         sut.reset()
         val res = sut.loadNextPage()
@@ -40,7 +40,7 @@ class DefaultFollowedHashtagsPaginationManagerTest {
                 TagModel(url = "fake-url", name = "fake-name", following = true),
             )
         everySuspend { tagRepository.getFollowed(any()) } returns
-            ListWithPageCursor(list = elements, cursor = "1")
+            PagedList(list = elements, cursor = "1")
 
         sut.reset()
         val res = sut.loadNextPage()
@@ -62,8 +62,8 @@ class DefaultFollowedHashtagsPaginationManagerTest {
             tagRepository.getFollowed(any())
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list = elements, cursor = "1"),
-                ListWithPageCursor(),
+                PagedList(list = elements, cursor = "1"),
+                PagedList(),
             )
 
         sut.reset()

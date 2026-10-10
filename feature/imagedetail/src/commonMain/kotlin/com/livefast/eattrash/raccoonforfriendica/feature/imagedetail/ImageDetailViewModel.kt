@@ -155,9 +155,9 @@ class ImageDetailViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<ImageDetailViewModelArgs>()
 
-private fun String.extractExtension(): String = let { s ->
-    val idx = s.lastIndexOf(".").takeIf { it >= 0 } ?: s.length
-    s.substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
+private fun String.extractExtension(): String {
+    val idx = lastIndexOf(".").takeIf { it >= 0 } ?: length
+    return substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
 }
 
 data class ImageDetailViewModelArgs(val urls: List<String>, val initialIndex: Int = 0)

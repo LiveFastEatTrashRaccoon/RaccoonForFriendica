@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -124,7 +124,7 @@ class DefaultTimelineRepository(
         hashtag: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): ListWithPageCursor<TimelineEntryModel>? = try {
+    ): PagedList<TimelineEntryModel>? = try {
         val (elements, cursor) = withProvider(otherInstance) { provider ->
             provider.timeline.getHashtag(
                 hashtag = hashtag,
@@ -132,7 +132,7 @@ class DefaultTimelineRepository(
                 limit = DEFAULT_PAGE_SIZE,
             )
         }
-        ListWithPageCursor(list = elements.map { it.toModelWithReply() }, cursor = cursor)
+        PagedList(list = elements.map { it.toModelWithReply() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

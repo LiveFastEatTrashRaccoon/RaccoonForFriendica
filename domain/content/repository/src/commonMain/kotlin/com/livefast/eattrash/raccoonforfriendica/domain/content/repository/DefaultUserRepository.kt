@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.zacsweers.metro.AppScope
@@ -107,43 +107,37 @@ class DefaultUserRepository(
         null
     }
 
-    override suspend fun getFollowers(
-        id: String,
-        pageCursor: String?,
-        otherInstance: String?,
-    ): ListWithPageCursor<UserModel>? = try {
-        withProvider(otherInstance) { provider ->
-            val (elements, cursor) = provider.user
-                .getFollowers(
-                    id = id,
-                    maxId = pageCursor,
-                    limit = DEFAULT_PAGE_SIZE,
-                )
-            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+    override suspend fun getFollowers(id: String, pageCursor: String?, otherInstance: String?): PagedList<UserModel>? =
+        try {
+            withProvider(otherInstance) { provider ->
+                val (elements, cursor) = provider.user
+                    .getFollowers(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    )
+                PagedList(list = elements.map { it.toModel() }, cursor = cursor)
+            }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
         }
-    } catch (e: Exception) {
-        if (e is CancellationException) throw e
-        null
-    }
 
-    override suspend fun getFollowing(
-        id: String,
-        pageCursor: String?,
-        otherInstance: String?,
-    ): ListWithPageCursor<UserModel>? = try {
-        withProvider(otherInstance) { provider ->
-            val (elements, cursor) = provider.user
-                .getFollowing(
-                    id = id,
-                    maxId = pageCursor,
-                    limit = DEFAULT_PAGE_SIZE,
-                )
-            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+    override suspend fun getFollowing(id: String, pageCursor: String?, otherInstance: String?): PagedList<UserModel>? =
+        try {
+            withProvider(otherInstance) { provider ->
+                val (elements, cursor) = provider.user
+                    .getFollowing(
+                        id = id,
+                        maxId = pageCursor,
+                        limit = DEFAULT_PAGE_SIZE,
+                    )
+                PagedList(list = elements.map { it.toModel() }, cursor = cursor)
+            }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            null
         }
-    } catch (e: Exception) {
-        if (e is CancellationException) throw e
-        null
-    }
 
     override suspend fun getListsContaining(id: String): List<CircleModel>? = try {
         provider.user.getListsContaining(id).map { it.toModel() }
@@ -190,13 +184,13 @@ class DefaultUserRepository(
         null
     }
 
-    override suspend fun getFollowRequests(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
+    override suspend fun getFollowRequests(pageCursor: String?): PagedList<UserModel>? = try {
         val (elements, cursor) =
             provider.followRequest.getAll(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
-        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+        PagedList(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
@@ -255,27 +249,27 @@ class DefaultUserRepository(
         null
     }
 
-    override suspend fun getMuted(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
+    override suspend fun getMuted(pageCursor: String?): PagedList<UserModel>? = try {
         val (elements, cursor) =
             provider.user
                 .getMuted(
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+        PagedList(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
-    override suspend fun getBlocked(pageCursor: String?): ListWithPageCursor<UserModel>? = try {
+    override suspend fun getBlocked(pageCursor: String?): PagedList<UserModel>? = try {
         val (elements, cursor) =
             provider.user
                 .getBlocked(
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+        PagedList(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

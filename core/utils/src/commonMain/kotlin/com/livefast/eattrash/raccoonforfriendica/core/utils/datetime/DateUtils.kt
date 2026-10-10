@@ -6,32 +6,30 @@ import kotlin.math.round
 import kotlin.time.Duration
 
 @Composable
-fun String.prettifyDate(): String = let {
-    when {
-        it.isEmpty() -> it
-        !it.endsWith("Z") -> {
-            getPrettyDate(
-                iso8601Timestamp = it + "Z",
-                yearLabel = LocalStrings.current.dateYearShort,
-                monthLabel = LocalStrings.current.dateMonthShort,
-                dayLabel = LocalStrings.current.dateDayShort,
-                hourLabel = LocalStrings.current.timeHourShort,
-                minuteLabel = LocalStrings.current.timeMinuteShort,
-                secondLabel = LocalStrings.current.timeSecondShort,
-            )
-        }
+fun String.prettifyDate(): String = when {
+    isEmpty() -> ""
+    !endsWith("Z") -> {
+        getPrettyDate(
+            iso8601Timestamp = this + "Z",
+            yearLabel = LocalStrings.current.dateYearShort,
+            monthLabel = LocalStrings.current.dateMonthShort,
+            dayLabel = LocalStrings.current.dateDayShort,
+            hourLabel = LocalStrings.current.timeHourShort,
+            minuteLabel = LocalStrings.current.timeMinuteShort,
+            secondLabel = LocalStrings.current.timeSecondShort,
+        )
+    }
 
-        else -> {
-            getPrettyDate(
-                iso8601Timestamp = it,
-                yearLabel = LocalStrings.current.dateYearShort,
-                monthLabel = LocalStrings.current.dateMonthShort,
-                dayLabel = LocalStrings.current.dateDayShort,
-                hourLabel = LocalStrings.current.timeHourShort,
-                minuteLabel = LocalStrings.current.timeMinuteShort,
-                secondLabel = LocalStrings.current.timeSecondShort,
-            )
-        }
+    else -> {
+        getPrettyDate(
+            iso8601Timestamp = this,
+            yearLabel = LocalStrings.current.dateYearShort,
+            monthLabel = LocalStrings.current.dateMonthShort,
+            dayLabel = LocalStrings.current.dateDayShort,
+            hourLabel = LocalStrings.current.timeHourShort,
+            minuteLabel = LocalStrings.current.timeMinuteShort,
+            secondLabel = LocalStrings.current.timeSecondShort,
+        )
     }
 }
 

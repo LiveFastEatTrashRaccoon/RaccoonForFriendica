@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import dev.mokkery.answering.returns
@@ -73,7 +73,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(emptyList(), null)
+        } returns PagedList(emptyList(), null)
 
         sut.reset(UserPaginationSpecification.Follower(userId = "1"))
         val res = sut.loadNextPage()
@@ -93,7 +93,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(list, "2")
+        } returns PagedList(list, "2")
 
         sut.reset(UserPaginationSpecification.Follower(userId = "1"))
         val res = sut.loadNextPage()
@@ -116,8 +116,8 @@ class DefaultUserPaginationManagerTest {
                 )
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list, "2"),
-                    ListWithPageCursor(emptyList(), null),
+                    PagedList(list, "2"),
+                    PagedList(emptyList(), null),
                 )
 
             sut.reset(UserPaginationSpecification.Follower(userId = "1"))
@@ -141,7 +141,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(emptyList(), null)
+        } returns PagedList(emptyList(), null)
 
         sut.reset(UserPaginationSpecification.Following(userId = "1"))
         val res = sut.loadNextPage()
@@ -161,7 +161,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(list, "2")
+        } returns PagedList(list, "2")
 
         sut.reset(UserPaginationSpecification.Following(userId = "1"))
         val res = sut.loadNextPage()
@@ -184,8 +184,8 @@ class DefaultUserPaginationManagerTest {
                 )
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list, "2"),
-                    ListWithPageCursor(emptyList(), null),
+                    PagedList(list, "2"),
+                    PagedList(emptyList(), null),
                 )
 
             sut.reset(UserPaginationSpecification.Following(userId = "1"))
@@ -209,7 +209,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(emptyList(), null)
+        } returns PagedList(emptyList(), null)
 
         sut.reset(UserPaginationSpecification.EntryUsersReblog(entryId = "1"))
         val res = sut.loadNextPage()
@@ -232,7 +232,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(list, "2")
+        } returns PagedList(list, "2")
 
         sut.reset(UserPaginationSpecification.EntryUsersReblog(entryId = "1"))
         val res = sut.loadNextPage()
@@ -258,8 +258,8 @@ class DefaultUserPaginationManagerTest {
                 )
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list, "2"),
-                    ListWithPageCursor(emptyList(), null),
+                    PagedList(list, "2"),
+                    PagedList(emptyList(), null),
                 )
 
             sut.reset(UserPaginationSpecification.EntryUsersReblog(entryId = "1"))
@@ -289,7 +289,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(emptyList(), null)
+        } returns PagedList(emptyList(), null)
 
         sut.reset(UserPaginationSpecification.EntryUsersFavorite(entryId = "1"))
         val res = sut.loadNextPage()
@@ -312,7 +312,7 @@ class DefaultUserPaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(list, "2")
+        } returns PagedList(list, "2")
 
         sut.reset(UserPaginationSpecification.EntryUsersFavorite(entryId = "1"))
         val res = sut.loadNextPage()
@@ -338,8 +338,8 @@ class DefaultUserPaginationManagerTest {
                 )
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list, "2"),
-                    ListWithPageCursor(emptyList(), null),
+                    PagedList(list, "2"),
+                    PagedList(emptyList(), null),
                 )
 
             sut.reset(UserPaginationSpecification.EntryUsersFavorite(entryId = "1"))
@@ -530,7 +530,7 @@ class DefaultUserPaginationManagerTest {
     // region Muted
     @Test
     fun `given no results when loadNextPage with Muted then result is as expected`() = runTest {
-        everySuspend { userRepository.getMuted(pageCursor = any()) } returns ListWithPageCursor(emptyList(), null)
+        everySuspend { userRepository.getMuted(pageCursor = any()) } returns PagedList(emptyList(), null)
 
         sut.reset(UserPaginationSpecification.Muted)
         val res = sut.loadNextPage()
@@ -545,7 +545,7 @@ class DefaultUserPaginationManagerTest {
     @Test
     fun `given results when loadNextPage with Muted then result is as expected`() = runTest {
         val list = listOf(UserModel(id = "2"))
-        everySuspend { userRepository.getMuted(pageCursor = any()) } returns ListWithPageCursor(list, "2")
+        everySuspend { userRepository.getMuted(pageCursor = any()) } returns PagedList(list, "2")
 
         sut.reset(UserPaginationSpecification.Muted)
         val res = sut.loadNextPage()
@@ -562,8 +562,8 @@ class DefaultUserPaginationManagerTest {
         val list = listOf(UserModel(id = "2"))
         everySuspend { userRepository.getMuted(pageCursor = any()) } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list, "2"),
-                ListWithPageCursor(emptyList(), null),
+                PagedList(list, "2"),
+                PagedList(emptyList(), null),
             )
 
         sut.reset(UserPaginationSpecification.Muted)
@@ -582,7 +582,7 @@ class DefaultUserPaginationManagerTest {
     // region Blocked
     @Test
     fun `given no results when loadNextPage with Blocked then result is as expected`() = runTest {
-        everySuspend { userRepository.getBlocked(pageCursor = any()) } returns ListWithPageCursor(emptyList(), null)
+        everySuspend { userRepository.getBlocked(pageCursor = any()) } returns PagedList(emptyList(), null)
 
         sut.reset(UserPaginationSpecification.Blocked)
         val res = sut.loadNextPage()
@@ -597,7 +597,7 @@ class DefaultUserPaginationManagerTest {
     @Test
     fun `given results when loadNextPage with Blocked then result is as expected`() = runTest {
         val list = listOf(UserModel(id = "2"))
-        everySuspend { userRepository.getBlocked(pageCursor = any()) } returns ListWithPageCursor(list, "2")
+        everySuspend { userRepository.getBlocked(pageCursor = any()) } returns PagedList(list, "2")
 
         sut.reset(UserPaginationSpecification.Blocked)
         val res = sut.loadNextPage()
@@ -614,8 +614,8 @@ class DefaultUserPaginationManagerTest {
         val list = listOf(UserModel(id = "2"))
         everySuspend { userRepository.getBlocked(pageCursor = any()) } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list, "2"),
-                ListWithPageCursor(emptyList(), null),
+                PagedList(list, "2"),
+                PagedList(emptyList(), null),
             )
 
         sut.reset(UserPaginationSpecification.Blocked)
@@ -636,7 +636,7 @@ class DefaultUserPaginationManagerTest {
     fun `given no results when loadNextPage with CircleMembers then result is as expected`() = runTest {
         everySuspend {
             circlesRepository.getMembers(id = any(), pageCursor = any())
-        } returns ListWithPageCursor(emptyList(), null)
+        } returns PagedList(emptyList(), null)
 
         sut.reset(UserPaginationSpecification.CircleMembers(id = "1", query = "query"))
         val res = sut.loadNextPage()
@@ -656,7 +656,7 @@ class DefaultUserPaginationManagerTest {
         val list = listOf(UserModel(id = "2", displayName = "query"))
         everySuspend {
             circlesRepository.getMembers(id = any(), pageCursor = any())
-        } returns ListWithPageCursor(list, "2")
+        } returns PagedList(list, "2")
 
         sut.reset(UserPaginationSpecification.CircleMembers(id = "1", query = "query"))
         val res = sut.loadNextPage()
@@ -679,8 +679,8 @@ class DefaultUserPaginationManagerTest {
                 circlesRepository.getMembers(id = any(), pageCursor = any())
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list, "2"),
-                    ListWithPageCursor(emptyList(), null),
+                    PagedList(list, "2"),
+                    PagedList(emptyList(), null),
                 )
 
             sut.reset(UserPaginationSpecification.CircleMembers(id = "1", query = "query"))

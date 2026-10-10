@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineCon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 
 interface TimelineEntryRepository {
     fun getCachedByUser(): List<TimelineEntryModel>
@@ -45,21 +45,21 @@ interface TimelineEntryRepository {
 
     suspend fun unbookmark(id: String): TimelineEntryModel?
 
-    suspend fun getFavorites(pageCursor: String? = null): ListWithPageCursor<TimelineEntryModel>?
+    suspend fun getFavorites(pageCursor: String? = null): PagedList<TimelineEntryModel>?
 
-    suspend fun getBookmarks(pageCursor: String? = null): ListWithPageCursor<TimelineEntryModel>?
+    suspend fun getBookmarks(pageCursor: String? = null): PagedList<TimelineEntryModel>?
 
     suspend fun getUsersWhoFavorited(
         id: String,
         pageCursor: String? = null,
         otherInstance: String? = null,
-    ): ListWithPageCursor<UserModel>?
+    ): PagedList<UserModel>?
 
     suspend fun getUsersWhoReblogged(
         id: String,
         pageCursor: String? = null,
         otherInstance: String? = null,
-    ): ListWithPageCursor<UserModel>?
+    ): PagedList<UserModel>?
 
     suspend fun create(
         localId: String,
@@ -108,7 +108,7 @@ interface TimelineEntryRepository {
         id: String,
         pageCursor: String? = null,
         otherInstance: String? = null,
-    ): ListWithPageCursor<TimelineEntryModel>?
+    ): PagedList<TimelineEntryModel>?
 
     suspend fun revokeQuote(quotedId: String, quotingId: String): Boolean
 }

@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import dev.mokkery.answering.sequentiallyReturns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
@@ -38,8 +38,8 @@ class DefaultFollowedHashtagCacheTest {
             tagRepository.getFollowed(any())
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list = tags),
-                ListWithPageCursor(list = emptyList()),
+                PagedList(list = tags),
+                PagedList(list = emptyList()),
             )
 
         sut.refresh()
@@ -68,9 +68,9 @@ class DefaultFollowedHashtagCacheTest {
             tagRepository.getFollowed(any())
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list = page1, cursor = cursor),
-                ListWithPageCursor(list = page2),
-                ListWithPageCursor(list = emptyList()),
+                PagedList(list = page1, cursor = cursor),
+                PagedList(list = page2),
+                PagedList(list = emptyList()),
             )
 
         sut.refresh()
@@ -94,8 +94,8 @@ class DefaultFollowedHashtagCacheTest {
             tagRepository.getFollowed(any())
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list = tags),
-                ListWithPageCursor(list = emptyList()),
+                PagedList(list = tags),
+                PagedList(list = emptyList()),
             )
 
         sut.refresh()
@@ -116,8 +116,8 @@ class DefaultFollowedHashtagCacheTest {
             tagRepository.getFollowed(any())
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list = tags),
-                ListWithPageCursor(list = emptyList()),
+                PagedList(list = tags),
+                PagedList(list = emptyList()),
             )
 
         sut.refresh()
@@ -137,8 +137,8 @@ class DefaultFollowedHashtagCacheTest {
             tagRepository.getFollowed(any())
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list = tags),
-                ListWithPageCursor(list = emptyList()),
+                PagedList(list = tags),
+                PagedList(list = emptyList()),
             )
 
         sut.refresh()
