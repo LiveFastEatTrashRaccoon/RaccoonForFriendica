@@ -6,7 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.zacsweers.metro.AppScope
@@ -33,9 +33,9 @@ class DefaultCirclesRepository(private val provider: ServiceProvider) : CirclesR
         null
     }
 
-    override suspend fun getMembers(id: String, pageCursor: String?): ListWithPageCursor<UserModel>? = try {
+    override suspend fun getMembers(id: String, pageCursor: String?): PagedList<UserModel>? = try {
         val (elements, cursor) = provider.list.getMembers(id = id, maxId = pageCursor)
-        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+        PagedList(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

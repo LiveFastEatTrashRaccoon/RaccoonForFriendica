@@ -5,7 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -43,7 +43,7 @@ class DefaultNotificationRepositoryTest {
 
         val res = sut.getAll(types = NotificationType.ALL)
 
-        assertEquals(ListWithPageCursor(), res)
+        assertEquals(PagedList(), res)
         verifySuspend {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -72,7 +72,7 @@ class DefaultNotificationRepositoryTest {
 
         val res = sut.getAll(types = NotificationType.ALL)
 
-        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
+        assertEquals(PagedList(list.map { it.toModel() }), res)
         verifySuspend {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -101,7 +101,7 @@ class DefaultNotificationRepositoryTest {
 
         val res = sut.getAll(types = NotificationType.ALL, pageCursor = "0")
 
-        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
+        assertEquals(PagedList(list.map { it.toModel() }), res)
         verifySuspend {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -131,7 +131,7 @@ class DefaultNotificationRepositoryTest {
         sut.getAll(types = NotificationType.ALL)
         val res = sut.getAll(types = NotificationType.ALL)
 
-        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
+        assertEquals(PagedList(list.map { it.toModel() }), res)
         verifySuspend(VerifyMode.exactly(1)) {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },
@@ -161,7 +161,7 @@ class DefaultNotificationRepositoryTest {
         sut.getAll(types = NotificationType.ALL)
         val res = sut.getAll(types = NotificationType.ALL, refresh = true)
 
-        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
+        assertEquals(PagedList(list.map { it.toModel() }), res)
         verifySuspend(VerifyMode.exactly(2)) {
             notificationService.get(
                 types = matches { it.contains(NotificationTypeDto.MENTION) },

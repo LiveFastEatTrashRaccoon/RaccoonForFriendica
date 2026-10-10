@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.answering.sequentiallyReturns
@@ -31,7 +31,7 @@ class DefaultFollowRequestPaginationManagerTest {
 
     @Test
     fun `given no results when loadNextPage then result is as expected`() = runTest {
-        everySuspend { userRepository.getFollowRequests(any()) } returns ListWithPageCursor()
+        everySuspend { userRepository.getFollowRequests(any()) } returns PagedList()
 
         sut.reset()
         val res = sut.loadNextPage()
@@ -47,7 +47,7 @@ class DefaultFollowRequestPaginationManagerTest {
     fun `given results when loadNextPage then result is as expected`() = runTest {
         val elements = listOf(UserModel(id = "1"))
         everySuspend { userRepository.getFollowRequests(any()) } returns
-            ListWithPageCursor(
+            PagedList(
                 list = elements,
                 cursor = "1",
             )
@@ -69,11 +69,11 @@ class DefaultFollowRequestPaginationManagerTest {
             userRepository.getFollowRequests(any())
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(
+                PagedList(
                     list = elements,
                     cursor = "1",
                 ),
-                ListWithPageCursor(),
+                PagedList(),
             )
 
         sut.reset()

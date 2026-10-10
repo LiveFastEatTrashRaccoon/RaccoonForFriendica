@@ -13,7 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import dev.zacsweers.metro.AppScope
@@ -129,7 +129,7 @@ class DefaultSearchPaginationManager(
         val cursor = if (results.isNullOrEmpty()) null else (history.size + results.size).toString()
 
         return updateHistory(
-            results = ListWithPageCursor(
+            results = PagedList(
                 list = results.orEmpty(),
                 cursor = cursor,
             ),

@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -56,7 +56,7 @@ abstract class BasePaginationManager<T, S>(private val idSelector: (T) -> String
     }
 
     protected suspend fun updateHistory(
-        results: ListWithPageCursor<T>?,
+        results: PagedList<T>?,
         distinctBy: (T) -> Any = idSelector,
         transform: suspend (List<T>) -> List<T> = { it },
     ): List<T> {
@@ -87,7 +87,7 @@ abstract class BasePaginationManager<T, S>(private val idSelector: (T) -> String
     ): List<T> {
         val rawItems = items.orEmpty()
         return updateHistory(
-            results = ListWithPageCursor(
+            results = PagedList(
                 list = rawItems,
                 cursor = rawItems.lastOrNull()?.let(idSelector),
             ),

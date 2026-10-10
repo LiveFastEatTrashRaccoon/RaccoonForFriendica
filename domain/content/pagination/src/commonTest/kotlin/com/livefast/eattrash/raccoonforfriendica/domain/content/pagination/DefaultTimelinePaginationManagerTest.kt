@@ -13,7 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Reply
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
@@ -547,7 +547,7 @@ class DefaultTimelinePaginationManagerTest {
                 hashtag = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor()
+        } returns PagedList()
 
         sut.reset(
             TimelinePaginationSpecification.Hashtag(
@@ -577,8 +577,8 @@ class DefaultTimelinePaginationManagerTest {
             )
         } sequentiallyReturns
             listOf(
-                ListWithPageCursor(list, "1"),
-                ListWithPageCursor(),
+                PagedList(list, "1"),
+                PagedList(),
             )
 
         sut.reset(
@@ -627,7 +627,7 @@ class DefaultTimelinePaginationManagerTest {
                 hashtag = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(list = list, cursor = "1")
+        } returns PagedList(list = list, cursor = "1")
         everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
         everySuspend { userRateLimitRepository.getAll(any()) } returns emptyList()
         everySuspend { stopWordRepository.get(any()) } returns listOf("foo")
@@ -663,7 +663,7 @@ class DefaultTimelinePaginationManagerTest {
                 pageCursor = any(),
                 otherInstance = any(),
             )
-        } returns ListWithPageCursor(list = list, cursor = "1")
+        } returns PagedList(list = list, cursor = "1")
 
         sut.reset(
             TimelinePaginationSpecification.Hashtag(
@@ -1110,7 +1110,7 @@ class DefaultTimelinePaginationManagerTest {
     fun `given no results when loadNextPage with Bookmarks specification then result is as expected`() = runTest {
         everySuspend {
             timelineEntryRepository.getBookmarks(pageCursor = any())
-        } returns ListWithPageCursor()
+        } returns PagedList()
 
         sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1130,7 +1130,7 @@ class DefaultTimelinePaginationManagerTest {
             )
         everySuspend {
             timelineEntryRepository.getBookmarks(pageCursor = any())
-        } returns ListWithPageCursor(list = list, cursor = "1")
+        } returns PagedList(list = list, cursor = "1")
 
         sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1157,7 +1157,7 @@ class DefaultTimelinePaginationManagerTest {
                 )
             everySuspend {
                 timelineEntryRepository.getBookmarks(pageCursor = any())
-            } returns ListWithPageCursor(list = list, cursor = "3")
+            } returns PagedList(list = list, cursor = "3")
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
             val res = sut.loadNextPage()
@@ -1184,7 +1184,7 @@ class DefaultTimelinePaginationManagerTest {
                 )
             everySuspend {
                 timelineEntryRepository.getBookmarks(pageCursor = any())
-            } returns ListWithPageCursor(list = list, cursor = "3")
+            } returns PagedList(list = list, cursor = "3")
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = true))
             val res = sut.loadNextPage()
@@ -1207,8 +1207,8 @@ class DefaultTimelinePaginationManagerTest {
                 timelineEntryRepository.getBookmarks(pageCursor = any())
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list = list, cursor = "1"),
-                    ListWithPageCursor(),
+                    PagedList(list = list, cursor = "1"),
+                    PagedList(),
                 )
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
@@ -1229,7 +1229,7 @@ class DefaultTimelinePaginationManagerTest {
     fun `given no results when loadNextPage with Favorites specification then result is as expected`() = runTest {
         everySuspend {
             timelineEntryRepository.getFavorites(pageCursor = any())
-        } returns ListWithPageCursor()
+        } returns PagedList()
 
         sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1249,7 +1249,7 @@ class DefaultTimelinePaginationManagerTest {
             )
         everySuspend {
             timelineEntryRepository.getFavorites(pageCursor = any())
-        } returns ListWithPageCursor(list = list, cursor = "1")
+        } returns PagedList(list = list, cursor = "1")
 
         sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
         val res = sut.loadNextPage()
@@ -1272,8 +1272,8 @@ class DefaultTimelinePaginationManagerTest {
                 timelineEntryRepository.getFavorites(pageCursor = any())
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list = list, cursor = "1"),
-                    ListWithPageCursor(),
+                    PagedList(list = list, cursor = "1"),
+                    PagedList(),
                 )
 
             sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
@@ -1297,7 +1297,7 @@ class DefaultTimelinePaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(list = emptyList(), cursor = null)
+        } returns PagedList(list = emptyList(), cursor = null)
 
         sut.reset(TimelinePaginationSpecification.Quotes(id = "1"))
         val res = sut.loadNextPage()
@@ -1320,7 +1320,7 @@ class DefaultTimelinePaginationManagerTest {
                 id = any(),
                 pageCursor = any(),
             )
-        } returns ListWithPageCursor(list = list, cursor = "1")
+        } returns PagedList(list = list, cursor = "1")
 
         sut.reset(TimelinePaginationSpecification.Quotes(id = "1"))
         val res = sut.loadNextPage()
@@ -1346,8 +1346,8 @@ class DefaultTimelinePaginationManagerTest {
                 )
             } sequentiallyReturns
                 listOf(
-                    ListWithPageCursor(list = list, cursor = "1"),
-                    ListWithPageCursor(list = emptyList(), cursor = null),
+                    PagedList(list = list, cursor = "1"),
+                    PagedList(list = emptyList(), cursor = null),
                 )
 
             sut.reset(TimelinePaginationSpecification.Quotes(id = "1"))
@@ -1378,7 +1378,7 @@ class DefaultTimelinePaginationManagerTest {
                 pageCursor = any(),
                 otherInstance = any(),
             )
-        } returns ListWithPageCursor(list = list, cursor = "1")
+        } returns PagedList(list = list, cursor = "1")
 
         sut.reset(
             TimelinePaginationSpecification.Quotes(

@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersFo
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.ListService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleReplyPolicy
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -63,7 +63,7 @@ class DefaultCirclesRepositoryTest {
 
         val res = sut.getMembers("1")
 
-        assertEquals(ListWithPageCursor(list.map { it.toModel() }), res)
+        assertEquals(PagedList(list.map { it.toModel() }), res)
         verifySuspend {
             listService.getMembers(id = "1", maxId = null)
         }

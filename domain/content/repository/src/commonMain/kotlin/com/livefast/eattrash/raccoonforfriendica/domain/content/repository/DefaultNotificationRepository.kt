@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.zacsweers.metro.AppScope
@@ -25,14 +25,14 @@ class DefaultNotificationRepository(private val provider: ServiceProvider) : Not
         types: List<NotificationType>,
         pageCursor: String?,
         refresh: Boolean,
-    ): ListWithPageCursor<NotificationModel>? {
+    ): PagedList<NotificationModel>? {
         if (refresh) {
             mutex.withLock {
                 cachedValues.clear()
             }
         }
         if (pageCursor == null && cachedValues.isNotEmpty()) {
-            return ListWithPageCursor(list = cachedValues, cursor = null) // Simplified for cache
+            return PagedList(list = cachedValues, cursor = null) // Simplified for cache
         }
         return try {
             val (elements, cursor) =
@@ -47,7 +47,7 @@ class DefaultNotificationRepository(private val provider: ServiceProvider) : Not
                     cachedValues.addAll(models)
                 }
             }
-            ListWithPageCursor(list = models, cursor = cursor)
+            PagedList(list = models, cursor = cursor)
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             null

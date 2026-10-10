@@ -4,7 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 
 interface UserRepository {
     suspend fun getById(id: String): UserModel?
@@ -23,13 +23,13 @@ interface UserRepository {
         id: String,
         pageCursor: String? = null,
         otherInstance: String? = null,
-    ): ListWithPageCursor<UserModel>?
+    ): PagedList<UserModel>?
 
     suspend fun getFollowing(
         id: String,
         pageCursor: String? = null,
         otherInstance: String? = null,
-    ): ListWithPageCursor<UserModel>?
+    ): PagedList<UserModel>?
 
     suspend fun getListsContaining(id: String): List<CircleModel>?
 
@@ -39,7 +39,7 @@ interface UserRepository {
 
     suspend fun unfollow(id: String): RelationshipModel?
 
-    suspend fun getFollowRequests(pageCursor: String? = null): ListWithPageCursor<UserModel>?
+    suspend fun getFollowRequests(pageCursor: String? = null): PagedList<UserModel>?
 
     suspend fun acceptFollowRequest(id: String): Boolean
 
@@ -53,9 +53,9 @@ interface UserRepository {
 
     suspend fun unblock(id: String): RelationshipModel?
 
-    suspend fun getMuted(pageCursor: String? = null): ListWithPageCursor<UserModel>?
+    suspend fun getMuted(pageCursor: String? = null): PagedList<UserModel>?
 
-    suspend fun getBlocked(pageCursor: String? = null): ListWithPageCursor<UserModel>?
+    suspend fun getBlocked(pageCursor: String? = null): PagedList<UserModel>?
 
     suspend fun updateProfile(
         note: String? = null,

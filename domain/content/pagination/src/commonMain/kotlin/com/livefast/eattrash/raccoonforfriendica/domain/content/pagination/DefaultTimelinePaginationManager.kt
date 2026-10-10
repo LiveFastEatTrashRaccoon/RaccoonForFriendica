@@ -13,7 +13,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Reply
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.StopWordRepository
 import dev.zacsweers.metro.AppScope
@@ -92,7 +92,7 @@ class DefaultTimelinePaginationManager(
     override suspend fun loadNextPage(): List<TimelineEntryModel> {
         val spec = currentSpecification ?: return emptyList()
 
-        val results: ListWithPageCursor<TimelineEntryModel>? =
+        val results: PagedList<TimelineEntryModel>? =
             when (spec) {
                 is TimelinePaginationSpecification.Feed -> {
                     when (spec.timelineType) {
@@ -128,7 +128,7 @@ class DefaultTimelinePaginationManager(
                                 pageCursor = currentPageCursor,
                                 otherInstance = spec.timelineType.otherInstance,
                             )
-                    }?.toListWithPageCursor()
+                    }?.toPagedList()
                 }
 
                 is TimelinePaginationSpecification.Hashtag -> {
@@ -152,7 +152,7 @@ class DefaultTimelinePaginationManager(
                             enableCache = spec.enableCache,
                             refresh = spec.refresh,
                             otherInstance = spec.otherInstance,
-                        )?.toListWithPageCursor()
+                        )?.toPagedList()
 
                 is TimelinePaginationSpecification.Forum ->
                     timelineEntryRepository
@@ -161,7 +161,7 @@ class DefaultTimelinePaginationManager(
                             pageCursor = currentPageCursor,
                             excludeReplies = true,
                             otherInstance = spec.otherInstance,
-                        )?.toListWithPageCursor()
+                        )?.toPagedList()
 
                 is TimelinePaginationSpecification.Bookmarks ->
                     timelineEntryRepository
@@ -259,9 +259,9 @@ class DefaultTimelinePaginationManager(
         }
     }
 
-    private fun List<TimelineEntryModel>.toListWithPageCursor(): ListWithPageCursor<TimelineEntryModel> = let { list ->
-        val cursor = list.lastOrNull()?.id
-        ListWithPageCursor(list = list, cursor = cursor)
+    private fun List<TimelineEntryModel>.toPagedList(): PagedList<TimelineEntryModel> {
+        val cursor = lastOrNull()?.id
+        return PagedList(list = this, cursor = cursor)
     }
 
     private fun List<TimelineEntryModel>.filterWithRateLimits(): List<TimelineEntryModel> =

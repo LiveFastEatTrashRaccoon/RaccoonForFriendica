@@ -14,7 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineCon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
@@ -180,25 +180,25 @@ class DefaultTimelineEntryRepository(
         null
     }
 
-    override suspend fun getFavorites(pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? = try {
+    override suspend fun getFavorites(pageCursor: String?): PagedList<TimelineEntryModel>? = try {
         val (elements, cursor) = provider.user
             .getFavorites(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
-        return ListWithPageCursor(elements.map { it.toModelWithReply() }, cursor)
+        return PagedList(elements.map { it.toModelWithReply() }, cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
-    override suspend fun getBookmarks(pageCursor: String?): ListWithPageCursor<TimelineEntryModel>? = try {
+    override suspend fun getBookmarks(pageCursor: String?): PagedList<TimelineEntryModel>? = try {
         val (elements, cursor) = provider.user
             .getBookmarks(
                 maxId = pageCursor,
                 limit = DEFAULT_PAGE_SIZE,
             )
-        return ListWithPageCursor(elements.map { it.toModelWithReply() }, cursor)
+        return PagedList(elements.map { it.toModelWithReply() }, cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
@@ -208,7 +208,7 @@ class DefaultTimelineEntryRepository(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): ListWithPageCursor<UserModel>? = try {
+    ): PagedList<UserModel>? = try {
         withProvider(otherInstance) { provider ->
             val (elements, cursor) = provider.status
                 .getFavoritedBy(
@@ -216,7 +216,7 @@ class DefaultTimelineEntryRepository(
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+            PagedList(list = elements.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -227,7 +227,7 @@ class DefaultTimelineEntryRepository(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): ListWithPageCursor<UserModel>? = try {
+    ): PagedList<UserModel>? = try {
         withProvider(otherInstance) { provider ->
             val (elements, cursor) = provider.status
                 .getRebloggedBy(
@@ -235,7 +235,7 @@ class DefaultTimelineEntryRepository(
                     maxId = pageCursor,
                     limit = DEFAULT_PAGE_SIZE,
                 )
-            ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+            PagedList(list = elements.map { it.toModel() }, cursor = cursor)
         }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
@@ -405,14 +405,14 @@ class DefaultTimelineEntryRepository(
         id: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): ListWithPageCursor<TimelineEntryModel>? = try {
+    ): PagedList<TimelineEntryModel>? = try {
         val (elements, cursor) = withProvider(otherInstance) { provider ->
             provider.status.getQuotes(
                 id = id,
                 maxId = pageCursor,
             )
         }
-        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+        PagedList(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null

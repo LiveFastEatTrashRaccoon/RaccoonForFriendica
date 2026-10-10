@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -54,7 +54,7 @@ class DefaultUserPaginationManager(
     override suspend fun loadNextPage(): List<UserModel> {
         val spec = currentSpecification ?: return emptyList()
 
-        val results: ListWithPageCursor<UserModel>? =
+        val results: PagedList<UserModel>? =
             when (spec) {
                 is UserPaginationSpecification.Follower ->
                     userRepository
@@ -89,7 +89,7 @@ class DefaultUserPaginationManager(
                         .search(
                             query = spec.query,
                             offset = history.size,
-                        )?.toListWithPageCursor(useOffset = true)
+                        )?.toPagedList(useOffset = true)
 
                 UserPaginationSpecification.Blocked ->
                     userRepository.getBlocked(pageCursor = currentPageCursor)
@@ -109,7 +109,7 @@ class DefaultUserPaginationManager(
                         .searchMyFollowing(
                             query = spec.query,
                             pageCursor = currentPageCursor,
-                        )?.toListWithPageCursor(useOffset = true)
+                        )?.toPagedList(useOffset = true)
 
                 UserPaginationSpecification.Limited -> {
                     val accountId = accountRepository.getActive()?.id ?: 0
@@ -122,7 +122,7 @@ class DefaultUserPaginationManager(
                             username = "${it.rate}",
                         )
                     }
-                    ListWithPageCursor(list = list, cursor = null)
+                    PagedList(list = list, cursor = null)
                 }
             }
 
@@ -178,20 +178,19 @@ class DefaultUserPaginationManager(
         )
     }
 
-    private fun List<UserModel>.toListWithPageCursor(useOffset: Boolean = false): ListWithPageCursor<UserModel> =
-        let { list ->
-            val cursor = if (useOffset) {
-                if (list.isEmpty()) null else (history.size + list.size).toString()
-            } else {
-                list.lastOrNull()?.id
-            }
-            ListWithPageCursor(list = list, cursor = cursor)
+    private fun List<UserModel>.toPagedList(useOffset: Boolean = false): PagedList<UserModel> {
+        val cursor = if (useOffset) {
+            if (isEmpty()) null else (history.size + size).toString()
+        } else {
+            lastOrNull()?.id
         }
+        return PagedList(list = this, cursor = cursor)
+    }
 
-    private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> = run {
+    private suspend fun List<UserModel>.determineRelationshipStatus(): List<UserModel> {
         val userIds = map { user -> user.id }
         val relationships = userRepository.getRelationships(userIds)
-        map { user ->
+        return map { user ->
             val relationship = relationships?.firstOrNull { rel -> rel.id == user.id }
             user.copy(
                 relationshipStatus = relationship?.toStatus(),

@@ -1,10 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 
 interface TagRepository {
-    suspend fun getFollowed(pageCursor: String? = null): ListWithPageCursor<TagModel>?
+    suspend fun getFollowed(pageCursor: String? = null): PagedList<TagModel>?
 
     suspend fun getBy(name: String): TagModel?
 

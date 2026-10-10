@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.ListWithPageCursor
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -14,12 +14,12 @@ import io.ktor.utils.io.CancellationException
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultTagRepository(private val provider: ServiceProvider) : TagRepository {
-    override suspend fun getFollowed(pageCursor: String?): ListWithPageCursor<TagModel>? = try {
+    override suspend fun getFollowed(pageCursor: String?): PagedList<TagModel>? = try {
         val (elements, cursor) =
             provider.tag.getFollowedTags(
                 maxId = pageCursor,
             )
-        ListWithPageCursor(list = elements.map { it.toModel() }, cursor = cursor)
+        PagedList(list = elements.map { it.toModel() }, cursor = cursor)
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
