@@ -28,6 +28,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInner
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
@@ -66,7 +67,7 @@ class CircleTimelineViewModel(
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
-    private val getTranslation: GetTranslationUseCase,
+    private val toggleTranslation: ToggleTranslationUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
     private val notificationCenter: NotificationCenter,
@@ -176,7 +177,7 @@ class CircleTimelineViewModel(
 
             is CircleTimelineMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
 
-            is CircleTimelineMvi.Intent.ToggleTranslation -> toggleTranslation(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
             is CircleTimelineMvi.Intent.WillOpenDetail ->
                 viewModelScope.launch {
@@ -489,7 +490,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun toggleTranslation(entry: TimelineEntryModel) {
+    private fun handleToggleTranslation(entry: TimelineEntryModel) {
         val targetLang = uiState.value.lang ?: return
         if (entry.translationLoading) {
             return
@@ -497,27 +498,7 @@ class CircleTimelineViewModel(
 
         viewModelScope.launch {
             updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val translation: TimelineEntryModel?
-            val provider: String?
-            when {
-                !entry.isShowingTranslation && entry.translation == null -> {
-                    val result = getTranslation(entry = entry, targetLang = targetLang)
-                    translation = result?.target
-                    provider = result?.provider
-                }
-
-                else -> {
-                    translation = entry.translation
-                    provider = entry.translationProvider
-                }
-            }
-            val newEntry =
-                entry.copy(
-                    isShowingTranslation = translation != null && !entry.isShowingTranslation,
-                    translation = translation,
-                    translationProvider = provider.takeIf { translation != null },
-                    translationLoading = false,
-                )
+            val newEntry = toggleTranslation(entry = entry, targetLang = targetLang)
             updateEntryInState(entry.id) { newEntry }
         }
     }
