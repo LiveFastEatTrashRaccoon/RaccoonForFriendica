@@ -15,17 +15,15 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @AssistedInject
-class DefaultMarkerService(@Assisted args: ServiceCreationArgs) : MarkerService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultMarkerService(@Assisted private val args: ServiceCreationArgs) : MarkerService {
 
-    override suspend fun get(timelines: List<String>): Markers = client.get("$baseUrl/v1/markers") {
+    override suspend fun get(timelines: List<String>): Markers = args.client.get("${args.baseUrl}/v1/markers") {
         timelines.forEach { value ->
             parameter("timeline[]", value)
         }
     }.body()
 
-    override suspend fun update(data: FormDataContent): Markers = client.post("$baseUrl/v1/markers") {
+    override suspend fun update(data: FormDataContent): Markers = args.client.post("${args.baseUrl}/v1/markers") {
         contentType(ContentType.Application.Json)
         setBody(data)
     }.body()

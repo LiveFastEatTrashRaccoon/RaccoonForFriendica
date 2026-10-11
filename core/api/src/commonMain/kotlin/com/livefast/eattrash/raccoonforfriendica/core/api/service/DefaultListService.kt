@@ -23,19 +23,17 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultListService(@Assisted args: ServiceCreationArgs) : ListService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultListService(@Assisted private val args: ServiceCreationArgs) : ListService {
 
-    override suspend fun getAll(): List<UserList> = client.get("$baseUrl/v1/lists").body()
+    override suspend fun getAll(): List<UserList> = args.client.get("${args.baseUrl}/v1/lists").body()
 
     override suspend fun getFriendicaCircles(): List<FriendicaCircle> =
-        client.get("$baseUrl/friendica/group_show").body()
+        args.client.get("${args.baseUrl}/friendica/group_show").body()
 
-    override suspend fun getBy(id: String): UserList = client.get("$baseUrl/v1/lists/$id").body()
+    override suspend fun getBy(id: String): UserList = args.client.get("${args.baseUrl}/v1/lists/$id").body()
 
     override suspend fun getMembers(id: String, maxId: String?, limit: Int): Page<Account> {
-        val response = client.get("$baseUrl/v1/lists/$id/accounts") {
+        val response = args.client.get("${args.baseUrl}/v1/lists/$id/accounts") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
@@ -44,26 +42,28 @@ class DefaultListService(@Assisted args: ServiceCreationArgs) : ListService {
         return Page(elements = data, cursor = cursor)
     }
 
-    override suspend fun create(data: EditListForm): UserList = client.post("$baseUrl/v1/lists") {
+    override suspend fun create(data: EditListForm): UserList = args.client.post("${args.baseUrl}/v1/lists") {
         contentType(ContentType.Application.Json)
         setBody(data)
     }.body()
 
-    override suspend fun update(id: String, data: EditListForm): UserList = client.put("$baseUrl/v1/lists/$id") {
-        contentType(ContentType.Application.Json)
-        setBody(data)
-    }.body()
+    override suspend fun update(id: String, data: EditListForm): UserList =
+        args.client.put("${args.baseUrl}/v1/lists/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(data)
+        }.body()
 
-    override suspend fun delete(id: String): Boolean = client.delete("$baseUrl/v1/lists/$id").status.isSuccess()
+    override suspend fun delete(id: String): Boolean =
+        args.client.delete("${args.baseUrl}/v1/lists/$id").status.isSuccess()
 
     override suspend fun addMembers(id: String, data: EditListMembersForm): Boolean =
-        client.post("$baseUrl/v1/lists/$id/accounts") {
+        args.client.post("${args.baseUrl}/v1/lists/$id/accounts") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.status.isSuccess()
 
     override suspend fun removeMembers(id: String, data: EditListMembersForm): Boolean =
-        client.delete("$baseUrl/v1/lists/$id/accounts") {
+        args.client.delete("${args.baseUrl}/v1/lists/$id/accounts") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.status.isSuccess()

@@ -16,12 +16,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @AssistedInject
-class DefaultDirectMessageService(@Assisted args: ServiceCreationArgs) : DirectMessageService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultDirectMessageService(@Assisted private val args: ServiceCreationArgs) : DirectMessageService {
 
     override suspend fun getAll(count: Int, page: Int, maxId: Long?, getText: String): List<FriendicaPrivateMessage> =
-        client.get("$baseUrl/direct_messages/all") {
+        args.client.get("${args.baseUrl}/direct_messages/all") {
             parameter("count", count)
             parameter("page", page)
             parameter("max_id", maxId)
@@ -35,7 +33,7 @@ class DefaultDirectMessageService(@Assisted args: ServiceCreationArgs) : DirectM
         maxId: Long?,
         sinceId: Long?,
         getText: String,
-    ): List<FriendicaPrivateMessage> = client.get("$baseUrl/direct_messages/conversation") {
+    ): List<FriendicaPrivateMessage> = args.client.get("${args.baseUrl}/direct_messages/conversation") {
         parameter("uri", uri)
         parameter("count", count)
         parameter("page", page)
@@ -45,17 +43,18 @@ class DefaultDirectMessageService(@Assisted args: ServiceCreationArgs) : DirectM
     }.body()
 
     override suspend fun create(data: FormDataContent): FriendicaPrivateMessage =
-        client.post("$baseUrl/direct_messages/new") {
+        args.client.post("${args.baseUrl}/direct_messages/new") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
-    override suspend fun delete(id: Long): FriendicaApiResult = client.post("$baseUrl/direct_messages/destroy") {
-        parameter("id", id)
-    }.body()
+    override suspend fun delete(id: Long): FriendicaApiResult =
+        args.client.post("${args.baseUrl}/direct_messages/destroy") {
+            parameter("id", id)
+        }.body()
 
     override suspend fun markAsRead(id: Long): FriendicaApiResult =
-        client.post("$baseUrl/friendica/direct_messages_setseen") {
+        args.client.post("${args.baseUrl}/friendica/direct_messages_setseen") {
             parameter("id", id)
         }.body()
 }

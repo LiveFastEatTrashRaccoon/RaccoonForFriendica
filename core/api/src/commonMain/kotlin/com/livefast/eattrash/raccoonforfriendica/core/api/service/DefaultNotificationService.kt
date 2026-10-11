@@ -16,9 +16,7 @@ import io.ktor.client.request.post
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultNotificationService(@Assisted args: ServiceCreationArgs) : NotificationService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultNotificationService(@Assisted private val args: ServiceCreationArgs) : NotificationService {
 
     override suspend fun get(
         types: List<NotificationType>,
@@ -28,7 +26,7 @@ class DefaultNotificationService(@Assisted args: ServiceCreationArgs) : Notifica
         includeAll: Boolean,
         limit: Int,
     ): Page<Notification> {
-        val response = client.get("$baseUrl/v1/notifications") {
+        val response = args.client.get("${args.baseUrl}/v1/notifications") {
             if (types.isNotEmpty()) {
                 types.forEach { value ->
                     parameter("types[]", value.serialName)
@@ -49,9 +47,10 @@ class DefaultNotificationService(@Assisted args: ServiceCreationArgs) : Notifica
     }
 
     override suspend fun dismiss(id: String): Boolean =
-        client.post("$baseUrl/v1/notifications/$id/dismiss").status.isSuccess()
+        args.client.post("${args.baseUrl}/v1/notifications/$id/dismiss").status.isSuccess()
 
-    override suspend fun clear(): Boolean = client.post("$baseUrl/v1/notifications/clear").status.isSuccess()
+    override suspend fun clear(): Boolean =
+        args.client.post("${args.baseUrl}/v1/notifications/clear").status.isSuccess()
 }
 
 @AssistedFactory

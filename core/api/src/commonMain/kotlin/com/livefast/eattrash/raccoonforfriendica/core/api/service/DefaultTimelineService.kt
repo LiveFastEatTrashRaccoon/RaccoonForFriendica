@@ -12,12 +12,10 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 @AssistedInject
-class DefaultTimelineService(@Assisted args: ServiceCreationArgs) : TimelineService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultTimelineService(@Assisted private val args: ServiceCreationArgs) : TimelineService {
 
     override suspend fun getPublic(maxId: String?, minId: String?, limit: Int, local: Boolean): List<Status> =
-        client.get("$baseUrl/v1/timelines/public") {
+        args.client.get("${args.baseUrl}/v1/timelines/public") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
@@ -25,14 +23,14 @@ class DefaultTimelineService(@Assisted args: ServiceCreationArgs) : TimelineServ
         }.body()
 
     override suspend fun getHome(maxId: String?, minId: String?, limit: Int): List<Status> =
-        client.get("$baseUrl/v1/timelines/home") {
+        args.client.get("${args.baseUrl}/v1/timelines/home") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
         }.body()
 
     override suspend fun getHashtag(hashtag: String, maxId: String?, minId: String?, limit: Int): Page<Status> {
-        val response = client.get("$baseUrl/v1/timelines/tag/$hashtag") {
+        val response = args.client.get("${args.baseUrl}/v1/timelines/tag/$hashtag") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
@@ -43,7 +41,7 @@ class DefaultTimelineService(@Assisted args: ServiceCreationArgs) : TimelineServ
     }
 
     override suspend fun getList(id: String, maxId: String?, minId: String?, limit: Int): List<Status> =
-        client.get("$baseUrl/v1/timelines/list/$id") {
+        args.client.get("${args.baseUrl}/v1/timelines/list/$id") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)

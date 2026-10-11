@@ -12,11 +12,9 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultReportService(@Assisted args: ServiceCreationArgs) : ReportService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultReportService(@Assisted private val args: ServiceCreationArgs) : ReportService {
 
-    override suspend fun create(data: FormDataContent) = client.post("$baseUrl/v1/reports") {
+    override suspend fun create(data: FormDataContent) = args.client.post("${args.baseUrl}/v1/reports") {
         contentType(ContentType.Application.Json)
         setBody(data)
     }.status.isSuccess()
