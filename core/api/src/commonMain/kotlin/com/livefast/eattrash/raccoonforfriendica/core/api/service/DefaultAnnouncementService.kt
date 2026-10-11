@@ -12,22 +12,19 @@ import io.ktor.client.request.post
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultAnnouncementService(@Assisted args: ServiceCreationArgs) : AnnouncementService {
-
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultAnnouncementService(@Assisted private val args: ServiceCreationArgs) : AnnouncementService {
 
     override suspend fun getAll(): List<Announcement> =
-        client.get("$baseUrl/v1/announcements").body<List<Announcement>>()
+        args.client.get("${args.baseUrl}/v1/announcements").body<List<Announcement>>()
 
     override suspend fun dismiss(id: String): Boolean =
-        client.post("$baseUrl/v1/announcements/$id/dismiss").status.isSuccess()
+        args.client.post("${args.baseUrl}/v1/announcements/$id/dismiss").status.isSuccess()
 
     override suspend fun addReaction(id: String, name: String): Boolean =
-        client.post("$baseUrl/v1/announcements/$id/reactions/$name").status.isSuccess()
+        args.client.post("${args.baseUrl}/v1/announcements/$id/reactions/$name").status.isSuccess()
 
     override suspend fun removeReaction(id: String, name: String): Boolean =
-        client.delete("$baseUrl/v1/announcements/$id/reactions/$name").status.isSuccess()
+        args.client.delete("${args.baseUrl}/v1/announcements/$id/reactions/$name").status.isSuccess()
 }
 
 @AssistedFactory

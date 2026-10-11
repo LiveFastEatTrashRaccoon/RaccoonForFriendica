@@ -16,24 +16,23 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultPushService(@Assisted args: ServiceCreationArgs) : PushService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultPushService(@Assisted private val args: ServiceCreationArgs) : PushService {
 
-    override suspend fun get(): PushSubscription = client.get("$baseUrl/v1/push/subscription").body()
+    override suspend fun get(): PushSubscription = args.client.get("${args.baseUrl}/v1/push/subscription").body()
 
     override suspend fun create(data: FormDataContent): PushSubscription =
-        client.post("$baseUrl/v1/push/subscription") {
+        args.client.post("${args.baseUrl}/v1/push/subscription") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
-    override suspend fun update(data: FormDataContent): PushSubscription = client.put("$baseUrl/v1/push/subscription") {
-        contentType(ContentType.Application.Json)
-        setBody(data)
-    }.body()
+    override suspend fun update(data: FormDataContent): PushSubscription =
+        args.client.put("${args.baseUrl}/v1/push/subscription") {
+            contentType(ContentType.Application.Json)
+            setBody(data)
+        }.body()
 
-    override suspend fun delete() = client.post("$baseUrl/").status.isSuccess()
+    override suspend fun delete() = args.client.post("${args.baseUrl}/").status.isSuccess()
 }
 
 @AssistedFactory

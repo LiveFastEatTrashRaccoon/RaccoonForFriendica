@@ -13,12 +13,10 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 
 @AssistedInject
-class DefaultTagsService(@Assisted args: ServiceCreationArgs) : TagsService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultTagsService(@Assisted private val args: ServiceCreationArgs) : TagsService {
 
     override suspend fun getFollowedTags(maxId: String?): Page<Tag> {
-        val response = client.get("$baseUrl/v1/followed_tags") {
+        val response = args.client.get("${args.baseUrl}/v1/followed_tags") {
             parameter("max_id", maxId)
         }
         val data: List<Tag> = response.body()
@@ -26,11 +24,11 @@ class DefaultTagsService(@Assisted args: ServiceCreationArgs) : TagsService {
         return Page(elements = data, cursor = cursor)
     }
 
-    override suspend fun follow(name: String): Tag = client.post("$baseUrl/v1/tags/$name/follow").body()
+    override suspend fun follow(name: String): Tag = args.client.post("${args.baseUrl}/v1/tags/$name/follow").body()
 
-    override suspend fun unfollow(name: String): Tag = client.post("$baseUrl/v1/tags/$name/unfollow").body()
+    override suspend fun unfollow(name: String): Tag = args.client.post("${args.baseUrl}/v1/tags/$name/unfollow").body()
 
-    override suspend fun get(name: String): Tag = client.get("$baseUrl/v1/tags/$name").body()
+    override suspend fun get(name: String): Tag = args.client.get("${args.baseUrl}/v1/tags/$name").body()
 }
 
 @AssistedFactory

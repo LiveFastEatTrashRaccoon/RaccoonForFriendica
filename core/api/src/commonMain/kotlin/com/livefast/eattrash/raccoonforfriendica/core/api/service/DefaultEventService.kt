@@ -10,14 +10,13 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 @AssistedInject
-class DefaultEventService(@Assisted args: ServiceCreationArgs) : EventService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultEventService(@Assisted private val args: ServiceCreationArgs) : EventService {
 
-    override suspend fun getAll(maxId: Long?, count: Int): List<Event> = client.get("$baseUrl/friendica/events") {
-        parameter("since_id", maxId)
-        parameter("count", count)
-    }.body()
+    override suspend fun getAll(maxId: Long?, count: Int): List<Event> =
+        args.client.get("${args.baseUrl}/friendica/events") {
+            parameter("since_id", maxId)
+            parameter("count", count)
+        }.body()
 }
 
 @AssistedFactory

@@ -14,16 +14,15 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @AssistedInject
-class DefaultAppService(@Assisted args: ServiceCreationArgs) : AppService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultAppService(@Assisted private val args: ServiceCreationArgs) : AppService {
 
-    override suspend fun create(data: CreateAppForm): Application = client.post("$baseUrl/v1/apps") {
+    override suspend fun create(data: CreateAppForm): Application = args.client.post("${args.baseUrl}/v1/apps") {
         contentType(ContentType.Application.Json)
         setBody(data)
     }.body()
 
-    override suspend fun verifyCredentials(): Application = client.get("$baseUrl/v1/apps/verify_credentials").body()
+    override suspend fun verifyCredentials(): Application =
+        args.client.get("${args.baseUrl}/v1/apps/verify_credentials").body()
 }
 
 @AssistedFactory

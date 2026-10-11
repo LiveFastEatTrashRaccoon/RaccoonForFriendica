@@ -19,36 +19,36 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultCollectionService(@Assisted args: ServiceCreationArgs) : CollectionService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultCollectionService(@Assisted private val args: ServiceCreationArgs) : CollectionService {
 
-    override suspend fun create(data: CreateCollectionForm): Collection = client.post("$baseUrl/v1/collections") {
-        contentType(ContentType.Application.Json)
-        setBody(data)
-    }.body()
+    override suspend fun create(data: CreateCollectionForm): Collection =
+        args.client.post("${args.baseUrl}/v1/collections") {
+            contentType(ContentType.Application.Json)
+            setBody(data)
+        }.body()
 
-    override suspend fun get(id: String): Collection = client.get("$baseUrl/v1/collections/$id").body()
+    override suspend fun get(id: String): Collection = args.client.get("${args.baseUrl}/v1/collections/$id").body()
 
-    override suspend fun delete(id: String): Boolean = client.delete("$baseUrl/v1/collections/$id").status.isSuccess()
+    override suspend fun delete(id: String): Boolean =
+        args.client.delete("${args.baseUrl}/v1/collections/$id").status.isSuccess()
 
     override suspend fun update(id: String, data: CreateCollectionForm): Collection =
-        client.patch("$baseUrl/v1/collections") {
+        args.client.patch("${args.baseUrl}/v1/collections") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
     override suspend fun addItem(id: String, data: AddCollectionItemForm): CollectionItem =
-        client.post("$baseUrl/v1/collections") {
+        args.client.post("${args.baseUrl}/v1/collections") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
     override suspend fun deleteItem(id: String, itemId: String): Boolean =
-        client.delete("$baseUrl/v1/collections/$id/items/$itemId").status.isSuccess()
+        args.client.delete("${args.baseUrl}/v1/collections/$id/items/$itemId").status.isSuccess()
 
     override suspend fun revokeInclusion(id: String, itemId: String): Boolean =
-        client.delete("$baseUrl/v1/collections/$id/items/$itemId/revoke").status.isSuccess()
+        args.client.delete("${args.baseUrl}/v1/collections/$id/items/$itemId/revoke").status.isSuccess()
 }
 
 @AssistedFactory

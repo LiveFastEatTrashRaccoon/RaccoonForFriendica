@@ -13,19 +13,16 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @AssistedInject
-class DefaultPhotoAlbumService(@Assisted args: ServiceCreationArgs) : PhotoAlbumService {
-
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultPhotoAlbumService(@Assisted private val args: ServiceCreationArgs) : PhotoAlbumService {
 
     override suspend fun update(data: FormDataContent): FriendicaApiResult =
-        client.post("$baseUrl/friendica/photoalbum/update") {
+        args.client.post("${args.baseUrl}/friendica/photoalbum/update") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
     override suspend fun delete(data: FormDataContent): FriendicaApiResult =
-        client.post("$baseUrl/friendica/photoalbum/delete") {
+        args.client.post("${args.baseUrl}/friendica/photoalbum/delete") {
             setBody(data)
         }.body()
 }

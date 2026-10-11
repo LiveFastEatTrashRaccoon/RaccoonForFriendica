@@ -14,12 +14,10 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 
 @AssistedInject
-class DefaultFollowRequestService(@Assisted args: ServiceCreationArgs) : FollowRequestService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultFollowRequestService(@Assisted private val args: ServiceCreationArgs) : FollowRequestService {
 
     override suspend fun getAll(maxId: String?, limit: Int): Page<Account> {
-        val response = client.get("$baseUrl/v1/follow_requests") {
+        val response = args.client.get("${args.baseUrl}/v1/follow_requests") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
@@ -29,9 +27,10 @@ class DefaultFollowRequestService(@Assisted args: ServiceCreationArgs) : FollowR
     }
 
     override suspend fun accept(id: String): Relationship =
-        client.post("$baseUrl/v1/follow_requests/$id/authorize").body()
+        args.client.post("${args.baseUrl}/v1/follow_requests/$id/authorize").body()
 
-    override suspend fun reject(id: String): Relationship = client.post("$baseUrl/v1/follow_requests/$id/reject").body()
+    override suspend fun reject(id: String): Relationship =
+        args.client.post("${args.baseUrl}/v1/follow_requests/$id/reject").body()
 }
 
 @AssistedFactory

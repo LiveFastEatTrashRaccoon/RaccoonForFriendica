@@ -15,26 +15,25 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @AssistedInject
-class DefaultPhotoService(@Assisted args: ServiceCreationArgs) : PhotoService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultPhotoService(@Assisted private val args: ServiceCreationArgs) : PhotoService {
 
-    override suspend fun getAll(): List<FriendicaPhoto> = client.get("$baseUrl/friendica/photos/list").body()
+    override suspend fun getAll(): List<FriendicaPhoto> =
+        args.client.get("${args.baseUrl}/friendica/photos/list").body()
 
     override suspend fun create(content: MultiPartFormDataContent): FriendicaPhoto =
-        client.post("$baseUrl/friendica/photo/create") {
+        args.client.post("${args.baseUrl}/friendica/photo/create") {
             contentType(ContentType.Application.Json)
             setBody(content)
         }.body()
 
     override suspend fun update(content: MultiPartFormDataContent): FriendicaApiResult =
-        client.post("$baseUrl/friendica/photo/update") {
+        args.client.post("${args.baseUrl}/friendica/photo/update") {
             contentType(ContentType.Application.Json)
             setBody(content)
         }.body()
 
     override suspend fun delete(content: MultiPartFormDataContent): FriendicaApiResult =
-        client.post("$baseUrl/friendica/photo/delete") {
+        args.client.post("${args.baseUrl}/friendica/photo/delete") {
             contentType(ContentType.Application.Json)
             setBody(content)
         }.body()

@@ -12,25 +12,25 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 @AssistedInject
-class DefaultTrendsService(@Assisted args: ServiceCreationArgs) : TrendsService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultTrendsService(@Assisted private val args: ServiceCreationArgs) : TrendsService {
 
-    override suspend fun getHashtags(offset: Int, limit: Int): List<Tag> = client.get("$baseUrl/v1/trends/tags") {
-        parameter("offset", offset)
-        parameter("limit", limit)
-    }.body()
-
-    override suspend fun getStatuses(offset: Int, limit: Int): List<Status> =
-        client.get("$baseUrl/v1/trends/statuses") {
+    override suspend fun getHashtags(offset: Int, limit: Int): List<Tag> =
+        args.client.get("${args.baseUrl}/v1/trends/tags") {
             parameter("offset", offset)
             parameter("limit", limit)
         }.body()
 
-    override suspend fun getLinks(offset: Int, limit: Int): List<TrendsLink> = client.get("$baseUrl/v1/trends/links") {
-        parameter("offset", offset)
-        parameter("limit", limit)
-    }.body()
+    override suspend fun getStatuses(offset: Int, limit: Int): List<Status> =
+        args.client.get("${args.baseUrl}/v1/trends/statuses") {
+            parameter("offset", offset)
+            parameter("limit", limit)
+        }.body()
+
+    override suspend fun getLinks(offset: Int, limit: Int): List<TrendsLink> =
+        args.client.get("${args.baseUrl}/v1/trends/links") {
+            parameter("offset", offset)
+            parameter("limit", limit)
+        }.body()
 }
 
 @AssistedFactory

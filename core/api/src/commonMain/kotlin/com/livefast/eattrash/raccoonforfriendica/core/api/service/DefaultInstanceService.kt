@@ -11,15 +11,14 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 
 @AssistedInject
-class DefaultInstanceService(@Assisted args: ServiceCreationArgs) : InstanceService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultInstanceService(@Assisted private val args: ServiceCreationArgs) : InstanceService {
 
-    override suspend fun getInfo(): Instance = client.get("$baseUrl/v2/instance").body()
+    override suspend fun getInfo(): Instance = args.client.get("${args.baseUrl}/v2/instance").body()
 
-    override suspend fun getRules(): List<InstanceRule> = client.get("$baseUrl/v1/instance/rules").body()
+    override suspend fun getRules(): List<InstanceRule> = args.client.get("${args.baseUrl}/v1/instance/rules").body()
 
-    override suspend fun getCustomEmojis(): List<CustomEmoji> = client.get("$baseUrl/v1/custom_emojis").body()
+    override suspend fun getCustomEmojis(): List<CustomEmoji> =
+        args.client.get("${args.baseUrl}/v1/custom_emojis").body()
 }
 
 @AssistedFactory

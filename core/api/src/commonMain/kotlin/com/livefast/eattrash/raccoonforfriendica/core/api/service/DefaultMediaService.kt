@@ -18,23 +18,23 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultMediaService(@Assisted args: ServiceCreationArgs) : MediaService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
-    override suspend fun getBy(id: String): MediaAttachment = client.get("$baseUrl/v1/media/$id").body()
+class DefaultMediaService(@Assisted private val args: ServiceCreationArgs) : MediaService {
+    override suspend fun getBy(id: String): MediaAttachment = args.client.get("${args.baseUrl}/v1/media/$id").body()
 
-    override suspend fun create(content: MultiPartFormDataContent): MediaAttachment = client.post("$baseUrl/v2/media") {
-        contentType(ContentType.Application.Json)
-        setBody(content)
-    }.body()
-
-    override suspend fun update(id: String, content: FormDataContent): MediaAttachment =
-        client.put("$baseUrl/v1/media/$id") {
+    override suspend fun create(content: MultiPartFormDataContent): MediaAttachment =
+        args.client.post("${args.baseUrl}/v2/media") {
             contentType(ContentType.Application.Json)
             setBody(content)
         }.body()
 
-    override suspend fun delete(id: String): Boolean = client.delete("$baseUrl/v1/media/$id").status.isSuccess()
+    override suspend fun update(id: String, content: FormDataContent): MediaAttachment =
+        args.client.put("${args.baseUrl}/v1/media/$id") {
+            contentType(ContentType.Application.Json)
+            setBody(content)
+        }.body()
+
+    override suspend fun delete(id: String): Boolean =
+        args.client.delete("${args.baseUrl}/v1/media/$id").status.isSuccess()
 }
 
 @AssistedFactory

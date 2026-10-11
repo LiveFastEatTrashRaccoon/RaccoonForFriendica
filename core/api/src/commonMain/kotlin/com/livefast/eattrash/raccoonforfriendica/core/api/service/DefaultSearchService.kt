@@ -10,9 +10,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 @AssistedInject
-class DefaultSearchService(@Assisted args: ServiceCreationArgs) : SearchService {
-    private val baseUrl = args.baseUrl
-    private val client = args.client
+class DefaultSearchService(@Assisted private val args: ServiceCreationArgs) : SearchService {
 
     override suspend fun search(
         query: String,
@@ -21,7 +19,7 @@ class DefaultSearchService(@Assisted args: ServiceCreationArgs) : SearchService 
         following: Boolean,
         limit: Int,
         resolve: Boolean,
-    ): Search = client.get("$baseUrl/v2/search") {
+    ): Search = args.client.get("${args.baseUrl}/v2/search") {
         parameter("q", query)
         parameter("type", type)
         parameter("offset", offset)
