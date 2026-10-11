@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class AlbumDetailViewModel(
-    @Assisted args: AlbumDetailViewModelArgs,
+    @Assisted private val args: AlbumDetailViewModelArgs,
     private val paginationManager: AlbumPhotoPaginationManager,
     private val photoRepository: PhotoRepository,
     private val albumRepository: PhotoAlbumRepository,
@@ -40,8 +40,6 @@ class AlbumDetailViewModel(
     MviDelegate<AlbumDetailMvi.Intent, AlbumDetailMvi.State, AlbumDetailMvi.Effect>
     by DefaultMviDelegate(initialState = AlbumDetailMvi.State()),
     AlbumDetailMvi {
-
-    private val albumName = args.albumName
 
     init {
         viewModelScope.launch {
@@ -69,7 +67,7 @@ class AlbumDetailViewModel(
                     albumRepository
                         .getAll()
                         ?.distinctBy { it.name }
-                        ?.filter { it.name != albumName }
+                        ?.filter { it.name != args.albumName }
                         .orEmpty()
                 updateState { it.copy(albums = albums) }
 
@@ -80,19 +78,32 @@ class AlbumDetailViewModel(
 
     override fun reduce(intent: AlbumDetailMvi.Intent) {
         when (intent) {
-            AlbumDetailMvi.Intent.Refresh -> viewModelScope.launch { refresh() }
+            AlbumDetailMvi.Intent.Refresh -> handleRefresh()
 
-            AlbumDetailMvi.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
+            AlbumDetailMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            is AlbumDetailMvi.Intent.Create -> upload(intent.byteArray)
+            is AlbumDetailMvi.Intent.Create -> handleCreate(intent.byteArray)
 
-            is AlbumDetailMvi.Intent.EditDescription ->
-                updateDescription(attachment = intent.attachment, description = intent.description)
+            is AlbumDetailMvi.Intent.EditDescription -> handleEditDescription(
+                attachment = intent.attachment,
+                description = intent.description,
+            )
 
-            is AlbumDetailMvi.Intent.Move ->
-                moveToOtherAlbum(attachment = intent.attachment, otherAlbum = intent.album)
+            is AlbumDetailMvi.Intent.Move -> handleMove(attachment = intent.attachment, otherAlbum = intent.album)
 
-            is AlbumDetailMvi.Intent.Delete -> delete(intent.id)
+            is AlbumDetailMvi.Intent.Delete -> handleDelete(intent.id)
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
         }
     }
 
@@ -100,7 +111,7 @@ class AlbumDetailViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        paginationManager.reset(AlbumPhotoPaginationSpecification.Default(album = albumName))
+        paginationManager.reset(AlbumPhotoPaginationSpecification.Default(album = args.albumName))
         loadNextPage()
     }
 
@@ -150,7 +161,7 @@ class AlbumDetailViewModel(
         }
     }
 
-    private fun upload(byteArray: ByteArray) {
+    private fun handleCreate(byteArray: ByteArray) {
         viewModelScope.launch {
             val localId = getUuid()
             val originalItems = uiState.value.items
@@ -161,7 +172,7 @@ class AlbumDetailViewModel(
                             id = localId,
                             url = "",
                             loading = true,
-                            album = albumName,
+                            album = args.albumName,
                         )
                     addAll(originalItems)
                 }
@@ -169,7 +180,7 @@ class AlbumDetailViewModel(
             val attachment =
                 photoRepository.create(
                     bytes = byteArray,
-                    album = albumName,
+                    album = args.albumName,
                 )
             if (attachment != null) {
                 updateItemInState(localId) { attachment }
@@ -180,7 +191,7 @@ class AlbumDetailViewModel(
         }
     }
 
-    private fun updateDescription(attachment: AttachmentModel, description: String) {
+    private fun handleEditDescription(attachment: AttachmentModel, description: String) {
         viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val successful =
@@ -200,8 +211,8 @@ class AlbumDetailViewModel(
         }
     }
 
-    private fun moveToOtherAlbum(attachment: AttachmentModel, otherAlbum: String) {
-        if (otherAlbum == albumName) {
+    private fun handleMove(attachment: AttachmentModel, otherAlbum: String) {
+        if (otherAlbum == args.albumName) {
             return
         }
         viewModelScope.launch {
@@ -223,7 +234,7 @@ class AlbumDetailViewModel(
         }
     }
 
-    private fun delete(id: String) {
+    private fun handleDelete(id: String) {
         viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val success = photoRepository.delete(id)

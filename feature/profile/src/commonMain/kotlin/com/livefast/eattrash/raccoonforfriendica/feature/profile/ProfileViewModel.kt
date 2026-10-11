@@ -25,12 +25,13 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
-    private val logoutUseCase: LogoutUseCase,
+    private val logout: LogoutUseCase,
     private val imageAutoloadObserver: ImageAutoloadObserver,
 ) : ViewModel(),
     MviDelegate<ProfileMvi.Intent, ProfileMvi.State, ProfileMvi.Effect>
     by DefaultMviDelegate(initialState = ProfileMvi.State()),
     ProfileMvi {
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -66,10 +67,13 @@ class ProfileViewModel(
 
     override fun reduce(intent: ProfileMvi.Intent) {
         when (intent) {
-            ProfileMvi.Intent.Logout ->
-                viewModelScope.launch {
-                    logoutUseCase()
-                }
+            ProfileMvi.Intent.Logout -> handleLogout()
+        }
+    }
+
+    private fun handleLogout() {
+        viewModelScope.launch {
+            logout()
         }
     }
 }

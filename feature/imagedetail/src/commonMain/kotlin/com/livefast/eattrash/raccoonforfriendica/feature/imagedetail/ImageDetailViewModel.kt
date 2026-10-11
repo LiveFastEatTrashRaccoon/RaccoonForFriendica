@@ -26,7 +26,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @AssistedInject
 class ImageDetailViewModel(
-    @Assisted args: ImageDetailViewModelArgs,
+    @Assisted private val args: ImageDetailViewModelArgs,
     private val shareHelper: ShareHelper,
     private val galleryHelper: GalleryHelper,
     private val imagePreloadManager: ImagePreloadManager,
@@ -35,14 +35,11 @@ class ImageDetailViewModel(
     by DefaultMviDelegate(initialState = ImageDetailMvi.UiState()),
     ImageDetailMvi {
 
-    private val urls = args.urls
-    private val initialIndex = args.initialIndex
-
     init {
         viewModelScope.launch {
             updateState {
                 it.copy(
-                    currentIndex = initialIndex,
+                    currentIndex = args.initialIndex,
                 )
             }
         }
@@ -50,24 +47,23 @@ class ImageDetailViewModel(
 
     override fun reduce(intent: ImageDetailMvi.Intent) {
         when (intent) {
-            is ImageDetailMvi.Intent.ChangeIndex ->
-                viewModelScope.launch {
-                    updateState { it.copy(currentIndex = intent.index) }
-                }
-
-            is ImageDetailMvi.Intent.ChangeContentScale -> changeContentScale(intent.contentScale)
-
-            ImageDetailMvi.Intent.SaveToGallery -> downloadAndSave()
-
-            ImageDetailMvi.Intent.ShareAsUrl -> shareAsUrl()
-
-            ImageDetailMvi.Intent.ShareAsFile -> shareAsFile()
+            is ImageDetailMvi.Intent.ChangeIndex -> handleChangeIndex(intent.index)
+            is ImageDetailMvi.Intent.ChangeContentScale -> handleChangeContentScale(intent.contentScale)
+            ImageDetailMvi.Intent.SaveToGallery -> handleSaveToGallery()
+            ImageDetailMvi.Intent.ShareAsUrl -> handleShareAsUrl()
+            ImageDetailMvi.Intent.ShareAsFile -> handleShareAsFile()
         }
     }
 
-    private fun changeContentScale(contentScale: ContentScale) {
+    private fun handleChangeIndex(index: Int) {
+        viewModelScope.launch {
+            updateState { it.copy(currentIndex = index) }
+        }
+    }
+
+    private fun handleChangeContentScale(contentScale: ContentScale) {
         val currentState = uiState.value
-        val url = urls[currentState.currentIndex]
+        val url = args.urls[currentState.currentIndex]
         imagePreloadManager.remove(url)
         viewModelScope.launch {
             updateState {
@@ -76,14 +72,14 @@ class ImageDetailViewModel(
         }
     }
 
-    private fun downloadAndSave() {
+    private fun handleSaveToGallery() {
         if (uiState.value.loading) {
             return
         }
         viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value
-            val url = urls[currentState.currentIndex]
+            val url = args.urls[currentState.currentIndex]
             try {
                 val bytes = galleryHelper.download(url)
                 val extension = url.extractExtension()
@@ -103,9 +99,9 @@ class ImageDetailViewModel(
         }
     }
 
-    private fun shareAsUrl() {
+    private fun handleShareAsUrl() {
         val currentState = uiState.value
-        val url = urls[currentState.currentIndex]
+        val url = args.urls[currentState.currentIndex]
         try {
             shareHelper.share(url)
         } catch (e: Exception) {
@@ -113,14 +109,14 @@ class ImageDetailViewModel(
         }
     }
 
-    private fun shareAsFile() {
+    private fun handleShareAsFile() {
         if (uiState.value.loading) {
             return
         }
         viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value
-            val url = urls[currentState.currentIndex]
+            val url = args.urls[currentState.currentIndex]
             try {
                 val bytes = galleryHelper.download(url)
                 val extension = url.extractExtension()

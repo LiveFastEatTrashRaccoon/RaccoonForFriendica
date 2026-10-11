@@ -26,7 +26,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
@@ -51,7 +50,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class EntryDetailViewModel(
-    @Assisted args: EntryDetailViewModelArgs,
+    @Assisted private val args: EntryDetailViewModelArgs,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -77,9 +76,6 @@ class EntryDetailViewModel(
     MviDelegate<EntryDetailMvi.Intent, EntryDetailMvi.State, EntryDetailMvi.Effect>
     by DefaultMviDelegate(initialState = EntryDetailMvi.State()),
     EntryDetailMvi {
-
-    private val id = args.id
-    private val swipeNavigationEnabled = args.swipeNavigationEnabled
 
     init {
         viewModelScope.launch {
@@ -136,61 +132,55 @@ class EntryDetailViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        if (swipeNavigationEnabled) {
+        if (args.swipeNavigationEnabled) {
             timelineNavigationManager.pop()
         }
     }
 
     override fun reduce(intent: EntryDetailMvi.Intent) {
         when (intent) {
-            EntryDetailMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            EntryDetailMvi.Intent.Refresh -> handleRefresh()
 
-            is EntryDetailMvi.Intent.LoadMoreReplies ->
-                viewModelScope.launch {
-                    loadMoreReplies(intent.entry)
-                }
+            is EntryDetailMvi.Intent.LoadMoreReplies -> handleLoadMoreReplies(intent.entry)
 
-            is EntryDetailMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is EntryDetailMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is EntryDetailMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is EntryDetailMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is EntryDetailMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is EntryDetailMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
-            is EntryDetailMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is EntryDetailMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            is EntryDetailMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is EntryDetailMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
 
-            is EntryDetailMvi.Intent.MuteUser ->
-                mute(
-                    entryId = intent.entryId,
-                    userId = intent.entryId,
-                    duration = intent.duration,
-                    disableNotifications = intent.disableNotifications,
-                )
+            is EntryDetailMvi.Intent.MuteUser -> handleMuteUser(
+                entryId = intent.entryId,
+                userId = intent.entryId,
+                duration = intent.duration,
+                disableNotifications = intent.disableNotifications,
+            )
 
-            is EntryDetailMvi.Intent.BlockUser ->
-                block(
-                    entryId = intent.entryId,
-                    userId = intent.entryId,
-                )
+            is EntryDetailMvi.Intent.BlockUser -> handleBlockUser(entryId = intent.entryId, userId = intent.entryId)
 
-            is EntryDetailMvi.Intent.TogglePin -> togglePin(intent.entry)
+            is EntryDetailMvi.Intent.TogglePin -> handleTogglePin(intent.entry)
 
-            is EntryDetailMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is EntryDetailMvi.Intent.SubmitPollVote -> handleSubmitPollVote(intent.entry, intent.choices)
 
-            is EntryDetailMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is EntryDetailMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
             is EntryDetailMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is EntryDetailMvi.Intent.ChangeNavigationIndex ->
-                changeNavigationIndex(intent.index)
+            is EntryDetailMvi.Intent.ChangeNavigationIndex -> handleChangeNavigationIndex(intent.index)
 
-            is EntryDetailMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is EntryDetailMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is EntryDetailMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is EntryDetailMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -203,9 +193,9 @@ class EntryDetailViewModel(
         }
 
         if (initial) {
-            val currentEntry = entryCache.get(id)
+            val currentEntry = entryCache.get(args.id)
             val entries =
-                if (swipeNavigationEnabled) {
+                if (args.swipeNavigationEnabled) {
                     timelineNavigationManager.currentList.map { e -> listOf(e) }
                 } else {
                     currentEntry?.let { listOf(listOf(it)) } ?: listOf(emptyList())
@@ -321,59 +311,61 @@ class EntryDetailViewModel(
             }
     }
 
-    private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
+    private fun handleLoadMoreReplies(entry: TimelineEntryModel) {
         if (entry.loadMoreButtonLoading) {
             return
         }
 
-        val currentState = uiState.value
-        val currentReplies = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
-        updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
-        val result = populateThread(entry = entry.original)
-        val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
-        if (newReplies.isEmpty()) {
-            // abort and disable load more button
-            updateEntryInState(entry.id) {
-                it.copy(
-                    loadMoreButtonVisible = false,
-                    loadMoreButtonLoading = false,
-                )
-            }
-        } else {
-            newReplies.preloadImages()
-            val index = currentReplies.indexOfFirst { e -> e.id == entry.id }
-            val replies =
-                buildList {
-                    if (index > 0) {
-                        addAll(currentReplies.subList(fromIndex = 0, toIndex = index))
-                    }
-                    add(
-                        entry.copy(
-                            loadMoreButtonVisible = false,
-                            loadMoreButtonLoading = false,
-                        ),
+        viewModelScope.launch {
+            val currentState = uiState.value
+            val currentReplies = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
+            updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
+            val result = populateThread(entry = entry.original)
+            val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
+            if (newReplies.isEmpty()) {
+                // abort and disable load more button
+                updateEntryInState(entry.id) {
+                    it.copy(
+                        loadMoreButtonVisible = false,
+                        loadMoreButtonLoading = false,
                     )
-                    addAll(newReplies)
-                    if (index < currentReplies.size) {
-                        addAll(
-                            currentReplies.subList(
-                                fromIndex = index + 1,
-                                toIndex = currentReplies.size,
+                }
+            } else {
+                newReplies.preloadImages()
+                val index = currentReplies.indexOfFirst { e -> e.id == entry.id }
+                val replies =
+                    buildList {
+                        if (index > 0) {
+                            addAll(currentReplies.subList(fromIndex = 0, toIndex = index))
+                        }
+                        add(
+                            entry.copy(
+                                loadMoreButtonVisible = false,
+                                loadMoreButtonLoading = false,
                             ),
                         )
-                    }
-                }
-            updateState {
-                it.copy(
-                    entries =
-                    it.entries.mapIndexed { idx, list ->
-                        if (idx == it.currentIndex) {
-                            replies
-                        } else {
-                            list
+                        addAll(newReplies)
+                        if (index < currentReplies.size) {
+                            addAll(
+                                currentReplies.subList(
+                                    fromIndex = index + 1,
+                                    toIndex = currentReplies.size,
+                                ),
+                            )
                         }
-                    },
-                )
+                    }
+                updateState {
+                    it.copy(
+                        entries =
+                        it.entries.mapIndexed { idx, list ->
+                            if (idx == it.currentIndex) {
+                                replies
+                            } else {
+                                list
+                            }
+                        },
+                    )
+                }
             }
         }
     }
@@ -435,7 +427,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -470,7 +462,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -496,7 +488,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -522,7 +514,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -556,7 +548,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
@@ -566,7 +558,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
+    private fun handleMuteUser(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         viewModelScope.launch {
             val res =
                 userRepository.mute(
@@ -580,7 +572,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun block(userId: String, entryId: String) {
+    private fun handleBlockUser(userId: String, entryId: String) {
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -589,7 +581,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun togglePin(entry: TimelineEntryModel) {
+    private fun handleTogglePin(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
@@ -607,7 +599,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -629,7 +621,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -659,8 +651,8 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun changeNavigationIndex(newIndex: Int) {
-        if (!swipeNavigationEnabled) {
+    private fun handleChangeNavigationIndex(newIndex: Int) {
+        if (!args.swipeNavigationEnabled) {
             return
         }
 
@@ -685,7 +677,7 @@ class EntryDetailViewModel(
     }
 
     private suspend fun loadNavigationNextPage() {
-        if (!swipeNavigationEnabled) {
+        if (!args.swipeNavigationEnabled) {
             return
         }
 
@@ -703,7 +695,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun addInstanceShortcut(nodeName: String) {
+    private fun handleAddInstanceShortcut(nodeName: String) {
         viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
@@ -759,7 +751,7 @@ class EntryDetailViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {

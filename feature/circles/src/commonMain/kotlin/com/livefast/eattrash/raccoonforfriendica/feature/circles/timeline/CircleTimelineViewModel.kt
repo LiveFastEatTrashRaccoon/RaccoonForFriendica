@@ -25,7 +25,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
@@ -51,7 +50,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class CircleTimelineViewModel(
-    @Assisted args: CircleTimelineViewModelArgs,
+    @Assisted private val args: CircleTimelineViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -76,11 +75,9 @@ class CircleTimelineViewModel(
     by DefaultMviDelegate(initialState = CircleTimelineMvi.State()),
     CircleTimelineMvi {
 
-    private val id = args.id
-
     init {
         viewModelScope.launch {
-            val circle = circleCache.get(id)
+            val circle = circleCache.get(args.id)
             updateState { it.copy(circle = circle) }
 
             settingsRepository.current
@@ -133,62 +130,66 @@ class CircleTimelineViewModel(
 
     override fun reduce(intent: CircleTimelineMvi.Intent) {
         when (intent) {
-            CircleTimelineMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            CircleTimelineMvi.Intent.Refresh -> handleRefresh()
 
-            CircleTimelineMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            CircleTimelineMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            is CircleTimelineMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is CircleTimelineMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is CircleTimelineMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
-            is CircleTimelineMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is CircleTimelineMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            is CircleTimelineMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is CircleTimelineMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
 
-            is CircleTimelineMvi.Intent.MuteUser ->
-                mute(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                    duration = intent.duration,
-                    disableNotifications = intent.disableNotifications,
-                )
+            is CircleTimelineMvi.Intent.MuteUser -> handleMuteUser(
+                userId = intent.userId,
+                entryId = intent.entryId,
+                duration = intent.duration,
+                disableNotifications = intent.disableNotifications,
+            )
 
-            is CircleTimelineMvi.Intent.BlockUser ->
-                block(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                )
+            is CircleTimelineMvi.Intent.BlockUser -> handleBlockUser(userId = intent.userId, entryId = intent.entryId)
 
-            is CircleTimelineMvi.Intent.TogglePin -> togglePin(intent.entry)
+            is CircleTimelineMvi.Intent.TogglePin -> handleTogglePin(intent.entry)
 
             is CircleTimelineMvi.Intent.SubmitPollVote ->
-                submitPoll(
+                handleSubmitPollVote(
                     intent.entry,
                     intent.choices,
                 )
 
-            is CircleTimelineMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is CircleTimelineMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
             is CircleTimelineMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is CircleTimelineMvi.Intent.WillOpenDetail ->
-                viewModelScope.launch {
-                    val state = paginationManager.extractState()
-                    timelineNavigationManager.push(state)
-                    emitEffect(CircleTimelineMvi.Effect.OpenDetail(intent.entry))
-                }
+            is CircleTimelineMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.entry)
 
-            is CircleTimelineMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is CircleTimelineMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is CircleTimelineMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is CircleTimelineMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleWillOpenDetail(entry: TimelineEntryModel) {
+        viewModelScope.launch {
+            val state = paginationManager.extractState()
+            timelineNavigationManager.push(state)
+            emitEffect(CircleTimelineMvi.Effect.OpenDetail(entry))
         }
     }
 
@@ -279,7 +280,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -314,7 +315,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -340,7 +341,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -366,7 +367,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -400,7 +401,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
@@ -410,7 +411,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
+    private fun handleMuteUser(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         viewModelScope.launch {
             val res =
                 userRepository.mute(
@@ -424,7 +425,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun block(userId: String, entryId: String) {
+    private fun handleBlockUser(userId: String, entryId: String) {
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -433,7 +434,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun togglePin(entry: TimelineEntryModel) {
+    private fun handleTogglePin(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
@@ -451,7 +452,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -473,7 +474,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -503,7 +504,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun addInstanceShortcut(nodeName: String) {
+    private fun handleAddInstanceShortcut(nodeName: String) {
         viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
@@ -514,7 +515,7 @@ class CircleTimelineViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {

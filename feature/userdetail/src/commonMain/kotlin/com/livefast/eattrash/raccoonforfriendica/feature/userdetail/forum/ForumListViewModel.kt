@@ -27,7 +27,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
@@ -127,64 +126,76 @@ class ForumListViewModel(
 
     override fun reduce(intent: ForumListMvi.Intent) {
         when (intent) {
-            ForumListMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            ForumListMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            ForumListMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            ForumListMvi.Intent.Refresh -> handleRefresh()
 
-            is ForumListMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ForumListMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is ForumListMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ForumListMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is ForumListMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is ForumListMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
-            is ForumListMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ForumListMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            is ForumListMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is ForumListMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
 
-            is ForumListMvi.Intent.MuteUser ->
-                mute(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                    duration = intent.duration,
-                    disableNotifications = intent.disableNotifications,
-                )
+            is ForumListMvi.Intent.MuteUser -> handleMuteUser(
+                userId = intent.userId,
+                entryId = intent.entryId,
+                duration = intent.duration,
+                disableNotifications = intent.disableNotifications,
+            )
 
-            is ForumListMvi.Intent.BlockUser ->
-                block(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                )
+            is ForumListMvi.Intent.BlockUser -> handleBlockUser(userId = intent.userId, entryId = intent.entryId)
 
-            ForumListMvi.Intent.Follow -> follow()
+            ForumListMvi.Intent.Follow -> handleFollow()
 
-            ForumListMvi.Intent.Unfollow -> unfollow()
+            ForumListMvi.Intent.Unfollow -> handleUnfollow()
 
-            ForumListMvi.Intent.DisableNotifications -> toggleNotifications(enabled = false)
+            ForumListMvi.Intent.DisableNotifications -> handleDisableNotifications()
 
-            ForumListMvi.Intent.EnableNotifications -> toggleNotifications(enabled = true)
+            ForumListMvi.Intent.EnableNotifications -> handleEnableNotifications()
 
-            is ForumListMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is ForumListMvi.Intent.SubmitPollVote -> handleSubmitPollVote(intent.entry, intent.choices)
 
-            is ForumListMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is ForumListMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
             is ForumListMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is ForumListMvi.Intent.WillOpenDetail ->
-                viewModelScope.launch {
-                    val state = paginationManager.extractState()
-                    timelineNavigationManager.push(state)
-                    emitEffect(ForumListMvi.Effect.OpenDetail(intent.entry))
-                }
+            is ForumListMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.entry)
 
-            is ForumListMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is ForumListMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is ForumListMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is ForumListMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleDisableNotifications() {
+        toggleNotifications(enabled = false)
+    }
+
+    private fun handleEnableNotifications() {
+        toggleNotifications(enabled = true)
+    }
+
+    private fun handleWillOpenDetail(entry: TimelineEntryModel) {
+        viewModelScope.launch {
+            val state = paginationManager.extractState()
+            timelineNavigationManager.push(state)
+            emitEffect(ForumListMvi.Effect.OpenDetail(entry))
         }
     }
 
@@ -282,7 +293,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -317,7 +328,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -343,7 +354,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -369,7 +380,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -403,7 +414,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
@@ -413,7 +424,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
+    private fun handleMuteUser(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         viewModelScope.launch {
             val res =
                 userRepository.mute(
@@ -427,7 +438,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun block(userId: String, entryId: String) {
+    private fun handleBlockUser(userId: String, entryId: String) {
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -436,7 +447,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -458,7 +469,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -488,7 +499,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun addInstanceShortcut(nodeName: String) {
+    private fun handleAddInstanceShortcut(nodeName: String) {
         viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
@@ -499,7 +510,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
@@ -508,7 +519,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun follow() {
+    private fun handleFollow() {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
@@ -532,7 +543,7 @@ class ForumListViewModel(
         }
     }
 
-    private fun unfollow() {
+    private fun handleUnfollow() {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }

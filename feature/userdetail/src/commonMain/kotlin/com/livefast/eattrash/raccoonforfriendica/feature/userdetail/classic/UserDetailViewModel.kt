@@ -30,7 +30,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserR
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
@@ -132,79 +131,103 @@ class UserDetailViewModel(
 
     override fun reduce(intent: UserDetailMvi.Intent) {
         when (intent) {
-            is UserDetailMvi.Intent.ChangeSection ->
-                viewModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
-                    updateState { it.copy(section = intent.section) }
-                    emitEffect(UserDetailMvi.Effect.BackToTop)
-                    refresh(initial = true)
-                }
+            is UserDetailMvi.Intent.ChangeSection -> handleChangeSection(intent.section)
 
-            UserDetailMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            UserDetailMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            UserDetailMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            UserDetailMvi.Intent.Refresh -> handleRefresh()
 
-            UserDetailMvi.Intent.Follow -> follow()
+            UserDetailMvi.Intent.Follow -> handleFollow()
 
-            UserDetailMvi.Intent.Unfollow -> unfollow()
+            UserDetailMvi.Intent.Unfollow -> handleUnfollow()
 
-            is UserDetailMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is UserDetailMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is UserDetailMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is UserDetailMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is UserDetailMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is UserDetailMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
-            is UserDetailMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is UserDetailMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            UserDetailMvi.Intent.DisableNotifications -> toggleNotifications(enabled = false)
+            UserDetailMvi.Intent.DisableNotifications -> handleDisableNotifications()
 
-            UserDetailMvi.Intent.EnableNotifications -> toggleNotifications(enabled = true)
+            UserDetailMvi.Intent.EnableNotifications -> handleEnableNotifications()
 
-            is UserDetailMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is UserDetailMvi.Intent.SubmitPollVote -> handleSubmitPollVote(
+                entry = intent.entry,
+                choices = intent.choices,
+            )
 
-            is UserDetailMvi.Intent.ToggleBlock -> toggleBlock(intent.blocked)
+            is UserDetailMvi.Intent.ToggleBlock -> handleToggleBlock(intent.blocked)
 
-            is UserDetailMvi.Intent.ToggleMute ->
-                toggleMute(
-                    muted = intent.muted,
-                    duration = intent.duration,
-                    disableNotifications = intent.disableNotifications,
-                )
+            is UserDetailMvi.Intent.ToggleMute -> handleToggleMute(
+                muted = intent.muted,
+                duration = intent.duration,
+                disableNotifications = intent.disableNotifications,
+            )
 
-            UserDetailMvi.Intent.TogglePersonalNoteEditMode ->
-                toggleEditPersonalNote()
+            UserDetailMvi.Intent.TogglePersonalNoteEditMode -> handleTogglePersonalNoteEditMode()
 
-            is UserDetailMvi.Intent.SetPersonalNote ->
-                viewModelScope.launch {
-                    updateState { it.copy(personalNote = intent.note) }
-                }
+            is UserDetailMvi.Intent.SetPersonalNote -> handleSetPersonalNote(intent.note)
 
-            UserDetailMvi.Intent.SubmitPersonalNote -> updatePersonalNote()
+            UserDetailMvi.Intent.SubmitPersonalNote -> handleSubmitPersonalNote()
 
-            is UserDetailMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is UserDetailMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
-            is UserDetailMvi.Intent.SetRateLimit -> setRateLimit(intent.rateLimit)
+            is UserDetailMvi.Intent.SetRateLimit -> handleSetRateLimit(intent.rateLimit)
 
             is UserDetailMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is UserDetailMvi.Intent.WillOpenDetail ->
-                viewModelScope.launch {
-                    val state = paginationManager.extractState()
-                    timelineNavigationManager.push(state)
-                    emitEffect(UserDetailMvi.Effect.OpenDetail(intent.entry))
-                }
+            is UserDetailMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.entry)
 
-            is UserDetailMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is UserDetailMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is UserDetailMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is UserDetailMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+        }
+    }
+
+    private fun handleChangeSection(section: UserSection) {
+        viewModelScope.launch {
+            if (uiState.value.loading) {
+                return@launch
+            }
+            updateState { it.copy(section = section) }
+            emitEffect(UserDetailMvi.Effect.BackToTop)
+            refresh(initial = true)
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleDisableNotifications() {
+        toggleNotifications(enabled = false)
+    }
+
+    private fun handleEnableNotifications() {
+        toggleNotifications(enabled = true)
+    }
+
+    private fun handleSetPersonalNote(note: String) {
+        viewModelScope.launch {
+            updateState { it.copy(personalNote = note) }
+        }
+    }
+
+    private fun handleWillOpenDetail(entry: TimelineEntryModel) {
+        viewModelScope.launch {
+            val state = paginationManager.extractState()
+            timelineNavigationManager.push(state)
+            emitEffect(UserDetailMvi.Effect.OpenDetail(entry))
         }
     }
 
@@ -294,7 +317,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun follow() {
+    private fun handleFollow() {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
@@ -318,7 +341,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun unfollow() {
+    private fun handleUnfollow() {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
@@ -365,7 +388,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -400,7 +423,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -426,7 +449,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -452,7 +475,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -509,7 +532,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -531,7 +554,11 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleMute(muted: Boolean, duration: Duration = Duration.INFINITE, disableNotifications: Boolean) {
+    private fun handleToggleMute(
+        muted: Boolean,
+        duration: Duration = Duration.INFINITE,
+        disableNotifications: Boolean,
+    ) {
         viewModelScope.launch {
             val relationship =
                 if (muted) {
@@ -559,7 +586,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleBlock(blocked: Boolean) {
+    private fun handleToggleBlock(blocked: Boolean) {
         viewModelScope.launch {
             val relationship =
                 if (blocked) {
@@ -583,7 +610,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun toggleEditPersonalNote() {
+    private fun handleTogglePersonalNoteEditMode() {
         viewModelScope.launch {
             val currentState = uiState.value
             if (!currentState.personalNoteEditEnabled) {
@@ -602,7 +629,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun updatePersonalNote() {
+    private fun handleSubmitPersonalNote() {
         val note = uiState.value.personalNote ?: return
         viewModelScope.launch {
             val relationShip = userRepository.updatePersonalNote(args.id, note)
@@ -616,7 +643,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -633,7 +660,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun setRateLimit(value: Double) {
+    private fun handleSetRateLimit(value: Double) {
         viewModelScope.launch {
             val accountId = accountRepository.getActive()?.id ?: return@launch
             val handle = uiState.value.user?.handle ?: return@launch
@@ -684,7 +711,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun addInstanceShortcut(nodeName: String) {
+    private fun handleAddInstanceShortcut(nodeName: String) {
         viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
@@ -695,7 +722,7 @@ class UserDetailViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {

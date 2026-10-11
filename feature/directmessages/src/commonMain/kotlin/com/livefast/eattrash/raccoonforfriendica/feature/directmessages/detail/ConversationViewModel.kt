@@ -38,7 +38,7 @@ private val POLLING_INTERVAL = 1.2.seconds
 
 @AssistedInject
 class ConversationViewModel(
-    @Assisted args: ConversationViewModelArgs,
+    @Assisted private val args: ConversationViewModelArgs,
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
@@ -49,10 +49,9 @@ class ConversationViewModel(
     MviDelegate<ConversationMvi.Intent, ConversationMvi.State, ConversationMvi.Effect>
     by DefaultMviDelegate(initialState = ConversationMvi.State()),
     ConversationMvi {
-
-    private val otherUserId = args.otherUserId
-    private var parentUriToUse = args.parentUri
     private var job: Job? = null
+
+    private var parentUriToUse = args.parentUri
 
     init {
         viewModelScope.launch {
@@ -64,7 +63,7 @@ class ConversationViewModel(
                         )
                     }
                 }.launchIn(this)
-            val otherUser = userCache.get(otherUserId)
+            val otherUser = userCache.get(args.otherUserId)
             val currentUser = identityRepository.currentUser.value
             updateState {
                 it.copy(
@@ -93,22 +92,28 @@ class ConversationViewModel(
 
     override fun reduce(intent: ConversationMvi.Intent) {
         when (intent) {
-            ConversationMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            ConversationMvi.Intent.Refresh -> handleRefresh()
+            ConversationMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            is ConversationMvi.Intent.SetNewMessageValue -> handleSetNewMessageValue(intent.value)
+            ConversationMvi.Intent.Submit -> handleSubmit()
+        }
+    }
 
-            ConversationMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
 
-            is ConversationMvi.Intent.SetNewMessageValue ->
-                viewModelScope.launch {
-                    updateState { it.copy(newMessageValue = intent.value) }
-                }
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
 
-            ConversationMvi.Intent.Submit -> submit()
+    private fun handleSetNewMessageValue(value: TextFieldValue) {
+        viewModelScope.launch {
+            updateState { it.copy(newMessageValue = value) }
         }
     }
 
@@ -195,7 +200,7 @@ class ConversationViewModel(
         }
     }
 
-    private fun submit() {
+    private fun handleSubmit() {
         val currentState = uiState.value
         val text = currentState.newMessageValue.text
         if (text.isEmpty() || currentState.sendInProgress) {
@@ -204,7 +209,7 @@ class ConversationViewModel(
 
         viewModelScope.launch {
             val relationshipStatus =
-                userRepository.getRelationships(listOf(otherUserId))?.firstOrNull()?.toStatus()
+                userRepository.getRelationships(listOf(args.otherUserId))?.firstOrNull()?.toStatus()
             if (relationshipStatus !in
                 listOf(
                     RelationshipStatus.MutualFollow,
@@ -237,7 +242,7 @@ class ConversationViewModel(
             emitEffect(ConversationMvi.Effect.BackToTop)
             val remoteMessage =
                 messageRepository.create(
-                    recipientId = otherUserId,
+                    recipientId = args.otherUserId,
                     text = text,
                     inReplyTo = inReplyToId,
                 )

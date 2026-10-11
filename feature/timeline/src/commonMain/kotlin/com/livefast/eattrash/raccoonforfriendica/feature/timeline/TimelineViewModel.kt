@@ -26,7 +26,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Follo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
@@ -89,6 +88,7 @@ class TimelineViewModel(
     MviDelegate<TimelineMvi.Intent, TimelineMvi.State, TimelineMvi.Effect>
     by DefaultMviDelegate(initialState = TimelineMvi.State()),
     TimelineMvi {
+
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -198,67 +198,70 @@ class TimelineViewModel(
 
     override fun reduce(intent: TimelineMvi.Intent) {
         when (intent) {
-            TimelineMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            TimelineMvi.Intent.Refresh -> handleRefresh()
 
-            TimelineMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            TimelineMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            is TimelineMvi.Intent.ChangeType ->
-                viewModelScope.launch {
-                    changeTimelineType(intent.type)
-                }
+            is TimelineMvi.Intent.ChangeType -> handleChangeType(intent.type)
 
-            is TimelineMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is TimelineMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is TimelineMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is TimelineMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is TimelineMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is TimelineMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            is TimelineMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is TimelineMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
 
-            is TimelineMvi.Intent.MuteUser ->
-                mute(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                    duration = intent.duration,
-                    disableNotifications = intent.disableNotifications,
-                )
+            is TimelineMvi.Intent.MuteUser -> handleMuteUser(
+                userId = intent.userId,
+                entryId = intent.entryId,
+                duration = intent.duration,
+                disableNotifications = intent.disableNotifications,
+            )
 
-            is TimelineMvi.Intent.BlockUser ->
-                block(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                )
+            is TimelineMvi.Intent.BlockUser -> handleBlockUser(userId = intent.userId, entryId = intent.entryId)
 
-            is TimelineMvi.Intent.TogglePin -> togglePin(intent.entry)
+            is TimelineMvi.Intent.TogglePin -> handleTogglePin(intent.entry)
 
-            is TimelineMvi.Intent.SubmitPollVote ->
-                submitPoll(
-                    intent.entry,
-                    intent.choices,
-                )
+            is TimelineMvi.Intent.SubmitPollVote -> handleSubmitPollVote(entry = intent.entry, choices = intent.choices)
 
-            is TimelineMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is TimelineMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
-            is TimelineMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is TimelineMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
             is TimelineMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is TimelineMvi.Intent.WillOpenDetail ->
-                viewModelScope.launch {
-                    val state = paginationManager.extractState()
-                    timelineNavigationManager.push(state)
-                    emitEffect(TimelineMvi.Effect.OpenDetail(intent.entry))
-                }
+            is TimelineMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.entry)
 
-            is TimelineMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is TimelineMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is TimelineMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is TimelineMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleChangeType(type: TimelineType) {
+        viewModelScope.launch {
+            changeTimelineType(type)
+        }
+    }
+
+    private fun handleWillOpenDetail(entry: TimelineEntryModel) {
+        viewModelScope.launch {
+            val state = paginationManager.extractState()
+            timelineNavigationManager.push(state)
+            emitEffect(TimelineMvi.Effect.OpenDetail(entry))
         }
     }
 
@@ -377,7 +380,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -412,7 +415,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -438,7 +441,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -464,7 +467,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -498,7 +501,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
@@ -508,7 +511,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
+    private fun handleMuteUser(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         viewModelScope.launch {
             val res =
                 userRepository.mute(
@@ -522,7 +525,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun block(userId: String, entryId: String) {
+    private fun handleBlockUser(userId: String, entryId: String) {
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -531,7 +534,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun togglePin(entry: TimelineEntryModel) {
+    private fun handleTogglePin(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
@@ -549,7 +552,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -571,7 +574,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -601,7 +604,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun addInstanceShortcut(nodeName: String) {
+    private fun handleAddInstanceShortcut(nodeName: String) {
         viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
@@ -612,7 +615,7 @@ class TimelineViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {

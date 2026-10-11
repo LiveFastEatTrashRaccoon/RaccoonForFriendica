@@ -31,24 +31,25 @@ class SwitchInstanceViewModel(
 
     override fun reduce(intent: SwitchInstanceMvi.Intent) {
         when (intent) {
-            is SwitchInstanceMvi.Intent.SetInstanceName ->
-                viewModelScope.launch {
-                    updateState { it.copy(node = intent.name) }
-                }
-
-            SwitchInstanceMvi.Intent.Submit -> submitChangeNode()
-
-            SwitchInstanceMvi.Intent.Reset -> reset()
+            is SwitchInstanceMvi.Intent.SetInstanceName -> handleSetInstanceName(intent.name)
+            SwitchInstanceMvi.Intent.Submit -> handleSubmit()
+            SwitchInstanceMvi.Intent.Reset -> handleReset()
         }
     }
 
-    private fun reset() {
+    private fun handleSetInstanceName(name: String) {
+        viewModelScope.launch {
+            updateState { it.copy(node = name) }
+        }
+    }
+
+    private fun handleReset() {
         viewModelScope.launch {
             updateState { it.copy(node = "", validationInProgress = false, nodeError = null) }
         }
     }
 
-    private fun submitChangeNode() {
+    private fun handleSubmit() {
         val isLogged = apiConfigurationRepository.isLogged.value
         if (isLogged) {
             return

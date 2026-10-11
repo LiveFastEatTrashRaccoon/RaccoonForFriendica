@@ -26,7 +26,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Explo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
@@ -78,6 +77,7 @@ class ExploreViewModel(
     MviDelegate<ExploreMvi.Intent, ExploreMvi.State, ExploreMvi.Effect> by DefaultMviDelegate(
         initialState = ExploreMvi.State(),
     ) {
+
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -142,77 +142,89 @@ class ExploreViewModel(
 
     override fun reduce(intent: ExploreMvi.Intent) {
         when (intent) {
-            is ExploreMvi.Intent.ChangeSection ->
-                viewModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
-                    updateState { it.copy(section = intent.section) }
-                    emitEffect(ExploreMvi.Effect.BackToTop)
-                    refresh(initial = true)
-                }
+            is ExploreMvi.Intent.ChangeSection -> handleChangeSection(intent.section)
 
-            ExploreMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            ExploreMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            ExploreMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            ExploreMvi.Intent.Refresh -> handleRefresh()
 
-            is ExploreMvi.Intent.Follow -> follow(intent.userId)
+            is ExploreMvi.Intent.Follow -> handleFollow(intent.userId)
 
-            is ExploreMvi.Intent.Unfollow -> unfollow(intent.userId)
+            is ExploreMvi.Intent.Unfollow -> handleUnfollow(intent.userId)
 
-            is ExploreMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ExploreMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            is ExploreMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ExploreMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is ExploreMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is ExploreMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
-            is ExploreMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ExploreMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is ExploreMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is ExploreMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
 
-            is ExploreMvi.Intent.MuteUser ->
-                mute(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                    duration = intent.duration,
-                    disableNotifications = intent.disableNotifications,
-                )
+            is ExploreMvi.Intent.MuteUser -> handleMuteUser(
+                userId = intent.userId,
+                entryId = intent.entryId,
+                duration = intent.duration,
+                disableNotifications = intent.disableNotifications,
+            )
 
-            is ExploreMvi.Intent.BlockUser ->
-                block(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                )
+            is ExploreMvi.Intent.BlockUser -> handleBlockUser(userId = intent.userId, entryId = intent.entryId)
 
-            is ExploreMvi.Intent.TogglePin -> togglePin(intent.entry)
+            is ExploreMvi.Intent.TogglePin -> handleTogglePin(intent.entry)
 
-            is ExploreMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is ExploreMvi.Intent.SubmitPollVote -> handleSubmitPollVote(intent.entry, intent.choices)
 
-            is ExploreMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is ExploreMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
             is ExploreMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is ExploreMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is ExploreMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is ExploreMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is ExploreMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
 
-            ExploreMvi.Intent.ResetOtherInstance -> viewModelScope.launch {
-                updateState { it.copy(otherInstance = null, refreshing = true) }
-                refreshAvailableSections()
-                refresh()
+            ExploreMvi.Intent.ResetOtherInstance -> handleResetOtherInstance()
+
+            is ExploreMvi.Intent.SetSelectForeignInstanceName -> handleSetSelectForeignInstanceName(intent.name)
+
+            ExploreMvi.Intent.SubmitSelectForeignInstanceName -> handleSubmitSelectForeignInstanceName()
+        }
+    }
+
+    private fun handleChangeSection(section: ExploreSection) {
+        viewModelScope.launch {
+            if (uiState.value.loading) {
+                return@launch
             }
+            updateState { it.copy(section = section) }
+            emitEffect(ExploreMvi.Effect.BackToTop)
+            refresh(initial = true)
+        }
+    }
 
-            is ExploreMvi.Intent.SetSelectForeignInstanceName -> viewModelScope.launch {
-                updateState { it.copy(selectForeignInstanceName = intent.name) }
-            }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
 
-            ExploreMvi.Intent.SubmitSelectForeignInstanceName -> submitSelectForeignInstanceName()
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleResetOtherInstance() {
+        viewModelScope.launch {
+            updateState { it.copy(otherInstance = null, refreshing = true) }
+            refreshAvailableSections()
+            refresh()
+        }
+    }
+
+    private fun handleSetSelectForeignInstanceName(name: String) {
+        viewModelScope.launch {
+            updateState { it.copy(selectForeignInstanceName = name) }
         }
     }
 
@@ -304,7 +316,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun follow(userId: String) {
+    private fun handleFollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
@@ -329,7 +341,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun unfollow(userId: String) {
+    private fun handleUnfollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
@@ -399,7 +411,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -434,7 +446,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -460,7 +472,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -486,7 +498,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -520,7 +532,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
@@ -530,7 +542,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
+    private fun handleMuteUser(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         viewModelScope.launch {
             val res =
                 userRepository.mute(
@@ -544,7 +556,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun block(userId: String, entryId: String) {
+    private fun handleBlockUser(userId: String, entryId: String) {
         viewModelScope.launch {
             val res = userRepository.unblock(userId)
             if (res != null) {
@@ -553,7 +565,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun togglePin(entry: TimelineEntryModel) {
+    private fun handleTogglePin(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
@@ -571,7 +583,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -593,7 +605,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -623,7 +635,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun addInstanceShortcut(nodeName: String) {
+    private fun handleAddInstanceShortcut(nodeName: String) {
         viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
@@ -634,7 +646,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {
@@ -658,7 +670,7 @@ class ExploreViewModel(
         }
     }
 
-    private fun submitSelectForeignInstanceName() {
+    private fun handleSubmitSelectForeignInstanceName() {
         viewModelScope.launch {
             val newNode = uiState.value.selectForeignInstanceName
             if (apiConfigurationRepository.node.value == newNode) {

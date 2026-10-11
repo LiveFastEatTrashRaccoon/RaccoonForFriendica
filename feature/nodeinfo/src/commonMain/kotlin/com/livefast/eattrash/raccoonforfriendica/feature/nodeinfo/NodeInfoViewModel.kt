@@ -86,16 +86,18 @@ class NodeInfoViewModel(
 
     override fun reduce(intent: NodeInfoMvi.Intent) {
         when (intent) {
-            is NodeInfoMvi.Intent.SetAnonymousChangeNode ->
-                viewModelScope.launch {
-                    updateState { it.copy(anonymousChangeNodeName = intent.nodeName) }
-                }
-
-            NodeInfoMvi.Intent.SubmitAnonymousChangeNode -> submitChangeNode()
+            is NodeInfoMvi.Intent.SetAnonymousChangeNode -> handleSetAnonymousChangeNode(intent.nodeName)
+            NodeInfoMvi.Intent.SubmitAnonymousChangeNode -> handleSubmitAnonymousChangeNode()
         }
     }
 
-    private fun submitChangeNode() {
+    private fun handleSetAnonymousChangeNode(name: String) {
+        viewModelScope.launch {
+            updateState { it.copy(anonymousChangeNodeName = name) }
+        }
+    }
+
+    private fun handleSubmitAnonymousChangeNode() {
         val isLogged = apiConfigurationRepository.isLogged.value
         if (isLogged) {
             return

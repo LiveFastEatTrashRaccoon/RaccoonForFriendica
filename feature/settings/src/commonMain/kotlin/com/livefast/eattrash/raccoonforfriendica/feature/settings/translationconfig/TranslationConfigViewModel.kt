@@ -30,22 +30,32 @@ class TranslationConfigViewModel(private val translationProviderConfigStore: Tra
 
     override fun reduce(intent: TranslationConfigMvi.Intent) {
         when (intent) {
-            is TranslationConfigMvi.Intent.SwitchDefault -> viewModelScope.launch {
-                translationProviderConfigStore.setDefaultId(intent.config.id)
-            }
+            is TranslationConfigMvi.Intent.SwitchDefault -> handleSwitchDefault(intent.config.id)
+            is TranslationConfigMvi.Intent.AddConfig -> handleAddConfig(url = intent.url, apiKey = intent.apiKey)
+            is TranslationConfigMvi.Intent.DeleteConfig -> handleDeleteConfig(intent.config.id)
+        }
+    }
 
-            is TranslationConfigMvi.Intent.AddConfig -> viewModelScope.launch {
-                val config = TranslationProviderConfig(
-                    name = TranslationProviderTypes.LibreTranslate.name,
-                    url = intent.url,
-                    apiKey = intent.apiKey,
-                )
-                translationProviderConfigStore.create(config)
-            }
+    private fun handleSwitchDefault(configId: String) {
+        viewModelScope.launch {
+            translationProviderConfigStore.setDefaultId(configId)
+        }
+    }
 
-            is TranslationConfigMvi.Intent.DeleteConfig -> viewModelScope.launch {
-                translationProviderConfigStore.delete(intent.config.id)
-            }
+    private fun handleAddConfig(url: String, apiKey: String) {
+        viewModelScope.launch {
+            val config = TranslationProviderConfig(
+                name = TranslationProviderTypes.LibreTranslate.name,
+                url = url,
+                apiKey = apiKey,
+            )
+            translationProviderConfigStore.create(config)
+        }
+    }
+
+    private fun handleDeleteConfig(configId: String) {
+        viewModelScope.launch {
+            translationProviderConfigStore.delete(configId)
         }
     }
 }

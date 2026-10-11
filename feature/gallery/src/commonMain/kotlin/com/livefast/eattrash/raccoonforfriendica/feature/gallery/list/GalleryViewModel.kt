@@ -32,6 +32,7 @@ class GalleryViewModel(
     MviDelegate<GalleryMvi.Intent, GalleryMvi.State, GalleryMvi.Effect>
     by DefaultMviDelegate(initialState = GalleryMvi.State()),
     GalleryMvi {
+
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -60,10 +61,22 @@ class GalleryViewModel(
 
     override fun reduce(intent: GalleryMvi.Intent) {
         when (intent) {
-            GalleryMvi.Intent.Refresh -> viewModelScope.launch { refresh() }
-            GalleryMvi.Intent.LoadNextPage -> viewModelScope.launch { loadNextPage() }
-            is GalleryMvi.Intent.UpdateAlbum -> updateAlbum(intent.oldName, intent.newName)
-            is GalleryMvi.Intent.DeleteAlbum -> deleteAlbum(intent.name)
+            GalleryMvi.Intent.Refresh -> handleRefresh()
+            GalleryMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            is GalleryMvi.Intent.UpdateAlbum -> handleUpdateAlbum(oldName = intent.oldName, newName = intent.newName)
+            is GalleryMvi.Intent.DeleteAlbum -> handleDeleteAlbum(intent.name)
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
         }
     }
 
@@ -118,7 +131,7 @@ class GalleryViewModel(
         }
     }
 
-    private fun updateAlbum(oldName: String, newName: String) {
+    private fun handleUpdateAlbum(oldName: String, newName: String) {
         viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val res =
@@ -135,7 +148,7 @@ class GalleryViewModel(
         }
     }
 
-    private fun deleteAlbum(name: String) {
+    private fun handleDeleteAlbum(name: String) {
         viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
             val res = albumRepository.delete(name)

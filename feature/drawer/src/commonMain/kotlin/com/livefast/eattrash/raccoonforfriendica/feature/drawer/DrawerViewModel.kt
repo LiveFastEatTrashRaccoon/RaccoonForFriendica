@@ -34,6 +34,7 @@ class DrawerViewModel(
     MviDelegate<DrawerMvi.Intent, DrawerMvi.State, DrawerMvi.Effect>
     by DefaultMviDelegate(initialState = DrawerMvi.State()),
     DrawerMvi {
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -79,6 +80,4 @@ class DrawerViewModel(
                 }.launchIn(this)
         }
     }
-
-    override fun reduce(intent: DrawerMvi.Intent) = Unit
 }

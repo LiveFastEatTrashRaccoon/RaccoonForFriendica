@@ -26,6 +26,7 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
     MviDelegate<LicencesMvi.Intent, LicencesMvi.State, LicencesMvi.Effect>
     by DefaultMviDelegate(initialState = LicencesMvi.State()),
     LicencesMvi {
+
     init {
         viewModelScope.launch {
             settingsRepository.current

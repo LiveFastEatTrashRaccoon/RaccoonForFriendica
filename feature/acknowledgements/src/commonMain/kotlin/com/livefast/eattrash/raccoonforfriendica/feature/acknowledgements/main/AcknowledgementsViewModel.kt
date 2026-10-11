@@ -22,6 +22,7 @@ class AcknowledgementsViewModel(private val acknowledgementsRepository: Acknowle
     MviDelegate<AcknowledgementsMvi.Intent, AcknowledgementsMvi.State, AcknowledgementsMvi.Effect>
     by DefaultMviDelegate(initialState = AcknowledgementsMvi.State()),
     AcknowledgementsMvi {
+
     init {
         viewModelScope.launch {
             refresh(initial = true)
@@ -30,10 +31,13 @@ class AcknowledgementsViewModel(private val acknowledgementsRepository: Acknowle
 
     override fun reduce(intent: AcknowledgementsMvi.Intent) {
         when (intent) {
-            AcknowledgementsMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            AcknowledgementsMvi.Intent.Refresh -> handleRefresh()
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 

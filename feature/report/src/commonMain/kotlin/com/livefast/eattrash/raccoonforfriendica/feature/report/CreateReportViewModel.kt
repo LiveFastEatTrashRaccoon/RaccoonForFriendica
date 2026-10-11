@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.report
 
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class CreateReportViewModel(
-    @Assisted args: CreateReportViewModelArgs,
+    @Assisted private val args: CreateReportViewModelArgs,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
@@ -33,9 +34,6 @@ class CreateReportViewModel(
     MviDelegate<CreateReportMvi.Intent, CreateReportMvi.State, CreateReportMvi.Effect>
     by DefaultMviDelegate(initialState = CreateReportMvi.State()),
     CreateReportMvi {
-
-    private val userId = args.userId
-    private val entryId = args.entryId
 
     init {
         viewModelScope.launch {
@@ -55,7 +53,7 @@ class CreateReportViewModel(
                         )
                     }
                 }.launchIn(this)
-            val user = userCache.get(userId)
+            val user = userCache.get(args.userId)
             val rules = nodeInfoRepository.getRules().orEmpty()
             updateState {
                 it.copy(
@@ -68,31 +66,39 @@ class CreateReportViewModel(
 
     override fun reduce(intent: CreateReportMvi.Intent) {
         when (intent) {
-            is CreateReportMvi.Intent.ChangeCategory ->
-                viewModelScope.launch {
-                    updateState { it.copy(category = intent.category) }
-                }
-
-            is CreateReportMvi.Intent.ChangeForward ->
-                viewModelScope.launch {
-                    updateState { it.copy(forward = intent.forward) }
-                }
-
-            is CreateReportMvi.Intent.ChangeViolatedRules ->
-                viewModelScope.launch {
-                    updateState { it.copy(violatedRuleIds = intent.ruleIds) }
-                }
-
-            is CreateReportMvi.Intent.SetComment ->
-                viewModelScope.launch {
-                    updateState { it.copy(commentValue = intent.value) }
-                }
-
-            CreateReportMvi.Intent.Submit -> submit()
+            is CreateReportMvi.Intent.ChangeCategory -> handleChangeCategory(intent.category)
+            is CreateReportMvi.Intent.ChangeForward -> handleChangeForward(intent.forward)
+            is CreateReportMvi.Intent.ChangeViolatedRules -> handleChangeViolatedRules(intent.ruleIds)
+            is CreateReportMvi.Intent.SetComment -> handleSetComment(intent.value)
+            CreateReportMvi.Intent.Submit -> handleSubmit()
         }
     }
 
-    private fun submit() {
+    private fun handleChangeCategory(category: ReportCategory) {
+        viewModelScope.launch {
+            updateState { it.copy(category = category) }
+        }
+    }
+
+    private fun handleChangeForward(forward: Boolean) {
+        viewModelScope.launch {
+            updateState { it.copy(forward = forward) }
+        }
+    }
+
+    private fun handleChangeViolatedRules(ids: List<String>) {
+        viewModelScope.launch {
+            updateState { it.copy(violatedRuleIds = ids) }
+        }
+    }
+
+    private fun handleSetComment(value: TextFieldValue) {
+        viewModelScope.launch {
+            updateState { it.copy(commentValue = value) }
+        }
+    }
+
+    private fun handleSubmit() {
         // validate and submit
         val currentState = uiState.value
         val category = currentState.category
@@ -107,8 +113,8 @@ class CreateReportViewModel(
             updateState { it.copy(loading = true) }
             val successful =
                 reportRepository.create(
-                    userId = userId,
-                    entryIds = entryId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
+                    userId = args.userId,
+                    entryIds = args.entryId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
                     category = category,
                     comment = currentState.commentValue.text,
                     forward = currentState.forward,

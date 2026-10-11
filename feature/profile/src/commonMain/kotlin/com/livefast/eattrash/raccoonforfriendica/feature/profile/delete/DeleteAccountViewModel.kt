@@ -27,11 +27,11 @@ class DeleteAccountViewModel(
 
     override fun reduce(intent: DeleteAccountMvi.Intent) {
         when (intent) {
-            is DeleteAccountMvi.Intent.Submit -> deleteAccount(intent.account)
+            is DeleteAccountMvi.Intent.Submit -> handleSubmit(intent.account)
         }
     }
 
-    private fun deleteAccount(account: AccountModel) {
+    private fun handleSubmit(account: AccountModel) {
         if (account.active) {
             return
         }

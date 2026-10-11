@@ -29,6 +29,7 @@ class ShortcutListViewModel(
     MviDelegate<ShortcutListMvi.Intent, ShortcutListMvi.State, ShortcutListMvi.Effect>
     by DefaultMviDelegate(initialState = ShortcutListMvi.State()),
     ShortcutListMvi {
+
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -49,12 +50,14 @@ class ShortcutListViewModel(
 
     override fun reduce(intent: ShortcutListMvi.Intent) {
         when (intent) {
-            ShortcutListMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            ShortcutListMvi.Intent.Refresh -> handleRefresh()
+            is ShortcutListMvi.Intent.Delete -> handleDelete(intent.node)
+        }
+    }
 
-            is ShortcutListMvi.Intent.Delete -> delete(intent.node)
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -76,7 +79,7 @@ class ShortcutListViewModel(
         }
     }
 
-    private fun delete(node: String) {
+    private fun handleDelete(node: String) {
         viewModelScope.launch {
             updateState {
                 it.copy(operationInProgress = true)

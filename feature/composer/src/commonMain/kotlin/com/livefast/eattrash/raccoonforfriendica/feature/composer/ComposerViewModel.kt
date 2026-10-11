@@ -67,7 +67,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @AssistedInject
 class ComposerViewModel(
-    @Assisted args: ComposerViewModelArgs,
+    @Assisted private val args: ComposerViewModelArgs,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val photoRepository: PhotoRepository,
@@ -91,10 +91,6 @@ class ComposerViewModel(
     MviDelegate<ComposerMvi.Intent, ComposerMvi.State, ComposerMvi.Effect>
     by DefaultMviDelegate(initialState = ComposerMvi.State()),
     ComposerMvi {
-
-    private val inReplyToId = args.inReplyToId
-    private val quotedId = args.quotedId
-
     private var uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
     private var draftId: String? = null
@@ -156,7 +152,7 @@ class ComposerViewModel(
                         )
                     }
                 }.launchIn(this)
-            val parent = inReplyToId?.let { e -> entryCache.get(e) }
+            val parent = args.inReplyToId?.let { e -> entryCache.get(e) }
             val initialVisibility =
                 when {
                     editedPostId != null -> uiState.value.visibility
@@ -171,7 +167,7 @@ class ComposerViewModel(
 
                     else -> currentSettings?.defaultPostVisibility?.toVisibility()
                 } ?: Visibility.Unlisted
-            val quoted = quotedId?.let { e -> entryCache.get(e) ?: TimelineEntryModel(id = e, content = "") }
+            val quoted = args.quotedId?.let { e -> entryCache.get(e) ?: TimelineEntryModel(id = e, content = "") }
             val initialQuotePolicy = userRepository.getCurrent()?.quotePolicy ?: QuotePolicy.Public
 
             updateState {
@@ -203,318 +199,371 @@ class ComposerViewModel(
 
     override fun reduce(intent: ComposerMvi.Intent) {
         when (intent) {
-            is ComposerMvi.Intent.LoadEditedPost -> {
-                editedPostId = intent.id
-                loadEditedPost()
+            is ComposerMvi.Intent.LoadEditedPost -> handleLoadEditedPost(intent.id)
+
+            is ComposerMvi.Intent.AddShareUrl -> handleAddShareUrl(intent.url)
+
+            is ComposerMvi.Intent.LoadScheduled -> handleLoadScheduled(intent.id)
+
+            is ComposerMvi.Intent.LoadDraft -> handleLoadDraft(intent.id)
+
+            is ComposerMvi.Intent.SetFieldValue -> handleSetFieldValue(type = intent.fieldType, value = intent.value)
+
+            ComposerMvi.Intent.ToggleHasSpoiler -> handleToggleHasSpoiler()
+
+            ComposerMvi.Intent.ToggleHasTitle -> handleToggleHasTitle()
+
+            is ComposerMvi.Intent.SetVisibility -> handleSetVisibility(intent.visibility)
+
+            ComposerMvi.Intent.AddInitialAttachment -> handleAddInitialAttachment()
+
+            is ComposerMvi.Intent.AddAttachment -> handleAddAttachment(intent.byteArray)
+
+            is ComposerMvi.Intent.EditAttachmentDescription -> handleEditAttachmentDescription(
+                attachment = intent.attachment,
+                description = intent.description,
+            )
+
+            is ComposerMvi.Intent.RemoveAttachment -> handleRemoveAttachment(intent.attachment)
+
+            is ComposerMvi.Intent.AddLink -> handleAddLink(anchor = intent.link.anchor, url = intent.link.url)
+
+            is ComposerMvi.Intent.AddMention -> handleAddMention(intent.handle)
+
+            is ComposerMvi.Intent.CompleteMention -> handleCompleteMention(intent.handle)
+
+            is ComposerMvi.Intent.CompleteHashtag -> handleCompleteHashtag(intent.name)
+
+            is ComposerMvi.Intent.AddInitialMentions -> handleAddInitialMentions(intent.initialHandle)
+
+            is ComposerMvi.Intent.AddGroupReference -> handleAddGroupReference(intent.handle)
+
+            is ComposerMvi.Intent.SetSensitive -> handleSetSensitive(intent.sensitive)
+
+            is ComposerMvi.Intent.AddBoldFormat -> handleAddBoldFormat(intent.fieldType)
+
+            is ComposerMvi.Intent.AddItalicFormat -> handleAddItalicFormat(intent.fieldType)
+
+            is ComposerMvi.Intent.AddUnderlineFormat -> handleAddUnderlineFormat(intent.fieldType)
+
+            is ComposerMvi.Intent.AddStrikethroughFormat -> handleAddStrikethroughFormat(intent.fieldType)
+
+            is ComposerMvi.Intent.AddCodeFormat -> handleAddCodeFormat(intent.fieldType)
+
+            is ComposerMvi.Intent.AddAttachmentsFromGallery -> handleAddAttachmentsFromGallery(intent.attachments)
+
+            is ComposerMvi.Intent.ChangePublicationType -> handleChangePublicationType(intent.type)
+
+            ComposerMvi.Intent.AddPoll -> handleAddPoll()
+
+            is ComposerMvi.Intent.SetPollMultiple -> handleSetPollMultiple(intent.multiple)
+
+            is ComposerMvi.Intent.SetPollExpirationDate -> handleSetPollExpirationDate(intent.date)
+
+            is ComposerMvi.Intent.AddPollOption -> handleAddPollOption()
+
+            is ComposerMvi.Intent.RemovePollOption -> handleRemovePollOption(intent.index)
+
+            is ComposerMvi.Intent.EditPollOption -> handleEditPollOption(index = intent.index, title = intent.title)
+
+            ComposerMvi.Intent.RemovePoll -> handleRemovePoll()
+
+            is ComposerMvi.Intent.InsertCustomEmoji -> handleInsertCustomEmoji(
+                fieldType = intent.fieldType,
+                emoji = intent.emoji,
+            )
+
+            ComposerMvi.Intent.CreatePreview -> handleCreatePreview()
+
+            is ComposerMvi.Intent.InsertList -> handleInsertList()
+
+            is ComposerMvi.Intent.Submit -> handleSubmit(
+                enableAltTextCheck = intent.enableAltTextCheck,
+                enableParentVisibilityCheck = intent.enableParentVisibilityCheck,
+            )
+
+            is ComposerMvi.Intent.ChangeMarkupMode -> handleChangeMarkupMode(intent.mode)
+
+            is ComposerMvi.Intent.AddInlineImageStep1 -> handleAddInlineImageStep1(intent.byteArray)
+
+            is ComposerMvi.Intent.AddInlineImageStep2 -> handleAddInlineImageStep2(
+                intent.attachment,
+                intent.description,
+            )
+
+            is ComposerMvi.Intent.ChangeQuotePolicy -> handleChangeQuotePolicy(intent.policy)
+        }
+    }
+
+    private fun handleLoadScheduled(id: String) {
+        viewModelScope.launch {
+            editedPostId = id
+            val entry = entryCache.get(id)
+            if (entry != null) {
+                entry.scheduled?.also { scheduleDate ->
+                    updateState {
+                        it.copy(publicationType = PublicationType.Scheduled(scheduleDate))
+                    }
+                }
+                loadEntry(entry)
             }
+        }
+    }
 
-            is ComposerMvi.Intent.AddShareUrl -> addShareUrl(intent.url)
-
-            is ComposerMvi.Intent.LoadScheduled ->
-                viewModelScope.launch {
-                    editedPostId = intent.id
-                    val entry = entryCache.get(intent.id)
-                    if (entry != null) {
-                        entry.scheduled?.also { scheduleDate ->
-                            updateState {
-                                it.copy(publicationType = PublicationType.Scheduled(scheduleDate))
-                            }
-                        }
-                        loadEntry(entry)
-                    }
+    private fun handleLoadDraft(id: String) {
+        viewModelScope.launch {
+            draftId = id
+            val entry = entryCache.get(id)
+            if (entry != null) {
+                updateState {
+                    it.copy(publicationType = PublicationType.Draft)
                 }
+                loadEntry(entry)
+            }
+        }
+    }
 
-            is ComposerMvi.Intent.LoadDraft ->
-                viewModelScope.launch {
-                    draftId = intent.id
-                    val entry = entryCache.get(intent.id)
-                    if (entry != null) {
-                        updateState {
-                            it.copy(publicationType = PublicationType.Draft)
-                        }
-                        loadEntry(entry)
-                    }
-                }
+    private fun handleSetFieldValue(type: ComposerFieldType, value: TextFieldValue) {
+        viewModelScope.launch {
+            when (type) {
+                ComposerFieldType.Body ->
+                    updateBody(value)
 
-            is ComposerMvi.Intent.SetFieldValue ->
-                viewModelScope.launch {
-                    when (intent.fieldType) {
-                        ComposerFieldType.Body ->
-                            updateBody(intent.value)
-
-                        ComposerFieldType.Spoiler ->
-                            updateState {
-                                it.copy(
-                                    spoilerValue = intent.value,
-                                    hasUnsavedChanges = true,
-                                )
-                            }
-
-                        ComposerFieldType.Title ->
-                            updateState {
-                                it.copy(
-                                    titleValue = intent.value,
-                                    hasUnsavedChanges = true,
-                                )
-                            }
-                    }
-                }
-
-            ComposerMvi.Intent.ToggleHasSpoiler ->
-                viewModelScope.launch {
+                ComposerFieldType.Spoiler ->
                     updateState {
                         it.copy(
-                            hasSpoiler = !it.hasSpoiler,
+                            spoilerValue = value,
                             hasUnsavedChanges = true,
                         )
                     }
-                }
 
-            ComposerMvi.Intent.ToggleHasTitle ->
-                viewModelScope.launch {
-                    updateState { it.copy(hasTitle = !it.hasTitle) }
-                }
-
-            is ComposerMvi.Intent.SetVisibility ->
-                viewModelScope.launch {
+                ComposerFieldType.Title ->
                     updateState {
                         it.copy(
-                            visibility = intent.visibility,
+                            titleValue = value,
                             hasUnsavedChanges = true,
                         )
                     }
-                }
+            }
+        }
+    }
 
-            ComposerMvi.Intent.AddInitialAttachment ->
-                viewModelScope.launch {
-                    val attachmentBytes = attachmentCache.get()
-                    attachmentCache.clear()
-                    if (attachmentBytes != null) {
-                        uploadAttachment(
-                            byteArray = attachmentBytes,
-                            isInlineImage = false,
-                        )
-                    }
-                }
+    private fun handleToggleHasSpoiler() {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    hasSpoiler = !it.hasSpoiler,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
 
-            is ComposerMvi.Intent.AddAttachment ->
+    private fun handleToggleHasTitle() {
+        viewModelScope.launch {
+            updateState { it.copy(hasTitle = !it.hasTitle) }
+        }
+    }
+
+    private fun handleSetVisibility(visibility: Visibility) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    visibility = visibility,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleAddInitialAttachment() {
+        viewModelScope.launch {
+            val attachmentBytes = attachmentCache.get()
+            attachmentCache.clear()
+            if (attachmentBytes != null) {
                 uploadAttachment(
-                    byteArray = intent.byteArray,
+                    byteArray = attachmentBytes,
                     isInlineImage = false,
                 )
+            }
+        }
+    }
 
-            is ComposerMvi.Intent.EditAttachmentDescription ->
-                updateAttachmentDescription(intent.attachment, intent.description)
+    private fun handleAddAttachment(byteArray: ByteArray) {
+        uploadAttachment(
+            byteArray = byteArray,
+            isInlineImage = false,
+        )
+    }
 
-            is ComposerMvi.Intent.RemoveAttachment -> removeAttachment(intent.attachment)
-
-            is ComposerMvi.Intent.AddLink ->
-                addLink(
-                    anchor = intent.link.anchor,
-                    url = intent.link.url,
-                )
-
-            is ComposerMvi.Intent.AddMention -> addMention(handle = intent.handle)
-
-            is ComposerMvi.Intent.CompleteMention -> completeMention(intent.handle)
-
-            is ComposerMvi.Intent.CompleteHashtag -> completeHashtag(intent.name)
-
-            is ComposerMvi.Intent.AddInitialMentions ->
-                viewModelScope.launch {
+    private fun handleAddInitialMentions(initialHandle: String?) {
+        viewModelScope.launch {
+            val mentions =
+                buildList {
+                    val currentUserHandle =
+                        identityRepository.currentUser.value
+                            ?.handle
+                            .orEmpty()
+                    val initialValue = initialHandle.orEmpty()
+                    if (initialValue.isNotEmpty() && initialValue != currentUserHandle) {
+                        this += initialValue
+                    }
                     val mentions =
+                        args.inReplyToId
+                            ?.let { entryCache.get(it) }
+                            ?.mentions
+                            .orEmpty()
+                            .mapNotNull { it.handle }
+                            .filterNot { it == initialValue }
+                            .filterNot { it == currentUserHandle }
+                    addAll(mentions)
+                }
+
+            for (mention in mentions) {
+                addMention(handle = mention)
+            }
+        }
+    }
+
+    private fun handleAddMention(handle: String) {
+        addMention(handle = handle)
+    }
+
+    private fun handleAddGroupReference(handle: String) {
+        addMention(handle = handle)
+    }
+
+    private fun handleSetSensitive(sensitive: Boolean) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    sensitive = sensitive,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangePublicationType(type: PublicationType) {
+        viewModelScope.launch {
+            updateState { it.copy(publicationType = type) }
+        }
+    }
+
+    private fun handleAddPoll() {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    poll =
+                    PollModel(
+                        id = "",
+                        options =
                         buildList {
-                            val currentUserHandle =
-                                identityRepository.currentUser.value
-                                    ?.handle
-                                    .orEmpty()
-                            val initialValue = intent.initialHandle.orEmpty()
-                            if (initialValue.isNotEmpty() && initialValue != currentUserHandle) {
-                                this += initialValue
-                            }
-                            val mentions =
-                                inReplyToId
-                                    ?.let { entryCache.get(it) }
-                                    ?.mentions
-                                    .orEmpty()
-                                    .mapNotNull { it.handle }
-                                    .filterNot { it == initialValue }
-                                    .filterNot { it == currentUserHandle }
-                            addAll(mentions)
-                        }
-
-                    for (mention in mentions) {
-                        addMention(handle = mention)
-                    }
-                }
-
-            is ComposerMvi.Intent.AddGroupReference -> addMention(handle = intent.handle)
-
-            is ComposerMvi.Intent.SetSensitive ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            sensitive = intent.sensitive,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is ComposerMvi.Intent.AddBoldFormat -> addBoldFormat(intent.fieldType)
-
-            is ComposerMvi.Intent.AddItalicFormat -> addItalicFormat(intent.fieldType)
-
-            is ComposerMvi.Intent.AddUnderlineFormat -> addUnderlineFormat(intent.fieldType)
-
-            is ComposerMvi.Intent.AddStrikethroughFormat -> addStrikethroughFormat(intent.fieldType)
-
-            is ComposerMvi.Intent.AddCodeFormat -> addCodeFormat(intent.fieldType)
-
-            is ComposerMvi.Intent.AddAttachmentsFromGallery -> addAttachmentsFromGallery(intent.attachments)
-
-            is ComposerMvi.Intent.ChangePublicationType ->
-                viewModelScope.launch {
-                    updateState { it.copy(publicationType = intent.type) }
-                }
-
-            ComposerMvi.Intent.AddPoll ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            poll =
-                            PollModel(
-                                id = "",
-                                options =
-                                buildList {
-                                    this += PollOptionModel(title = "")
-                                    this += PollOptionModel(title = "")
-                                },
-                            ),
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is ComposerMvi.Intent.SetPollMultiple ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            poll = it.poll?.copy(multiple = intent.multiple),
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is ComposerMvi.Intent.SetPollExpirationDate ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            poll = it.poll?.copy(expiresAt = intent.date),
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is ComposerMvi.Intent.AddPollOption ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            poll =
-                            it.poll?.let { p ->
-                                p.copy(
-                                    options =
-                                    buildList {
-                                        addAll(p.options)
-                                        this += PollOptionModel(title = "")
-                                    },
-                                )
-                            },
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is ComposerMvi.Intent.RemovePollOption ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            poll =
-                            it.poll?.let { p ->
-                                p.copy(
-                                    options = p.options.filterIndexed { idx, _ -> idx != intent.index },
-                                )
-                            },
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is ComposerMvi.Intent.EditPollOption ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            poll =
-                            it.poll?.let { p ->
-                                p.copy(
-                                    options =
-                                    p.options.mapIndexed { idx, option ->
-                                        if (idx != intent.index) {
-                                            option
-                                        } else {
-                                            option.copy(title = intent.title)
-                                        }
-                                    },
-                                )
-                            },
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            ComposerMvi.Intent.RemovePoll ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            poll = null,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is ComposerMvi.Intent.InsertCustomEmoji ->
-                insertCustomEmoji(intent.fieldType, intent.emoji)
-
-            ComposerMvi.Intent.CreatePreview ->
-                viewModelScope.launch {
-                    createPreview()
-                }
-
-            is ComposerMvi.Intent.InsertList -> insertList()
-
-            is ComposerMvi.Intent.Submit ->
-                submit(
-                    enableAltTextCheck = intent.enableAltTextCheck,
-                    enableParentVisibilityCheck = intent.enableParentVisibilityCheck,
+                            this += PollOptionModel(title = "")
+                            this += PollOptionModel(title = "")
+                        },
+                    ),
+                    hasUnsavedChanges = true,
                 )
+            }
+        }
+    }
 
-            is ComposerMvi.Intent.ChangeMarkupMode -> changeMarkupMode(intent.mode)
-
-            is ComposerMvi.Intent.AddInlineImageStep1 ->
-                uploadAttachment(
-                    byteArray = intent.byteArray,
-                    isInlineImage = true,
+    private fun handleSetPollMultiple(multiple: Boolean) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    poll = it.poll?.copy(multiple = multiple),
+                    hasUnsavedChanges = true,
                 )
+            }
+        }
+    }
 
-            is ComposerMvi.Intent.AddInlineImageStep2 ->
-                insertInlineImage(
-                    intent.attachment,
-                    intent.description,
+    private fun handleSetPollExpirationDate(date: String) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    poll = it.poll?.copy(expiresAt = date),
+                    hasUnsavedChanges = true,
                 )
+            }
+        }
+    }
 
-            is ComposerMvi.Intent.ChangeQuotePolicy ->
-                viewModelScope.launch {
-                    updateState { it.copy(quotePolicy = intent.policy) }
-                }
+    private fun handleAddPollOption() {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    poll =
+                    it.poll?.let { p ->
+                        p.copy(
+                            options =
+                            buildList {
+                                addAll(p.options)
+                                this += PollOptionModel(title = "")
+                            },
+                        )
+                    },
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleRemovePollOption(index: Int) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    poll =
+                    it.poll?.let { p ->
+                        p.copy(
+                            options = p.options.filterIndexed { idx, _ -> idx != index },
+                        )
+                    },
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleEditPollOption(index: Int, title: String) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    poll =
+                    it.poll?.let { p ->
+                        p.copy(
+                            options =
+                            p.options.mapIndexed { idx, option ->
+                                if (idx != index) {
+                                    option
+                                } else {
+                                    option.copy(title = title)
+                                }
+                            },
+                        )
+                    },
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleRemovePoll() {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    poll = null,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangeQuotePolicy(policy: QuotePolicy) {
+        viewModelScope.launch {
+            updateState { it.copy(quotePolicy = policy) }
         }
     }
 
@@ -616,7 +665,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addAttachmentsFromGallery(attachments: List<AttachmentModel>) {
+    private fun handleAddAttachmentsFromGallery(attachments: List<AttachmentModel>) {
         viewModelScope.launch {
             val currentAttachments = uiState.value.attachments
             val attachmentsToAdd =
@@ -629,7 +678,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addLink(anchor: String, url: String) {
+    private fun handleAddLink(anchor: String, url: String) {
         val markupMode = uiState.value.markupMode
         viewModelScope.launch {
             val before =
@@ -693,7 +742,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun completeMention(handle: String) {
+    private fun handleCompleteMention(handle: String) {
         viewModelScope.launch {
             val additionalPart =
                 buildString {
@@ -736,7 +785,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun completeHashtag(name: String) {
+    private fun handleCompleteHashtag(name: String) {
         viewModelScope.launch {
             val additionalPart =
                 buildString {
@@ -779,7 +828,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addShareUrl(url: String) {
+    private fun handleAddShareUrl(url: String) {
         // share via URL is only supported on Friendica
         if (supportedFeatureRepository.features.value.supportsEntryShare) {
             viewModelScope.launch {
@@ -804,7 +853,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addBoldFormat(fieldType: ComposerFieldType) {
+    private fun handleAddBoldFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
         viewModelScope.launch {
             val value =
@@ -868,7 +917,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addItalicFormat(fieldType: ComposerFieldType) {
+    private fun handleAddItalicFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
         viewModelScope.launch {
             val value =
@@ -932,7 +981,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addUnderlineFormat(fieldType: ComposerFieldType) {
+    private fun handleAddUnderlineFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
         viewModelScope.launch {
             val value =
@@ -996,7 +1045,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addStrikethroughFormat(fieldType: ComposerFieldType) {
+    private fun handleAddStrikethroughFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
         viewModelScope.launch {
             val value =
@@ -1060,7 +1109,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun addCodeFormat(fieldType: ComposerFieldType) {
+    private fun handleAddCodeFormat(fieldType: ComposerFieldType) {
         val markupMode = uiState.value.markupMode
         viewModelScope.launch {
             val value =
@@ -1124,7 +1173,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun insertCustomEmoji(fieldType: ComposerFieldType, emoji: EmojiModel) {
+    private fun handleInsertCustomEmoji(fieldType: ComposerFieldType, emoji: EmojiModel) {
         viewModelScope.launch {
             val value =
                 when (fieldType) {
@@ -1173,7 +1222,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun insertList() {
+    private fun handleInsertList() {
         val markupMode = uiState.value.markupMode
         viewModelScope.launch {
             val before =
@@ -1277,7 +1326,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun updateAttachmentDescription(attachment: AttachmentModel, description: String) {
+    private fun handleEditAttachmentDescription(attachment: AttachmentModel, description: String) {
         viewModelScope.launch {
             val successful =
                 /*
@@ -1311,7 +1360,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun removeAttachment(attachment: AttachmentModel) {
+    private fun handleRemoveAttachment(attachment: AttachmentModel) {
         viewModelScope.launch {
             removeAttachmentFromState(attachment.id)
         }
@@ -1344,9 +1393,9 @@ class ComposerViewModel(
         return value.copy(text = newText, selection = newSelection)
     }
 
-    private fun loadEditedPost() {
-        val id = editedPostId ?: return
+    private fun handleLoadEditedPost(id: String) {
         viewModelScope.launch {
+            editedPostId = id
             updateState { it.copy(loading = true) }
             val entry = timelineEntryRepository.getById(id)
             if (entry != null) {
@@ -1411,35 +1460,37 @@ class ComposerViewModel(
         }
     }
 
-    private suspend fun createPreview() {
-        val currentState = uiState.value
-        val inReplyTo = inReplyToId?.let { entryCache.get(it) }
-        val localId = getUuid()
-        val entry =
-            TimelineEntryModel(
-                creator = currentState.author,
-                spoiler =
-                currentState.spoilerValue.text
-                    .takeIf { currentState.hasSpoiler }
-                    ?.let {
+    private fun handleCreatePreview() {
+        viewModelScope.launch {
+            val currentState = uiState.value
+            val inReplyTo = args.inReplyToId?.let { entryCache.get(it) }
+            val localId = getUuid()
+            val entry =
+                TimelineEntryModel(
+                    creator = currentState.author,
+                    spoiler =
+                    currentState.spoilerValue.text
+                        .takeIf { currentState.hasSpoiler }
+                        ?.let {
+                            prepareForPreview(text = it, mode = currentState.markupMode)
+                        },
+                    title =
+                    currentState.titleValue.text
+                        .takeIf { currentState.hasTitle }
+                        ?.let {
+                            prepareForPreview(text = it, mode = currentState.markupMode)
+                        },
+                    content =
+                    currentState.bodyValue.text.let {
                         prepareForPreview(text = it, mode = currentState.markupMode)
                     },
-                title =
-                currentState.titleValue.text
-                    .takeIf { currentState.hasTitle }
-                    ?.let {
-                        prepareForPreview(text = it, mode = currentState.markupMode)
-                    },
-                content =
-                currentState.bodyValue.text.let {
-                    prepareForPreview(text = it, mode = currentState.markupMode)
-                },
-                poll = currentState.poll,
-                attachments = currentState.attachments,
-                id = localId,
-                inReplyTo = inReplyTo,
-            )
-        emitEffect(ComposerMvi.Effect.OpenPreview(entry))
+                    poll = currentState.poll,
+                    attachments = currentState.attachments,
+                    id = localId,
+                    inReplyTo = inReplyTo,
+                )
+            emitEffect(ComposerMvi.Effect.OpenPreview(entry))
+        }
     }
 
     private suspend fun validate(enableAltTextCheck: Boolean, enableParentVisibilityCheck: Boolean): Boolean {
@@ -1507,7 +1558,7 @@ class ComposerViewModel(
         return true
     }
 
-    private fun changeMarkupMode(mode: MarkupMode) {
+    private fun handleChangeMarkupMode(mode: MarkupMode) {
         val currentState = uiState.value
         val oldMode = currentState.markupMode
         if (mode == oldMode) {
@@ -1532,7 +1583,14 @@ class ComposerViewModel(
         }
     }
 
-    private fun insertInlineImage(attachment: AttachmentModel, description: String) {
+    private fun handleAddInlineImageStep1(byteArray: ByteArray) {
+        uploadAttachment(
+            byteArray = byteArray,
+            isInlineImage = true,
+        )
+    }
+
+    private fun handleAddInlineImageStep2(attachment: AttachmentModel, description: String) {
         viewModelScope.launch {
             val primaryUrl = attachment.url
             val secondaryUrl = attachment.thumbnail ?: attachment.previewUrl ?: primaryUrl
@@ -1561,7 +1619,7 @@ class ComposerViewModel(
         }
     }
 
-    private fun submit(enableAltTextCheck: Boolean, enableParentVisibilityCheck: Boolean) {
+    private fun handleSubmit(enableAltTextCheck: Boolean, enableParentVisibilityCheck: Boolean) {
         val currentState = uiState.value
         if (currentState.loading) {
             return
@@ -1614,8 +1672,8 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId,
-                                    quoted = quotedId,
+                                    inReplyTo = args.inReplyToId,
+                                    quoted = args.quotedId,
                                     quotePolicy = if (quotePolicy != defaultQuotePolicy) {
                                         quotePolicy
                                     } else {
@@ -1640,8 +1698,8 @@ class ComposerViewModel(
                                     id = editId,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId,
-                                    quoted = quotedId,
+                                    inReplyTo = args.inReplyToId,
+                                    quoted = args.quotedId,
                                     quotePolicy = if (quotePolicy != defaultQuotePolicy) {
                                         quotePolicy
                                     } else {
@@ -1661,8 +1719,8 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = inReplyToId,
-                                    quoted = quotedId,
+                                    inReplyTo = args.inReplyToId,
+                                    quoted = args.quotedId,
                                     quotePolicy = if (quotePolicy != defaultQuotePolicy) {
                                         quotePolicy
                                     } else {
@@ -1690,8 +1748,8 @@ class ComposerViewModel(
                                     spoiler = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
-                                    parentId = inReplyToId,
-                                    quoted = quotedId?.let { TimelineEntryModel(id = it, content = "") },
+                                    parentId = args.inReplyToId,
+                                    quoted = args.quotedId?.let { TimelineEntryModel(id = it, content = "") },
                                     lang = currentState.lang,
                                     attachments =
                                     attachmentIds.map {

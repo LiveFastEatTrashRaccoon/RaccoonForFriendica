@@ -50,11 +50,11 @@ class SwitchAccountViewModel(
 
     override fun reduce(intent: SwitchAccountMvi.Intent) {
         when (intent) {
-            is SwitchAccountMvi.Intent.SwitchAccount -> switchAccount(intent.account)
+            is SwitchAccountMvi.Intent.SwitchAccount -> handleSwitchAccount(intent.account)
         }
     }
 
-    private fun switchAccount(account: AccountModel) {
+    private fun handleSwitchAccount(account: AccountModel) {
         val currentUserId = uiState.value.currentUserId
         if (currentUserId != null && account.remoteId == currentUserId) {
             return
