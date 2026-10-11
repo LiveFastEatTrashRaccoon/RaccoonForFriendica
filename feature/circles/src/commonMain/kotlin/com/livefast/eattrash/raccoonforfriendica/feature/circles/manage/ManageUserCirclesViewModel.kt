@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class ManageUserCirclesViewModel(
-    @Assisted args: ManageUserCirclesViewModelArgs,
+    @Assisted private val args: ManageUserCirclesViewModelArgs,
     private val circlesRepository: CirclesRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val userRepository: UserRepository,
@@ -33,12 +33,10 @@ class ManageUserCirclesViewModel(
     by DefaultMviDelegate(initialState = ManageUserCirclesMvi.State()),
     ManageUserCirclesMvi {
 
-    private val userId = args.userId
-
     init {
         viewModelScope.launch {
             if (uiState.value.initial) {
-                val user = userCache.get(userId)
+                val user = userCache.get(args.userId)
                 updateState { it.copy(user = user) }
                 refresh(initial = true)
             }
@@ -47,13 +45,15 @@ class ManageUserCirclesViewModel(
 
     override fun reduce(intent: ManageUserCirclesMvi.Intent) {
         when (intent) {
-            ManageUserCirclesMvi.Intent.Refresh -> viewModelScope.launch {
-                refresh()
-            }
+            ManageUserCirclesMvi.Intent.Refresh -> handleRefresh()
+            is ManageUserCirclesMvi.Intent.Add -> handleAdd(intent.circleId)
+            is ManageUserCirclesMvi.Intent.Remove -> handleRemove(intent.circleId)
+        }
+    }
 
-            is ManageUserCirclesMvi.Intent.Add -> addUserToCircle(intent.circleId)
-
-            is ManageUserCirclesMvi.Intent.Remove -> removeUserFrom(intent.circleId)
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -61,7 +61,7 @@ class ManageUserCirclesViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val circlesWithUser = userRepository.getListsContaining(userId).orEmpty()
+        val circlesWithUser = userRepository.getListsContaining(args.userId).orEmpty()
         val containingIds = circlesWithUser.map { it.id }
         val circlesWithoutUser = circlesRepository.getAll().orEmpty().filter { it.id !in containingIds }
         val items = buildList {
@@ -106,14 +106,14 @@ class ManageUserCirclesViewModel(
         }
     }
 
-    private fun addUserToCircle(circleId: String) {
+    private fun handleAdd(circleId: String) {
         viewModelScope.launch {
             updateItemInState(id = circleId) {
                 it.copy(pending = true)
             }
             val success = circlesRepository.addMembers(
                 id = circleId,
-                userIds = listOf(userId),
+                userIds = listOf(args.userId),
             )
             if (success) {
                 updateItemInState(id = circleId) {
@@ -131,14 +131,14 @@ class ManageUserCirclesViewModel(
         }
     }
 
-    private fun removeUserFrom(circleId: String) {
+    private fun handleRemove(circleId: String) {
         viewModelScope.launch {
             updateItemInState(id = circleId) {
                 it.copy(pending = true)
             }
             val success = circlesRepository.removeMembers(
                 id = circleId,
-                userIds = listOf(userId),
+                userIds = listOf(args.userId),
             )
             if (success) {
                 updateItemInState(id = circleId) {

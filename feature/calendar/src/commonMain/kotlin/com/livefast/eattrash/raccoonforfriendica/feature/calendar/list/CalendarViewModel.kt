@@ -33,6 +33,7 @@ class CalendarViewModel(
     MviDelegate<CalendarMvi.Intent, CalendarMvi.State, CalendarMvi.Effect>
     by DefaultMviDelegate(initialState = CalendarMvi.State()),
     CalendarMvi {
+
     init {
         viewModelScope.launch {
             identityRepository.currentUser
@@ -54,15 +55,20 @@ class CalendarViewModel(
 
     override fun reduce(intent: CalendarMvi.Intent) {
         when (intent) {
-            CalendarMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            CalendarMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            CalendarMvi.Intent.Refresh -> handleRefresh()
+        }
+    }
 
-            CalendarMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 

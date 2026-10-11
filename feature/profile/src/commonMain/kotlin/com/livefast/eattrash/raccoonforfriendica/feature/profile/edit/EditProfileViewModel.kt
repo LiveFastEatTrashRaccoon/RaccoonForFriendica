@@ -8,6 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -47,6 +48,7 @@ class EditProfileViewModel(
     MviDelegate<EditProfileMvi.Intent, EditProfileMvi.State, EditProfileMvi.Effect>
     by DefaultMviDelegate(initialState = EditProfileMvi.State()),
     EditProfileMvi {
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled.onEach { autoloadImages ->
@@ -89,111 +91,129 @@ class EditProfileViewModel(
 
     override fun reduce(intent: EditProfileMvi.Intent) {
         when (intent) {
-            is EditProfileMvi.Intent.ChangeBio ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            bio = intent.value,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is EditProfileMvi.Intent.ChangeBot ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            bot = intent.bot,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is EditProfileMvi.Intent.ChangeDiscoverable ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            discoverable = intent.discoverable,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is EditProfileMvi.Intent.ChangeDisplayName ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            displayName = intent.value,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is EditProfileMvi.Intent.ChangeLocked ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            locked = intent.locked,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is EditProfileMvi.Intent.ChangeHideCollections ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            hideCollections = intent.hideCollections,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            is EditProfileMvi.Intent.ChangeNoIndex ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            noIndex = intent.noIndex,
-                            hasUnsavedChanges = true,
-                        )
-                    }
-                }
-
-            EditProfileMvi.Intent.AddField -> addField()
-            is EditProfileMvi.Intent.RemoveField -> removeField(index = intent.index)
-            is EditProfileMvi.Intent.EditField ->
-                editField(
-                    index = intent.index,
-                    key = intent.key,
-                    value = intent.value,
-                )
-
-            is EditProfileMvi.Intent.AvatarSelected -> loadImageAvatar(intent.bytes)
-            is EditProfileMvi.Intent.HeaderSelected -> loadImageHeader(intent.bytes)
-            is EditProfileMvi.Intent.InsertCustomEmoji ->
-                insertCustomEmoji(intent.fieldType, intent.emoji)
-
-            EditProfileMvi.Intent.DeleteAccount ->
-                viewModelScope.launch {
-                    val node = apiConfigurationRepository.node.value
-                    val url = "https://$node"
-                    emitEffect(EditProfileMvi.Effect.OpenUrl(url))
-                }
-
-            is EditProfileMvi.Intent.ChangeQuotePolicy -> viewModelScope.launch {
-                updateState {
-                    it.copy(
-                        quotePolicy = intent.policy,
-                        hasUnsavedChanges = true,
-                    )
-                }
-            }
-
-            EditProfileMvi.Intent.Submit -> submit()
+            is EditProfileMvi.Intent.ChangeBio -> handleChangeBio(intent.value)
+            is EditProfileMvi.Intent.ChangeBot -> handleChangeBot(intent.bot)
+            is EditProfileMvi.Intent.ChangeDiscoverable -> handleChangeDiscoverable(intent.discoverable)
+            is EditProfileMvi.Intent.ChangeDisplayName -> handleChangeDisplayName(intent.value)
+            is EditProfileMvi.Intent.ChangeLocked -> handleChangeLocked(intent.locked)
+            is EditProfileMvi.Intent.ChangeHideCollections -> handleChangeHideCollections(intent.hideCollections)
+            is EditProfileMvi.Intent.ChangeNoIndex -> handleChangeNoIndex(intent.noIndex)
+            EditProfileMvi.Intent.AddField -> handleAddField()
+            is EditProfileMvi.Intent.RemoveField -> handleRemoveField(intent.index)
+            is EditProfileMvi.Intent.EditField -> handleEditField(
+                index = intent.index,
+                key = intent.key,
+                value = intent.value,
+            )
+            is EditProfileMvi.Intent.AvatarSelected -> handleAvatarSelected(intent.bytes)
+            is EditProfileMvi.Intent.HeaderSelected -> handleHeaderSelected(intent.bytes)
+            is EditProfileMvi.Intent.InsertCustomEmoji -> handleInsertCustomEmoji(
+                fieldType = intent.fieldType,
+                emoji = intent.emoji
+            )
+            EditProfileMvi.Intent.DeleteAccount -> handleDeleteAccount()
+            is EditProfileMvi.Intent.ChangeQuotePolicy -> handleChangeQuotePolicy(intent.policy)
+            EditProfileMvi.Intent.Submit -> handleSubmit()
         }
     }
 
-    private fun addField() {
+    private fun handleChangeBio(value: TextFieldValue) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    bio = value,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangeBot(bot: Boolean) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    bot = bot,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangeDiscoverable(discoverable: Boolean) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    discoverable = discoverable,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangeDisplayName(value: TextFieldValue) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    displayName = value,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangeLocked(locked: Boolean) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    locked = locked,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangeHideCollections(hideCollections: Boolean) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    hideCollections = hideCollections,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleChangeNoIndex(noIndex: Boolean) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    noIndex = noIndex,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleDeleteAccount() {
+        viewModelScope.launch {
+            val node = apiConfigurationRepository.node.value
+            val url = "https://$node"
+            emitEffect(EditProfileMvi.Effect.OpenUrl(url))
+        }
+    }
+
+    private fun handleChangeQuotePolicy(policy: QuotePolicy) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    quotePolicy = policy,
+                    hasUnsavedChanges = true,
+                )
+            }
+        }
+    }
+
+    private fun handleAddField() {
         viewModelScope.launch {
             updateState {
                 val newFields = it.fields + FieldModel("", "")
@@ -206,7 +226,7 @@ class EditProfileViewModel(
         }
     }
 
-    private fun editField(index: Int, key: String, value: String) {
+    private fun handleEditField(index: Int, key: String, value: String) {
         viewModelScope.launch {
             updateState {
                 val newFields =
@@ -225,7 +245,7 @@ class EditProfileViewModel(
         }
     }
 
-    private fun removeField(index: Int) {
+    private fun handleRemoveField(index: Int) {
         viewModelScope.launch {
             updateState {
                 val newFields = it.fields.filterIndexed { idx, _ -> idx != index }
@@ -238,7 +258,7 @@ class EditProfileViewModel(
         }
     }
 
-    private fun loadImageAvatar(bytes: ByteArray) {
+    private fun handleAvatarSelected(bytes: ByteArray) {
         if (bytes.isEmpty()) { return }
         viewModelScope.launch(Dispatchers.IO) {
             updateState {
@@ -250,7 +270,7 @@ class EditProfileViewModel(
         }
     }
 
-    private fun loadImageHeader(bytes: ByteArray) {
+    private fun handleHeaderSelected(bytes: ByteArray) {
         if (bytes.isEmpty()) { return }
         viewModelScope.launch(Dispatchers.IO) {
             updateState {
@@ -288,7 +308,7 @@ class EditProfileViewModel(
         return value.copy(text = newText, selection = newSelection)
     }
 
-    private fun insertCustomEmoji(fieldType: EditProfilerFieldType, emoji: EmojiModel) {
+    private fun handleInsertCustomEmoji(fieldType: EditProfilerFieldType, emoji: EmojiModel) {
         viewModelScope.launch {
             val value =
                 when (fieldType) {
@@ -319,7 +339,7 @@ class EditProfileViewModel(
         }
     }
 
-    private fun submit() {
+    private fun handleSubmit() {
         val currentState = uiState.value
         if (currentState.loading) { return }
 

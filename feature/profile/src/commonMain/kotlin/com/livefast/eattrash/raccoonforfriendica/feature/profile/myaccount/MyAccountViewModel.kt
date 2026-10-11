@@ -71,6 +71,7 @@ class MyAccountViewModel(
     MviDelegate<MyAccountMvi.Intent, MyAccountMvi.State, MyAccountMvi.Effect>
     by DefaultMviDelegate(initialState = MyAccountMvi.State()),
     MyAccountMvi {
+
     init {
         viewModelScope.launch {
             identityRepository
@@ -161,42 +162,53 @@ class MyAccountViewModel(
 
     override fun reduce(intent: MyAccountMvi.Intent) {
         when (intent) {
-            is MyAccountMvi.Intent.ChangeSection ->
-                viewModelScope.launch {
-                    if (uiState.value.loading) { return@launch }
-                    updateState { it.copy(section = intent.section) }
-                    emitEffect(MyAccountMvi.Effect.BackToTop)
-                    refresh(initial = true)
-                }
+            is MyAccountMvi.Intent.ChangeSection -> handleChangeSection(intent.section)
+            MyAccountMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            MyAccountMvi.Intent.Refresh -> handleRefresh()
+            is MyAccountMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
+            is MyAccountMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
+            is MyAccountMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
+            is MyAccountMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
+            is MyAccountMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
+            is MyAccountMvi.Intent.TogglePin -> handleTogglePin(intent.entry)
+            is MyAccountMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
+            is MyAccountMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+            MyAccountMvi.Intent.Logout -> handleLogout()
+        }
+    }
 
-            MyAccountMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            launch {
+                val currentUser = userRepository.getCurrent(refresh = true)
+                updateState { it.copy(user = currentUser) }
+            }
+            launch {
+                refresh()
+            }
+        }
+    }
 
-            MyAccountMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    launch {
-                        val currentUser = userRepository.getCurrent(refresh = true)
-                        updateState { it.copy(user = currentUser) }
-                    }
-                    launch {
-                        refresh()
-                    }
-                }
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
 
-            is MyAccountMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
-            is MyAccountMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
-            is MyAccountMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
-            is MyAccountMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
-            is MyAccountMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
-            is MyAccountMvi.Intent.TogglePin -> togglePin(intent.entry)
-            is MyAccountMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
-            is MyAccountMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
-            MyAccountMvi.Intent.Logout ->
-                viewModelScope.launch {
-                    logout()
-                }
+    private fun handleChangeSection(section: UserSection) {
+        viewModelScope.launch {
+            if (uiState.value.loading) {
+                return@launch
+            }
+            updateState { it.copy(section = section) }
+            emitEffect(MyAccountMvi.Effect.BackToTop)
+            refresh(initial = true)
+        }
+    }
+
+    private fun handleLogout() {
+        viewModelScope.launch {
+            logout()
         }
     }
 
@@ -287,7 +299,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -322,7 +334,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -348,7 +360,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -374,7 +386,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -408,7 +420,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
@@ -420,7 +432,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun togglePin(entry: TimelineEntryModel) {
+    private fun handleTogglePin(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
@@ -442,7 +454,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -459,7 +471,7 @@ class MyAccountViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {

@@ -48,20 +48,27 @@ class SelectUserViewModel(private val userPaginationManager: UserPaginationManag
 
     override fun reduce(intent: SelectUserMvi.Intent) {
         when (intent) {
-            SelectUserMvi.Intent.Clear ->
-                viewModelScope.launch {
-                    updateState { it.copy(users = emptyList()) }
-                }
+            SelectUserMvi.Intent.Clear -> handleClear()
+            SelectUserMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            is SelectUserMvi.Intent.SetQuery -> handleSetQuery(intent.query)
+        }
+    }
 
-            SelectUserMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPageUsers()
-                }
+    private fun handleClear() {
+        viewModelScope.launch {
+            updateState { it.copy(users = emptyList()) }
+        }
+    }
 
-            is SelectUserMvi.Intent.SetQuery ->
-                viewModelScope.launch {
-                    updateState { it.copy(query = intent.query) }
-                }
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPageUsers()
+        }
+    }
+
+    private fun handleSetQuery(query: String) {
+        viewModelScope.launch {
+            updateState { it.copy(query = query) }
         }
     }
 

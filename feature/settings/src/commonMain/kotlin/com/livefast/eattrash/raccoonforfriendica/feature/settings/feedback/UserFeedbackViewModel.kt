@@ -26,23 +26,28 @@ class UserFeedbackViewModel(private val crashReportManager: CrashReportManager) 
     MviDelegate<UserFeedbackMvi.Intent, UserFeedbackMvi.State, UserFeedbackMvi.Effect>
     by DefaultMviDelegate(initialState = UserFeedbackMvi.State()),
     UserFeedbackMvi {
+
     override fun reduce(intent: UserFeedbackMvi.Intent) {
         when (intent) {
-            is UserFeedbackMvi.Intent.SetComment ->
-                viewModelScope.launch {
-                    updateState { it.copy(comment = intent.comment) }
-                }
-
-            is UserFeedbackMvi.Intent.SetEmail ->
-                viewModelScope.launch {
-                    updateState { it.copy(email = intent.email) }
-                }
-
-            UserFeedbackMvi.Intent.Submit -> submit()
+            is UserFeedbackMvi.Intent.SetComment -> handleSetComment(intent.comment)
+            is UserFeedbackMvi.Intent.SetEmail -> handleSetEmail(intent.email)
+            UserFeedbackMvi.Intent.Submit -> handleSubmit()
         }
     }
 
-    private fun submit() {
+    private fun handleSetComment(comment: String) {
+        viewModelScope.launch {
+            updateState { it.copy(comment = comment) }
+        }
+    }
+
+    private fun handleSetEmail(email: String) {
+        viewModelScope.launch {
+            updateState { it.copy(email = email) }
+        }
+    }
+
+    private fun handleSubmit() {
         viewModelScope.launch {
             val currentState = uiState.value
             val email = currentState.email

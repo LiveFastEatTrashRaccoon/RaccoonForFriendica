@@ -78,38 +78,49 @@ class ManageBlocksViewModel(
 
     override fun reduce(intent: ManageBlocksMvi.Intent) {
         when (intent) {
-            is ManageBlocksMvi.Intent.ChangeSection ->
-                viewModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
-                    updateState { it.copy(section = intent.section) }
-                    emitEffect(ManageBlocksMvi.Effect.BackToTop)
-                    refresh(initial = true)
-                }
+            is ManageBlocksMvi.Intent.ChangeSection -> handleChangeSection(intent.section)
 
-            ManageBlocksMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    if (uiState.value.section != ManageBlocksSection.StopWords) {
-                        loadNextUserPage()
-                    }
-                }
+            ManageBlocksMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            ManageBlocksMvi.Intent.Refresh -> viewModelScope.launch { refresh() }
+            ManageBlocksMvi.Intent.Refresh -> handleRefresh()
 
-            is ManageBlocksMvi.Intent.ToggleMute -> unmute(intent.userId)
+            is ManageBlocksMvi.Intent.ToggleMute -> handleToggleMute(intent.userId)
 
-            is ManageBlocksMvi.Intent.ToggleBlock -> unblock(intent.userId)
+            is ManageBlocksMvi.Intent.ToggleBlock -> handleToggleBlock(intent.userId)
 
-            is ManageBlocksMvi.Intent.SetRateLimit ->
-                setRateLimit(
-                    handle = intent.handle,
-                    value = intent.rate,
-                )
+            is ManageBlocksMvi.Intent.SetRateLimit -> handleSetRateLimit(
+                handle = intent.handle,
+                value = intent.rate,
+            )
 
-            is ManageBlocksMvi.Intent.AddStopWord -> addStopWord(intent.word)
+            is ManageBlocksMvi.Intent.AddStopWord -> handleAddStopWord(intent.word)
 
-            is ManageBlocksMvi.Intent.RemoveStopWord -> removeStopWord(intent.word)
+            is ManageBlocksMvi.Intent.RemoveStopWord -> handleRemoveStopWord(intent.word)
+        }
+    }
+
+    private fun handleChangeSection(section: ManageBlocksSection) {
+        viewModelScope.launch {
+            if (uiState.value.loading) {
+                return@launch
+            }
+            updateState { it.copy(section = section) }
+            emitEffect(ManageBlocksMvi.Effect.BackToTop)
+            refresh(initial = true)
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            if (uiState.value.section != ManageBlocksSection.StopWords) {
+                loadNextUserPage()
+            }
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -199,7 +210,7 @@ class ManageBlocksViewModel(
         }
     }
 
-    private fun unmute(userId: String) {
+    private fun handleToggleMute(userId: String) {
         viewModelScope.launch {
             val res = userRepository.unmute(userId)
             if (res != null) {
@@ -208,7 +219,7 @@ class ManageBlocksViewModel(
         }
     }
 
-    private fun unblock(userId: String) {
+    private fun handleToggleBlock(userId: String) {
         viewModelScope.launch {
             val res = userRepository.unblock(userId)
             if (res != null) {
@@ -217,7 +228,7 @@ class ManageBlocksViewModel(
         }
     }
 
-    private fun setRateLimit(handle: String, value: Double) {
+    private fun handleSetRateLimit(handle: String, value: Double) {
         viewModelScope.launch {
             val accountId = accountRepository.getActive()?.id ?: return@launch
             val currentRate = userRateLimitRepository.getBy(handle = handle, accountId = accountId)
@@ -235,7 +246,7 @@ class ManageBlocksViewModel(
         }
     }
 
-    private fun addStopWord(word: String) {
+    private fun handleAddStopWord(word: String) {
         if (word.isBlank()) {
             return
         }
@@ -255,7 +266,7 @@ class ManageBlocksViewModel(
         }
     }
 
-    private fun removeStopWord(word: String) {
+    private fun handleRemoveStopWord(word: String) {
         viewModelScope.launch {
             mutex.withLock {
                 val newValues = originalStopWords - word

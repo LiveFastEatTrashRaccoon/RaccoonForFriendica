@@ -24,7 +24,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRe
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
@@ -49,7 +48,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class HashtagViewModel(
-    @Assisted args: HashtagViewModelArgs,
+    @Assisted private val args: HashtagViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val timelineEntryRepository: TimelineEntryRepository,
     private val tagRepository: TagRepository,
@@ -73,8 +72,6 @@ class HashtagViewModel(
     MviDelegate<HashtagMvi.Intent, HashtagMvi.State, HashtagMvi.Effect>
     by DefaultMviDelegate(initialState = HashtagMvi.State()),
     HashtagMvi {
-
-    private val tag = args.tag
 
     init {
         viewModelScope.launch {
@@ -126,7 +123,7 @@ class HashtagViewModel(
                 }.launchIn(this)
 
             if (uiState.value.initial) {
-                val model = tagRepository.getBy(tag)
+                val model = tagRepository.getBy(args.tag)
                 updateState {
                     it.copy(
                         following = model?.following == true,
@@ -139,60 +136,64 @@ class HashtagViewModel(
 
     override fun reduce(intent: HashtagMvi.Intent) {
         when (intent) {
-            HashtagMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            HashtagMvi.Intent.Refresh -> handleRefresh()
 
-            HashtagMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            HashtagMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            is HashtagMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is HashtagMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is HashtagMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is HashtagMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is HashtagMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is HashtagMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
-            is HashtagMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is HashtagMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            is HashtagMvi.Intent.ToggleTagFollow -> toggleTagFollow(intent.newValue)
+            is HashtagMvi.Intent.ToggleTagFollow -> handleToggleTagFollow(intent.newValue)
 
-            is HashtagMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+            is HashtagMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
 
-            is HashtagMvi.Intent.MuteUser ->
-                mute(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                    duration = intent.duration,
-                    disableNotifications = intent.disableNotifications,
-                )
+            is HashtagMvi.Intent.MuteUser -> handleMuteUser(
+                userId = intent.userId,
+                entryId = intent.entryId,
+                duration = intent.duration,
+                disableNotifications = intent.disableNotifications,
+            )
 
-            is HashtagMvi.Intent.BlockUser ->
-                block(
-                    userId = intent.userId,
-                    entryId = intent.entryId,
-                )
+            is HashtagMvi.Intent.BlockUser -> handleBlockUser(userId = intent.userId, entryId = intent.entryId)
 
-            is HashtagMvi.Intent.TogglePin -> togglePin(intent.entry)
+            is HashtagMvi.Intent.TogglePin -> handleTogglePin(intent.entry)
 
-            is HashtagMvi.Intent.SubmitPollVote -> submitPoll(intent.entry, intent.choices)
+            is HashtagMvi.Intent.SubmitPollVote -> handleSubmitPollVote(intent.entry, intent.choices)
 
-            is HashtagMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is HashtagMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
             is HashtagMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is HashtagMvi.Intent.WillOpenDetail ->
-                viewModelScope.launch {
-                    val state = paginationManager.extractState()
-                    timelineNavigationManager.push(state)
-                    emitEffect(HashtagMvi.Effect.OpenDetail(intent.entry))
-                }
+            is HashtagMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.entry)
 
-            is HashtagMvi.Intent.AddInstanceShortcut -> addInstanceShortcut(intent.node)
+            is HashtagMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is HashtagMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is HashtagMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleWillOpenDetail(entry: TimelineEntryModel) {
+        viewModelScope.launch {
+            val state = paginationManager.extractState()
+            timelineNavigationManager.push(state)
+            emitEffect(HashtagMvi.Effect.OpenDetail(entry))
         }
     }
 
@@ -202,7 +203,7 @@ class HashtagViewModel(
         }
         paginationManager.reset(
             TimelinePaginationSpecification.Hashtag(
-                hashtag = tag,
+                hashtag = args.tag,
                 includeNsfw = settingsRepository.current.value?.includeNsfw == true,
             ),
         )
@@ -275,7 +276,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -310,7 +311,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -336,7 +337,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -362,7 +363,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -396,15 +397,15 @@ class HashtagViewModel(
         }
     }
 
-    private fun toggleTagFollow(newFollowing: Boolean) {
+    private fun handleToggleTagFollow(newFollowing: Boolean) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(followingPending = true) }
             val newModel =
                 if (newFollowing) {
-                    tagRepository.follow(tag)
+                    tagRepository.follow(args.tag)
                 } else {
-                    tagRepository.unfollow(tag)
+                    tagRepository.unfollow(args.tag)
                 }?.also { tag ->
                     notificationCenter.send(TagUpdatedEvent(tag = tag))
                 }
@@ -417,7 +418,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         viewModelScope.launch {
             val success = timelineEntryRepository.delete(entryId)
             if (success) {
@@ -427,7 +428,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun mute(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
+    private fun handleMuteUser(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
         viewModelScope.launch {
             val res =
                 userRepository.mute(
@@ -441,7 +442,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun block(userId: String, entryId: String) {
+    private fun handleBlockUser(userId: String, entryId: String) {
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
@@ -450,7 +451,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun togglePin(entry: TimelineEntryModel) {
+    private fun handleTogglePin(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val newEntry =
                 if (entry.pinned) {
@@ -468,7 +469,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -486,7 +487,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -516,7 +517,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun addInstanceShortcut(nodeName: String) {
+    private fun handleAddInstanceShortcut(nodeName: String) {
         viewModelScope.launch {
             accountRepository.getActive()?.id?.also { accountId ->
                 instanceShortcutRepository.create(
@@ -527,7 +528,7 @@ class HashtagViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {

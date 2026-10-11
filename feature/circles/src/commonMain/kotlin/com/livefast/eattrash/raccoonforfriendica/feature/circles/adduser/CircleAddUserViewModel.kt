@@ -49,15 +49,20 @@ class CircleAddUserViewModel(
 
     override fun reduce(intent: CircleAddUserMvi.Intent) {
         when (intent) {
-            is CircleAddUserMvi.Intent.SetQuery ->
-                viewModelScope.launch {
-                    updateState { it.copy(query = intent.text) }
-                }
+            is CircleAddUserMvi.Intent.SetQuery -> handleSetQuery(intent.text)
+            CircleAddUserMvi.Intent.LoadNextPage -> handleLoadNextPage()
+        }
+    }
 
-            CircleAddUserMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPageSearchUsers()
-                }
+    private fun handleSetQuery(query: String) {
+        viewModelScope.launch {
+            updateState { it.copy(query = query) }
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPageSearchUsers()
         }
     }
 

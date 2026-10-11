@@ -9,6 +9,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePrelo
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
@@ -60,6 +61,7 @@ class InboxViewModel(
     MviDelegate<InboxMvi.Intent, InboxMvi.State, InboxMvi.Effect>
     by DefaultMviDelegate(initialState = InboxMvi.State()),
     InboxMvi {
+
     init {
         viewModelScope.launch {
             identityRepository.currentUser
@@ -97,36 +99,37 @@ class InboxViewModel(
 
     override fun reduce(intent: InboxMvi.Intent) {
         when (intent) {
-            InboxMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            InboxMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            InboxMvi.Intent.Refresh -> handleRefresh()
+            is InboxMvi.Intent.ChangeSelectedNotificationTypes -> handleChangeSelectedNotificationTypes(intent.types)
+            is InboxMvi.Intent.Follow -> handleFollow(intent.userId)
+            is InboxMvi.Intent.Unfollow -> handleUnfollow(intent.userId)
+            is InboxMvi.Intent.MarkAsRead -> handleMarkAsRead(intent.notification)
+            InboxMvi.Intent.DismissAll -> handleDismissAll()
+            is InboxMvi.Intent.Dismiss -> handleDismiss(intent.notification)
+            is InboxMvi.Intent.RevokeQuote -> handleRevokeQuote(intent.entry)
+        }
+    }
 
-            InboxMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
 
-            is InboxMvi.Intent.ChangeSelectedNotificationTypes ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(selectedNotificationTypes = intent.types, initial = true)
-                    }
-                    emitEffect(InboxMvi.Effect.BackToTop)
-                    refresh(initial = true, forceRefresh = true)
-                }
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
 
-            is InboxMvi.Intent.Follow -> follow(intent.userId)
-
-            is InboxMvi.Intent.Unfollow -> unfollow(intent.userId)
-
-            is InboxMvi.Intent.MarkAsRead -> markAsRead(intent.notification)
-
-            InboxMvi.Intent.DismissAll -> dismissAll()
-
-            is InboxMvi.Intent.Dismiss -> dismiss(intent.notification)
-
-            is InboxMvi.Intent.RevokeQuote -> revokeQuote(intent.entry)
+    private fun handleChangeSelectedNotificationTypes(types: List<NotificationType>) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(selectedNotificationTypes = types, initial = true)
+            }
+            emitEffect(InboxMvi.Effect.BackToTop)
+            refresh(initial = true, forceRefresh = true)
         }
     }
 
@@ -230,7 +233,7 @@ class InboxViewModel(
         }
     }
 
-    private fun follow(userId: String) {
+    private fun handleFollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
@@ -252,7 +255,7 @@ class InboxViewModel(
         }
     }
 
-    private fun unfollow(userId: String) {
+    private fun handleUnfollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
@@ -288,7 +291,7 @@ class InboxViewModel(
         }
     }
 
-    private fun markAsRead(notification: NotificationModel) {
+    private fun handleMarkAsRead(notification: NotificationModel) {
         if (notification.read) {
             return
         }
@@ -298,7 +301,7 @@ class InboxViewModel(
         }
     }
 
-    private fun dismiss(notification: NotificationModel) {
+    private fun handleDismiss(notification: NotificationModel) {
         if (notification.read) {
             return
         }
@@ -311,7 +314,7 @@ class InboxViewModel(
         }
     }
 
-    private fun dismissAll() {
+    private fun handleDismissAll() {
         viewModelScope.launch {
             updateState { it.copy(markAllAsReadLoading = true) }
             notificationRepository.dismissAll()
@@ -320,7 +323,7 @@ class InboxViewModel(
         }
     }
 
-    private fun revokeQuote(entry: TimelineEntryModel) {
+    private fun handleRevokeQuote(entry: TimelineEntryModel) {
         viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val success = entryRepository.revokeQuote(

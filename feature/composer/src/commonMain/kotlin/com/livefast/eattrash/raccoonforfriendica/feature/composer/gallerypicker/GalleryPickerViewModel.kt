@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.AlbumPhotoPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
@@ -31,29 +32,36 @@ class GalleryPickerViewModel(
 
     override fun reduce(intent: GalleryPickerMvi.Intent) {
         when (intent) {
-            is GalleryPickerMvi.Intent.SelectAlbum ->
-                viewModelScope.launch {
-                    updateState { it.copy(currentAlbum = intent.album) }
-                    refreshGalleryPhotos()
-                }
+            is GalleryPickerMvi.Intent.SelectAlbum -> handleSelectAlbum(intent.album)
+            GalleryPickerMvi.Intent.InitialLoad -> handleInitialLoad()
+            GalleryPickerMvi.Intent.LoadMorePhotos -> handleLoadMorePhotos()
+        }
+    }
 
-            GalleryPickerMvi.Intent.InitialLoad ->
-                viewModelScope.launch {
-                    val albums = albumRepository.getAll().orEmpty()
-                    val currentAlbum = albums.firstOrNull()
-                    updateState {
-                        it.copy(
-                            albums = albums,
-                            currentAlbum = currentAlbum?.name,
-                        )
-                    }
-                    refreshGalleryPhotos()
-                }
+    private fun handleSelectAlbum(album: String) {
+        viewModelScope.launch {
+            updateState { it.copy(currentAlbum = album) }
+            refreshGalleryPhotos()
+        }
+    }
 
-            GalleryPickerMvi.Intent.LoadMorePhotos ->
-                viewModelScope.launch {
-                    loadNextPageGalleryPhotos()
-                }
+    private fun handleInitialLoad() {
+        viewModelScope.launch {
+            val albums = albumRepository.getAll().orEmpty()
+            val currentAlbum = albums.firstOrNull()
+            updateState {
+                it.copy(
+                    albums = albums,
+                    currentAlbum = currentAlbum?.name,
+                )
+            }
+            refreshGalleryPhotos()
+        }
+    }
+
+    private fun handleLoadMorePhotos() {
+        viewModelScope.launch {
+            loadNextPageGalleryPhotos()
         }
     }
 

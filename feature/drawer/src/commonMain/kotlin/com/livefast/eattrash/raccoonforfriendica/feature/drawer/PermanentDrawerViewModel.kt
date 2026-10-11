@@ -29,6 +29,7 @@ class PermanentDrawerViewModel(
     MviDelegate<PermanentDrawerMvi.Intent, PermanentDrawerMvi.State, PermanentDrawerMvi.Effect>
     by DefaultMviDelegate(initialState = PermanentDrawerMvi.State()),
     PermanentDrawerMvi {
+
     init {
         viewModelScope.launch {
             identityRepository.currentUser.onEach { currentUser ->
@@ -58,10 +59,14 @@ class PermanentDrawerViewModel(
 
     override fun reduce(intent: PermanentDrawerMvi.Intent) {
         when (intent) {
-            PermanentDrawerMvi.Intent.ToggleExpanded -> viewModelScope.launch {
-                updateState {
-                    it.copy(isExpanded = !it.isExpanded)
-                }
+            PermanentDrawerMvi.Intent.ToggleExpanded -> handleToggleExpanded()
+        }
+    }
+
+    private fun handleToggleExpanded() {
+        viewModelScope.launch {
+            updateState {
+                it.copy(isExpanded = !it.isExpanded)
             }
         }
     }

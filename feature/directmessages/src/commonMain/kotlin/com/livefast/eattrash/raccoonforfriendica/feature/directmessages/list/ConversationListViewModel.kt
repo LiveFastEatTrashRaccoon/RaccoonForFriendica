@@ -34,6 +34,7 @@ class ConversationListViewModel(
     MviDelegate<ConversationListMvi.Intent, ConversationListMvi.State, ConversationListMvi.Effect>
     by DefaultMviDelegate(initialState = ConversationListMvi.State()),
     ConversationListMvi {
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -67,31 +68,38 @@ class ConversationListViewModel(
 
     override fun reduce(intent: ConversationListMvi.Intent) {
         when (intent) {
-            ConversationListMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            ConversationListMvi.Intent.Refresh -> handleRefresh()
+            ConversationListMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            is ConversationListMvi.Intent.MarkConversationAsRead -> handleMarkConversationAsRead(intent.index)
+        }
+    }
 
-            ConversationListMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
 
-            is ConversationListMvi.Intent.MarkConversationAsRead ->
-                viewModelScope.launch {
-                    updateState {
-                        it.copy(
-                            items =
-                            it.items.mapIndexed { idx, conversation ->
-                                if (idx == intent.index) {
-                                    conversation.copy(unreadCount = 0)
-                                } else {
-                                    conversation
-                                }
-                            },
-                        )
-                    }
-                }
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleMarkConversationAsRead(index: Int) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(
+                    items =
+                    it.items.mapIndexed { idx, conversation ->
+                        if (idx == index) {
+                            conversation.copy(unreadCount = 0)
+                        } else {
+                            conversation
+                        }
+                    },
+                )
+            }
         }
     }
 

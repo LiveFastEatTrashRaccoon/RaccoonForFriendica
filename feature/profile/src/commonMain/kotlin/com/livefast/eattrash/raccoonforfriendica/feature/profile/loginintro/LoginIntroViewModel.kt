@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.LoginType
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -22,8 +23,16 @@ class LoginIntroViewModel(private val authManager: AuthManager) :
     LoginIntroMvi {
     override fun reduce(intent: LoginIntroMvi.Intent) {
         when (intent) {
-            is LoginIntroMvi.Intent.StartOauth2Flow -> authManager.openLogin(intent.type)
-            LoginIntroMvi.Intent.StartLegacyFlow -> authManager.openLegacyLogin()
+            is LoginIntroMvi.Intent.StartOauth2Flow -> handleStartOauth2Flow(intent.type)
+            LoginIntroMvi.Intent.StartLegacyFlow -> handleStartLegacyFlow()
         }
+    }
+
+    private fun handleStartOauth2Flow(type: LoginType) {
+        authManager.openLogin(type)
+    }
+
+    private fun handleStartLegacyFlow() {
+        authManager.openLegacyLogin()
     }
 }

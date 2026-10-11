@@ -30,6 +30,7 @@ class LegacyLoginViewModel(
     MviDelegate<LegacyLoginMvi.Intent, LegacyLoginMvi.State, LegacyLoginMvi.Effect>
     by DefaultMviDelegate(initialState = LegacyLoginMvi.State()),
     LegacyLoginMvi {
+
     init {
         viewModelScope.launch {
             val currentNode = apiConfigurationRepository.node.value
@@ -39,26 +40,32 @@ class LegacyLoginViewModel(
 
     override fun reduce(intent: LegacyLoginMvi.Intent) {
         when (intent) {
-            is LegacyLoginMvi.Intent.SetNodeName ->
-                viewModelScope.launch {
-                    updateState { it.copy(nodeName = intent.name) }
-                }
-
-            is LegacyLoginMvi.Intent.SetUsername ->
-                viewModelScope.launch {
-                    updateState { it.copy(username = intent.username) }
-                }
-
-            is LegacyLoginMvi.Intent.SetPassword ->
-                viewModelScope.launch {
-                    updateState { it.copy(password = intent.password) }
-                }
-
-            LegacyLoginMvi.Intent.Submit -> submit()
+            is LegacyLoginMvi.Intent.SetNodeName -> handleSetNodeName(intent.name)
+            is LegacyLoginMvi.Intent.SetUsername -> handleSetUsername(intent.username)
+            is LegacyLoginMvi.Intent.SetPassword -> handleSetPassword(intent.password)
+            LegacyLoginMvi.Intent.Submit -> handleSubmit()
         }
     }
 
-    private fun submit() {
+    private fun handleSetNodeName(name: String) {
+        viewModelScope.launch {
+            updateState { it.copy(nodeName = name) }
+        }
+    }
+
+    private fun handleSetUsername(username: String) {
+        viewModelScope.launch {
+            updateState { it.copy(username = username) }
+        }
+    }
+
+    private fun handleSetPassword(password: String) {
+        viewModelScope.launch {
+            updateState { it.copy(password = password) }
+        }
+    }
+
+    private fun handleSubmit() {
         if (uiState.value.loading) {
             return
         }

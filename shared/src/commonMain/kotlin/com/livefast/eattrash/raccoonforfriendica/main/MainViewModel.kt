@@ -26,6 +26,7 @@ class MainViewModel(private val inboxManager: InboxManager) :
         initialState = MainMvi.UiState(),
     ),
     MainMvi {
+
     init {
         viewModelScope.launch {
             inboxManager.unreadCount
@@ -39,11 +40,13 @@ class MainViewModel(private val inboxManager: InboxManager) :
 
     override fun reduce(intent: MainMvi.Intent) {
         when (intent) {
-            is MainMvi.Intent.SetBottomBarOffsetHeightPx -> {
-                viewModelScope.launch {
-                    updateState { it.copy(bottomBarOffsetHeightPx = intent.px) }
-                }
-            }
+            is MainMvi.Intent.SetBottomBarOffsetHeightPx -> handleSetBottomBarOffsetHeightPx(intent.px)
+        }
+    }
+
+    private fun handleSetBottomBarOffsetHeightPx(px: Float) {
+        viewModelScope.launch {
+            updateState { it.copy(bottomBarOffsetHeightPx = px) }
         }
     }
 

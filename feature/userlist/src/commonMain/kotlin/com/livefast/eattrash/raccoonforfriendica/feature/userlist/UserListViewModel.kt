@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class UserListViewModel(
-    @Assisted args: UserListViewModelArgs,
+    @Assisted private val args: UserListViewModelArgs,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
@@ -51,10 +51,6 @@ class UserListViewModel(
     MviDelegate<UserListMvi.Intent, UserListMvi.State, UserListMvi.Effect>
     by DefaultMviDelegate(initialState = UserListMvi.State()),
     UserListMvi {
-
-    private val type = args.type
-    private val userId = args.userId
-    private val entryId = args.entryId
 
     init {
         viewModelScope.launch {
@@ -100,9 +96,9 @@ class UserListViewModel(
 
     private suspend fun loadUser() {
         val userId =
-            when (type) {
-                is UserListType.Follower -> userId.takeIf { it.isNotEmpty() }
-                is UserListType.Following -> userId.takeIf { it.isNotEmpty() }
+            when (args.type) {
+                is UserListType.Follower -> args.userId.takeIf { it.isNotEmpty() }
+                is UserListType.Following -> args.userId.takeIf { it.isNotEmpty() }
                 else -> null
             }
         if (userId != null) {
@@ -115,21 +111,23 @@ class UserListViewModel(
 
     override fun reduce(intent: UserListMvi.Intent) {
         when (intent) {
-            UserListMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
-
-            UserListMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
-
-            is UserListMvi.Intent.Follow -> follow(intent.userId)
-
-            is UserListMvi.Intent.Unfollow -> unfollow(intent.userId)
-
+            UserListMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            UserListMvi.Intent.Refresh -> handleRefresh()
+            is UserListMvi.Intent.Follow -> handleFollow(intent.userId)
+            is UserListMvi.Intent.Unfollow -> handleUnfollow(intent.userId)
             UserListMvi.Intent.Export -> handleExport()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -138,15 +136,15 @@ class UserListViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            when (type) {
-                is UserListType.Follower -> UserPaginationSpecification.Follower(userId)
+            when (args.type) {
+                is UserListType.Follower -> UserPaginationSpecification.Follower(args.userId)
 
-                is UserListType.Following -> UserPaginationSpecification.Following(userId)
+                is UserListType.Following -> UserPaginationSpecification.Following(args.userId)
 
                 is UserListType.UsersFavorite ->
-                    UserPaginationSpecification.EntryUsersFavorite(entryId)
+                    UserPaginationSpecification.EntryUsersFavorite(args.entryId)
 
-                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(entryId)
+                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(args.entryId)
             },
         )
         loadNextPage()
@@ -213,7 +211,7 @@ class UserListViewModel(
         }
     }
 
-    private fun follow(userId: String) {
+    private fun handleFollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
@@ -235,7 +233,7 @@ class UserListViewModel(
         }
     }
 
-    private fun unfollow(userId: String) {
+    private fun handleUnfollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
@@ -259,9 +257,9 @@ class UserListViewModel(
 
     private fun handleExport() {
         val specification =
-            when (type) {
-                UserListType.Follower -> ExportUserSpecification.Follower(userId)
-                UserListType.Following -> ExportUserSpecification.Following(userId)
+            when (args.type) {
+                UserListType.Follower -> ExportUserSpecification.Follower(args.userId)
+                UserListType.Following -> ExportUserSpecification.Following(args.userId)
                 UserListType.UsersFavorite -> null
                 UserListType.UsersReblog -> null
             } ?: return

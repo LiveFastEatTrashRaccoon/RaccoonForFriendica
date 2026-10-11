@@ -21,15 +21,13 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class EventDetailViewModel(
-    @Assisted args: EventDetailViewModelArgs,
+    @Assisted private val args: EventDetailViewModelArgs,
     eventCache: LocalItemCache<EventModel>,
     private val settingsRepository: SettingsRepository,
 ) : ViewModel(),
     MviDelegate<EventDetailMvi.Intent, EventDetailMvi.State, EventDetailMvi.Effect>
     by DefaultMviDelegate(initialState = EventDetailMvi.State()),
     EventDetailMvi {
-
-    private val eventId = args.id
 
     init {
         viewModelScope.launch {
@@ -43,7 +41,7 @@ class EventDetailViewModel(
                     }
                 }.launchIn(this)
 
-            val event = eventCache.get(eventId)
+            val event = eventCache.get(args.id)
             updateState {
                 it.copy(event = event)
             }

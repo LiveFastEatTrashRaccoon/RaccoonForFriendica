@@ -28,7 +28,7 @@ import kotlinx.coroutines.yield
 @OptIn(FlowPreview::class)
 @AssistedInject
 class CircleMembersViewModel(
-    @Assisted args: CircleMembersViewModelArgs,
+    @Assisted private val args: CircleMembersViewModelArgs,
     private val paginationManager: UserPaginationManager,
     private val circlesRepository: CirclesRepository,
     private val settingsRepository: SettingsRepository,
@@ -39,8 +39,6 @@ class CircleMembersViewModel(
     MviDelegate<CircleMembersMvi.Intent, CircleMembersMvi.State, CircleMembersMvi.Effect>
     by DefaultMviDelegate(initialState = CircleMembersMvi.State()),
     CircleMembersMvi {
-
-    private val id = args.id
 
     init {
         viewModelScope.launch {
@@ -71,14 +69,15 @@ class CircleMembersViewModel(
 
     override fun reduce(intent: CircleMembersMvi.Intent) {
         when (intent) {
-            CircleMembersMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            CircleMembersMvi.Intent.Refresh -> handleRefresh()
+            is CircleMembersMvi.Intent.Add -> handleAdd(intent.users)
+            is CircleMembersMvi.Intent.Remove -> handleRemove(intent.userId)
+        }
+    }
 
-            is CircleMembersMvi.Intent.Add -> add(intent.users)
-
-            is CircleMembersMvi.Intent.Remove -> remove(intent.userId)
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -86,8 +85,8 @@ class CircleMembersViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        paginationManager.reset(UserPaginationSpecification.CircleMembers(id))
-        val circle = circlesRepository.get(id = id)
+        paginationManager.reset(UserPaginationSpecification.CircleMembers(args.id))
+        val circle = circlesRepository.get(id = args.id)
         updateState { it.copy(circle = circle) }
 
         updateState { it.copy(loading = true) }
@@ -132,10 +131,10 @@ class CircleMembersViewModel(
         }
     }
 
-    private fun add(users: List<UserModel>) {
+    private fun handleAdd(users: List<UserModel>) {
         viewModelScope.launch {
             val userIds = users.map { it.id }
-            val success = circlesRepository.addMembers(id = id, userIds = userIds)
+            val success = circlesRepository.addMembers(id = args.id, userIds = userIds)
             if (success) {
                 insertItemsInState(users)
             } else {
@@ -144,9 +143,9 @@ class CircleMembersViewModel(
         }
     }
 
-    private fun remove(userId: String) {
+    private fun handleRemove(userId: String) {
         viewModelScope.launch {
-            val success = circlesRepository.removeMembers(id = id, userIds = listOf(userId))
+            val success = circlesRepository.removeMembers(id = args.id, userIds = listOf(userId))
             if (success) {
                 removeItemFromState(userId)
             } else {

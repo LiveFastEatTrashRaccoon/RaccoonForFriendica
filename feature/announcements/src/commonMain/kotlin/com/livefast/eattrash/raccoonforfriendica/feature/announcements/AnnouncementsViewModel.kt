@@ -36,6 +36,7 @@ class AnnouncementsViewModel(
     MviDelegate<AnnouncementsMvi.Intent, AnnouncementsMvi.State, AnnouncementsMvi.Effect>
     by DefaultMviDelegate(initialState = AnnouncementsMvi.State()),
     AnnouncementsMvi {
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -77,22 +78,23 @@ class AnnouncementsViewModel(
 
     override fun reduce(intent: AnnouncementsMvi.Intent) {
         when (intent) {
-            AnnouncementsMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            AnnouncementsMvi.Intent.Refresh -> handleRefresh()
 
-            is AnnouncementsMvi.Intent.AddReaction ->
-                addReaction(
-                    id = intent.id,
-                    name = intent.name,
-                )
+            is AnnouncementsMvi.Intent.AddReaction -> handleAddReaction(
+                id = intent.id,
+                name = intent.name,
+            )
 
-            is AnnouncementsMvi.Intent.RemoveReaction ->
-                removeReaction(
-                    id = intent.id,
-                    name = intent.name,
-                )
+            is AnnouncementsMvi.Intent.RemoveReaction -> handleRemoveReaction(
+                id = intent.id,
+                name = intent.name,
+            )
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -179,7 +181,7 @@ class AnnouncementsViewModel(
         updateState { it.copy(items = newItems) }
     }
 
-    private fun addReaction(id: String, name: String) {
+    private fun handleAddReaction(id: String, name: String) {
         viewModelScope.launch {
             setReactionLoading(id = id, name = name, loading = true)
             val success = announcementRepository.addReaction(id = id, reaction = name)
@@ -191,7 +193,7 @@ class AnnouncementsViewModel(
         }
     }
 
-    private fun removeReaction(id: String, name: String) {
+    private fun handleRemoveReaction(id: String, name: String) {
         viewModelScope.launch {
             setReactionLoading(id = id, name = name, loading = true)
             val success = announcementRepository.removeReaction(id = id, reaction = name)

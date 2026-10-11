@@ -38,6 +38,7 @@ class FollowedHashtagsViewModel(
     MviDelegate<FollowedHashtagsMvi.Intent, FollowedHashtagsMvi.State, FollowedHashtagsMvi.Effect>
     by DefaultMviDelegate(initialState = FollowedHashtagsMvi.State()),
     FollowedHashtagsMvi {
+
     init {
         viewModelScope.launch {
             notificationCenter
@@ -74,21 +75,26 @@ class FollowedHashtagsViewModel(
 
     override fun reduce(intent: FollowedHashtagsMvi.Intent) {
         when (intent) {
-            FollowedHashtagsMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            FollowedHashtagsMvi.Intent.Refresh -> handleRefresh()
 
-            FollowedHashtagsMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            FollowedHashtagsMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            is FollowedHashtagsMvi.Intent.ToggleTagFollow ->
-                toggleTagFollow(
-                    intent.name,
-                    intent.newValue,
-                )
+            is FollowedHashtagsMvi.Intent.ToggleTagFollow -> handleToggleTagFollow(
+                name = intent.name,
+                follow = intent.newValue,
+            )
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
         }
     }
 
@@ -145,7 +151,7 @@ class FollowedHashtagsViewModel(
         }
     }
 
-    private fun toggleTagFollow(name: String, follow: Boolean) {
+    private fun handleToggleTagFollow(name: String, follow: Boolean) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateItemInState(name) { it.copy(followingPending = true) }

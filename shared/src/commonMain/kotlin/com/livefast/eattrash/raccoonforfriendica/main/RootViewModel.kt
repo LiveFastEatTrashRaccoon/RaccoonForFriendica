@@ -84,8 +84,6 @@ class RootViewModel(
             }
         }
 
-    override fun reduce(intent: RootMvi.Intent)  = Unit
-
     private suspend fun finishInitialization() = mutex.withLock {
         if (!isInitialized) {
             isInitialized = true

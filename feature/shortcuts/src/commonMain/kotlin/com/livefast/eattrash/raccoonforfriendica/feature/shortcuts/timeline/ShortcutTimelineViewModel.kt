@@ -24,7 +24,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Timel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
@@ -46,7 +45,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class ShortcutTimelineViewModel(
-    @Assisted args: ShortcutTimelineViewModelArgs,
+    @Assisted private val args: ShortcutTimelineViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val timelineEntryRepository: TimelineEntryRepository,
@@ -67,11 +66,9 @@ class ShortcutTimelineViewModel(
     by DefaultMviDelegate(initialState = ShortcutTimelineMvi.State()),
     ShortcutTimelineMvi {
 
-    private val node = args.name
-
     init {
         viewModelScope.launch {
-            updateState { it.copy(nodeName = node) }
+            updateState { it.copy(nodeName = args.name) }
 
             settingsRepository.current
                 .onEach { settings ->
@@ -115,42 +112,50 @@ class ShortcutTimelineViewModel(
 
     override fun reduce(intent: ShortcutTimelineMvi.Intent) {
         when (intent) {
-            ShortcutTimelineMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            ShortcutTimelineMvi.Intent.Refresh -> handleRefresh()
 
-            ShortcutTimelineMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+            ShortcutTimelineMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            is ShortcutTimelineMvi.Intent.ToggleReblog -> toggleReblog(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
 
-            is ShortcutTimelineMvi.Intent.ToggleFavorite -> toggleFavorite(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
 
-            is ShortcutTimelineMvi.Intent.ToggleDislike -> toggleDislike(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
 
-            is ShortcutTimelineMvi.Intent.ToggleBookmark -> toggleBookmark(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
 
-            is ShortcutTimelineMvi.Intent.SubmitPollVote ->
-                submitPoll(
-                    intent.entry,
-                    intent.choices,
-                )
+            is ShortcutTimelineMvi.Intent.SubmitPollVote -> handleSubmitPollVote(
+                entry = intent.entry,
+                choices = intent.choices,
+            )
 
-            is ShortcutTimelineMvi.Intent.CopyToClipboard -> copyToClipboard(intent.entry)
+            is ShortcutTimelineMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
 
             is ShortcutTimelineMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
 
-            is ShortcutTimelineMvi.Intent.WillOpenDetail ->
-                viewModelScope.launch {
-                    val state = paginationManager.extractState()
-                    timelineNavigationManager.push(state)
-                    emitEffect(ShortcutTimelineMvi.Effect.OpenDetail(intent.entry))
-                }
+            is ShortcutTimelineMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.entry)
 
-            is ShortcutTimelineMvi.Intent.OpenInBrowser -> openInBrowser(intent.entry)
+            is ShortcutTimelineMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+        }
+    }
+
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
+
+    private fun handleWillOpenDetail(entry: TimelineEntryModel) {
+        viewModelScope.launch {
+            val state = paginationManager.extractState()
+            timelineNavigationManager.push(state)
+            emitEffect(ShortcutTimelineMvi.Effect.OpenDetail(entry))
         }
     }
 
@@ -161,7 +166,7 @@ class ShortcutTimelineViewModel(
         val settings = settingsRepository.current.value ?: SettingsModel()
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
-                timelineType = TimelineType.Foreign(node),
+                timelineType = TimelineType.Foreign(args.name),
                 includeNsfw = settings.includeNsfw,
                 excludeReplies = settings.excludeRepliesFromTimeline,
                 refresh = forceRefresh || !initial,
@@ -238,7 +243,7 @@ class ShortcutTimelineViewModel(
         result?.entry
     }
 
-    private fun toggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -272,7 +277,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun toggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -307,7 +312,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun toggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -331,7 +336,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun toggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(entry: TimelineEntryModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateEntryInState(entry.id) {
@@ -364,7 +369,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun submitPoll(entry: TimelineEntryModel, choices: List<Int>) {
+    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
         val poll = entry.poll ?: return
         viewModelScope.launch {
             updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
@@ -388,7 +393,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun copyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val source = timelineEntryRepository.getSource(entry.id)
             if (source != null) {
@@ -418,7 +423,7 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun openInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
         viewModelScope.launch {
             val url = getInnerUrl(entry)
             if (url != null) {

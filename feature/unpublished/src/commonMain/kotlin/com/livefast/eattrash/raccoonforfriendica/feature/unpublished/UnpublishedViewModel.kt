@@ -53,6 +53,7 @@ class UnpublishedViewModel(
     MviDelegate<UnpublishedMvi.Intent, UnpublishedMvi.State, UnpublishedMvi.Effect>
     by DefaultMviDelegate(initialState = UnpublishedMvi.State()),
     UnpublishedMvi {
+
     init {
         viewModelScope.launch {
             notificationCenter
@@ -108,27 +109,33 @@ class UnpublishedViewModel(
 
     override fun reduce(intent: UnpublishedMvi.Intent) {
         when (intent) {
-            is UnpublishedMvi.Intent.ChangeSection ->
-                viewModelScope.launch {
-                    if (uiState.value.loading) {
-                        return@launch
-                    }
-                    updateState { it.copy(section = intent.section) }
-                    emitEffect(UnpublishedMvi.Effect.BackToTop)
-                    refresh(initial = true)
-                }
+            is UnpublishedMvi.Intent.ChangeSection -> handleChangeSection(intent.section)
+            is UnpublishedMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
+            UnpublishedMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            UnpublishedMvi.Intent.Refresh -> handleRefresh()
+        }
+    }
 
-            is UnpublishedMvi.Intent.DeleteEntry -> deleteEntry(intent.entryId)
+    private fun handleChangeSection(section: UnpublishedType) {
+        viewModelScope.launch {
+            if (uiState.value.loading) {
+                return@launch
+            }
+            updateState { it.copy(section = section) }
+            emitEffect(UnpublishedMvi.Effect.BackToTop)
+            refresh(initial = true)
+        }
+    }
 
-            UnpublishedMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
+        }
+    }
 
-            UnpublishedMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
         }
     }
 
@@ -203,7 +210,7 @@ class UnpublishedViewModel(
         }
     }
 
-    private fun deleteEntry(entryId: String) {
+    private fun handleDeleteEntry(entryId: String) {
         val currentState = uiState.value
         viewModelScope.launch {
             val success =

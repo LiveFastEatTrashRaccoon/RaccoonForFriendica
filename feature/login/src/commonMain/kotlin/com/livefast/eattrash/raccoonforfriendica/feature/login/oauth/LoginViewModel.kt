@@ -31,7 +31,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(FlowPreview::class)
 @AssistedInject
 class LoginViewModel(
-    @Assisted args: LoginViewModelArgs,
+    @Assisted private val args: LoginViewModelArgs,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val credentialsRepository: CredentialsRepository,
     private val authManager: AuthManager,
@@ -41,8 +41,6 @@ class LoginViewModel(
     by DefaultMviDelegate(initialState = LoginMvi.State()),
     LoginMvi {
 
-    private val type = args.type
-
     init {
         viewModelScope.launch {
             authManager.credentialFlow
@@ -51,7 +49,7 @@ class LoginViewModel(
                     finalizeLogin(credentials)
                 }.launchIn(this)
             val currentNode = apiConfigurationRepository.node.value
-            val shouldUseDropDown = type == LoginType.Friendica
+            val shouldUseDropDown = args.type == LoginType.Friendica
             val isCurrentNodeInDropDown = DefaultFriendicaInstances.any { it.node == currentNode }
             updateState {
                 it.copy(
@@ -64,18 +62,19 @@ class LoginViewModel(
 
     override fun reduce(intent: LoginMvi.Intent) {
         when (intent) {
-            is LoginMvi.Intent.SetNodeName ->
-                viewModelScope.launch {
-                    updateState { it.copy(nodeName = intent.name) }
-                }
-
-            LoginMvi.Intent.SignUp -> triggerSignup()
-
-            LoginMvi.Intent.Submit -> submit()
+            is LoginMvi.Intent.SetNodeName -> handleSetNodeName(intent.name)
+            LoginMvi.Intent.SignUp -> handleSignUp()
+            LoginMvi.Intent.Submit -> handleSubmit()
         }
     }
 
-    private fun triggerSignup() {
+    private fun handleSetNodeName(name: String) {
+        viewModelScope.launch {
+            updateState { it.copy(nodeName = name) }
+        }
+    }
+
+    private fun handleSignUp() {
         viewModelScope.launch {
             val node = uiState.value.nodeName
             val nodeNameError =
@@ -99,7 +98,7 @@ class LoginViewModel(
                 return@launch
             }
 
-            val url = getSignupUrl(node = node, type = type)
+            val url = getSignupUrl(node = node, type = args.type)
             if (url.isEmpty()) {
                 emitEffect(LoginMvi.Effect.Failure())
             } else {
@@ -108,7 +107,7 @@ class LoginViewModel(
         }
     }
 
-    private fun submit() {
+    private fun handleSubmit() {
         if (uiState.value.loading) {
             return
         }

@@ -31,6 +31,7 @@ class CirclesViewModel(
     MviDelegate<CirclesMvi.Intent, CirclesMvi.State, CirclesMvi.Effect>
     by DefaultMviDelegate(initialState = CirclesMvi.State()),
     CirclesMvi {
+
     init {
         viewModelScope.launch {
             settingsRepository.current
@@ -51,22 +52,26 @@ class CirclesViewModel(
 
     override fun reduce(intent: CirclesMvi.Intent) {
         when (intent) {
-            CirclesMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
-
-            is CirclesMvi.Intent.Delete -> delete(intent.circleId)
-
+            CirclesMvi.Intent.Refresh -> handleRefresh()
+            is CirclesMvi.Intent.Delete -> handleDelete(intent.circleId)
             is CirclesMvi.Intent.OpenDetail -> handleOpenDetail(intent.circle)
+            is CirclesMvi.Intent.Upsert -> handleUpsert(intent.circle)
+        }
+    }
 
-            is CirclesMvi.Intent.Upsert -> viewModelScope.launch {
-                val new = uiState.value.items.none { it is CircleListItem.Circle && it.circle.id == intent.circle.id }
-                if (new) {
-                    insertItemInState(intent.circle)
-                } else {
-                    updateItemInState(intent.circle.id) { intent.circle }
-                }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
+
+    private fun handleUpsert(circle: CircleModel) {
+        viewModelScope.launch {
+            val new = uiState.value.items.none { it is CircleListItem.Circle && it.circle.id == circle.id }
+            if (new) {
+                insertItemInState(circle)
+            } else {
+                updateItemInState(circle.id) { circle }
             }
         }
     }
@@ -159,7 +164,7 @@ class CirclesViewModel(
         }
     }
 
-    private fun delete(id: String) {
+    private fun handleDelete(id: String) {
         viewModelScope.launch {
             val success = circlesRepository.delete(id)
             if (success) {

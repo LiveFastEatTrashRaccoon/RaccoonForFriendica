@@ -33,6 +33,7 @@ class FollowRequestsViewModel(
     MviDelegate<FollowRequestsMvi.Intent, FollowRequestsMvi.State, FollowRequestsMvi.Effect>
     by DefaultMviDelegate(initialState = FollowRequestsMvi.State()),
     FollowRequestsMvi {
+
     init {
         viewModelScope.launch {
             imageAutoloadObserver.enabled
@@ -62,19 +63,22 @@ class FollowRequestsViewModel(
 
     override fun reduce(intent: FollowRequestsMvi.Intent) {
         when (intent) {
-            FollowRequestsMvi.Intent.Refresh ->
-                viewModelScope.launch {
-                    refresh()
-                }
+            FollowRequestsMvi.Intent.Refresh -> handleRefresh()
+            FollowRequestsMvi.Intent.LoadNextPage -> handleLoadNextPage()
+            is FollowRequestsMvi.Intent.Accept -> handleAccept(intent.id)
+            is FollowRequestsMvi.Intent.Reject -> handleReject(intent.id)
+        }
+    }
 
-            FollowRequestsMvi.Intent.LoadNextPage ->
-                viewModelScope.launch {
-                    loadNextPage()
-                }
+    private fun handleRefresh() {
+        viewModelScope.launch {
+            refresh()
+        }
+    }
 
-            is FollowRequestsMvi.Intent.Accept -> accept(intent.id)
-
-            is FollowRequestsMvi.Intent.Reject -> reject(intent.id)
+    private fun handleLoadNextPage() {
+        viewModelScope.launch {
+            loadNextPage()
         }
     }
 
@@ -131,7 +135,7 @@ class FollowRequestsViewModel(
         }
     }
 
-    private fun accept(id: String) {
+    private fun handleAccept(id: String) {
         viewModelScope.launch {
             updateItemInState(id) { it.copy(relationshipStatusPending = true) }
             val success = userRepository.acceptFollowRequest(id)
@@ -144,7 +148,7 @@ class FollowRequestsViewModel(
         }
     }
 
-    private fun reject(id: String) {
+    private fun handleReject(id: String) {
         viewModelScope.launch {
             updateItemInState(id) { it.copy(relationshipStatusPending = true) }
             val success = userRepository.rejectFollowRequest(id)

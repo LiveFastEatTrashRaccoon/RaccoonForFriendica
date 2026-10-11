@@ -35,17 +35,20 @@ class CircleEditorViewModel(
 
     override fun reduce(intent: CircleEditorMvi.Intent) {
         when (intent) {
-            is CircleEditorMvi.Intent.Submit -> submit()
+            is CircleEditorMvi.Intent.Submit -> handleSubmit()
+            is CircleEditorMvi.Intent.UpdateData -> handleUpdateData(intent.data)
+        }
+    }
 
-            is CircleEditorMvi.Intent.UpdateData -> viewModelScope.launch {
-                updateState {
-                    it.copy(data = intent.data)
-                }
+    private fun handleUpdateData(data: CircleEditorData) {
+        viewModelScope.launch {
+            updateState {
+                it.copy(data = data)
             }
         }
     }
 
-    private fun submit() {
+    private fun handleSubmit() {
         val data = uiState.value.data
         viewModelScope.launch {
             val title = data.title

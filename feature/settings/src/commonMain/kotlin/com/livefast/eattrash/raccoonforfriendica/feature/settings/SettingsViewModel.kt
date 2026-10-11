@@ -63,7 +63,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class SettingsViewModel(
-    @Assisted args: SettingsViewModelArgs,
+    @Assisted private val args: SettingsViewModelArgs,
     private val settingsRepository: SettingsRepository,
     private val l10nManager: L10nManager,
     private val themeRepository: ThemeRepository,
@@ -87,8 +87,6 @@ class SettingsViewModel(
     by DefaultMviDelegate(initialState = SettingsMvi.State()),
     SettingsMvi {
 
-    private val permissionController = args.controller
-
     init {
         viewModelScope.launch {
             val supportsPushNotifications =
@@ -96,8 +94,7 @@ class SettingsViewModel(
             val supportsPullNotifications = pullNotificationManager.isSupported
             val pushDistributors = pushNotificationManager.getAvailableDistributors()
             val supportsDynamicColors = colorSchemeProvider.supportsDynamicColors
-            val pushNotificationPermissionState =
-                permissionController.getPermissionState(PermissionType.PushNotification)
+            val pushNotificationPermissionState = args.controller.getPermissionState(PermissionType.PushNotification)
             val supportsCustomTabs = customTabsHelper.isSupported
             updateState {
                 it.copy(
@@ -288,303 +285,269 @@ class SettingsViewModel(
 
     override fun reduce(intent: SettingsMvi.Intent) {
         when (intent) {
-            is SettingsMvi.Intent.ChangeLanguage ->
-                viewModelScope.launch {
-                    changeLanguage(intent.lang)
-                }
+            is SettingsMvi.Intent.ChangeLanguage -> handleChangeLanguage(intent.lang)
 
-            is SettingsMvi.Intent.ChangeTheme ->
-                viewModelScope.launch {
-                    changeTheme(intent.theme)
-                }
+            is SettingsMvi.Intent.ChangeTheme -> handleChangeTheme(intent.theme)
 
-            is SettingsMvi.Intent.ChangeCommentBarTheme ->
-                viewModelScope.launch {
-                    changeCommentBarTheme(intent.commentBarTheme)
-                }
+            is SettingsMvi.Intent.ChangeCommentBarTheme -> handleChangeCommentBarTheme(intent.commentBarTheme)
 
-            is SettingsMvi.Intent.ChangeDynamicColors ->
-                viewModelScope.launch {
-                    changeDynamicColors(intent.dynamicColors)
-                }
+            is SettingsMvi.Intent.ChangeDynamicColors -> handleChangeDynamicColors(intent.dynamicColors)
 
-            is SettingsMvi.Intent.ChangeFontFamily ->
-                viewModelScope.launch {
-                    changeFontFamily(intent.fontFamily)
-                }
+            is SettingsMvi.Intent.ChangeFontFamily -> handleChangeFontFamily(intent.fontFamily)
 
-            is SettingsMvi.Intent.ChangeFontScale ->
-                viewModelScope.launch {
-                    changeFontScale(intent.scale)
-                }
+            is SettingsMvi.Intent.ChangeFontScale -> handleChangeFontScale(intent.scale)
 
-            is SettingsMvi.Intent.ChangeThemeColor ->
-                viewModelScope.launch {
-                    changeThemeColor(intent.themeColor)
-                }
+            is SettingsMvi.Intent.ChangeThemeColor -> handleChangeThemeColor(intent.themeColor)
 
-            is SettingsMvi.Intent.ChangeDefaultTimelineType ->
-                viewModelScope.launch {
-                    changeDefaultTimelineType(intent.type)
-                }
+            is SettingsMvi.Intent.ChangeDefaultTimelineType -> handleChangeDefaultTimelineType(intent.type)
 
-            is SettingsMvi.Intent.ChangeIncludeNsfw ->
-                viewModelScope.launch {
-                    changeIncludeNsfw(intent.include)
-                }
+            is SettingsMvi.Intent.ChangeIncludeNsfw -> handleChangeIncludeNsfw(intent.include)
 
-            is SettingsMvi.Intent.ChangeBlurNsfw ->
-                viewModelScope.launch {
-                    changeBlurNsfw(intent.blur)
-                }
+            is SettingsMvi.Intent.ChangeBlurNsfw -> handleChangeBlurNsfw(intent.blur)
 
-            is SettingsMvi.Intent.ChangeUrlOpeningMode ->
-                viewModelScope.launch {
-                    changeUrlOpeningMode(intent.mode)
-                }
+            is SettingsMvi.Intent.ChangeUrlOpeningMode -> handleChangeUrlOpeningMode(intent.mode)
 
-            is SettingsMvi.Intent.ChangeDefaultPostVisibility ->
-                viewModelScope.launch {
-                    changeDefaultPostVisibility(intent.visibility)
-                }
+            is SettingsMvi.Intent.ChangeDefaultPostVisibility -> handleChangeDefaultPostVisibility(intent.visibility)
 
-            is SettingsMvi.Intent.ChangeDefaultReplyVisibility ->
-                viewModelScope.launch {
-                    changeDefaultReplyVisibility(intent.visibility)
-                }
+            is SettingsMvi.Intent.ChangeDefaultReplyVisibility -> handleChangeDefaultReplyVisibility(intent.visibility)
 
             is SettingsMvi.Intent.ChangeExcludeRepliesFromTimeline ->
-                viewModelScope.launch {
-                    changeExcludeRepliesFromTimeline(intent.exclude)
-                }
+                handleChangeExcludeRepliesFromTimeline(intent.exclude)
 
             is SettingsMvi.Intent.ChangeOpenGroupsInForumModeByDefault ->
-                viewModelScope.launch {
-                    changeOpenGroupsInForumModeByDefault(intent.openByDefault)
-                }
+                handleChangeOpenGroupsInForumModeByDefault(intent.openByDefault)
 
-            is SettingsMvi.Intent.ChangeMarkupMode ->
-                viewModelScope.launch {
-                    changeMarkupMode(intent.mode)
-                }
+            is SettingsMvi.Intent.ChangeMarkupMode -> handleChangeMarkupMode(intent.mode)
 
-            is SettingsMvi.Intent.ChangeMaxPostBodyLines ->
-                viewModelScope.launch {
-                    changeMaxPostBodyLines(intent.lines)
-                }
+            is SettingsMvi.Intent.ChangeMaxPostBodyLines -> handleChangeMaxPostBodyLines(intent.lines)
 
             is SettingsMvi.Intent.ChangeBackgroundNotificationCheckInterval ->
-                viewModelScope.launch {
-                    changePullNotificationCheckInterval(intent.duration)
-                }
+                handleChangeBackgroundNotificationCheckInterval(intent.duration)
 
-            is SettingsMvi.Intent.ChangeAutoloadImages ->
-                viewModelScope.launch {
-                    changeAutoloadImages(intent.mode)
-                }
+            is SettingsMvi.Intent.ChangeAutoloadImages -> handleChangeAutoloadImages(intent.mode)
 
-            is SettingsMvi.Intent.ChangeNotificationMode ->
-                viewModelScope.launch {
-                    changeNotificationMode(intent.mode)
-                }
+            is SettingsMvi.Intent.ChangeNotificationMode -> handleChangeNotificationMode(intent.mode)
 
-            is SettingsMvi.Intent.SelectPushDistributor ->
-                viewModelScope.launch {
-                    selectPushDistributor(intent.name)
-                }
+            is SettingsMvi.Intent.SelectPushDistributor -> handleSelectPushDistributor(intent.name)
 
-            SettingsMvi.Intent.GrantPushNotificationsPermission ->
-                viewModelScope.launch {
-                    grantPushNotificationPermission()
-                }
+            SettingsMvi.Intent.GrantPushNotificationsPermission -> handleGrantPushNotificationsPermission()
 
-            is SettingsMvi.Intent.ChangeCrashReportEnabled ->
-                changeCrashReportEnabled(intent.enabled)
+            is SettingsMvi.Intent.ChangeCrashReportEnabled -> handleChangeCrashReportEnabled(intent.enabled)
 
             is SettingsMvi.Intent.ChangeHideNavigationBarWhileScrolling ->
-                viewModelScope.launch {
-                    changeHideNavigationBarWhileScrolling(intent.hide)
-                }
+                handleChangeHideNavigationBarWhileScrolling(intent.hide)
 
-            is SettingsMvi.Intent.ChangeAppIcon ->
-                viewModelScope.launch {
-                    changeAppIcon(intent.variant)
-                }
+            is SettingsMvi.Intent.ChangeAppIcon -> handleChangeAppIcon(intent.variant)
 
-            is SettingsMvi.Intent.ChangeBarTheme ->
-                viewModelScope.launch {
-                    changeBarTheme(intent.theme)
-                }
+            is SettingsMvi.Intent.ChangeBarTheme -> handleChangeBarTheme(intent.theme)
 
-            is SettingsMvi.Intent.ChangeTimelineLayout ->
-                viewModelScope.launch {
-                    changeTimelineLayout(intent.layout)
-                }
+            is SettingsMvi.Intent.ChangeTimelineLayout -> handleChangeTimelineLayout(intent.layout)
 
             is SettingsMvi.Intent.ExportSettings -> handleExportSettings()
 
             is SettingsMvi.Intent.ImportSettings -> handleImportSettings(intent.content)
 
-            is SettingsMvi.Intent.ChangeReplyDepth ->
-                viewModelScope.launch {
-                    changeReplyDepth(intent.depth)
-                }
+            is SettingsMvi.Intent.ChangeReplyDepth -> handleChangeReplyDepth(intent.depth)
         }
     }
 
-    private suspend fun changeLanguage(value: String) {
+    private fun handleChangeLanguage(value: String) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(lang = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(lang = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeTheme(value: UiTheme) {
+    private fun handleChangeTheme(value: UiTheme) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(theme = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(theme = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeCommentBarTheme(value: CommentBarTheme) {
+    private fun handleChangeCommentBarTheme(value: CommentBarTheme) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(commentBarTheme = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(commentBarTheme = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeFontFamily(value: UiFontFamily) {
+    private fun handleChangeFontFamily(value: UiFontFamily) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(fontFamily = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(fontFamily = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeFontScale(value: UiFontScale) {
+    private fun handleChangeFontScale(value: UiFontScale) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(fontScale = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(fontScale = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeDynamicColors(value: Boolean) {
+    private fun handleChangeDynamicColors(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(dynamicColors = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(dynamicColors = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeThemeColor(value: Color?) {
+    private fun handleChangeThemeColor(value: Color?) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(customSeedColor = value?.toArgb())
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(customSeedColor = value?.toArgb())
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeDefaultTimelineType(type: TimelineType) {
+    private fun handleChangeDefaultTimelineType(type: TimelineType) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings =
-            currentSettings.copy(
-                defaultTimelineType = type.toInt(),
-                defaultTimelineId = (type as? TimelineType.Circle)?.circle?.id,
-            )
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings =
+                currentSettings.copy(
+                    defaultTimelineType = type.toInt(),
+                    defaultTimelineId = (type as? TimelineType.Circle)?.circle?.id,
+                )
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeDefaultPostVisibility(visibility: Visibility) {
+    private fun handleChangeDefaultPostVisibility(visibility: Visibility) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(defaultPostVisibility = visibility.toInt())
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(defaultPostVisibility = visibility.toInt())
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeDefaultReplyVisibility(visibility: Visibility) {
+    private fun handleChangeDefaultReplyVisibility(visibility: Visibility) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(defaultReplyVisibility = visibility.toInt())
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(defaultReplyVisibility = visibility.toInt())
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeIncludeNsfw(value: Boolean) {
+    private fun handleChangeIncludeNsfw(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(includeNsfw = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(includeNsfw = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeBlurNsfw(value: Boolean) {
+    private fun handleChangeBlurNsfw(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(blurNsfw = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(blurNsfw = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeUrlOpeningMode(value: UrlOpeningMode) {
+    private fun handleChangeUrlOpeningMode(value: UrlOpeningMode) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(urlOpeningMode = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(urlOpeningMode = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeExcludeRepliesFromTimeline(value: Boolean) {
+    private fun handleChangeExcludeRepliesFromTimeline(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(excludeRepliesFromTimeline = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(excludeRepliesFromTimeline = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeOpenGroupsInForumModeByDefault(value: Boolean) {
+    private fun handleChangeOpenGroupsInForumModeByDefault(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(openGroupsInForumModeByDefault = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(openGroupsInForumModeByDefault = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeMarkupMode(value: MarkupMode) {
+    private fun handleChangeMarkupMode(value: MarkupMode) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(markupMode = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(markupMode = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeMaxPostBodyLines(value: Int) {
+    private fun handleChangeMaxPostBodyLines(value: Int) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(maxPostBodyLines = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(maxPostBodyLines = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changePullNotificationCheckInterval(value: Duration?) {
+    private fun handleChangeBackgroundNotificationCheckInterval(value: Duration?) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(pullNotificationCheckInterval = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(pullNotificationCheckInterval = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeAutoloadImages(value: ImageLoadingMode) {
+    private fun handleChangeAutoloadImages(value: ImageLoadingMode) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(autoloadImages = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(autoloadImages = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeNotificationMode(mode: NotificationMode) {
+    private fun handleChangeNotificationMode(mode: NotificationMode) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(notificationMode = mode)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(notificationMode = mode)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun selectPushDistributor(distributor: String) {
-        pushNotificationManager.saveDistributor(distributor)
-        pushNotificationManager.enable()
+    private fun handleSelectPushDistributor(distributor: String) {
+        viewModelScope.launch {
+            pushNotificationManager.saveDistributor(distributor)
+            pushNotificationManager.enable()
+        }
     }
 
-    private suspend fun grantPushNotificationPermission() {
-        when (val state = uiState.value.pushNotificationPermissionState) {
-            PermissionState.DeniedAlways -> permissionController.openAppSettings()
+    private fun handleGrantPushNotificationsPermission() {
+        viewModelScope.launch {
+            when (val state = uiState.value.pushNotificationPermissionState) {
+                PermissionState.DeniedAlways -> args.controller.openAppSettings()
 
-            else -> {
-                val newState =
-                    try {
-                        permissionController.providePermission(PermissionType.PushNotification)
-                        PermissionState.Granted
-                    } catch (_: DeniedAlwaysException) {
-                        PermissionState.DeniedAlways
-                    } catch (_: DeniedException) {
-                        PermissionState.Denied
-                    } catch (_: RequestCanceledException) {
-                        state
+                else -> {
+                    val newState =
+                        try {
+                            args.controller.providePermission(PermissionType.PushNotification)
+                            PermissionState.Granted
+                        } catch (_: DeniedAlwaysException) {
+                            PermissionState.DeniedAlways
+                        } catch (_: DeniedException) {
+                            PermissionState.Denied
+                        } catch (_: RequestCanceledException) {
+                            state
+                        }
+                    updateState {
+                        it.copy(pushNotificationPermissionState = newState)
                     }
-                updateState {
-                    it.copy(pushNotificationPermissionState = newState)
                 }
             }
         }
     }
 
-    private fun changeCrashReportEnabled(value: Boolean) {
+    private fun handleChangeCrashReportEnabled(value: Boolean) {
         if (value) {
             crashReportManager.enable()
         } else {
@@ -592,33 +555,43 @@ class SettingsViewModel(
         }
     }
 
-    private suspend fun changeHideNavigationBarWhileScrolling(value: Boolean) {
+    private fun handleChangeHideNavigationBarWhileScrolling(value: Boolean) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(hideNavigationBarWhileScrolling = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(hideNavigationBarWhileScrolling = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeAppIcon(variant: AppIconVariant) {
-        appIconManager.changeIcon(variant)
-        updateState { it.copy(appIconRestartRequired = true) }
+    private fun handleChangeAppIcon(variant: AppIconVariant) {
+        viewModelScope.launch {
+            appIconManager.changeIcon(variant)
+            updateState { it.copy(appIconRestartRequired = true) }
+        }
     }
 
-    private suspend fun changeBarTheme(value: UiBarTheme) {
+    private fun handleChangeBarTheme(value: UiBarTheme) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(barTheme = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(barTheme = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeTimelineLayout(value: TimelineLayout) {
+    private fun handleChangeTimelineLayout(value: TimelineLayout) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(timelineLayout = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(timelineLayout = value)
+            saveSettings(newSettings)
+        }
     }
 
-    private suspend fun changeReplyDepth(value: Int) {
+    private fun handleChangeReplyDepth(value: Int) {
         val currentSettings = settingsRepository.current.value ?: return
-        val newSettings = currentSettings.copy(replyDepth = value)
-        saveSettings(newSettings)
+        viewModelScope.launch {
+            val newSettings = currentSettings.copy(replyDepth = value)
+            saveSettings(newSettings)
+        }
     }
 
     private fun handleImportSettings(content: String) {
