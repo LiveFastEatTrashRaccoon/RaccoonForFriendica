@@ -13,10 +13,8 @@ private data class ConversationNode(val entry: TimelineEntryModel, var children:
 
 @ContributesBinding(AppScope::class)
 @Inject
-class DefaultPopulateThreadUseCase(
-    private val timelineEntryRepository: TimelineEntryRepository,
-    private val emojiHelper: EmojiHelper,
-) : PopulateThreadUseCase {
+class DefaultPopulateThreadUseCase(private val timelineEntryRepository: TimelineEntryRepository) :
+    PopulateThreadUseCase {
     override suspend fun invoke(entry: TimelineEntryModel, maxDepth: Int): List<TimelineEntryModel> {
         val root = ConversationNode(entry.original)
         populateTree(
@@ -42,9 +40,6 @@ class DefaultPopulateThreadUseCase(
                 .getContext(node.entry.id)
                 ?.descendants
                 .orEmpty()
-                .map {
-                    with(emojiHelper) { it.withEmojisIfMissing() }
-                }
         buildTree(node = node, descendants = descendants, depth = depth, maxDepth)
     }
 

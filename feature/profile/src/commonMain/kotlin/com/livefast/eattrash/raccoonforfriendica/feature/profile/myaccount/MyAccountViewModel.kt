@@ -18,6 +18,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashPar
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EntryActionHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
@@ -61,6 +62,7 @@ class MyAccountViewModel(
     private val blurHashRepository: BlurHashRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val entryActionHelper: EntryActionHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val logout: LogoutUseCase,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
@@ -125,14 +127,15 @@ class MyAccountViewModel(
     private suspend fun loadData(currentUser: UserModel?) {
         if (currentUser != null) {
             updateState { it.copy(user = currentUser) }
-            val initialValues =
-                timelineEntryRepository
-                    .getCachedByUser()
-                    .map {
-                        with(emojiHelper) { it.withEmojisIfMissing() }
-                    }.map {
-                        with(replyHelper) { it.withInReplyToIfMissing() }
-                    }
+            val initialValues = timelineEntryRepository.getCachedByUser().map { entry ->
+                entry.let {
+                    with(emojiHelper) { it.withEmojisIfMissing() }
+                }.let {
+                    with(replyHelper) { it.withInReplyToIfMissing() }
+                }.let {
+                    with(entryActionHelper) { it.withActions() }
+                }
+            }
             paginationManager.restoreHistory(initialValues)
             if (initialValues.isNotEmpty()) {
                 updateState {

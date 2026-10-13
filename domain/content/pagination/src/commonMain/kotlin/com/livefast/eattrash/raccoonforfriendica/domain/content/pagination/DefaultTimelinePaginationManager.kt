@@ -192,45 +192,93 @@ class DefaultTimelinePaginationManager(
                             .filterNsfw(spec.includeNsfw)
                             .filterWithRateLimits()
                             .filterByStopWords()
-                            .fixupCreatorEmojis()
-                            .fixupInReplyTo()
-                            .fixupFollowedHashtags()
+                            .map { entry ->
+                                entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                }.let {
+                                    it.copy(
+                                        tags = it.tags.map { tag ->
+                                            tag.copy(following = followedHashtagCache.isFollowed(tag))
+                                        },
+                                    )
+                                }
+                            }
 
                     is TimelinePaginationSpecification.Hashtag ->
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filterWithRateLimits()
                             .filterByStopWords()
-                            .fixupCreatorEmojis()
-                            .fixupInReplyTo()
+                            .map { entry ->
+                                entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                }
+                            }
 
                     is TimelinePaginationSpecification.User ->
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filterByStopWords()
-                            .fixupCreatorEmojis()
-                            .fixupInReplyTo()
+                            .map { entry ->
+                                entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                }
+                            }
 
                     is TimelinePaginationSpecification.Forum ->
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filter { it.reblog != null && it.reblog?.inReplyTo == null }
                             .filterByStopWords()
-                            .fixupCreatorEmojis()
+                            .map { entry ->
+                                entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                }
+                            }
 
                     is TimelinePaginationSpecification.Bookmarks ->
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filterByStopWords()
-                            .fixupCreatorEmojis()
-                            .fixupInReplyTo()
+                            .map { entry ->
+                                entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                }
+                            }
 
                     is TimelinePaginationSpecification.Favorites ->
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filterByStopWords()
-                            .fixupCreatorEmojis()
-                            .fixupInReplyTo()
+                            .map { entry ->
+                                entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                }
+                            }
 
                     is TimelinePaginationSpecification.Quotes ->
                         newItems
@@ -289,18 +337,6 @@ class DefaultTimelinePaginationManager(
         included || !it.isNsfw
     }
 
-    private suspend fun List<TimelineEntryModel>.fixupCreatorEmojis(): List<TimelineEntryModel> = with(emojiHelper) {
-        map {
-            it.withEmojisIfMissing()
-        }
-    }
-
-    private suspend fun List<TimelineEntryModel>.fixupInReplyTo(): List<TimelineEntryModel> = with(replyHelper) {
-        map {
-            it.withInReplyToIfMissing()
-        }
-    }
-
     private fun List<TimelineEntryModel>.filterByStopWords(): List<TimelineEntryModel> = filter { entry ->
         stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
             stopWordList.none { word ->
@@ -314,12 +350,5 @@ class DefaultTimelinePaginationManager(
                 entryTexts.any { it.contains(other = word, ignoreCase = true) }
             }
         } ?: true
-    }
-
-    private suspend fun List<TimelineEntryModel>.fixupFollowedHashtags(): List<TimelineEntryModel> = map { entry ->
-        val tags = entry.tags.map { tag ->
-            tag.copy(following = followedHashtagCache.isFollowed(tag))
-        }
-        entry.copy(tags = tags)
     }
 }

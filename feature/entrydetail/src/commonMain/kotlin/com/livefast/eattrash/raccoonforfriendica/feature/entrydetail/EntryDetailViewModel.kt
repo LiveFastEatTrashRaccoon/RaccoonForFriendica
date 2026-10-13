@@ -19,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashPar
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EntryActionHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
@@ -64,6 +65,7 @@ class EntryDetailViewModel(
     private val imagePreloadManager: ImagePreloadManager,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val entryActionHelper: EntryActionHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val toggleEntryDislike: ToggleEntryDislikeUseCase,
     private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
@@ -247,10 +249,14 @@ class EntryDetailViewModel(
         val root = context?.ancestors?.firstOrNull() ?: mainEntry ?: return
         val currentEntryList =
             populateThread(entry = root, maxDepth = maxDepth)
-                .map {
-                    with(emojiHelper) { it.withEmojisIfMissing() }
-                }.map {
-                    with(replyHelper) { it.withInReplyToIfMissing() }
+                .map { entry ->
+                    entry.let {
+                        with(emojiHelper) { it.withEmojisIfMissing() }
+                    }.let {
+                        with(replyHelper) { it.withInReplyToIfMissing() }
+                    }.let {
+                        with(entryActionHelper) { it.withActions() }
+                    }
                 }.let { list ->
                     when {
                         mainEntry != null && list.none { e -> e.id == mainEntry.id } -> {
@@ -320,7 +326,15 @@ class EntryDetailViewModel(
             val currentState = uiState.value
             val currentReplies = currentState.entries.getOrNull(currentState.currentIndex).orEmpty()
             updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
-            val result = populateThread(entry = entry.original)
+            val result = populateThread(entry = entry.original).map { entry ->
+                entry.let {
+                    with(emojiHelper) { it.withEmojisIfMissing() }
+                }.let {
+                    with(replyHelper) { it.withInReplyToIfMissing() }
+                }.let {
+                    with(entryActionHelper) { it.withActions() }
+                }
+            }
             val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
             if (newReplies.isEmpty()) {
                 // abort and disable load more button
