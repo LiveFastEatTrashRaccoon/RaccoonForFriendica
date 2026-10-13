@@ -108,7 +108,6 @@ fun ExploreScreen(
     val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
@@ -437,26 +436,26 @@ fun ExploreScreen(
                                                 ExploreMvi.Intent.ToggleReblog(e),
                                             )
                                     }
-                                }.takeIf { actionRepository.canReblog(item.entry.original) && isHomeInstance },
+                                }.takeIf { item.entry.original.actionPermissions.canReblog && isHomeInstance },
                                 onBookmark =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ExploreMvi.Intent.ToggleBookmark(e))
-                                }.takeIf { actionRepository.canBookmark(item.entry.original) && isHomeInstance },
+                                }.takeIf { item.entry.original.actionPermissions.canBookmark && isHomeInstance },
                                 onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ExploreMvi.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canFavorite(item.entry.original) && isHomeInstance },
+                                }.takeIf { item.entry.original.actionPermissions.canFavorite && isHomeInstance },
                                 onDislike =
                                 { e: TimelineEntryModel ->
                                     model.reduce(ExploreMvi.Intent.ToggleDislike(e))
-                                }.takeIf { actionRepository.canDislike(item.entry.original) && isHomeInstance },
+                                }.takeIf { item.entry.original.actionPermissions.canDislike && isHomeInstance },
                                 onReply =
                                 { e: TimelineEntryModel ->
                                     mainRouter.openComposer(
                                         inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
-                                }.takeIf { actionRepository.canReply(item.entry.original) && isHomeInstance },
+                                }.takeIf { item.entry.original.actionPermissions.canReply && isHomeInstance },
                                 onPollVote =
                                 uiState.currentUserId?.let {
                                     { e, choices ->
@@ -481,34 +480,34 @@ fun ExploreScreen(
                                 options =
                                 buildList {
                                     val entry = item.entry
-                                    if (actionRepository.canShare(entry.original)) {
+                                    if (item.entry.original.actionPermissions.canShare) {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (actionRepository.canEdit(entry.original) && isHomeInstance) {
+                                    if (item.entry.original.actionPermissions.canEdit && isHomeInstance) {
                                         this += OptionId.Edit.toOption()
                                     }
-                                    if (actionRepository.canDelete(entry.original) && isHomeInstance) {
+                                    if (item.entry.original.actionPermissions.canDelete && isHomeInstance) {
                                         this += OptionId.Delete.toOption()
                                     }
-                                    if (actionRepository.canTogglePin(entry) && isHomeInstance) {
+                                    if (item.entry.original.actionPermissions.canTogglePin && isHomeInstance) {
                                         if (entry.pinned) {
                                             this += OptionId.Unpin.toOption()
                                         } else {
                                             this += OptionId.Pin.toOption()
                                         }
                                     }
-                                    if (actionRepository.canMute(entry) && isHomeInstance) {
+                                    if (item.entry.original.actionPermissions.canMute && isHomeInstance) {
                                         this += OptionId.Mute.toOption()
                                     }
-                                    if (actionRepository.canBlock(entry) && isHomeInstance) {
+                                    if (item.entry.original.actionPermissions.canBlock && isHomeInstance) {
                                         this += OptionId.Block.toOption()
                                     }
-                                    if (actionRepository.canReport(entry.original) && isHomeInstance) {
+                                    if (item.entry.original.actionPermissions.canReport && isHomeInstance) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
-                                    if (actionRepository.canQuote(entry.original)) {
+                                    if (item.entry.original.actionPermissions.canQuote) {
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()

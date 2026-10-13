@@ -82,7 +82,6 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
     val lazyListState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
     var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
@@ -267,11 +266,11 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         },
                         options =
                         buildList {
-                            if (actionRepository.canShare(entry.original)) {
+                            if (entry.original.actionPermissions.canShare) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canQuote(entry.original)) {
+                            if (entry.original.actionPermissions.canQuote) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()

@@ -96,7 +96,6 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val searchFieldFocusRequester = remember { FocusRequester() }
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
@@ -348,26 +347,26 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                                 SearchMvi.Intent.ToggleReblog(e),
                                             )
                                     }
-                                }.takeIf { actionRepository.canReblog(item.entry.original) },
+                                }.takeIf { item.entry.original.actionPermissions.canReblog },
                                 onBookmark =
                                 { e: TimelineEntryModel ->
                                     model.reduce(SearchMvi.Intent.ToggleBookmark(e))
-                                }.takeIf { actionRepository.canBookmark(item.entry.original) },
+                                }.takeIf { item.entry.original.actionPermissions.canBookmark },
                                 onFavorite =
                                 { e: TimelineEntryModel ->
                                     model.reduce(SearchMvi.Intent.ToggleFavorite(e))
-                                }.takeIf { actionRepository.canFavorite(item.entry.original) },
+                                }.takeIf { item.entry.original.actionPermissions.canFavorite },
                                 onDislike =
                                 { e: TimelineEntryModel ->
                                     model.reduce(SearchMvi.Intent.ToggleDislike(e))
-                                }.takeIf { actionRepository.canDislike(item.entry.original) },
+                                }.takeIf { item.entry.original.actionPermissions.canDislike },
                                 onReply =
                                 { e: TimelineEntryModel ->
                                     mainRouter.openComposer(
                                         inReplyTo = e,
                                         inReplyToUser = e.creator,
                                     )
-                                }.takeIf { actionRepository.canReply(item.entry.original) },
+                                }.takeIf { item.entry.original.actionPermissions.canReply },
                                 onPollVote =
                                 uiState.currentUserId?.let {
                                     { e, choices ->
@@ -392,34 +391,34 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                 options =
                                 buildList {
                                     val entry = item.entry
-                                    if (actionRepository.canShare(entry.original)) {
+                                    if (entry.original.actionPermissions.canShare) {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (actionRepository.canEdit(entry.original)) {
+                                    if (entry.original.actionPermissions.canEdit) {
                                         this += OptionId.Edit.toOption()
                                     }
-                                    if (actionRepository.canDelete(entry.original)) {
+                                    if (entry.original.actionPermissions.canDelete) {
                                         this += OptionId.Delete.toOption()
                                     }
-                                    if (actionRepository.canTogglePin(entry)) {
+                                    if (entry.original.actionPermissions.canTogglePin) {
                                         if (entry.pinned) {
                                             this += OptionId.Unpin.toOption()
                                         } else {
                                             this += OptionId.Pin.toOption()
                                         }
                                     }
-                                    if (actionRepository.canMute(entry)) {
+                                    if (entry.original.actionPermissions.canMute) {
                                         this += OptionId.Mute.toOption()
                                     }
-                                    if (actionRepository.canBlock(entry)) {
+                                    if (entry.original.actionPermissions.canBlock) {
                                         this += OptionId.Block.toOption()
                                     }
-                                    if (actionRepository.canReport(entry.original)) {
+                                    if (entry.original.actionPermissions.canReport) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
-                                    if (actionRepository.canQuote(entry.original)) {
+                                    if (entry.original.actionPermissions.canQuote) {
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()

@@ -114,7 +114,6 @@ fun TimelineScreen(
         }
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
     var timelineTypeSelectorOpen by remember { mutableStateOf(false) }
@@ -386,26 +385,26 @@ fun TimelineScreen(
                                         TimelineMvi.Intent.ToggleReblog(e),
                                     )
                             }
-                        }.takeIf { actionRepository.canReblog(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canReblog },
                         onBookmark =
                         { e: TimelineEntryModel ->
                             model.reduce(TimelineMvi.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canBookmark },
                         onFavorite =
                         { e: TimelineEntryModel ->
                             model.reduce(TimelineMvi.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canFavorite },
                         onDislike =
                         { e: TimelineEntryModel ->
                             model.reduce(TimelineMvi.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canDislike },
                         onReply =
                         { e: TimelineEntryModel ->
                             mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
-                        }.takeIf { actionRepository.canReply(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canReply },
                         onPollVote =
                         uiState.currentUserId?.let {
                             { e, choices ->
@@ -427,34 +426,34 @@ fun TimelineScreen(
                         },
                         options =
                         buildList {
-                            if (actionRepository.canShare(entry.original)) {
+                            if (entry.original.actionPermissions.canShare) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canEdit(entry.original)) {
+                            if (entry.original.actionPermissions.canEdit) {
                                 this += OptionId.Edit.toOption()
                             }
-                            if (actionRepository.canDelete(entry.original)) {
+                            if (entry.original.actionPermissions.canDelete) {
                                 this += OptionId.Delete.toOption()
                             }
-                            if (actionRepository.canTogglePin(entry)) {
+                            if (entry.original.actionPermissions.canTogglePin) {
                                 if (entry.pinned) {
                                     this += OptionId.Unpin.toOption()
                                 } else {
                                     this += OptionId.Pin.toOption()
                                 }
                             }
-                            if (actionRepository.canMute(entry)) {
+                            if (entry.original.actionPermissions.canMute) {
                                 this += OptionId.Mute.toOption()
                             }
-                            if (actionRepository.canBlock(entry)) {
+                            if (entry.original.actionPermissions.canBlock) {
                                 this += OptionId.Block.toOption()
                             }
-                            if (actionRepository.canReport(entry.original)) {
+                            if (entry.original.actionPermissions.canReport) {
                                 this += OptionId.ReportUser.toOption()
                                 this += OptionId.ReportEntry.toOption()
                             }
-                            if (actionRepository.canQuote(entry.original)) {
+                            if (entry.original.actionPermissions.canQuote) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()
