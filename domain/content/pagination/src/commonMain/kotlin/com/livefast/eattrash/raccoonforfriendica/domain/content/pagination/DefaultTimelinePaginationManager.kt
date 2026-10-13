@@ -37,6 +37,7 @@ class DefaultTimelinePaginationManager(
     private val userRateLimitRepository: UserRateLimitRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val entryActionHelper: EntryActionHelper,
     private val stopWordRepository: StopWordRepository,
     private val followedHashtagCache: FollowedHashtagCache,
     notificationCenter: NotificationCenter,
