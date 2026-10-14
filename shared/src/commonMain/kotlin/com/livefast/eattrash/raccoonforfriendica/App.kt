@@ -8,7 +8,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
@@ -222,28 +221,26 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                             val exploreLazyListState = rememberLazyListState()
                             val inboxLazyListState = rememberLazyListState()
                             val myAccountLazyListState = rememberLazyListState()
-                            Surface(color = MaterialTheme.colorScheme.background) {
-                                NavDisplay(
-                                    backStack = backStack,
-                                    onBack = { navigationCoordinator.pop() },
-                                    entryDecorators = listOf(
-                                        rememberSaveableStateHolderNavEntryDecorator(),
-                                        rememberViewModelStoreNavEntryDecorator(),
-                                    ),
-                                    sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
-                                    entryProvider = getEntryProvider(
-                                        timelineViewModel = timelineModel,
-                                        timelineLazyListState = timelineLazyListState,
-                                        exploreViewModel = exploreModel,
-                                        exploreLazyListState = exploreLazyListState,
-                                        inboxViewModel = inboxModel,
-                                        inboxLazyListState = inboxLazyListState,
-                                        profileViewModel = profileModel,
-                                        myAccountViewModel = myAccountModel,
-                                        myAccountLazyListState = myAccountLazyListState,
-                                    ),
-                                )
-                            }
+                            NavDisplay(
+                                backStack = backStack,
+                                onBack = { navigationCoordinator.pop() },
+                                entryDecorators = listOf(
+                                    rememberSaveableStateHolderNavEntryDecorator(),
+                                    rememberViewModelStoreNavEntryDecorator(),
+                                ),
+                                sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
+                                entryProvider = getEntryProvider(
+                                    timelineViewModel = timelineModel,
+                                    timelineLazyListState = timelineLazyListState,
+                                    exploreViewModel = exploreModel,
+                                    exploreLazyListState = exploreLazyListState,
+                                    inboxViewModel = inboxModel,
+                                    inboxLazyListState = inboxLazyListState,
+                                    profileViewModel = profileModel,
+                                    myAccountViewModel = myAccountModel,
+                                    myAccountLazyListState = myAccountLazyListState,
+                                ),
+                            )
                         }
                     }
                 } else {
@@ -307,39 +304,37 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                         val exploreLazyListState = rememberLazyListState()
                                         val inboxLazyListState = rememberLazyListState()
                                         val myAccountLazyListState = rememberLazyListState()
-                                        Surface(color = MaterialTheme.colorScheme.background) {
-                                            NavDisplay(
-                                                backStack = backStack,
-                                                onBack = { navigationCoordinator.pop() },
-                                                entryDecorators = listOf(
-                                                    rememberSaveableStateHolderNavEntryDecorator(),
-                                                    rememberViewModelStoreNavEntryDecorator(),
-                                                ),
-                                                sceneStrategies = listOf(listDetailStrategy),
-                                                entryProvider = getEntryProvider(
-                                                    timelineViewModel = timelineViewModel,
-                                                    timelineLazyListState = timelineLazyListState,
-                                                    exploreViewModel = exploreViewModel,
-                                                    exploreLazyListState = exploreLazyListState,
-                                                    inboxViewModel = inboxViewModel,
-                                                    inboxLazyListState = inboxLazyListState,
-                                                    profileViewModel = profileViewModel,
-                                                    myAccountViewModel = myAccountViewModel,
-                                                    myAccountLazyListState = myAccountLazyListState,
-                                                    favoritesViewModel = favoritesViewModel,
-                                                    bookmarksViewModel = bookmarksViewModel,
-                                                    followedHashtagsViewModel = followedHashtagsViewModel,
-                                                    followRequestsViewModel = followRequestsViewModel,
-                                                    circlesViewModel = circlesViewModel,
-                                                    conversationListViewModel = conversationListViewModel,
-                                                    galleryViewModel = galleryViewModel,
-                                                    unpublishedViewModel = unpublishedViewModel,
-                                                    calendarViewModel = calendarViewModel,
-                                                    shortcutListViewModel = shortcutListViewModel,
-                                                    nodeInfoViewModel = nodeInfoViewModel,
-                                                ),
-                                            )
-                                        }
+                                        NavDisplay(
+                                            backStack = backStack,
+                                            onBack = { navigationCoordinator.pop() },
+                                            entryDecorators = listOf(
+                                                rememberSaveableStateHolderNavEntryDecorator(),
+                                                rememberViewModelStoreNavEntryDecorator(),
+                                            ),
+                                            sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
+                                            entryProvider = getEntryProvider(
+                                                timelineViewModel = timelineViewModel,
+                                                timelineLazyListState = timelineLazyListState,
+                                                exploreViewModel = exploreViewModel,
+                                                exploreLazyListState = exploreLazyListState,
+                                                inboxViewModel = inboxViewModel,
+                                                inboxLazyListState = inboxLazyListState,
+                                                profileViewModel = profileViewModel,
+                                                myAccountViewModel = myAccountViewModel,
+                                                myAccountLazyListState = myAccountLazyListState,
+                                                favoritesViewModel = favoritesViewModel,
+                                                bookmarksViewModel = bookmarksViewModel,
+                                                followedHashtagsViewModel = followedHashtagsViewModel,
+                                                followRequestsViewModel = followRequestsViewModel,
+                                                circlesViewModel = circlesViewModel,
+                                                conversationListViewModel = conversationListViewModel,
+                                                galleryViewModel = galleryViewModel,
+                                                unpublishedViewModel = unpublishedViewModel,
+                                                calendarViewModel = calendarViewModel,
+                                                shortcutListViewModel = shortcutListViewModel,
+                                                nodeInfoViewModel = nodeInfoViewModel,
+                                            ),
+                                        )
                                     }
                                 }
                             },
