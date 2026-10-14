@@ -112,7 +112,6 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
     var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
@@ -503,26 +502,26 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                         ForumListMvi.Intent.ToggleReblog(e),
                                     )
                             }
-                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canReblog && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
                             model.reduce(ForumListMvi.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
                             model.reduce(ForumListMvi.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
                             model.reduce(ForumListMvi.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
                             mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
-                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canReply && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
                             { e, choices ->
@@ -544,27 +543,27 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         },
                         options =
                         buildList {
-                            if (actionRepository.canShare(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canShare && isHomeInstance) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canEdit(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canEdit && isHomeInstance) {
                                 this += OptionId.Edit.toOption()
                             }
-                            if (actionRepository.canDelete(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canDelete && isHomeInstance) {
                                 this += OptionId.Delete.toOption()
                             }
-                            if (actionRepository.canMute(entry) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canMute && isHomeInstance) {
                                 this += OptionId.Mute.toOption()
                             }
-                            if (actionRepository.canBlock(entry) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canBlock && isHomeInstance) {
                                 this += OptionId.Block.toOption()
                             }
-                            if (actionRepository.canReport(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canReport && isHomeInstance) {
                                 this += OptionId.ReportUser.toOption()
                                 this += OptionId.ReportEntry.toOption()
                             }
-                            if (actionRepository.canQuote(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canQuote && isHomeInstance) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()

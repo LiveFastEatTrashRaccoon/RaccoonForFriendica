@@ -121,7 +121,6 @@ fun EntryDetailScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
     var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
@@ -335,34 +334,34 @@ fun EntryDetailScreen(
                             val isMainEntry = entry.id == uiState.mainEntry?.id
                             val options =
                                 buildList {
-                                    if (actionRepository.canShare(entry.original)) {
+                                    if (entry.original.actionPermissions.canShare) {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (actionRepository.canEdit(entry.original)) {
+                                    if (entry.original.actionPermissions.canEdit) {
                                         this += OptionId.Edit.toOption()
                                     }
-                                    if (actionRepository.canDelete(entry.original)) {
+                                    if (entry.original.actionPermissions.canDelete) {
                                         this += OptionId.Delete.toOption()
                                     }
-                                    if (actionRepository.canTogglePin(entry)) {
+                                    if (entry.original.actionPermissions.canTogglePin) {
                                         if (entry.pinned) {
                                             this += OptionId.Unpin.toOption()
                                         } else {
                                             this += OptionId.Pin.toOption()
                                         }
                                     }
-                                    if (actionRepository.canMute(entry)) {
+                                    if (entry.original.actionPermissions.canMute) {
                                         this += OptionId.Mute.toOption()
                                     }
-                                    if (actionRepository.canBlock(entry)) {
+                                    if (entry.original.actionPermissions.canBlock) {
                                         this += OptionId.Block.toOption()
                                     }
-                                    if (actionRepository.canReport(entry.original)) {
+                                    if (entry.original.actionPermissions.canReport) {
                                         this += OptionId.ReportUser.toOption()
                                         this += OptionId.ReportEntry.toOption()
                                     }
-                                    if (actionRepository.canQuote(entry.original)) {
+                                    if (entry.original.actionPermissions.canQuote) {
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
@@ -567,7 +566,7 @@ fun EntryDetailScreen(
                                                         ),
                                                     )
                                             }
-                                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
+                                        }.takeIf { entry.original.actionPermissions.canReblog && isHomeInstance },
                                         onBookmark =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
@@ -575,7 +574,7 @@ fun EntryDetailScreen(
                                                     e,
                                                 ),
                                             )
-                                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
+                                        }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
                                         onFavorite =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
@@ -583,7 +582,7 @@ fun EntryDetailScreen(
                                                     e,
                                                 ),
                                             )
-                                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
+                                        }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
                                         onDislike =
                                         { e: TimelineEntryModel ->
                                             model.reduce(
@@ -591,7 +590,7 @@ fun EntryDetailScreen(
                                                     e,
                                                 ),
                                             )
-                                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
+                                        }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
                                         onOpenUsersFavorite = { e ->
                                             mainRouter.openEntryUsersFavorite(
                                                 entryId = e.id,
@@ -612,7 +611,7 @@ fun EntryDetailScreen(
                                                 inReplyTo = e,
                                                 inReplyToUser = e.creator,
                                             )
-                                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
+                                        }.takeIf { entry.original.actionPermissions.canReply && isHomeInstance },
                                         onPollVote =
                                         uiState.currentUserId?.let {
                                             { e, choices ->
@@ -699,19 +698,19 @@ fun EntryDetailScreen(
                                                     EntryDetailMvi.Intent.ToggleReblog(e),
                                                 )
                                         }
-                                    }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
+                                    }.takeIf { entry.original.actionPermissions.canReblog && isHomeInstance },
                                     onBookmark =
                                     { e: TimelineEntryModel ->
                                         model.reduce(EntryDetailMvi.Intent.ToggleBookmark(e))
-                                    }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
+                                    }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
                                     onFavorite =
                                     { e: TimelineEntryModel ->
                                         model.reduce(EntryDetailMvi.Intent.ToggleFavorite(e))
-                                    }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
+                                    }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
                                     onDislike =
                                     { e: TimelineEntryModel ->
                                         model.reduce(EntryDetailMvi.Intent.ToggleDislike(e))
-                                    }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
+                                    }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
                                     onOpenUsersFavorite = { e ->
                                         mainRouter.openEntryUsersFavorite(
                                             entryId = e.id,
@@ -732,7 +731,7 @@ fun EntryDetailScreen(
                                             inReplyTo = e,
                                             inReplyToUser = e.creator,
                                         )
-                                    }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
+                                    }.takeIf { entry.original.actionPermissions.canReply && isHomeInstance },
                                     onPollVote =
                                     uiState.currentUserId?.let {
                                         { e, choices ->

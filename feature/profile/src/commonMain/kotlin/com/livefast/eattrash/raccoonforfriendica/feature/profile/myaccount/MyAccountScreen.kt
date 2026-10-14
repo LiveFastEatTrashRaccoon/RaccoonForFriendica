@@ -91,7 +91,6 @@ fun MyAccountScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val genericError = LocalStrings.current.messageGenericError
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
@@ -395,42 +394,42 @@ fun MyAccountScreen(
                     onBookmark =
                         { e: TimelineEntryModel ->
                             model.reduce(MyAccountMvi.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canBookmark },
                     onFavorite =
                         { e: TimelineEntryModel ->
                             model.reduce(MyAccountMvi.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canFavorite },
                     onDislike =
                         { e: TimelineEntryModel ->
                             model.reduce(MyAccountMvi.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canDislike },
                     onReply =
                         { e: TimelineEntryModel ->
                             mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
-                        }.takeIf { actionRepository.canReply(entry.original) },
+                        }.takeIf { entry.original.actionPermissions.canReply },
                     options =
                         buildList {
-                            if (actionRepository.canShare(entry.original)) {
+                            if (entry.original.actionPermissions.canShare) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canEdit(entry.original)) {
+                            if (entry.original.actionPermissions.canEdit) {
                                 this += OptionId.Edit.toOption()
                             }
-                            if (actionRepository.canDelete(entry.original)) {
+                            if (entry.original.actionPermissions.canDelete) {
                                 this += OptionId.Delete.toOption()
                             }
-                            if (actionRepository.canTogglePin(entry)) {
+                            if (entry.original.actionPermissions.canTogglePin) {
                                 if (entry.pinned) {
                                     this += OptionId.Unpin.toOption()
                                 } else {
                                     this += OptionId.Pin.toOption()
                                 }
                             }
-                            if (actionRepository.canQuote(entry.original)) {
+                            if (entry.original.actionPermissions.canQuote) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()

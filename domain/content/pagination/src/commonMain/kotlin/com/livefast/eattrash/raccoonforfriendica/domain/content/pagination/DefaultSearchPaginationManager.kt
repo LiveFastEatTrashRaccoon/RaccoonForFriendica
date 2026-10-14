@@ -36,6 +36,7 @@ class DefaultSearchPaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val entryActionHelper: EntryActionHelper,
     private val accountRepository: AccountRepository,
     private val stopWordRepository: StopWordRepository,
     notificationCenter: NotificationCenter,
@@ -142,16 +143,35 @@ class DefaultSearchPaginationManager(
                             is SearchPaginationSpecification.Groups -> list.filterGroups()
                             else -> list
                         }
+                    }.map { item ->
+                        when (item) {
+                            is ExploreItemModel.Entry -> item.copy(
+                                entry = item.entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                },
+                            )
+
+                            is ExploreItemModel.User -> item.copy(
+                                user = item.user.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                },
+                            )
+
+                            is ExploreItemModel.HashTag -> item
+
+                            is ExploreItemModel.Link -> item
+                        }
                     }
-                    .fixupCreatorEmojis()
-                    .fixupInReplyTo()
             },
         )
     }
 
     private fun List<ExploreItemModel>.filterNsfw(included: Boolean): List<ExploreItemModel> = filter {
-        included ||
-            !it.isNsfw
+        included || !it.isNsfw
     }
 
     private suspend fun List<ExploreItemModel>.determineUserRelationshipStatus(): List<ExploreItemModel> = run {
@@ -169,25 +189,6 @@ class DefaultSearchPaginationManager(
                         notificationStatus = relationship?.toNotificationStatus(),
                     ),
                 )
-            }
-        }
-    }
-
-    private suspend fun List<ExploreItemModel>.fixupCreatorEmojis(): List<ExploreItemModel> = with(emojiHelper) {
-        map {
-            when (it) {
-                is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())
-                is ExploreItemModel.User -> it.copy(user = it.user.withEmojisIfMissing())
-                else -> it
-            }
-        }
-    }
-
-    private suspend fun List<ExploreItemModel>.fixupInReplyTo(): List<ExploreItemModel> = with(replyHelper) {
-        map {
-            when (it) {
-                is ExploreItemModel.Entry -> it.copy(entry = it.entry.withInReplyToIfMissing())
-                else -> it
             }
         }
     }

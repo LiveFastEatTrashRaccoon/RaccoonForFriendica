@@ -48,6 +48,10 @@ class DefaultSearchPaginationManagerTest {
         mock<ReplyHelper> {
             everySuspend { any<TimelineEntryModel>().withInReplyToIfMissing() } returnsArgAt 0
         }
+    private val entryActionHelper =
+        mock<EntryActionHelper> {
+            everySuspend { any<TimelineEntryModel>().withActions() } returnsArgAt 0
+        }
     private val notificationCenter =
         mock<NotificationCenter> {
             every { subscribe(any<KClass<NotificationCenterEvent>>()) } returns MutableSharedFlow()
@@ -64,6 +68,7 @@ class DefaultSearchPaginationManagerTest {
             userRepository = userRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
+            entryActionHelper = entryActionHelper,
             accountRepository = accountRepository,
             stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,

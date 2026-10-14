@@ -17,7 +17,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEnt
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EntryActionHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
@@ -58,6 +61,9 @@ class ThreadViewModel(
     private val hapticFeedback: HapticFeedback,
     private val entryCache: LocalItemCache<TimelineEntryModel>,
     private val imagePreloadManager: ImagePreloadManager,
+    private val emojiHelper: EmojiHelper,
+    private val replyHelper: ReplyHelper,
+    private val entryActionHelper: EntryActionHelper,
     private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val populateThread: PopulateThreadUseCase,
@@ -226,7 +232,15 @@ class ThreadViewModel(
 
     private suspend fun loadReplies() {
         val mainEntry = currentMainEntry?.original ?: return
-        val result = populateThread(entry = mainEntry)
+        val result = populateThread(entry = mainEntry).map { entry ->
+            entry.let {
+                with(emojiHelper) { it.withEmojisIfMissing() }
+            }.let {
+                with(replyHelper) { it.withInReplyToIfMissing() }
+            }.let {
+                with(entryActionHelper) { it.withActions() }
+            }
+        }
         val replies = result.filter { it.id != mainEntry.id }
         replies.preloadImages()
         updateState {
@@ -250,7 +264,15 @@ class ThreadViewModel(
         val currentState = uiState.value
         val currentReplies = currentState.replies[currentState.currentIndex]
         updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
-        val result = populateThread(entry = entry.original)
+        val result = populateThread(entry = entry.original).map { entry ->
+            entry.let {
+                with(emojiHelper) { it.withEmojisIfMissing() }
+            }.let {
+                with(replyHelper) { it.withInReplyToIfMissing() }
+            }.let {
+                with(entryActionHelper) { it.withActions() }
+            }
+        }
         val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
         if (newReplies.isEmpty()) {
             // abort and disable load more button

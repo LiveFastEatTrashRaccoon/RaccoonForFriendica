@@ -23,7 +23,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 
 open class DummyUiDeps : UiDeps {
@@ -45,7 +44,6 @@ open class DummyUiDeps : UiDeps {
     override val shareHelper: ShareHelper get() = TODO("Stub!")
     override val strings: Strings get() = DefaultStrings()
     override val themeRepository: ThemeRepository get() = TODO("Stub!")
-    override val entryActionRepository: EntryActionRepository get() = TODO("Stub!")
 
     override fun getCustomUriHandler(uriHandler: UriHandler): CustomUriHandler = TODO("Stub!")
 

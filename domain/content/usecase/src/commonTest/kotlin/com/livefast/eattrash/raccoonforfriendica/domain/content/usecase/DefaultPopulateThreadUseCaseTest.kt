@@ -18,16 +18,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DefaultPopulateThreadUseCaseTest {
-    private val emojiHelper =
-        mock<EmojiHelper> {
-            everySuspend { any<TimelineEntryModel>().withEmojisIfMissing() } returnsArgAt 0
-        }
     private val timelineEntryRepository = mock<TimelineEntryRepository>()
     private val sut =
-        DefaultPopulateThreadUseCase(
-            timelineEntryRepository = timelineEntryRepository,
-            emojiHelper = emojiHelper,
-        )
+        DefaultPopulateThreadUseCase(timelineEntryRepository = timelineEntryRepository)
 
     @Test
     fun `given terminal entry when invoke then result and interactions are as expected`() = runTest {

@@ -55,7 +55,7 @@ data class TimelineEntryModel(
     @Transient val translation: TimelineEntryModel? = null,
     @Transient val translationLoading: Boolean = false,
     @Transient val translationProvider: String? = null,
-    @Transient val foreign: Boolean = false,
+    val actionPermissions: EntryActionPermissions = EntryActionPermissions(),
 )
 
 val TimelineEntryModel.safeKey: String

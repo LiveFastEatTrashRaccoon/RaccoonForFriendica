@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
+package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
@@ -14,20 +14,21 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class DefaultEntryActionRepositoryTest {
+class DefaultEntryActionHelperTest {
     private val identityRepository =
         mock<IdentityRepository> {
             every { currentUser } returns MutableStateFlow(UserModel(id = USER_ID))
         }
     private val supportedFeatureRepository = mock<SupportedFeatureRepository>()
     private val sut =
-        DefaultEntryActionRepository(
+        DefaultEntryActionHelper(
             identityRepository = identityRepository,
             supportedFeatureRepository = supportedFeatureRepository,
         )
 
     @Test
     fun `given post has URL when canShare then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -36,13 +37,14 @@ class DefaultEntryActionRepositoryTest {
                 url = "www.example.com",
             )
 
-        val res = sut.canShare(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canShare)
     }
 
     @Test
     fun `given post does not have URL when canShare then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -50,13 +52,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canShare(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canShare)
     }
 
     @Test
     fun `given logged when canReply then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -64,13 +67,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canReply(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canReply)
     }
 
     @Test
     fun `given not logged when canReply then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         every { identityRepository.currentUser } returns MutableStateFlow(null)
         val entry =
             TimelineEntryModel(
@@ -79,13 +83,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canReply(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canReply)
     }
 
     @Test
     fun `given logged when canFavorite then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -93,13 +98,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canFavorite(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canFavorite)
     }
 
     @Test
     fun `given not logged when canFavorite then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         every { identityRepository.currentUser } returns MutableStateFlow(null)
         val entry =
             TimelineEntryModel(
@@ -108,9 +114,9 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canFavorite(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canFavorite)
     }
 
     @Test
@@ -124,9 +130,9 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canDislike(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canDislike)
     }
 
     @Test
@@ -139,9 +145,9 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canDislike(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canDislike)
     }
 
     @Test
@@ -155,13 +161,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canDislike(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canDislike)
     }
 
     @Test
     fun `given not logged when canBookmark then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         every { identityRepository.currentUser } returns MutableStateFlow(null)
         val entry =
             TimelineEntryModel(
@@ -170,13 +177,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canBookmark(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canBookmark)
     }
 
     @Test
     fun `given logged when canReblog then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -184,13 +192,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canReblog(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canReblog)
     }
 
     @Test
     fun `given not logged when canReblog then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         every { identityRepository.currentUser } returns MutableStateFlow(null)
         val entry =
             TimelineEntryModel(
@@ -199,13 +208,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canReblog(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canReblog)
     }
 
     @Test
     fun `given entry from other user when canEdit then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -213,13 +223,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canEdit(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canEdit)
     }
 
     @Test
     fun `given entry from current user when canEdit then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -227,13 +238,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canEdit(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canEdit)
     }
 
     @Test
     fun `given entry from other user when canDelete then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -241,13 +253,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canDelete(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canDelete)
     }
 
     @Test
     fun `given entry from current user when canDelete then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -255,13 +268,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canDelete(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canDelete)
     }
 
     @Test
     fun `given entry from other user when canReport then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -269,13 +283,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canReport(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canReport)
     }
 
     @Test
     fun `given entry from current user when canReport then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -283,13 +298,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canReport(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canReport)
     }
 
     @Test
     fun `given entry from other user when canMute then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -297,13 +313,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canMute(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canMute)
     }
 
     @Test
     fun `given entry from current user when canMute then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -311,13 +328,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canMute(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canMute)
     }
 
     @Test
     fun `given entry from other user when canTogglePin then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -325,13 +343,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canTogglePin(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canTogglePin)
     }
 
     @Test
     fun `given entry from current user when canTogglePin then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -339,13 +358,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canTogglePin(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canTogglePin)
     }
 
     @Test
     fun `given entry from other user when canBlock then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -353,13 +373,14 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = OTHER_USER_ID),
             )
 
-        val res = sut.canBlock(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canBlock)
     }
 
     @Test
     fun `given entry from current user when canBlock then result is as expected`() {
+        every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
         val entry =
             TimelineEntryModel(
                 id = "0",
@@ -367,9 +388,9 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canBlock(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canBlock)
     }
 
     @Test
@@ -383,9 +404,9 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canQuote(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canQuote)
     }
 
     @Test
@@ -400,9 +421,9 @@ class DefaultEntryActionRepositoryTest {
                 quotePermission = QuotePermission.AutomaticallyApprove,
             )
 
-        val res = sut.canQuote(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertTrue(res)
+        assertTrue(res.canQuote)
     }
 
     @Test
@@ -417,9 +438,9 @@ class DefaultEntryActionRepositoryTest {
                 quotePermission = QuotePermission.Unauthorized,
             )
 
-        val res = sut.canQuote(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canQuote)
     }
 
     @Test
@@ -433,9 +454,9 @@ class DefaultEntryActionRepositoryTest {
                 creator = UserModel(id = USER_ID),
             )
 
-        val res = sut.canQuote(entry)
+        val res = with(sut) { entry.withActions() }.actionPermissions
 
-        assertFalse(res)
+        assertFalse(res.canQuote)
     }
 
     companion object {

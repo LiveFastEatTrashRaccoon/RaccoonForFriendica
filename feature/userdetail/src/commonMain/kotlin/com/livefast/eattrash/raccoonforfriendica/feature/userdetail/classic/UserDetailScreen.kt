@@ -127,7 +127,6 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
-    val actionRepository = LocalUiDeps.current.entryActionRepository
     val stickyHeaderTopOffset by animateDpAsState(
         if (lazyListState.firstVisibleItemIndex >= 2) {
             Dimensions.maxTopBarInset * topAppBarState.collapsedFraction
@@ -680,26 +679,26 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                         UserDetailMvi.Intent.ToggleReblog(e),
                                     )
                             }
-                        }.takeIf { actionRepository.canReblog(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canReblog && isHomeInstance },
                         onBookmark =
                         { e: TimelineEntryModel ->
                             model.reduce(UserDetailMvi.Intent.ToggleBookmark(e))
-                        }.takeIf { actionRepository.canBookmark(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
                         onFavorite =
                         { e: TimelineEntryModel ->
                             model.reduce(UserDetailMvi.Intent.ToggleFavorite(e))
-                        }.takeIf { actionRepository.canFavorite(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
                         onDislike =
                         { e: TimelineEntryModel ->
                             model.reduce(UserDetailMvi.Intent.ToggleDislike(e))
-                        }.takeIf { actionRepository.canDislike(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
                         onReply =
                         { e: TimelineEntryModel ->
                             mainRouter.openComposer(
                                 inReplyTo = e,
                                 inReplyToUser = e.creator,
                             )
-                        }.takeIf { actionRepository.canReply(entry.original) && isHomeInstance },
+                        }.takeIf { entry.original.actionPermissions.canReply && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
                             { e, choices ->
@@ -721,14 +720,14 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         },
                         options =
                         buildList {
-                            if (actionRepository.canShare(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canShare && isHomeInstance) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (actionRepository.canReport(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canReport && isHomeInstance) {
                                 this += OptionId.ReportEntry.toOption()
                             }
-                            if (actionRepository.canQuote(entry.original) && isHomeInstance) {
+                            if (entry.original.actionPermissions.canQuote && isHomeInstance) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()

@@ -21,7 +21,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 
 interface UiDeps {
@@ -43,7 +42,6 @@ interface UiDeps {
     val shareHelper: ShareHelper
     val strings: Strings
     val themeRepository: ThemeRepository
-    val entryActionRepository: EntryActionRepository
 
     fun getCustomUriHandler(uriHandler: UriHandler): CustomUriHandler
 

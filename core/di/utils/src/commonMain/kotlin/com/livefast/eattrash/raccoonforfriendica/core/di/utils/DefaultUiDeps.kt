@@ -22,7 +22,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRe
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImageLoaderProvider
 import com.livefast.eattrash.raccoonforfriendica.core.utils.network.NetworkStateObserver
 import com.livefast.eattrash.raccoonforfriendica.core.utils.share.ShareHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.EntryActionRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandler
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.CustomUriHandlerFactory
 import dev.zacsweers.metro.AppScope
@@ -52,7 +51,6 @@ class DefaultUiDeps(
     override val shareHelper: ShareHelper,
     override val strings: Strings,
     override val themeRepository: ThemeRepository,
-    override val entryActionRepository: EntryActionRepository,
     private val customUriHandlerFactory: CustomUriHandlerFactory,
     private val clipboardHelperFactory: ClipboardHelperFactory,
 ) : UiDeps {

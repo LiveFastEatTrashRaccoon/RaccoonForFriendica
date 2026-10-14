@@ -5,6 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.Timel
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -34,6 +35,7 @@ class DefaultExplorePaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val entryActionHelper: EntryActionHelper,
     private val accountRepository: AccountRepository,
     private val stopWordRepository: StopWordRepository,
     notificationCenter: NotificationCenter,
@@ -116,15 +118,13 @@ class DefaultExplorePaginationManager(
                         .getEntries(
                             offset = history.size,
                             otherInstance = spec.otherInstance,
-                        )
-                        ?.map {
+                        )?.map {
                             ExploreItemModel.Entry(it)
                         }
 
                 ExplorePaginationSpecification.Suggestions ->
                     userRepository
-                        .getSuggestions()
-                        ?.map {
+                        .getSuggestions()?.map {
                             ExploreItemModel.User(it)
                         }?.determineUserRelationshipStatus()
             }
@@ -138,8 +138,29 @@ class DefaultExplorePaginationManager(
                 newItems
                     .filterByStopWords()
                     .filterNsfw(included = if (spec is ExplorePaginationSpecification.Posts) spec.includeNsfw else true)
-                    .fixupCreatorEmojis()
-                    .fixupInReplyTo()
+                    .map { item ->
+                        when (item) {
+                            is ExploreItemModel.Entry -> item.copy(
+                                entry = item.entry.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                }.let {
+                                    with(replyHelper) { it.withInReplyToIfMissing() }
+                                }.let {
+                                    with(entryActionHelper) { it.withActions() }
+                                },
+                            )
+
+                            is ExploreItemModel.User -> item.copy(
+                                user = item.user.let {
+                                    with(emojiHelper) { it.withEmojisIfMissing() }
+                                },
+                            )
+
+                            is ExploreItemModel.HashTag -> item
+
+                            is ExploreItemModel.Link -> item
+                        }
+                    }
             },
         )
     }
@@ -163,25 +184,6 @@ class DefaultExplorePaginationManager(
                         notificationStatus = relationship?.toNotificationStatus(),
                     ),
                 )
-            }
-        }
-    }
-
-    private suspend fun List<ExploreItemModel>.fixupCreatorEmojis(): List<ExploreItemModel> = with(emojiHelper) {
-        map {
-            when (it) {
-                is ExploreItemModel.Entry -> it.copy(entry = it.entry.withEmojisIfMissing())
-                is ExploreItemModel.User -> it.copy(user = it.user.withEmojisIfMissing())
-                else -> it
-            }
-        }
-    }
-
-    private suspend fun List<ExploreItemModel>.fixupInReplyTo(): List<ExploreItemModel> = with(replyHelper) {
-        map {
-            when (it) {
-                is ExploreItemModel.Entry -> it.copy(entry = it.entry.withInReplyToIfMissing())
-                else -> it
             }
         }
     }
