@@ -10,7 +10,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -185,23 +184,21 @@ fun MainScreen(
         },
     ) {
         if (hasBottomNavigation) {
-            Surface(color = MaterialTheme.colorScheme.background) {
-                NavDisplay(
-                    backStack = backStack,
-                    onBack = { navigationCoordinator.pop() },
-                    entryProvider = bottomGetEntryProvider(
-                        timelineViewModel = timelineViewModel,
-                        timelineLazyListState = timelineLazyListState,
-                        exploreViewModel = exploreViewModel,
-                        exploreLazyListState = exploreLazyListState,
-                        inboxViewModel = inboxViewModel,
-                        inboxLazyListState = inboxLazyListState,
-                        profileViewModel = profileViewModel,
-                        myAccountViewModel = myAccountViewModel,
-                        myAccountLazyListState = myAccountLazyListState
-                    )
+            NavDisplay(
+                backStack = backStack,
+                onBack = { navigationCoordinator.pop() },
+                entryProvider = bottomGetEntryProvider(
+                    timelineViewModel = timelineViewModel,
+                    timelineLazyListState = timelineLazyListState,
+                    exploreViewModel = exploreViewModel,
+                    exploreLazyListState = exploreLazyListState,
+                    inboxViewModel = inboxViewModel,
+                    inboxLazyListState = inboxLazyListState,
+                    profileViewModel = profileViewModel,
+                    myAccountViewModel = myAccountViewModel,
+                    myAccountLazyListState = myAccountLazyListState
                 )
-            }
+            )
         } else {
             when(lockedSection) {
                 BottomNavigationSection.Home -> {

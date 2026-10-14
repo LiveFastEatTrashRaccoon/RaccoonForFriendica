@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
@@ -27,13 +25,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.scene.SinglePaneSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
@@ -98,7 +96,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(FlowPreview::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(FlowPreview::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
     val uiDeps: UiDeps = graph.uiDeps
@@ -119,7 +117,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
         directive = calculatePaneScaffoldDirective(adaptiveInfo).let {
             if (containsDetail) it else it.copy(maxHorizontalPartitions = 1)
         },
-        shouldHandleSinglePaneLayout = true,
+        shouldHandleSinglePaneLayout = false,
     )
 
     LaunchedEffect(drawerCoordinator) {
@@ -223,28 +221,26 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                             val exploreLazyListState = rememberLazyListState()
                             val inboxLazyListState = rememberLazyListState()
                             val myAccountLazyListState = rememberLazyListState()
-                            Surface(color = MaterialTheme.colorScheme.background) {
-                                NavDisplay(
-                                    backStack = backStack,
-                                    onBack = { navigationCoordinator.pop() },
-                                    entryDecorators = listOf(
-                                        rememberSaveableStateHolderNavEntryDecorator(),
-                                        rememberViewModelStoreNavEntryDecorator(),
-                                    ),
-                                    sceneStrategies = listOf(listDetailStrategy),
-                                    entryProvider = getEntryProvider(
-                                        timelineViewModel = timelineModel,
-                                        timelineLazyListState = timelineLazyListState,
-                                        exploreViewModel = exploreModel,
-                                        exploreLazyListState = exploreLazyListState,
-                                        inboxViewModel = inboxModel,
-                                        inboxLazyListState = inboxLazyListState,
-                                        profileViewModel = profileModel,
-                                        myAccountViewModel = myAccountModel,
-                                        myAccountLazyListState = myAccountLazyListState,
-                                    ),
-                                )
-                            }
+                            NavDisplay(
+                                backStack = backStack,
+                                onBack = { navigationCoordinator.pop() },
+                                entryDecorators = listOf(
+                                    rememberSaveableStateHolderNavEntryDecorator(),
+                                    rememberViewModelStoreNavEntryDecorator(),
+                                ),
+                                sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
+                                entryProvider = getEntryProvider(
+                                    timelineViewModel = timelineModel,
+                                    timelineLazyListState = timelineLazyListState,
+                                    exploreViewModel = exploreModel,
+                                    exploreLazyListState = exploreLazyListState,
+                                    inboxViewModel = inboxModel,
+                                    inboxLazyListState = inboxLazyListState,
+                                    profileViewModel = profileModel,
+                                    myAccountViewModel = myAccountModel,
+                                    myAccountLazyListState = myAccountLazyListState,
+                                ),
+                            )
                         }
                     }
                 } else {
@@ -308,39 +304,37 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                         val exploreLazyListState = rememberLazyListState()
                                         val inboxLazyListState = rememberLazyListState()
                                         val myAccountLazyListState = rememberLazyListState()
-                                        Surface(color = MaterialTheme.colorScheme.background) {
-                                            NavDisplay(
-                                                backStack = backStack,
-                                                onBack = { navigationCoordinator.pop() },
-                                                entryDecorators = listOf(
-                                                    rememberSaveableStateHolderNavEntryDecorator(),
-                                                    rememberViewModelStoreNavEntryDecorator(),
-                                                ),
-                                                sceneStrategies = listOf(listDetailStrategy),
-                                                entryProvider = getEntryProvider(
-                                                    timelineViewModel = timelineViewModel,
-                                                    timelineLazyListState = timelineLazyListState,
-                                                    exploreViewModel = exploreViewModel,
-                                                    exploreLazyListState = exploreLazyListState,
-                                                    inboxViewModel = inboxViewModel,
-                                                    inboxLazyListState = inboxLazyListState,
-                                                    profileViewModel = profileViewModel,
-                                                    myAccountViewModel = myAccountViewModel,
-                                                    myAccountLazyListState = myAccountLazyListState,
-                                                    favoritesViewModel = favoritesViewModel,
-                                                    bookmarksViewModel = bookmarksViewModel,
-                                                    followedHashtagsViewModel = followedHashtagsViewModel,
-                                                    followRequestsViewModel = followRequestsViewModel,
-                                                    circlesViewModel = circlesViewModel,
-                                                    conversationListViewModel = conversationListViewModel,
-                                                    galleryViewModel = galleryViewModel,
-                                                    unpublishedViewModel = unpublishedViewModel,
-                                                    calendarViewModel = calendarViewModel,
-                                                    shortcutListViewModel = shortcutListViewModel,
-                                                    nodeInfoViewModel = nodeInfoViewModel,
-                                                ),
-                                            )
-                                        }
+                                        NavDisplay(
+                                            backStack = backStack,
+                                            onBack = { navigationCoordinator.pop() },
+                                            entryDecorators = listOf(
+                                                rememberSaveableStateHolderNavEntryDecorator(),
+                                                rememberViewModelStoreNavEntryDecorator(),
+                                            ),
+                                            sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
+                                            entryProvider = getEntryProvider(
+                                                timelineViewModel = timelineViewModel,
+                                                timelineLazyListState = timelineLazyListState,
+                                                exploreViewModel = exploreViewModel,
+                                                exploreLazyListState = exploreLazyListState,
+                                                inboxViewModel = inboxViewModel,
+                                                inboxLazyListState = inboxLazyListState,
+                                                profileViewModel = profileViewModel,
+                                                myAccountViewModel = myAccountViewModel,
+                                                myAccountLazyListState = myAccountLazyListState,
+                                                favoritesViewModel = favoritesViewModel,
+                                                bookmarksViewModel = bookmarksViewModel,
+                                                followedHashtagsViewModel = followedHashtagsViewModel,
+                                                followRequestsViewModel = followRequestsViewModel,
+                                                circlesViewModel = circlesViewModel,
+                                                conversationListViewModel = conversationListViewModel,
+                                                galleryViewModel = galleryViewModel,
+                                                unpublishedViewModel = unpublishedViewModel,
+                                                calendarViewModel = calendarViewModel,
+                                                shortcutListViewModel = shortcutListViewModel,
+                                                nodeInfoViewModel = nodeInfoViewModel,
+                                            ),
+                                        )
                                     }
                                 }
                             },
