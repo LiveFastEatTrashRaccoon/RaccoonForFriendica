@@ -40,6 +40,8 @@ android {
             keyPassword = System.getenv("KEY_PASSWORD") ?: ""
         }
     }
+
+    val isCiBuild = project.findProperty("ciBuild")?.toString()?.toBoolean() == true
     buildTypes {
         getByName("debug") {
             resValue("string", "app_name", "Raccoon (dev)")
@@ -47,7 +49,8 @@ android {
         }
         getByName("release") {
             resValue("string", "app_name", "Raccoon")
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = !isCiBuild
             setProguardFiles(
                 listOf(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -67,7 +70,7 @@ android {
     }
     splits {
         abi {
-            isEnable = true
+            isEnable = isCiBuild
             reset()
             include("arm64-v8a", "x86_64")
             isUniversalApk = true
