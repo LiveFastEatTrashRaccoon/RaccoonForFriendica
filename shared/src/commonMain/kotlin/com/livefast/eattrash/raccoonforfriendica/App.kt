@@ -146,8 +146,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
     }
 
     LaunchedEffect(navigationCoordinator) {
-        val adapter = DefaultNavigationAdapter(backStack)
-        navigationCoordinator.setRootNavigator(adapter)
+        navigationCoordinator.setupRootNavigationAdapter(backStack)
 
         navigationCoordinator.deepLinkUrl
             .debounce(750.milliseconds)
