@@ -1,10 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.navigation3.runtime.NavBackStack
 import app.cash.turbine.test
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verify
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +29,13 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultNavigationCoordinatorTest {
+    private val navigationAdapterFactory = mock<NavigationAdapterFactory>()
+    private val bottomNavigationAdapterFactory = mock<BottomNavigationAdapterFactory>()
+
     private val sut =
         DefaultNavigationCoordinator(
+            navigationAdapterFactory = navigationAdapterFactory,
+            bottomNavigationAdapterFactory = bottomNavigationAdapterFactory,
             dispatcher = UnconfinedTestDispatcher(),
         )
 
@@ -53,26 +60,28 @@ class DefaultNavigationCoordinatorTest {
 
     @Test
     fun `when setCurrentSection then result is as expected`() {
-        val navigator =
+        val adapter =
             mock<BottomNavigationAdapter>(MockMode.autoUnit) {
                 every { currentSection } returns MutableStateFlow(BottomNavigationSection.Home)
             }
-        sut.setBottomNavigator(navigator)
+        every { bottomNavigationAdapterFactory.create(any()) } returns adapter
+        sut.setupBottomNavigationAdapter(NavBackStack())
         val section = BottomNavigationSection.Explore
 
         sut.setCurrentSection(section)
 
-        verify { navigator.navigate(section) }
+        verify { adapter.navigate(section) }
     }
 
     @Test
     fun `when setCurrentSection twice then onDoubleTabSelection is triggered`() = runTest {
         val section = BottomNavigationSection.Explore
-        val navigator =
+        val adapter =
             mock<BottomNavigationAdapter>(MockMode.autoUnit) {
                 every { currentSection } returns MutableStateFlow(section)
             }
-        sut.setBottomNavigator(navigator)
+        every { bottomNavigationAdapterFactory.create(any()) } returns adapter
+        sut.setupBottomNavigationAdapter(NavBackStack())
 
         launch {
             delay(DELAY)
@@ -86,15 +95,15 @@ class DefaultNavigationCoordinatorTest {
     }
 
     @Test
-    fun `given navigator can pop when root navigator set then canPop is as expected`() = runTest {
+    fun `given adapter can pop when setupRootNavigationAdapter then canPop is as expected`() = runTest {
         val initial = sut.canPop.value
         assertFalse(initial)
-        val navigator =
+        val adapter =
             mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns MutableStateFlow(true)
             }
-
-        sut.setRootNavigator(navigator)
+        every { navigationAdapterFactory.create(any()) } returns adapter
+        sut.setupRootNavigationAdapter(NavBackStack())
 
         val value = sut.canPop.value
         assertTrue(value)
@@ -127,11 +136,12 @@ class DefaultNavigationCoordinatorTest {
     @Test
     fun `when push then interactions are as expected`() = runTest {
         val destination = Destination.Settings
-        val navigator =
+        val adapter =
             mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns MutableStateFlow(true)
             }
-        sut.setRootNavigator(navigator)
+        every { navigationAdapterFactory.create(any()) } returns adapter
+        sut.setupRootNavigationAdapter(NavBackStack())
 
         launch {
             sut.push(destination)
@@ -141,18 +151,19 @@ class DefaultNavigationCoordinatorTest {
         val canPop = sut.canPop.value
         assertTrue(canPop)
         verify {
-            navigator.navigate(destination)
+            adapter.navigate(destination)
         }
     }
 
     @Test
     fun `when replace then interactions are as expected`() = runTest {
         val destination = Destination.Settings
-        val navigator =
+        val adapter =
             mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns MutableStateFlow(true)
             }
-        sut.setRootNavigator(navigator)
+        every { navigationAdapterFactory.create(any()) } returns adapter
+        sut.setupRootNavigationAdapter(NavBackStack())
 
         launch {
             sut.replace(destination)
@@ -162,17 +173,18 @@ class DefaultNavigationCoordinatorTest {
         val canPop = sut.canPop.value
         assertTrue(canPop)
         verify {
-            navigator.navigate(destination = destination, replaceTop = true)
+            adapter.navigate(destination = destination, replaceTop = true)
         }
     }
 
     @Test
     fun `when pop then interactions are as expected`() = runTest {
-        val navigator =
+        val adapter =
             mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns MutableStateFlow(false)
             }
-        sut.setRootNavigator(navigator)
+        every { navigationAdapterFactory.create(any()) } returns adapter
+        sut.setupRootNavigationAdapter(NavBackStack())
 
         launch {
             sut.pop()
@@ -182,22 +194,23 @@ class DefaultNavigationCoordinatorTest {
         val canPop = sut.canPop.value
         assertFalse(canPop)
         verify {
-            navigator.pop()
+            adapter.pop()
         }
     }
 
     @Test
     fun `when popUntilRoot then interactions are as expected`() = runTest {
-        val navigator =
+        val adapter =
             mock<NavigationAdapter>(MockMode.autoUnit) {
                 every { canPop } returns MutableStateFlow(false)
             }
-        sut.setRootNavigator(navigator)
+        every { navigationAdapterFactory.create(any()) } returns adapter
+        sut.setupRootNavigationAdapter(NavBackStack())
 
         sut.popUntilRoot()
 
         verify {
-            navigator.popUntilRoot()
+            adapter.popUntilRoot()
         }
     }
 

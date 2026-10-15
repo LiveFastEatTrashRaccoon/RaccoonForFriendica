@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,9 +16,9 @@ interface NavigationCoordinator {
     val deepLinkUrl: SharedFlow<String>
     val globalMessage: Flow<String>
 
-    fun setRootNavigator(adapter: NavigationAdapter)
+    fun setupRootNavigationAdapter(backStack: NavBackStack<NavKey>)
 
-    fun setBottomNavigator(adapter: BottomNavigationAdapter)
+    fun setupBottomNavigationAdapter(backStack: NavBackStack<NavKey>)
 
     fun setCurrentSection(section: BottomNavigationSection)
 

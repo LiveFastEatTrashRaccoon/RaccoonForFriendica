@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -23,7 +25,11 @@ import kotlin.time.Duration.Companion.milliseconds
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
-class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers.Main) : NavigationCoordinator {
+class DefaultNavigationCoordinator(
+    private val navigationAdapterFactory: NavigationAdapterFactory,
+    private val bottomNavigationAdapterFactory: BottomNavigationAdapterFactory,
+    dispatcher: CoroutineDispatcher = Dispatchers.Main,
+) : NavigationCoordinator {
     override val currentBottomNavSection = MutableStateFlow<BottomNavigationSection?>(null)
     override val onDoubleTabSelection = MutableSharedFlow<BottomNavigationSection>()
     override val canPop = MutableStateFlow(false)
@@ -31,15 +37,25 @@ class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers
     override val deepLinkUrl = MutableSharedFlow<String>()
     override val globalMessage = MutableSharedFlow<String>()
 
-    private var rootNavController: NavigationAdapter? = null
-    private var bottomNavController: BottomNavigationAdapter? = null
+    private var rootNavAdapter: NavigationAdapter? = null
+    private var bottomNavAdapter: BottomNavigationAdapter? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
     private var updateBottomNavigationSectionJob: Job? = null
     private var updateCanPopJob: Job? = null
 
-    override fun setBottomNavigator(adapter: BottomNavigationAdapter) {
-        bottomNavController = adapter
+    override fun setupRootNavigationAdapter(backStack: NavBackStack<NavKey>) {
+        val adapter = navigationAdapterFactory.create(backStack)
+        rootNavAdapter = adapter
+        updateCanPopJob?.cancel()
+        updateCanPopJob = adapter.canPop.onEach { newValue ->
+            canPop.update { newValue }
+        }.launchIn(scope)
+    }
+
+    override fun setupBottomNavigationAdapter(backStack: NavBackStack<NavKey>) {
+        val adapter = bottomNavigationAdapterFactory.create(backStack)
+        bottomNavAdapter = adapter
         updateBottomNavigationSectionJob?.cancel()
         updateBottomNavigationSectionJob = adapter.currentSection.onEach { newValue ->
             currentBottomNavSection.update { newValue }
@@ -53,20 +69,12 @@ class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers
                 onDoubleTabSelection.emit(section)
             }
         } else {
-            bottomNavController?.navigate(section)
+            bottomNavAdapter?.navigate(section)
         }
     }
 
-    override fun setRootNavigator(adapter: NavigationAdapter) {
-        rootNavController = adapter
-        updateCanPopJob?.cancel()
-        updateCanPopJob = adapter.canPop.onEach { newValue ->
-            canPop.update { newValue }
-        }.launchIn(scope)
-    }
-
     override fun popUntilRoot() {
-        rootNavController?.popUntilRoot()
+        rootNavAdapter?.popUntilRoot()
     }
 
     override fun setExitMessageVisible(value: Boolean) {
@@ -80,15 +88,15 @@ class DefaultNavigationCoordinator(dispatcher: CoroutineDispatcher = Dispatchers
     override fun getBottomBarScrollConnection() = bottomBarScrollConnection
 
     override fun push(destination: Destination) {
-        rootNavController?.navigate(destination)
+        rootNavAdapter?.navigate(destination)
     }
 
     override fun replace(destination: Destination) {
-        rootNavController?.navigate(destination, replaceTop = true)
+        rootNavAdapter?.navigate(destination, replaceTop = true)
     }
 
     override fun pop() {
-        rootNavController?.pop()
+        rootNavAdapter?.pop()
     }
 
     override suspend fun submitDeeplink(url: String) {
