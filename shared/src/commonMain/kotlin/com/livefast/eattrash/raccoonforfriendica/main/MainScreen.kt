@@ -116,8 +116,7 @@ fun MainScreen(
             }.launchIn(this)
 
         if (hasBottomNavigation) {
-            val adapter = DefaultBottomNavigationAdapter(backStack)
-            navigationCoordinator.setBottomNavigator(adapter)
+            navigationCoordinator.setupBottomNavigationAdapter(backStack)
 
             navigationCoordinator.currentBottomNavSection.onEach {
                 // when the current tab changes, reset the bottom bar offset to the default value
