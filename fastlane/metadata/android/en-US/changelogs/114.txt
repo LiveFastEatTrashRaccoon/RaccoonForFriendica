@@ -1,0 +1,4 @@
+- fix: restore navigation transitions, predictive back and fix destinations
+- enh: add header in forum detail with follow actions
+- enh: restyle About dialog
+- chore: update dependencies and code cleanup

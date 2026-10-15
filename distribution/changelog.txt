@@ -1,6 +1,10 @@
 ## What's Changed
 
-- fix: improve startup error handling and account switch
-- chore: code cleanup
+- fix: restore navigation transitions, predictive back and fix destinations
+- enhancement: add header in forum detail with follow actions
+- enhancement: restyle About dialog
+- refactor: introduce Kermit for logging
+- refactor: split ViewModels for modal UI elements
+- chore: update dependencies and code cleanup
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.1...1.1.2
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.2...1.1.3
