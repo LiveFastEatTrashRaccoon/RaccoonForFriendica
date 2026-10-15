@@ -3,16 +3,17 @@ package com.livefast.eattrash.raccoonforfriendica.core.navigation
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-@SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
-@Inject
-class DefaultNavigationAdapter(private val backStack: NavBackStack<NavKey>) : NavigationAdapter {
+@AssistedInject
+class DefaultNavigationAdapter(@Assisted private val backStack: NavBackStack<NavKey>) : NavigationAdapter {
 
     override val canPop = MutableStateFlow(false)
 
@@ -44,4 +45,10 @@ class DefaultNavigationAdapter(private val backStack: NavBackStack<NavKey>) : Na
     private fun updateCanPop() {
         canPop.update { backStack.size > 1 }
     }
+}
+
+@ContributesBinding(AppScope::class)
+@AssistedFactory
+interface DefaultNavigationAdapterFactory : NavigationAdapterFactory {
+    override fun create(@Assisted backStack: NavBackStack<NavKey>): DefaultNavigationAdapter
 }

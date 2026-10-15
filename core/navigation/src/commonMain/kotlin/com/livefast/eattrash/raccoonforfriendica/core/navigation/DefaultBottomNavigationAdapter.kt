@@ -3,16 +3,16 @@ package com.livefast.eattrash.raccoonforfriendica.core.navigation
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-
-@SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
-@Inject
-class DefaultBottomNavigationAdapter(private val backStack: NavBackStack<NavKey>) : BottomNavigationAdapter {
+@AssistedInject
+class DefaultBottomNavigationAdapter(@Assisted private val backStack: NavBackStack<NavKey>) : BottomNavigationAdapter {
 
     override val currentSection = MutableStateFlow(backStack.lastOrNull() as? BottomNavigationSection)
 
@@ -34,4 +34,10 @@ class DefaultBottomNavigationAdapter(private val backStack: NavBackStack<NavKey>
             }
         }
     }
+}
+
+@ContributesBinding(AppScope::class)
+@AssistedFactory
+interface DefaultBottomNavigationAdapterFactory : BottomNavigationAdapterFactory {
+    override fun create(@Assisted backStack: NavBackStack<NavKey>): DefaultBottomNavigationAdapter
 }
