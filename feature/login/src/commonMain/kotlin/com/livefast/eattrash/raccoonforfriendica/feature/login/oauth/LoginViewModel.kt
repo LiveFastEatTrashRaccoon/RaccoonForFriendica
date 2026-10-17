@@ -28,8 +28,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(FlowPreview::class)
 @AssistedInject
+@OptIn(FlowPreview::class)
 class LoginViewModel(
     @Assisted private val args: LoginViewModelArgs,
     private val apiConfigurationRepository: ApiConfigurationRepository,
