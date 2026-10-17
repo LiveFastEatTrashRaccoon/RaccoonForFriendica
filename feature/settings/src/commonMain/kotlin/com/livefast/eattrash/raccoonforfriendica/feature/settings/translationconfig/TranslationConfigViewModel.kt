@@ -7,17 +7,24 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderTypes
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@ContributesIntoMap(
+    scope = AppScope::class,
+    binding = binding<@ViewModelKey ViewModel>(),
+)
+@Inject
 class TranslationConfigViewModel(private val translationProviderConfigStore: TranslationProviderConfigStore) :
     ViewModel(),
-    MviDelegate<
-        TranslationConfigMvi.Intent,
-        TranslationConfigMvi.State,
-        TranslationConfigMvi.Effect,
-        > by DefaultMviDelegate(initialState = TranslationConfigMvi.State()),
+    MviDelegate<TranslationConfigMvi.Intent, TranslationConfigMvi.State, TranslationConfigMvi.Effect>
+    by DefaultMviDelegate(initialState = TranslationConfigMvi.State()),
     TranslationConfigMvi {
 
     init {
