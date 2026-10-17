@@ -8,6 +8,6 @@ interface ClipboardHelper {
     suspend fun getText(): String?
 }
 
-interface ClipboardHelperFactory {
+fun interface ClipboardHelperFactory {
     fun create(clipboard: Clipboard): ClipboardHelper
 }

@@ -24,8 +24,8 @@ class DefaultClipboardHelper(
         clipboard.getClipEntry()?.getPlainText()
 }
 
-@AssistedFactory
 @ContributesBinding(AppScope::class)
+@AssistedFactory
 fun interface DefaultClipboardHelperFactory : ClipboardHelperFactory {
     override fun create(@Assisted clipboard: Clipboard): DefaultClipboardHelper
 }

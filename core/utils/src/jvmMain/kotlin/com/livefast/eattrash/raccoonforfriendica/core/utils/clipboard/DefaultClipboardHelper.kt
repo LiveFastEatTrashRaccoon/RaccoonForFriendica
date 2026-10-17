@@ -14,10 +14,13 @@ import java.io.IOException
 
 @ContributesBinding(AppScope::class)
 @Inject
-class DefaultClipboardHelperFactory : ClipboardHelperFactory {
-    override fun create(clipboard: Clipboard): ClipboardHelper = DefaultClipboardHelper()
+class DefaultClipboardHelperFactory(
+    private val clipboardHelper: ClipboardHelper,
+) : ClipboardHelperFactory {
+    override fun create(clipboard: Clipboard): ClipboardHelper = clipboardHelper
 }
 
+@ContributesBinding(AppScope::class)
 class DefaultClipboardHelper : ClipboardHelper {
     override suspend fun setText(text: String) {
         val selection = StringSelection(text)

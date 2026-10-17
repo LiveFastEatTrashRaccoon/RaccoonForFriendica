@@ -30,8 +30,8 @@ class DefaultClipboardHelper(
     }
 }
 
-@AssistedFactory
 @ContributesBinding(AppScope::class)
-interface DefaultClipboardHelperFactory : ClipboardHelperFactory {
+@AssistedFactory
+fun interface DefaultClipboardHelperFactory : ClipboardHelperFactory {
     override fun create(@Assisted clipboard: Clipboard): DefaultClipboardHelper
 }
