@@ -1,0 +1,3 @@
+- fix: translation provider configuration from settings
+- fix: navigation drawer open and close event handling
+- chore: enable obfuscation and minification
