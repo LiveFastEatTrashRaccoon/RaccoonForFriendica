@@ -4,9 +4,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CustomEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.InstanceRule
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 
@@ -21,7 +23,8 @@ class DefaultInstanceService(@Assisted private val args: ServiceCreationArgs) : 
         args.client.get("${args.baseUrl}/v1/custom_emojis").body()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface InstanceServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultInstanceService
+fun interface DefaultInstanceServiceFactory : InstanceServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultInstanceService
 }

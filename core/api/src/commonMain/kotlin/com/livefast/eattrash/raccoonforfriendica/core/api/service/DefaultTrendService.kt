@@ -4,9 +4,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -33,7 +35,8 @@ class DefaultTrendsService(@Assisted private val args: ServiceCreationArgs) : Tr
         }.body()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface TrendsServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultTrendsService
+fun interface DefaultTrendsServiceFactory : TrendsServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultTrendsService
 }

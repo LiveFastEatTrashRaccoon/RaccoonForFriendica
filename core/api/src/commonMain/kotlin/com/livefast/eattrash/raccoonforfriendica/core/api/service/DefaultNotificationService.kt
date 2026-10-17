@@ -6,9 +6,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -53,7 +55,8 @@ class DefaultNotificationService(@Assisted private val args: ServiceCreationArgs
         args.client.post("${args.baseUrl}/v1/notifications/clear").status.isSuccess()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface NotificationServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultNotificationService
+fun interface DefaultNotificationServiceFactory : NotificationServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultNotificationService
 }

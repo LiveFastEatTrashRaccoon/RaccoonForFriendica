@@ -1,9 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -20,7 +22,8 @@ class DefaultReportService(@Assisted private val args: ServiceCreationArgs) : Re
     }.status.isSuccess()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface ReportServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultReportService
+fun interface DefaultReportServiceFactory : ReportServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultReportService
 }

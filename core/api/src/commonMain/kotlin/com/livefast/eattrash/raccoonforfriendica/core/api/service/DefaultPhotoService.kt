@@ -3,9 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaApiResult
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.get
@@ -39,7 +41,8 @@ class DefaultPhotoService(@Assisted private val args: ServiceCreationArgs) : Pho
         }.body()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface PhotoServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultPhotoService
+fun interface DefaultPhotoServiceFactory : PhotoServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultPhotoService
 }

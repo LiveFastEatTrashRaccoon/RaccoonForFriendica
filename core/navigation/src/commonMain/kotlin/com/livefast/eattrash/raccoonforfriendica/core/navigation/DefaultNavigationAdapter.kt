@@ -49,6 +49,6 @@ class DefaultNavigationAdapter(@Assisted private val backStack: NavBackStack<Nav
 
 @ContributesBinding(AppScope::class)
 @AssistedFactory
-interface DefaultNavigationAdapterFactory : NavigationAdapterFactory {
+fun interface DefaultNavigationAdapterFactory : NavigationAdapterFactory {
     override fun create(@Assisted backStack: NavBackStack<NavKey>): DefaultNavigationAdapter
 }

@@ -10,6 +10,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
@@ -75,4 +77,8 @@ interface UserService {
     suspend fun getCollections(id: String, offset: Int = 0, limit: Int = 20): Collections
 
     suspend fun getCollectionsContaining(id: String, offset: Int = 0, limit: Int = 20): Collections
+}
+
+fun interface UserServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): UserService
 }

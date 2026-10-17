@@ -4,9 +4,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -48,7 +50,8 @@ class DefaultTimelineService(@Assisted private val args: ServiceCreationArgs) : 
         }.body()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface TimelineServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultTimelineService
+fun interface DefaultTimelineServiceFactory : TimelineServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultTimelineService
 }

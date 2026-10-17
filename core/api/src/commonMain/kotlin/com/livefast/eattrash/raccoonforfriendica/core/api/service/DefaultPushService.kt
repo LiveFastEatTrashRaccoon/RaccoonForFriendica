@@ -2,9 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PushSubscription
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
@@ -35,7 +37,8 @@ class DefaultPushService(@Assisted private val args: ServiceCreationArgs) : Push
     override suspend fun delete() = args.client.post("${args.baseUrl}/").status.isSuccess()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface PushServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultPushService
+fun interface DefaultPushServiceFactory : PushServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultPushService
 }

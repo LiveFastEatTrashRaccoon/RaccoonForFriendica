@@ -38,6 +38,6 @@ class DefaultBottomNavigationAdapter(@Assisted private val backStack: NavBackSta
 
 @ContributesBinding(AppScope::class)
 @AssistedFactory
-interface DefaultBottomNavigationAdapterFactory : BottomNavigationAdapterFactory {
+fun interface DefaultBottomNavigationAdapterFactory : BottomNavigationAdapterFactory {
     override fun create(@Assisted backStack: NavBackStack<NavKey>): DefaultBottomNavigationAdapter
 }

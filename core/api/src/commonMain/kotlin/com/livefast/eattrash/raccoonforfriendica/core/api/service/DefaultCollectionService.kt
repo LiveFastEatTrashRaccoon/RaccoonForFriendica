@@ -5,9 +5,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CollectionItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.AddCollectionItemForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateCollectionForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -51,7 +53,8 @@ class DefaultCollectionService(@Assisted private val args: ServiceCreationArgs) 
         args.client.delete("${args.baseUrl}/v1/collections/$id/items/$itemId/revoke").status.isSuccess()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface CollectionServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultCollectionService
+fun interface DefaultCollectionServiceFactory : CollectionServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultCollectionService
 }

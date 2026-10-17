@@ -4,9 +4,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -31,7 +33,8 @@ class DefaultTagsService(@Assisted private val args: ServiceCreationArgs) : Tags
     override suspend fun get(name: String): Tag = args.client.get("${args.baseUrl}/v1/tags/$name").body()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface TagsServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultTagsService
+fun interface DefaultTagsServiceFactory : TagsServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultTagsService
 }

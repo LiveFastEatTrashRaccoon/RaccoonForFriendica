@@ -8,9 +8,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -69,7 +71,8 @@ class DefaultListService(@Assisted private val args: ServiceCreationArgs) : List
         }.status.isSuccess()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface ListServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultListService
+fun interface DefaultListServiceFactory : ListServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultListService
 }
