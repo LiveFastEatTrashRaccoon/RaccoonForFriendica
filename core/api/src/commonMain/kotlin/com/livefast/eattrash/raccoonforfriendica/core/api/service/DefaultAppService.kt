@@ -3,9 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Application
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateAppForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -25,7 +27,8 @@ class DefaultAppService(@Assisted private val args: ServiceCreationArgs) : AppSe
         args.client.get("${args.baseUrl}/v1/apps/verify_credentials").body()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface AppServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultAppService
+fun interface DefaultAppServiceFactory : AppServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultAppService
 }

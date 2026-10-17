@@ -4,6 +4,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Collection
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CollectionItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.AddCollectionItemForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateCollectionForm
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
 
 interface CollectionService {
     suspend fun create(data: CreateCollectionForm): Collection
@@ -13,4 +15,8 @@ interface CollectionService {
     suspend fun addItem(id: String, data: AddCollectionItemForm): CollectionItem
     suspend fun deleteItem(id: String, itemId: String): Boolean
     suspend fun revokeInclusion(id: String, itemId: String): Boolean
+}
+
+fun interface CollectionServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): CollectionService
 }

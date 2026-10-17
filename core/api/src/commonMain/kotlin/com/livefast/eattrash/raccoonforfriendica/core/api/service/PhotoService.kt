@@ -2,6 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaApiResult
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPhoto
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
 interface PhotoService {
@@ -12,4 +14,8 @@ interface PhotoService {
     suspend fun update(content: MultiPartFormDataContent): FriendicaApiResult
 
     suspend fun delete(content: MultiPartFormDataContent): FriendicaApiResult
+}
+
+fun interface PhotoServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): PhotoService
 }

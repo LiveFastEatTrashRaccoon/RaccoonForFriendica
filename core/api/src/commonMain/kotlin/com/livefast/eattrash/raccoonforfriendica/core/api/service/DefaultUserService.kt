@@ -12,9 +12,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -202,7 +204,8 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface UserServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultUserService
+fun interface DefaultUserServiceFactory : UserServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultUserService
 }

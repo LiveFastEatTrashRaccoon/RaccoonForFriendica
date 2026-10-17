@@ -2,9 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Markers
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
@@ -29,7 +31,8 @@ class DefaultMarkerService(@Assisted private val args: ServiceCreationArgs) : Ma
     }.body()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface MarkerServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultMarkerService
+fun interface DefaultMarkerServiceFactory : MarkerServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultMarkerService
 }

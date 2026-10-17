@@ -3,6 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CustomEmoji
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Instance
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.InstanceRule
+import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.Assisted
 
 interface InstanceService {
     suspend fun getInfo(): Instance
@@ -10,4 +12,8 @@ interface InstanceService {
     suspend fun getRules(): List<InstanceRule>
 
     suspend fun getCustomEmojis(): List<CustomEmoji>
+}
+
+fun interface InstanceServiceFactory {
+    fun create(@Assisted args: ServiceCreationArgs): InstanceService
 }

@@ -2,9 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
+import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.FormDataContent
@@ -37,7 +39,8 @@ class DefaultMediaService(@Assisted private val args: ServiceCreationArgs) : Med
         args.client.delete("${args.baseUrl}/v1/media/$id").status.isSuccess()
 }
 
+@ContributesBinding(AppScope::class)
 @AssistedFactory
-fun interface MediaServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DefaultMediaService
+fun interface DefaultMediaServiceFactory : MediaServiceFactory {
+    override fun create(@Assisted args: ServiceCreationArgs): DefaultMediaService
 }
