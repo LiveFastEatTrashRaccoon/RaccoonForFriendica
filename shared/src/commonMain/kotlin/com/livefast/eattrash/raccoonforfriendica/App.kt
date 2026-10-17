@@ -126,23 +126,27 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
             drawerCoordinator.changeDrawerOpened(isDrawerOpen)
         }.launchIn(this)
 
-        drawerCoordinator.events.onEach { evt ->
-            when (evt) {
-                DrawerEvent.Toggle -> {
-                    if (drawerState.isClosed) {
-                        drawerState.open()
-                    } else {
-                        drawerState.close()
+        val effectScope = this
+        drawerCoordinator.events.collect { evt ->
+            // create a new scope to avoid cancelling the parent effectScope
+            effectScope.launch {
+                when (evt) {
+                    DrawerEvent.Toggle -> {
+                        if (drawerState.isClosed) {
+                            drawerState.open()
+                        } else {
+                            drawerState.close()
+                        }
                     }
-                }
 
-                DrawerEvent.Close -> {
-                    if (drawerState.isOpen) {
-                        drawerState.close()
+                    DrawerEvent.Close -> {
+                        if (drawerState.isOpen) {
+                            drawerState.close()
+                        }
                     }
                 }
             }
-        }.launchIn(this)
+        }
     }
 
     LaunchedEffect(navigationCoordinator) {
