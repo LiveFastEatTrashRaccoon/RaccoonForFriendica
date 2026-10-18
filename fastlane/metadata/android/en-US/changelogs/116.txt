@@ -1,0 +1,2 @@
+- fix: hyperlink processing in release builds
+- chore: update dependencies and code cleanup
