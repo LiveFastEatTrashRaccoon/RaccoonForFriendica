@@ -23,3 +23,6 @@
 # Note: Avoid using overly broad keep rules like `-keep class com.my.package.** { *; }`
 # as this will prevent proper obfuscation and size reduction. Use `@Keep` annotations
 # on specific classes that need to be preserved (like JSON DTOs).
+
+# Preserve Ksoup HTML parser and handler classes/callbacks from R8 minification
+-keep class com.mohamedrejeb.ksoup.** { *; }

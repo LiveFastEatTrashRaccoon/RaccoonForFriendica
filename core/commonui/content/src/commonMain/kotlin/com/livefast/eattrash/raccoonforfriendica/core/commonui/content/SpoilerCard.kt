@@ -83,7 +83,7 @@ fun SpoilerCard(
                 style = MaterialTheme.typography.titleMedium.copy(color = fullColor),
                 text = annotatedContent,
                 autoloadImages = autoloadImages,
-                onClick = { _ ->
+                onClick = {
                     onClick?.invoke()
                 },
             )
