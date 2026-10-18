@@ -34,17 +34,11 @@ fun ContentTitle(
             autoloadImages = autoloadImages,
             overflow = TextOverflow.Ellipsis,
             emojis = emojis,
-            onClick = { offset ->
-                val url =
-                    annotatedContent
-                        .getStringAnnotations(start = offset, end = offset)
-                        .firstOrNull()
-                        ?.item
-                if (!url.isNullOrBlank()) {
-                    onOpenUrl?.invoke(url)
-                } else {
-                    onClick?.invoke()
-                }
+            onOpenUrl = { url ->
+                onOpenUrl?.invoke(url)
+            },
+            onClick = {
+                onClick?.invoke()
             },
         )
     }

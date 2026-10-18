@@ -68,15 +68,8 @@ fun UserFields(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         autoloadImages = autoloadImages,
-                        onClick = { offset ->
-                            val url =
-                                annotatedContent
-                                    .getStringAnnotations(start = offset, end = offset)
-                                    .firstOrNull()
-                                    ?.item
-                            if (!url.isNullOrBlank()) {
-                                onOpenUrl?.invoke(url, false)
-                            }
+                        onOpenUrl = { url ->
+                            onOpenUrl?.invoke(url, false)
                         },
                     )
                 }

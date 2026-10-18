@@ -42,7 +42,8 @@ fun TextWithCustomEmojis(
     maxLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    onClick: ((Int) -> Unit) = {},
+    onOpenUrl: ((String) -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     val foundEmojis = mutableListOf<EmojiModel>()
     val processedText =
@@ -113,7 +114,17 @@ fun TextWithCustomEmojis(
         Modifier.pointerInput(onClick) {
             detectTapGestures { pos ->
                 layoutResult.value?.let { layoutResult ->
-                    onClick(layoutResult.getOffsetForPosition(pos))
+                    val offset = layoutResult.getOffsetForPosition(pos)
+                    val url =
+                        processedText
+                            .getStringAnnotations(tag = "link", start = offset, end = offset)
+                            .firstOrNull()
+                            ?.item
+                    if (!url.isNullOrBlank() && onOpenUrl != null) {
+                        onOpenUrl(url)
+                    } else {
+                        onClick?.invoke()
+                    }
                 }
             }
         }
@@ -145,7 +156,8 @@ fun TextWithCustomEmojis(
     maxLines: Int = Int.MAX_VALUE,
     autoloadImages: Boolean = true,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    onClick: ((Int) -> Unit) = {},
+    onOpenUrl: ((String) -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     TextWithCustomEmojis(
         text = AnnotatedString(text),
@@ -158,6 +170,7 @@ fun TextWithCustomEmojis(
         maxLines = maxLines,
         autoloadImages = autoloadImages,
         onTextLayout = onTextLayout,
+        onOpenUrl = onOpenUrl,
         onClick = onClick,
     )
 }
