@@ -37,12 +37,17 @@ class DefaultNotificationsPaginationManagerTest {
         mock<ReplyHelper> {
             everySuspend { any<TimelineEntryModel>().withInReplyToIfMissing() } returnsArgAt 0
         }
+    private val entryActionHelper =
+        mock<EntryActionHelper> {
+            everySuspend { any<TimelineEntryModel>().withActions() } returnsArgAt 0
+        }
     private val sut =
         DefaultNotificationsPaginationManager(
             notificationRepository = notificationRepository,
             userRepository = userRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
+            entryActionHelper = entryActionHelper,
         )
 
     @Test
