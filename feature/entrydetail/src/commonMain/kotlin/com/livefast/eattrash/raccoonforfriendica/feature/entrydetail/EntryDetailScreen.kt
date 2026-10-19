@@ -331,7 +331,9 @@ fun EntryDetailScreen(
                             key = { _, e -> "entry-detail-${e.safeKey}" },
                         ) { idx, entry ->
                             val isFirst = idx == 0
-                            val isMainEntry = entry.id == uiState.mainEntry?.id
+                            val isMainEntry =
+                                entry.id == uiState.mainEntry?.id ||
+                                    entry.original.id == uiState.mainEntry?.original?.id
                             val options =
                                 buildList {
                                     if (entry.original.actionPermissions.canShare) {
@@ -531,7 +533,9 @@ fun EntryDetailScreen(
                                             }
                                         },
                                         onClick = { e ->
-                                            if (e.id != uiState.mainEntry?.id) {
+                                            if (e.id != uiState.mainEntry?.id &&
+                                                e.id != uiState.mainEntry?.original?.id
+                                            ) {
                                                 mainRouter.openEntryDetail(
                                                     entry = e,
                                                     replaceTop = true,
@@ -665,9 +669,9 @@ fun EntryDetailScreen(
                                         }
                                     },
                                     onClick = { e ->
-                                        if (e.id != uiState.mainEntry?.id) {
+                                        if (e.id != uiState.mainEntry?.id && e.id != uiState.mainEntry?.original?.id) {
                                             mainRouter.openEntryDetail(
-                                                entry = entry,
+                                                entry = e,
                                                 replaceTop = true,
                                                 otherInstance = otherInstance,
                                             )

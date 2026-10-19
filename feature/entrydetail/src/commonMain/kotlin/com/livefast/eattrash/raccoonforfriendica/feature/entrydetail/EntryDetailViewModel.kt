@@ -249,17 +249,10 @@ class EntryDetailViewModel(
         val root = context?.ancestors?.firstOrNull() ?: mainEntry ?: return
         val currentEntryList =
             populateThread(entry = root, maxDepth = maxDepth)
-                .map { entry ->
-                    entry.let {
-                        with(emojiHelper) { it.withEmojisIfMissing() }
-                    }.let {
-                        with(replyHelper) { it.withInReplyToIfMissing() }
-                    }.let {
-                        with(entryActionHelper) { it.withActions() }
-                    }
-                }.let { list ->
+                .let { list ->
                     when {
-                        mainEntry != null && list.none { e -> e.id == mainEntry.id } -> {
+                        mainEntry != null &&
+                            list.none { e -> e.id == mainEntry.id || e.original.id == mainEntry.original.id } -> {
                             val additionalList =
                                 reconstructAncestors(
                                     entry = mainEntry,
@@ -269,6 +262,14 @@ class EntryDetailViewModel(
                         }
 
                         else -> list
+                    }
+                }.map { entry ->
+                    entry.let {
+                        with(emojiHelper) { it.withEmojisIfMissing() }
+                    }.let {
+                        with(replyHelper) { it.withInReplyToIfMissing() }
+                    }.let {
+                        with(entryActionHelper) { it.withActions() }
                     }
                 }.distinctBy { e -> e.safeKey }
         currentEntryList.preloadImages()

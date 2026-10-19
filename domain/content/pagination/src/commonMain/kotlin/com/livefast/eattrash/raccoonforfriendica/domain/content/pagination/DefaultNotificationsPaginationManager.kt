@@ -20,6 +20,7 @@ class DefaultNotificationsPaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
+    private val entryActionHelper: EntryActionHelper,
 ) : BasePaginationManager<NotificationModel, NotificationsPaginationSpecification>(
     idSelector = { it.id },
 ),
@@ -45,8 +46,17 @@ class DefaultNotificationsPaginationManager(
                 newItems
                     .determineRelationshipStatus()
                     .filterNsfw(spec.includeNsfw)
-                    .fixupCreatorEmojis()
-                    .fixupInReplyTo()
+                    .map { notification ->
+                        notification.copy(
+                            entry = notification.entry?.let {
+                                with(emojiHelper) { it.withEmojisIfMissing() }
+                            }?.let {
+                                with(replyHelper) { it.withInReplyToIfMissing() }
+                            }?.let {
+                                with(entryActionHelper) { it.withActions() }
+                            },
+                        )
+                    }
             },
         )
     }
@@ -69,21 +79,4 @@ class DefaultNotificationsPaginationManager(
 
     private fun List<NotificationModel>.filterNsfw(included: Boolean): List<NotificationModel> =
         filter { included || it.entry?.isNsfw != true }
-
-    private suspend fun List<NotificationModel>.fixupCreatorEmojis(): List<NotificationModel> = with(emojiHelper) {
-        map {
-            it.copy(
-                user = it.user?.withEmojisIfMissing(),
-                entry = it.entry?.withEmojisIfMissing(),
-            )
-        }
-    }
-
-    private suspend fun List<NotificationModel>.fixupInReplyTo(): List<NotificationModel> = with(replyHelper) {
-        map {
-            it.copy(
-                entry = it.entry?.withInReplyToIfMissing(),
-            )
-        }
-    }
 }
