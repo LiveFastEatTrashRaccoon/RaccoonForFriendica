@@ -39,7 +39,7 @@ internal fun InReplyToInfo(username: String, modifier: Modifier = Modifier) {
         Text(
             text =
             buildAnnotatedString {
-                append(LocalStrings.current.timelineEntryInReplyTo)
+                append(LocalStrings.current.inReplyTo)
                 append(" ")
                 withStyle(SpanStyle(color = fullColor)) {
                     append(username)

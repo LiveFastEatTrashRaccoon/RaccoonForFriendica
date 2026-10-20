@@ -77,7 +77,7 @@ interface Strings {
     val actionRemoveSpoiler: String @Composable get
     val actionRemoveTitle: String @Composable get
     val actionReply: String @Composable get
-    val actionReportEntry: String @Composable get
+    val actionReportPost: String @Composable get
     val actionReportUser: String @Composable get
     val actionRevealContent: String @Composable get
     val actionSave: String @Composable get
@@ -154,7 +154,7 @@ interface Strings {
     val createReportItemCategory: String @Composable get
     val createReportItemForward: String @Composable get
     val createReportItemRules: String @Composable get
-    val createReportTitleEntry: String @Composable get
+    val createReportTitlePost: String @Composable get
     val createReportTitleUser: String @Composable get
     val creationDate: String @Composable get
     val customOption: String @Composable get
@@ -298,8 +298,8 @@ interface Strings {
     val nodeInfoSectionRules: String @Composable get
     val nodeInfoTitle: String @Composable get
     val nodeVia: String @Composable get
-    val notificationTypeEntry: String @Composable get
-    val notificationTypeEntryName: String @Composable get
+    val notificationTypePost: String @Composable get
+    val notificationTypePostName: String @Composable get
     val notificationTypeFavorite: String @Composable get
     val notificationTypeFavoriteName: String @Composable get
     val notificationTypeFollow: String @Composable get
@@ -438,8 +438,8 @@ interface Strings {
     val timeMinuteShort: String @Composable get
     val timeSecondShort: String @Composable get
     val timelineAll: String @Composable get
-    val timelineEntryInReplyTo: String @Composable get
-    val timelineEntryRebloggedBy: String @Composable get
+    val inReplyTo: String @Composable get
+    val rebloggedBy: String @Composable get
     val timelineLayoutCard: String @Composable get
     val timelineLayoutCompact: String @Composable get
     val timelineLayoutDistractionFree: String @Composable get

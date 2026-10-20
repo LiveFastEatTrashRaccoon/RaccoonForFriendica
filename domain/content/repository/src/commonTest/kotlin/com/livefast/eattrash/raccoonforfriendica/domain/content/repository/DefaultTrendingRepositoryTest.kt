@@ -41,14 +41,14 @@ class DefaultTrendingRepositoryTest {
             otherProvider = otherProvider,
         )
 
-    // region getEntries
+    // region getPosts
     @Test
-    fun `given error when getEntries then result and interactions are as expected`() = runTest {
+    fun `given error when getPosts then result and interactions are as expected`() = runTest {
         everySuspend {
             trendsService.getStatuses(any(), any())
         } throws IOException("Network error")
 
-        val res = sut.getEntries(offset = 0)
+        val res = sut.getPosts(offset = 0)
 
         assertNull(res)
         verifySuspend {
@@ -57,12 +57,12 @@ class DefaultTrendingRepositoryTest {
     }
 
     @Test
-    fun `given results when getEntries then result and interactions are as expected`() = runTest {
+    fun `given results when getPosts then result and interactions are as expected`() = runTest {
         everySuspend {
             trendsService.getStatuses(any(), any())
         } returns listOf(Status(id = "1", content = "trending status"))
 
-        val res = sut.getEntries(offset = 0)
+        val res = sut.getPosts(offset = 0)
 
         assertNotNull(res)
         assertEquals(1, res.size)
@@ -73,13 +73,13 @@ class DefaultTrendingRepositoryTest {
     }
 
     @Test
-    fun `given results when getEntries on other instance then result and interactions are as expected`() = runTest {
+    fun `given results when getPosts on other instance then result and interactions are as expected`() = runTest {
         val otherInstance = "node"
         everySuspend {
             trendsService.getStatuses(any(), any())
         } returns listOf(Status(id = "1", content = "trending status"))
 
-        val res = sut.getEntries(offset = 0, otherInstance = otherInstance)
+        val res = sut.getPosts(offset = 0, otherInstance = otherInstance)
 
         assertNotNull(res)
         assertEquals(1, res.size)

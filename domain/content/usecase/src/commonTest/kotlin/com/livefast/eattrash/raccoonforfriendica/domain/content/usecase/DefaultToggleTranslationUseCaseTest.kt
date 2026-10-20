@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedPostModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
@@ -17,20 +17,20 @@ class DefaultToggleTranslationUseCaseTest {
     private val sut = DefaultToggleTranslationUseCase(getTranslation)
 
     @Test
-    fun `given entry showing translation when invoked then it returns entry showing original`() = runTest {
-        val targetEntry = TimelineEntryModel(id = "1", content = "translated")
-        val entry = TimelineEntryModel(
+    fun `given post showing translation when invoked then it returns post showing original`() = runTest {
+        val targetPost = PostModel(id = "1", content = "translated")
+        val post = PostModel(
             id = "1",
             content = "original",
             isShowingTranslation = true,
-            translation = targetEntry,
+            translation = targetPost,
             translationProvider = "Provider",
         )
 
-        val result = sut(entry = entry, targetLang = "en")
+        val result = sut(post = post, targetLang = "en")
 
         assertEquals(
-            expected = entry.copy(
+            expected = post.copy(
                 isShowingTranslation = false,
                 translationLoading = false,
             ),
@@ -42,83 +42,82 @@ class DefaultToggleTranslationUseCaseTest {
     }
 
     @Test
-    fun `given original entry not translated when invoked then it returns entry showing translation`() = runTest {
-        val entry = TimelineEntryModel(
+    fun `given original post not translated when invoked then it returns post showing translation`() = runTest {
+        val post = PostModel(
             id = "1",
             content = "original",
             isShowingTranslation = false,
             translation = null,
             translationProvider = null,
         )
-        val targetEntry = TimelineEntryModel(id = "1", content = "translated")
-        val expectedTranslationResult = TranslatedTimelineEntryModel(
-            source = entry,
-            target = targetEntry,
+        val targetPost = PostModel(id = "1", content = "translated")
+        val expectedTranslationResult = TranslatedPostModel(
+            source = post,
+            target = targetPost,
             provider = "Provider",
         )
 
-        everySuspend { getTranslation(entry, "en") } returns expectedTranslationResult
+        everySuspend { getTranslation(post, "en") } returns expectedTranslationResult
 
-        val result = sut(entry = entry, targetLang = "en")
+        val result = sut(post = post, targetLang = "en")
 
         assertEquals(
-            expected = entry.copy(
+            expected = post.copy(
                 isShowingTranslation = true,
-                translation = targetEntry,
+                translation = targetPost,
                 translationProvider = "Provider",
                 translationLoading = false,
             ),
             actual = result,
         )
         verifySuspend {
-            getTranslation(entry, "en")
+            getTranslation(post, "en")
         }
     }
 
     @Test
-    fun `given original entry not translated when translation fails then it returns entry showing original`() =
-        runTest {
-            val entry = TimelineEntryModel(
-                id = "1",
-                content = "original",
-                isShowingTranslation = false,
-                translation = null,
-                translationProvider = null,
-            )
-
-            everySuspend { getTranslation(entry, "en") } returns null
-
-            val result = sut(entry = entry, targetLang = "en")
-
-            assertEquals(
-                expected = entry.copy(
-                    isShowingTranslation = false,
-                    translation = null,
-                    translationProvider = null,
-                    translationLoading = false,
-                ),
-                actual = result,
-            )
-            verifySuspend {
-                getTranslation(entry, "en")
-            }
-        }
-
-    @Test
-    fun `given original entry already translated when invoked then it returns entry showing translation`() = runTest {
-        val targetEntry = TimelineEntryModel(id = "1", content = "translated")
-        val entry = TimelineEntryModel(
+    fun `given original post not translated when translation fails then it returns post showing original`() = runTest {
+        val post = PostModel(
             id = "1",
             content = "original",
             isShowingTranslation = false,
-            translation = targetEntry,
+            translation = null,
+            translationProvider = null,
+        )
+
+        everySuspend { getTranslation(post, "en") } returns null
+
+        val result = sut(post = post, targetLang = "en")
+
+        assertEquals(
+            expected = post.copy(
+                isShowingTranslation = false,
+                translation = null,
+                translationProvider = null,
+                translationLoading = false,
+            ),
+            actual = result,
+        )
+        verifySuspend {
+            getTranslation(post, "en")
+        }
+    }
+
+    @Test
+    fun `given original post already translated when invoked then it returns post showing translation`() = runTest {
+        val targetPost = PostModel(id = "1", content = "translated")
+        val post = PostModel(
+            id = "1",
+            content = "original",
+            isShowingTranslation = false,
+            translation = targetPost,
             translationProvider = "Provider",
         )
 
-        val result = sut(entry = entry, targetLang = "en")
+        val result = sut(post = post, targetLang = "en")
 
         assertEquals(
-            expected = entry.copy(
+            expected = post.copy(
                 isShowingTranslation = true,
                 translationLoading = false,
             ),

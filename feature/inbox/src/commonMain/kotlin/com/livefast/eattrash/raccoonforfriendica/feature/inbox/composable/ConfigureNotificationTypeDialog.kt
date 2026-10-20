@@ -131,7 +131,7 @@ internal fun ConfigureNotificationTypeDialog(
 
 @Composable
 private fun NotificationType.toReadableName(): String = when (this) {
-    NotificationType.Entry -> LocalStrings.current.notificationTypeEntryName
+    NotificationType.Post -> LocalStrings.current.notificationTypePostName
     NotificationType.Favorite -> LocalStrings.current.notificationTypeFavoriteName
     NotificationType.Follow -> LocalStrings.current.notificationTypeFollowName
     NotificationType.FollowRequest -> LocalStrings.current.notificationTypeFollowRequestName

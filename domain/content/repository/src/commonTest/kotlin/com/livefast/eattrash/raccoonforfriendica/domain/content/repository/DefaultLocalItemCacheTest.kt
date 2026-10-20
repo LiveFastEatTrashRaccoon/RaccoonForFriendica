@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.utils.cache.LruCache
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.DefaultLocalItemCache
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class DefaultLocalItemCacheTest {
-    private val cache = mock<LruCache<String, TimelineEntryModel>>(MockMode.autoUnit)
+    private val cache = mock<LruCache<String, PostModel>>(MockMode.autoUnit)
     private val sut = DefaultLocalItemCache(cache = cache)
 
     @Test
@@ -32,7 +32,7 @@ class DefaultLocalItemCacheTest {
 
     @Test
     fun `given item present when get then result is as expected`() = runTest {
-        val item = TimelineEntryModel(id = "1", content = "")
+        val item = PostModel(id = "1", content = "")
         everySuspend { cache.get(any()) } returns item
 
         sut.put(item.id, item)

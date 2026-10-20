@@ -35,8 +35,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 @Composable
@@ -48,12 +48,12 @@ internal fun NotificationItem(
     autoloadImages: Boolean = true,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
-    onOpenEntry: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenPost: ((PostModel) -> Unit)? = null,
     onClickUserRelationship: ((String, RelationshipStatusNextAction) -> Unit)? = null,
-    onRevokeQuote: ((TimelineEntryModel) -> Unit)? = null,
+    onRevokeQuote: ((PostModel) -> Unit)? = null,
 ) {
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
-    val entry = notification.entry
+    val post = notification.post
     val user = notification.user
     val contentHorizontalPadding = Spacing.xs
 
@@ -125,19 +125,19 @@ internal fun NotificationItem(
                     bottom = Spacing.xs,
                 ),
         ) {
-            if (entry != null) {
+            if (post != null) {
                 TimelineItem(
                     modifier =
                     Modifier.padding(
                         top = Spacing.s,
                         bottom = Spacing.s,
                     ),
-                    entry =
-                    entry.let { e ->
+                    post =
+                    post.let { post ->
                         // removes source platform indication from inbox
-                        e.copy(
+                        post.copy(
                             sourcePlatform = null,
-                            reblog = e.reblog?.copy(sourcePlatform = null),
+                            reblog = post.reblog?.copy(sourcePlatform = null),
                         )
                     },
                     layout = TimelineLayout.DistractionFree,
@@ -147,18 +147,18 @@ internal fun NotificationItem(
                     actionsEnabled = false,
                     pollEnabled = false,
                     onClick = {
-                        onOpenEntry?.invoke(entry)
+                        onOpenPost?.invoke(post)
                     },
                     onOpenUser = onOpenUser,
                     onOpenUrl = onOpenUrl,
                     options = buildList {
-                        if (notification.type == NotificationType.Quote && entry.quoted?.id != null) {
+                        if (notification.type == NotificationType.Quote && post.quoted?.id != null) {
                             this += OptionId.RevokeQuote.toOption()
                         }
                     },
                     onSelectOption = {
                         if (it == OptionId.RevokeQuote) {
-                            onRevokeQuote?.invoke(entry)
+                            onRevokeQuote?.invoke(post)
                         }
                     },
                 )
@@ -185,7 +185,7 @@ internal fun NotificationItem(
 
 @Composable
 private fun NotificationType.toReadableName(): String = when (this) {
-    NotificationType.Entry -> LocalStrings.current.notificationTypeEntry
+    NotificationType.Post -> LocalStrings.current.notificationTypePost
     NotificationType.Favorite -> LocalStrings.current.notificationTypeFavorite
     NotificationType.Follow -> LocalStrings.current.notificationTypeFollow
     NotificationType.FollowRequest -> LocalStrings.current.notificationTypeFollowRequest
@@ -200,7 +200,7 @@ private fun NotificationType.toReadableName(): String = when (this) {
 
 @Composable
 private fun NotificationType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    NotificationType.Entry -> coreResources.postAdd
+    NotificationType.Post -> coreResources.postAdd
     NotificationType.Favorite -> coreResources.favoriteFill
     NotificationType.Follow -> coreResources.personAdd
     NotificationType.FollowRequest -> coreResources.personAdd

@@ -41,8 +41,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillary
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuoteStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.contentToDisplay
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.pollToDisplay
@@ -51,7 +51,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.titleToDisp
 
 @Composable
 internal fun CompactTimelineItem(
-    entry: TimelineEntryModel,
+    post: PostModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
     autoloadImages: Boolean = true,
@@ -62,30 +62,30 @@ internal fun CompactTimelineItem(
     options: List<Option> = emptyList(),
     optionsMenuOpen: Boolean = false,
     originalCreator: UserModel? = null,
-    originalInReplyTo: TimelineEntryModel? = null,
+    originalInReplyTo: PostModel? = null,
     pollEnabled: Boolean = true,
     reshareAndReplyVisible: Boolean = true,
     followedHashtagsVisible: Boolean = true,
-    onBookmark: ((TimelineEntryModel) -> Unit)? = null,
-    onClick: ((TimelineEntryModel) -> Unit)? = null,
-    onFavorite: ((TimelineEntryModel) -> Unit)? = null,
-    onDislike: ((TimelineEntryModel) -> Unit)? = null,
+    onBookmark: ((PostModel) -> Unit)? = null,
+    onClick: ((PostModel) -> Unit)? = null,
+    onFavorite: ((PostModel) -> Unit)? = null,
+    onDislike: ((PostModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
-    onOpenPostsQuoting: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenPostsQuoting: ((PostModel) -> Unit)? = null,
+    onOpenUsersFavorite: ((PostModel) -> Unit)? = null,
+    onOpenUsersReblog: ((PostModel) -> Unit)? = null,
     onSelectOption: ((OptionId) -> Unit)? = null,
     onToggleOptionsMenu: ((Boolean) -> Unit)? = null,
-    onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
-    onReblog: ((TimelineEntryModel) -> Unit)? = null,
-    onReply: ((TimelineEntryModel) -> Unit)? = null,
+    onPollVote: ((PostModel, List<Int>) -> Unit)? = null,
+    onReblog: ((PostModel) -> Unit)? = null,
+    onReply: ((PostModel) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
-    onOpenQuote: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenQuote: ((PostModel) -> Unit)? = null,
 ) {
     val contentHorizontalPadding = Spacing.s
-    val spoiler = entry.spoilerToDisplay.orEmpty()
+    val spoiler = post.spoilerToDisplay.orEmpty()
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Column(
@@ -113,7 +113,7 @@ internal fun CompactTimelineItem(
                 }
             }
             if (followedHashtagsVisible) {
-                val followedHashtags = entry.tags.filter { it.following == true }
+                val followedHashtags = post.tags.filter { it.following == true }
                 if (followedHashtags.isNotEmpty()) {
                     FollowedHashtagsInfo(
                         modifier = Modifier.padding(horizontal = contentHorizontalPadding),
@@ -133,12 +133,12 @@ internal fun CompactTimelineItem(
         ) {
             ContentHeader(
                 modifier = Modifier.weight(1f),
-                user = entry.creator,
+                user = post.creator,
                 autoloadImages = autoloadImages,
-                date = entry.updated ?: entry.created,
-                scheduleDate = entry.scheduled,
-                platform = entry.sourcePlatform,
-                isEdited = entry.updated != null,
+                date = post.updated ?: post.created,
+                scheduleDate = post.scheduled,
+                platform = post.sourcePlatform,
+                isEdited = post.updated != null,
                 onOpenUser = onOpenUser,
             )
             if (options.isNotEmpty() && !actionsEnabled) {
@@ -219,7 +219,7 @@ internal fun CompactTimelineItem(
             modifier = Modifier.padding(horizontal = contentHorizontalPadding),
             visible = spoilerActive || spoiler.isEmpty(),
         ) {
-            val attachments = entry.attachmentsToDisplayWithoutInlineImages
+            val attachments = post.attachmentsToDisplayWithoutInlineImages
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
@@ -233,7 +233,7 @@ internal fun CompactTimelineItem(
                         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                     ) {
                         // post title
-                        val title = entry.titleToDisplay
+                        val title = post.titleToDisplay
                         if (!title.isNullOrBlank()) {
                             ContentTitle(
                                 modifier =
@@ -243,14 +243,14 @@ internal fun CompactTimelineItem(
                                 content = title,
                                 maxLines = maxTitleLines,
                                 autoloadImages = autoloadImages,
-                                emojis = entry.emojis,
-                                onClick = { onClick?.invoke(entry) },
+                                emojis = post.emojis,
+                                onClick = { onClick?.invoke(post) },
                                 onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                             )
                         }
 
                         // post body
-                        val body = entry.contentToDisplay
+                        val body = post.contentToDisplay
                         if (body.isNotBlank()) {
                             ContentBody(
                                 modifier =
@@ -263,10 +263,10 @@ internal fun CompactTimelineItem(
                                 ),
                                 content = body,
                                 autoloadImages = autoloadImages,
-                                hideInlineQuotes = entry.quoted != null,
+                                hideInlineQuotes = post.quoted != null,
                                 maxLines = maxBodyLines,
-                                emojis = entry.emojis,
-                                onClick = { onClick?.invoke(entry) },
+                                emojis = post.emojis,
+                                onClick = { onClick?.invoke(post) },
                                 onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                             )
                         }
@@ -281,7 +281,7 @@ internal fun CompactTimelineItem(
                             attachments = visualAttachments,
                             blurNsfw = blurNsfw,
                             autoloadImages = autoloadImages,
-                            sensitive = entry.sensitive,
+                            sensitive = post.sensitive,
                             cornerSize = CornerSize.s,
                             onOpenImage = onOpenImage,
                         )
@@ -298,20 +298,20 @@ internal fun CompactTimelineItem(
                 }
 
                 // poll
-                entry.pollToDisplay?.also { poll ->
+                post.pollToDisplay?.also { poll ->
                     PollCard(
                         modifier = Modifier.fillMaxWidth(),
                         poll = poll,
-                        emojis = entry.emojis,
+                        emojis = post.emojis,
                         enabled = pollEnabled,
                         onVote = { choices ->
-                            onPollVote?.invoke(entry, choices)
+                            onPollVote?.invoke(post, choices)
                         },
                     )
                 }
 
-                // quoted entry
-                entry.quoted?.takeIf { it.quoteStatus == QuoteStatus.Accepted }?.also { entry ->
+                // quoted post
+                post.quoted?.takeIf { it.quoteStatus == QuoteStatus.Accepted }?.also { post ->
                     FullTimelineItem(
                         modifier = Modifier
                             .padding(top = Spacing.xs)
@@ -322,9 +322,9 @@ internal fun CompactTimelineItem(
                                 shape = RoundedCornerShape(CornerSize.xl),
                             ).padding(vertical = Spacing.xxs)
                             .clickable {
-                                onOpenQuote?.invoke(entry)
+                                onOpenQuote?.invoke(post)
                             },
-                        entry = entry,
+                        post = post,
                         actionsEnabled = false,
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,
@@ -344,17 +344,17 @@ internal fun CompactTimelineItem(
                     vertical = Spacing.xs,
                     horizontal = contentHorizontalPadding,
                 ),
-                reblogCount = entry.reblogCount,
-                favoriteCount = entry.favoriteCount,
-                quoteCount = entry.quoteCount,
+                reblogCount = post.reblogCount,
+                favoriteCount = post.favoriteCount,
+                quoteCount = post.quoteCount,
                 onOpenPostsQuoting = {
-                    onOpenPostsQuoting?.invoke(entry)
+                    onOpenPostsQuoting?.invoke(post)
                 },
                 onOpenUsersReblog = {
-                    onOpenUsersReblog?.invoke(entry)
+                    onOpenUsersReblog?.invoke(post)
                 },
                 onOpenUsersFavorite = {
-                    onOpenUsersFavorite?.invoke(entry)
+                    onOpenUsersFavorite?.invoke(post)
                 },
             )
         }
@@ -367,10 +367,10 @@ internal fun CompactTimelineItem(
                     top = Spacing.xs,
                     end = Spacing.m,
                 ),
-            lang = entry.lang,
-            isShowingTranslation = entry.isShowingTranslation,
-            provider = entry.translationProvider,
-            translationLoading = entry.translationLoading,
+            lang = post.lang,
+            isShowingTranslation = post.isShowingTranslation,
+            provider = post.translationProvider,
+            translationLoading = post.translationLoading,
             onShowOriginal = onShowOriginal,
         )
 
@@ -384,49 +384,49 @@ internal fun CompactTimelineItem(
                         start = contentHorizontalPadding,
                         end = contentHorizontalPadding,
                     ),
-                favoriteCount = entry.favoriteCount,
-                favorite = entry.favorite,
-                favoriteLoading = entry.favoriteLoading,
-                reblogCount = entry.reblogCount,
-                reblogged = entry.reblogged,
-                reblogLoading = entry.reblogLoading,
-                bookmarked = entry.bookmarked,
-                bookmarkLoading = entry.bookmarkLoading,
-                replyCount = entry.replyCount,
-                disliked = entry.disliked,
-                dislikeCount = entry.dislikesCount,
-                dislikeLoading = entry.dislikeLoading,
+                favoriteCount = post.favoriteCount,
+                favorite = post.favorite,
+                favoriteLoading = post.favoriteLoading,
+                reblogCount = post.reblogCount,
+                reblogged = post.reblogged,
+                reblogLoading = post.reblogLoading,
+                bookmarked = post.bookmarked,
+                bookmarkLoading = post.bookmarkLoading,
+                replyCount = post.replyCount,
+                disliked = post.disliked,
+                dislikeCount = post.dislikesCount,
+                dislikeLoading = post.dislikeLoading,
                 options = options,
                 optionsMenuOpen = optionsMenuOpen,
                 onSelectOption = onSelectOption,
                 onToggleOptionsMenu = onToggleOptionsMenu,
                 onReply =
                 if (onReply != null) {
-                    { onReply(entry) }
+                    { onReply(post) }
                 } else {
                     null
                 },
                 onReblog =
                 if (onReblog != null) {
-                    { onReblog(entry) }
+                    { onReblog(post) }
                 } else {
                     null
                 },
                 onFavorite =
                 if (onFavorite != null) {
-                    { onFavorite(entry) }
+                    { onFavorite(post) }
                 } else {
                     null
                 },
                 onBookmark =
                 if (onBookmark != null) {
-                    { onBookmark(entry) }
+                    { onBookmark(post) }
                 } else {
                     null
                 },
                 onDislike =
                 if (onDislike != null) {
-                    { onDislike(entry) }
+                    { onDislike(post) }
                 } else {
                     null
                 },

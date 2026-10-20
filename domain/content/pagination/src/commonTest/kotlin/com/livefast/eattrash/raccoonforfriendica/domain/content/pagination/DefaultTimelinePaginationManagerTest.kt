@@ -3,14 +3,14 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.NotificationCenterEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
@@ -38,19 +38,19 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultTimelinePaginationManagerTest {
     private val timelineRepository = mock<TimelineRepository>()
-    private val timelineEntryRepository = mock<TimelineEntryRepository>()
+    private val postRepository = mock<PostRepository>()
     private val emojiHelper =
         mock<EmojiHelper> {
             everySuspend { any<UserModel>().withEmojisIfMissing() } returnsArgAt 0
-            everySuspend { any<TimelineEntryModel>().withEmojisIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withEmojisIfMissing() } returnsArgAt 0
         }
     private val replyHelper =
         mock<ReplyHelper> {
-            everySuspend { any<TimelineEntryModel>().withInReplyToIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withInReplyToIfMissing() } returnsArgAt 0
         }
-    private val entryActionHelper =
-        mock<EntryActionHelper> {
-            everySuspend { any<TimelineEntryModel>().withActions() } returnsArgAt 0
+    private val postActionHelper =
+        mock<PostActionHelper> {
+            everySuspend { any<PostModel>().withActions() } returnsArgAt 0
         }
     private val notificationCenter =
         mock<NotificationCenter> {
@@ -69,12 +69,12 @@ class DefaultTimelinePaginationManagerTest {
     private val sut =
         DefaultTimelinePaginationManager(
             timelineRepository = timelineRepository,
-            timelineEntryRepository = timelineEntryRepository,
+            postRepository = postRepository,
             accountRepository = accountRepository,
             userRateLimitRepository = userRateLimitRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
-            entryActionHelper = entryActionHelper,
+            postActionHelper = postActionHelper,
             stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,
             followedHashtagCache = followedHashtagCache,
@@ -113,7 +113,7 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given results when loadNextPage with public Feed then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getPublic(
                 pageCursor = any(),
@@ -146,8 +146,8 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = ""),
-                    TimelineEntryModel(id = "2", content = "", sensitive = true),
+                    PostModel(id = "1", content = ""),
+                    PostModel(id = "2", content = "", sensitive = true),
                 )
             everySuspend {
                 timelineRepository.getPublic(
@@ -181,8 +181,8 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = ""),
-                    TimelineEntryModel(id = "2", content = "", sensitive = true),
+                    PostModel(id = "1", content = ""),
+                    PostModel(id = "2", content = "", sensitive = true),
                 )
             everySuspend {
                 timelineRepository.getPublic(
@@ -215,11 +215,11 @@ class DefaultTimelinePaginationManagerTest {
     fun `given replies when loadNextPage with public Feed without includeNsfw then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(id = "1", content = ""),
-                TimelineEntryModel(
+                PostModel(id = "1", content = ""),
+                PostModel(
                     id = "2",
                     content = "",
-                    inReplyTo = TimelineEntryModel(id = "3", content = ""),
+                    inReplyTo = PostModel(id = "3", content = ""),
                 ),
             )
         everySuspend {
@@ -251,7 +251,7 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given results when loadNextPage with public Feed refresh then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getPublic(
                 pageCursor = any(),
@@ -281,7 +281,7 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given results when loadNextPage with home Feed then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getHome(
                 pageCursor = any(),
@@ -311,7 +311,7 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given results when loadNextPage with local Feed then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getLocal(
                 pageCursor = any(),
@@ -341,7 +341,7 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given results when loadNextPage with circle Feed then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getCircle(
                 id = any(),
@@ -372,7 +372,7 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given results when loadNextPage with foreign Feed then result is as expected`() = runTest {
         val foreignNode = "node"
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getLocal(
                 pageCursor = any(),
@@ -402,7 +402,7 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given can fetch no more results when loadNextPage with public Feed then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getPublic(
                 pageCursor = any(),
@@ -440,17 +440,17 @@ class DefaultTimelinePaginationManagerTest {
         val accountId = 1L
         val list =
             listOf(
-                TimelineEntryModel(
+                PostModel(
                     id = "1",
                     content = "",
                     creator = UserModel(id = "1", handle = "user-1"),
                 ),
-                TimelineEntryModel(
+                PostModel(
                     id = "2",
                     content = "",
                     creator = UserModel(id = "2", handle = "user-2"),
                 ),
-                TimelineEntryModel(
+                PostModel(
                     id = "3",
                     content = "",
                     creator = UserModel(id = "1", handle = "user-1"),
@@ -497,15 +497,15 @@ class DefaultTimelinePaginationManagerTest {
         val accountId = 1L
         val list =
             listOf(
-                TimelineEntryModel(
+                PostModel(
                     id = "1",
                     content = "foo",
                 ),
-                TimelineEntryModel(
+                PostModel(
                     id = "2",
                     content = "bar",
                 ),
-                TimelineEntryModel(
+                PostModel(
                     id = "3",
                     content = "baz",
                 ),
@@ -574,7 +574,7 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given can fetch no more results when loadNextPage with Hashtag then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getHashtag(
                 hashtag = any(),
@@ -614,15 +614,15 @@ class DefaultTimelinePaginationManagerTest {
         val accountId = 1L
         val list =
             listOf(
-                TimelineEntryModel(
+                PostModel(
                     id = "1",
                     content = "foo",
                 ),
-                TimelineEntryModel(
+                PostModel(
                     id = "2",
                     content = "bar",
                 ),
-                TimelineEntryModel(
+                PostModel(
                     id = "3",
                     content = "baz",
                 ),
@@ -661,7 +661,7 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given results on other instance when loadNextPage with Hashtag then result is as expected`() = runTest {
         val otherInstance = "example.com"
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
             timelineRepository.getHashtag(
                 hashtag = any(),
@@ -695,7 +695,7 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given no results when loadNextPage with User then result is as expected`() = runTest {
         everySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = any(),
                 excludeReplies = any(),
                 pageCursor = any(),
@@ -718,7 +718,7 @@ class DefaultTimelinePaginationManagerTest {
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = "1",
                 excludeReplies = true,
                 pageCursor = null,
@@ -735,18 +735,18 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(
+                    PostModel(
                         id = "2",
                         content = "",
                     ),
-                    TimelineEntryModel(
+                    PostModel(
                         id = "3",
                         content = "",
                         sensitive = true,
                     ),
                 )
             everySuspend {
-                timelineEntryRepository.getByUser(
+                postRepository.getByUser(
                     userId = any(),
                     excludeReplies = any(),
                     pageCursor = any(),
@@ -778,7 +778,7 @@ class DefaultTimelinePaginationManagerTest {
             assertEquals(list, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getByUser(
+                postRepository.getByUser(
                     userId = "1",
                     excludeReplies = true,
                     pageCursor = null,
@@ -787,7 +787,7 @@ class DefaultTimelinePaginationManagerTest {
                     onlyMedia = false,
                     refresh = false,
                 )
-                timelineEntryRepository.getByUser(
+                postRepository.getByUser(
                     userId = "1",
                     excludeReplies = true,
                     pageCursor = "3",
@@ -804,18 +804,18 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(
+                    PostModel(
                         id = "2",
                         content = "",
                     ),
-                    TimelineEntryModel(
+                    PostModel(
                         id = "3",
                         content = "",
                         sensitive = true,
                     ),
                 )
             everySuspend {
-                timelineEntryRepository.getByUser(
+                postRepository.getByUser(
                     userId = any(),
                     excludeReplies = any(),
                     pageCursor = any(),
@@ -847,7 +847,7 @@ class DefaultTimelinePaginationManagerTest {
             assertEquals(list.subList(0, 1), res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getByUser(
+                postRepository.getByUser(
                     userId = "1",
                     excludeReplies = true,
                     pageCursor = null,
@@ -856,7 +856,7 @@ class DefaultTimelinePaginationManagerTest {
                     onlyMedia = false,
                     refresh = false,
                 )
-                timelineEntryRepository.getByUser(
+                postRepository.getByUser(
                     userId = "1",
                     excludeReplies = true,
                     pageCursor = "3",
@@ -871,9 +871,9 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given results on other instance when loadNextPage with User then result is as expected`() = runTest {
         val otherInstance = "example.com"
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = any(),
                 excludeReplies = any(),
                 pageCursor = any(),
@@ -898,7 +898,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = "1",
                 excludeReplies = true,
                 pageCursor = null,
@@ -916,7 +916,7 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given no results when loadNextPage with Forum then result is as expected`() = runTest {
         everySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = any(),
                 excludeReplies = any(),
                 pageCursor = any(),
@@ -939,7 +939,7 @@ class DefaultTimelinePaginationManagerTest {
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = "1",
                 excludeReplies = true,
                 pageCursor = null,
@@ -955,28 +955,28 @@ class DefaultTimelinePaginationManagerTest {
     fun `given can fetch no more results when loadNextPage with Forum then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(
+                PostModel(
                     id = "2",
                     content = "",
                     reblog =
-                    TimelineEntryModel(
+                    PostModel(
                         id = "2-r",
                         content = "",
                     ),
                 ),
-                TimelineEntryModel(
+                PostModel(
                     id = "3",
                     content = "",
                     reblog =
-                    TimelineEntryModel(
+                    PostModel(
                         id = "3-r",
                         content = "",
-                        inReplyTo = TimelineEntryModel(id = "4", content = ""),
+                        inReplyTo = PostModel(id = "4", content = ""),
                     ),
                 ),
             )
         everySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = any(),
                 excludeReplies = any(),
                 pageCursor = any(),
@@ -1004,7 +1004,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list.subList(0, 1), res)
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = "1",
                 excludeReplies = true,
                 pageCursor = null,
@@ -1013,7 +1013,7 @@ class DefaultTimelinePaginationManagerTest {
                 onlyMedia = false,
                 refresh = false,
             )
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = "1",
                 excludeReplies = true,
                 pageCursor = "3",
@@ -1028,9 +1028,9 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given results when loadNextPage with Forum then result is as expected`() = runTest {
         val list =
-            listOf(TimelineEntryModel(id = "1", content = "", reblog = TimelineEntryModel(id = "2", content = "")))
+            listOf(PostModel(id = "1", content = "", reblog = PostModel(id = "2", content = "")))
         everySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = any(),
                 excludeReplies = any(),
                 pageCursor = any(),
@@ -1053,7 +1053,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = "1",
                 excludeReplies = true,
                 pageCursor = null,
@@ -1069,9 +1069,9 @@ class DefaultTimelinePaginationManagerTest {
     fun `given results on other instance when loadNextPage with Forum then result is as expected`() = runTest {
         val otherInstance = "example.com"
         val list =
-            listOf(TimelineEntryModel(id = "1", content = "", reblog = TimelineEntryModel(id = "2", content = "")))
+            listOf(PostModel(id = "1", content = "", reblog = PostModel(id = "2", content = "")))
         everySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = any(),
                 excludeReplies = any(),
                 pageCursor = any(),
@@ -1096,7 +1096,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = "1",
                 excludeReplies = true,
                 pageCursor = null,
@@ -1114,7 +1114,7 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given no results when loadNextPage with Bookmarks specification then result is as expected`() = runTest {
         everySuspend {
-            timelineEntryRepository.getBookmarks(pageCursor = any())
+            postRepository.getBookmarks(pageCursor = any())
         } returns PagedList()
 
         sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
@@ -1123,7 +1123,7 @@ class DefaultTimelinePaginationManagerTest {
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getBookmarks(pageCursor = null)
+            postRepository.getBookmarks(pageCursor = null)
         }
     }
 
@@ -1131,10 +1131,10 @@ class DefaultTimelinePaginationManagerTest {
     fun `given results when loadNextPage with Bookmarks specification then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                PostModel(id = "1", content = "", creator = UserModel(id = "2")),
             )
         everySuspend {
-            timelineEntryRepository.getBookmarks(pageCursor = any())
+            postRepository.getBookmarks(pageCursor = any())
         } returns PagedList(list = list, cursor = "1")
 
         sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
@@ -1143,7 +1143,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getBookmarks(pageCursor = null)
+            postRepository.getBookmarks(pageCursor = null)
         }
     }
 
@@ -1152,8 +1152,8 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                    TimelineEntryModel(
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(
                         id = "3",
                         content = "",
                         creator = UserModel(id = "2"),
@@ -1161,7 +1161,7 @@ class DefaultTimelinePaginationManagerTest {
                     ),
                 )
             everySuspend {
-                timelineEntryRepository.getBookmarks(pageCursor = any())
+                postRepository.getBookmarks(pageCursor = any())
             } returns PagedList(list = list, cursor = "3")
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = false))
@@ -1170,7 +1170,7 @@ class DefaultTimelinePaginationManagerTest {
             assertEquals(list.subList(0, 1), res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getBookmarks(pageCursor = null)
+                postRepository.getBookmarks(pageCursor = null)
             }
         }
 
@@ -1179,8 +1179,8 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                    TimelineEntryModel(
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(
                         id = "3",
                         content = "",
                         creator = UserModel(id = "2"),
@@ -1188,7 +1188,7 @@ class DefaultTimelinePaginationManagerTest {
                     ),
                 )
             everySuspend {
-                timelineEntryRepository.getBookmarks(pageCursor = any())
+                postRepository.getBookmarks(pageCursor = any())
             } returns PagedList(list = list, cursor = "3")
 
             sut.reset(TimelinePaginationSpecification.Bookmarks(includeNsfw = true))
@@ -1197,7 +1197,7 @@ class DefaultTimelinePaginationManagerTest {
             assertEquals(list, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getBookmarks(pageCursor = null)
+                postRepository.getBookmarks(pageCursor = null)
             }
         }
 
@@ -1206,10 +1206,10 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
                 )
             everySuspend {
-                timelineEntryRepository.getBookmarks(pageCursor = any())
+                postRepository.getBookmarks(pageCursor = any())
             } sequentiallyReturns
                 listOf(
                     PagedList(list = list, cursor = "1"),
@@ -1223,8 +1223,8 @@ class DefaultTimelinePaginationManagerTest {
             assertEquals(list, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getBookmarks(pageCursor = null)
-                timelineEntryRepository.getBookmarks(pageCursor = "1")
+                postRepository.getBookmarks(pageCursor = null)
+                postRepository.getBookmarks(pageCursor = "1")
             }
         }
     // endregion
@@ -1233,7 +1233,7 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given no results when loadNextPage with Favorites specification then result is as expected`() = runTest {
         everySuspend {
-            timelineEntryRepository.getFavorites(pageCursor = any())
+            postRepository.getFavorites(pageCursor = any())
         } returns PagedList()
 
         sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
@@ -1242,7 +1242,7 @@ class DefaultTimelinePaginationManagerTest {
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getFavorites(pageCursor = null)
+            postRepository.getFavorites(pageCursor = null)
         }
     }
 
@@ -1250,10 +1250,10 @@ class DefaultTimelinePaginationManagerTest {
     fun `given results when loadNextPage with Favorites specification then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                PostModel(id = "1", content = "", creator = UserModel(id = "2")),
             )
         everySuspend {
-            timelineEntryRepository.getFavorites(pageCursor = any())
+            postRepository.getFavorites(pageCursor = any())
         } returns PagedList(list = list, cursor = "1")
 
         sut.reset(TimelinePaginationSpecification.Favorites(includeNsfw = false))
@@ -1262,7 +1262,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getFavorites(pageCursor = null)
+            postRepository.getFavorites(pageCursor = null)
         }
     }
 
@@ -1271,10 +1271,10 @@ class DefaultTimelinePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
                 )
             everySuspend {
-                timelineEntryRepository.getFavorites(pageCursor = any())
+                postRepository.getFavorites(pageCursor = any())
             } sequentiallyReturns
                 listOf(
                     PagedList(list = list, cursor = "1"),
@@ -1288,8 +1288,8 @@ class DefaultTimelinePaginationManagerTest {
             assertEquals(list, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getFavorites(pageCursor = null)
-                timelineEntryRepository.getFavorites(pageCursor = "1")
+                postRepository.getFavorites(pageCursor = null)
+                postRepository.getFavorites(pageCursor = "1")
             }
         }
     // endregion
@@ -1298,7 +1298,7 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given no results when loadNextPage with Quotes specification then result is as expected`() = runTest {
         everySuspend {
-            timelineEntryRepository.getQuotes(
+            postRepository.getQuotes(
                 id = any(),
                 pageCursor = any(),
             )
@@ -1310,7 +1310,7 @@ class DefaultTimelinePaginationManagerTest {
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getQuotes(
+            postRepository.getQuotes(
                 id = "1",
                 pageCursor = null,
             )
@@ -1319,9 +1319,9 @@ class DefaultTimelinePaginationManagerTest {
 
     @Test
     fun `given results when loadNextPage with Quotes specification then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
-            timelineEntryRepository.getQuotes(
+            postRepository.getQuotes(
                 id = any(),
                 pageCursor = any(),
             )
@@ -1333,7 +1333,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getQuotes(
+            postRepository.getQuotes(
                 id = "1",
                 pageCursor = null,
             )
@@ -1343,9 +1343,9 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given no more results when loadNextPage twice with Quotes specification then result is as expected`() =
         runTest {
-            val list = listOf(TimelineEntryModel(id = "1", content = ""))
+            val list = listOf(PostModel(id = "1", content = ""))
             everySuspend {
-                timelineEntryRepository.getQuotes(
+                postRepository.getQuotes(
                     id = any(),
                     pageCursor = any(),
                 )
@@ -1362,11 +1362,11 @@ class DefaultTimelinePaginationManagerTest {
             assertEquals(list, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getQuotes(
+                postRepository.getQuotes(
                     id = "1",
                     pageCursor = null,
                 )
-                timelineEntryRepository.getQuotes(
+                postRepository.getQuotes(
                     id = "1",
                     pageCursor = "1",
                 )
@@ -1376,9 +1376,9 @@ class DefaultTimelinePaginationManagerTest {
     @Test
     fun `given results on other instance when loadNextPage with Quotes then result is as expected`() = runTest {
         val otherInstance = "example.com"
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend {
-            timelineEntryRepository.getQuotes(
+            postRepository.getQuotes(
                 id = any(),
                 pageCursor = any(),
                 otherInstance = any(),
@@ -1396,7 +1396,7 @@ class DefaultTimelinePaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getQuotes(
+            postRepository.getQuotes(
                 id = "1",
                 pageCursor = null,
                 otherInstance = otherInstance,
@@ -1408,7 +1408,7 @@ class DefaultTimelinePaginationManagerTest {
     // region history restoration
     @Test
     fun `given results when restore history with public Feed then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
 
         sut.restoreHistory(list)
         val res = sut.history

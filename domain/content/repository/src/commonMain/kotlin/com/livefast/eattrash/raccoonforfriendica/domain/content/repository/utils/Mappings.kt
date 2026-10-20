@@ -65,6 +65,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Notificatio
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
@@ -77,7 +78,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RuleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaType as MediaTypeDto
@@ -88,7 +88,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.QuotePolicy as Quo
 internal fun Status.toModelWithReply() = toModel().copy(
     inReplyTo =
     inReplyToStatus?.toModel() ?: inReplyToId?.let { parentId ->
-        TimelineEntryModel(
+        PostModel(
             id = parentId,
             creator = inReplyToAccountId?.let { userId -> UserModel(id = userId) },
             content = "",
@@ -99,7 +99,7 @@ internal fun Status.toModelWithReply() = toModel().copy(
         it.toModel().copy(
             inReplyTo =
             it.inReplyToStatus?.toModel() ?: it.inReplyToId?.let { parentId ->
-                TimelineEntryModel(
+                PostModel(
                     id = parentId,
                     creator = inReplyToAccountId?.let { userId -> UserModel(id = userId) },
                     content = "",
@@ -110,7 +110,7 @@ internal fun Status.toModelWithReply() = toModel().copy(
     quoted = quote?.toModel(),
 )
 
-internal fun Status.toModel() = TimelineEntryModel(
+internal fun Status.toModel() = PostModel(
     attachments = attachments.map { it.toModel() },
     // taking HTML content from Friendica-specific add-ons if available (with embedded images)
     content = addons?.content.takeIf { !it.isNullOrBlank() } ?: content,
@@ -163,9 +163,9 @@ internal fun Status.toModel() = TimelineEntryModel(
     quotePermission = quoteApproval?.toQuotePermission(),
 )
 
-internal fun Quote.toModel(): TimelineEntryModel? = quotedStatus?.toModel()?.copy(quoteStatus = state?.toQuotedStatus())
+internal fun Quote.toModel(): PostModel? = quotedStatus?.toModel()?.copy(quoteStatus = state?.toQuotedStatus())
     ?: quotedStatusId?.let { id ->
-        TimelineEntryModel(id = id, content = "", quoteStatus = state?.toQuotedStatus())
+        PostModel(id = id, content = "", quoteStatus = state?.toQuotedStatus())
     }
 
 internal fun QuotePolicy.toDto(): QuotePolicyDto = when (this) {
@@ -227,7 +227,7 @@ private fun StatusMention.toModel() = UserModel(
     url = url,
 )
 
-internal fun StatusSource.toModel() = TimelineEntryModel(
+internal fun StatusSource.toModel() = PostModel(
     content = text.orEmpty(),
     id = id,
     spoiler = spoilerText,
@@ -298,7 +298,7 @@ internal fun Account.toModel() = UserModel(
     discoverable = discoverable ?: true,
     displayName = displayName,
     emojis = emojis?.map { it.toModel() }.orEmpty(),
-    entryCount = statusesCount,
+    postCount = statusesCount,
     fields = fields.map { it.toModel() },
     followers = followersCount,
     following = followingCount,
@@ -319,7 +319,7 @@ internal fun CredentialAccount.toModel() = UserModel(
     created = createdAt,
     discoverable = discoverable ?: true,
     displayName = displayName,
-    entryCount = statusesCount,
+    postCount = statusesCount,
     fields = (source?.fields ?: fields).map { it.toModel() },
     followers = followersCount,
     following = followingCount,
@@ -355,7 +355,7 @@ internal fun Tag.toModel() = TagModel(
 
 internal fun NotificationTypeDto.toModel(): NotificationType = when (this) {
     NotificationTypeDto.MENTION -> NotificationType.Mention
-    NotificationTypeDto.STATUS -> NotificationType.Entry
+    NotificationTypeDto.STATUS -> NotificationType.Post
     NotificationTypeDto.REBLOG -> NotificationType.Reblog
     NotificationTypeDto.FOLLOW -> NotificationType.Follow
     NotificationTypeDto.FOLLOW_REQUEST -> NotificationType.FollowRequest
@@ -368,7 +368,7 @@ internal fun NotificationTypeDto.toModel(): NotificationType = when (this) {
 }
 
 internal fun NotificationType.toDto(): NotificationTypeDto? = when (this) {
-    NotificationType.Entry -> NotificationTypeDto.STATUS
+    NotificationType.Post -> NotificationTypeDto.STATUS
     NotificationType.Favorite -> NotificationTypeDto.FAVOURITE
     NotificationType.Follow -> NotificationTypeDto.FOLLOW
     NotificationType.FollowRequest -> NotificationTypeDto.FOLLOW_REQUEST
@@ -389,7 +389,7 @@ internal fun NotificationPolicy.toDto(): NotificationPolicyDto = when (this) {
 }
 
 internal fun Notification.toModel() = NotificationModel(
-    entry = status?.toModelWithReply(),
+    post = status?.toModelWithReply(),
     id = id,
     read = dismissed,
     type = type.toModel(),
@@ -524,12 +524,12 @@ internal fun FriendicaPrivateMessage.toModel() = DirectMessageModel(
 )
 
 internal fun SearchResultType.toDto(): String = when (this) {
-    SearchResultType.Entries -> "statuses"
+    SearchResultType.Posts -> "statuses"
     SearchResultType.Hashtags -> "hashtags"
     SearchResultType.Users -> "accounts"
 }
 
-internal fun ScheduledStatus.toModel() = TimelineEntryModel(
+internal fun ScheduledStatus.toModel() = PostModel(
     attachments = attachments.map { it.toModel() },
     content = params?.text.orEmpty(),
     id = id,

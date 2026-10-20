@@ -99,7 +99,7 @@
     <string name="action_remove_poll">Eemalda küsitlus</string>
     <string name="action_remove_title">Eemalda pealkiri</string>
     <string name="action_reply">Vasta</string>
-    <string name="action_report_entry">Teata postitusest</string>
+    <string name="action_report_post">Teata postitusest</string>
     <string name="action_report_user">Teata kasutajast</string>
     <string name="action_reveal_content">Näita sisu</string>
     <string name="action_save">Salvesta</string>
@@ -189,7 +189,7 @@
     <string name="action_remove">Eemalda</string>
     <string name="action_add">Lisa</string>
     <string name="create_report_item_forward">Edasta teavitus</string>
-    <string name="create_report_title_entry">Teavita järgneva kasutaja postitusest</string>
+    <string name="create_report_title_post">Teavita järgneva kasutaja postitusest</string>
     <string name="create_report_title_user">Teata</string>
     <string name="creation_date">loomise kuupäev</string>
     <string name="custom_option">Sinu seadistatud</string>
@@ -343,8 +343,8 @@
     <string name="relationship_status_requested_to_other">Päring on saadetud</string>
     <string name="relationship_status_requested_to_you">Päring on ootel</string>
     <string name="report_category_legal">Juriidiline probleem</string>
-    <string name="notification_type_entry">avaldas postituse</string>
-    <string name="notification_type_entry_name">Postituse teavitused</string>
+    <string name="notification_type_post">avaldas postituse</string>
+    <string name="notification_type_post_name">Postituse teavitused</string>
     <string name="notification_type_favorite">märkis sinu postituse lemmikuks</string>
     <string name="notification_type_follow">hakkas sind jälgima</string>
     <string name="notification_type_follow_request">saatis sulle jälgimispäringu</string>
@@ -432,8 +432,8 @@
     <string name="message_sign_up_1">Sul pole veel kasutajakontot?</string>
     <string name="message_search_initial_empty">Hakka midagi kirjutama</string>
     <string name="message_schedule_date_in_the_past">Ajastamiseks palun vali kuupäev tuilevikust</string>
-    <string name="timeline_entry_in_reply_to">vastuseks</string>
-    <string name="timeline_entry_reblogged_by">seda jagas uuesti</string>
+    <string name="post_in_reply_to">vastuseks</string>
+    <string name="post_reblogged_by">seda jagas uuesti</string>
     <string name="timeline_layout_distraction_free">Müravaba</string>
     <plurals name="extended_social_info_quotes">
         <item quantity="one">%1$d tsiteerimine</item>

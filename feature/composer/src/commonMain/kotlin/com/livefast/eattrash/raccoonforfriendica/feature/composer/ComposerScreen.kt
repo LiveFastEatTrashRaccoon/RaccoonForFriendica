@@ -81,8 +81,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.safeImePaddi
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -92,11 +92,11 @@ import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.Cre
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.CreatePostSubHeader
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.DateTimeSelectionFlow
-import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.EntryPreviewDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.GalleryPickerDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InReplyToInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.InsertLinkDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PollForm
+import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.PostPreviewDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.QuotedInfo
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.SuggestionsBar
 import com.livefast.eattrash.raccoonforfriendica.feature.composer.components.UtilsBar
@@ -174,7 +174,7 @@ fun ComposerScreen(
     var pollExpirationMillis by remember { mutableStateOf<Long?>(null) }
     var pollExpirationDatePickerOpen by remember { mutableStateOf(false) }
     var insertEmojiModalOpen by remember { mutableStateOf(false) }
-    var previewEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var previewPost by remember { mutableStateOf<PostModel?>(null) }
     var confirmBackWithUnsavedChangesDialogOpen by remember { mutableStateOf(false) }
     var publishWithoutAltTextCheckDialogOpen by remember { mutableStateOf(false) }
     val scheduleDate =
@@ -257,7 +257,7 @@ fun ComposerScreen(
 
                 ComposerMvi.Effect.Success -> navigationCoordinator.pop()
 
-                is ComposerMvi.Effect.OpenPreview -> previewEntry = event.entry
+                is ComposerMvi.Effect.OpenPreview -> previewPost = event.post
 
                 is ComposerMvi.Effect.TriggerAttachmentEdit ->
                     attachmentBeingEdited = event.attachment
@@ -1132,12 +1132,12 @@ fun ComposerScreen(
             )
         }
 
-        previewEntry?.also { entry ->
-            EntryPreviewDialog(
-                entry = entry,
+        previewPost?.also { post ->
+            PostPreviewDialog(
+                post = post,
                 autoloadImages = uiState.autoloadImages,
                 onDismiss = {
-                    previewEntry = null
+                    previewPost = null
                 },
             )
         }

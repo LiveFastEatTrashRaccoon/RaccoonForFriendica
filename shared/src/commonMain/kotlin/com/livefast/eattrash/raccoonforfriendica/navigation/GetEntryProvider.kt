@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.WebViewSc
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostListType
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.main.AcknowledgementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.announcements.AnnouncementsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.calendar.detail.EventDetailScreen
@@ -28,11 +28,11 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.C
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.entrydetail.EntryDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMvi
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.postdetail.PostDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListMvi
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
@@ -80,7 +80,7 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 internal val NavKey.isDetailDestination: Boolean
     get() =
-        this is Destination.EntryDetail ||
+        this is Destination.PostDetail ||
             this is Destination.CircleMembers ||
             this is Destination.Conversation ||
             this is Destination.EventDetail ||
@@ -97,8 +97,8 @@ internal fun getEntryProvider(
     profileViewModel: ProfileMvi,
     myAccountViewModel: MyAccountMvi,
     myAccountLazyListState: LazyListState,
-    favoritesViewModel: EntryListMvi? = null,
-    bookmarksViewModel: EntryListMvi? = null,
+    favoritesViewModel: PostListMvi? = null,
+    bookmarksViewModel: PostListMvi? = null,
     followedHashtagsViewModel: FollowedHashtagsMvi? = null,
     followRequestsViewModel: FollowRequestsMvi? = null,
     circlesViewModel: CirclesMvi? = null,
@@ -123,9 +123,9 @@ internal fun getEntryProvider(
             lockedSection = BottomNavigationSection.Home,
         )
     }
-    entry<Destination.EntryDetail>(metadata = ListDetailSceneStrategy.detailPane()) {
-        EntryDetailScreen(
-            id = it.entryId,
+    entry<Destination.PostDetail>(metadata = ListDetailSceneStrategy.detailPane()) {
+        PostDetailScreen(
+            id = it.postId,
             swipeNavigationEnabled = it.swipeNavigationEnabled,
             otherInstance = it.otherInstance,
         )
@@ -155,39 +155,39 @@ internal fun getEntryProvider(
         UserListScreen(
             type = it.type,
             userId = it.userId,
-            entryId = it.entryId,
+            postId = it.postId,
             infoCount = it.infoCount,
             enableExport = it.enableExport,
             otherInstance = it.otherInstance,
         )
     }
     entry<Destination.Favorites>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMvi = favoritesViewModel ?: assistedMetroViewModel<EntryListViewModel>(
-            extras = EntryListViewModel.getExtras(EntryListViewModelArgs(type = EntryListType.Favorites))
+        val model: PostListMvi = favoritesViewModel ?: assistedMetroViewModel<PostListViewModel>(
+            extras = PostListViewModel.getExtras(PostListViewModelArgs(type = PostListType.Favorites))
         )
-        EntryListScreen(
+        PostListScreen(
             model = model,
             title = LocalStrings.current.favoritesTitle,
         )
     }
     entry<Destination.Bookmarks>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMvi = bookmarksViewModel ?: assistedMetroViewModel<EntryListViewModel>(
-            extras = EntryListViewModel.getExtras(EntryListViewModelArgs(type = EntryListType.Bookmarks))
+        val model: PostListMvi = bookmarksViewModel ?: assistedMetroViewModel<PostListViewModel>(
+            extras = PostListViewModel.getExtras(PostListViewModelArgs(type = PostListType.Bookmarks))
         )
-        EntryListScreen(
+        PostListScreen(
             model = model,
             title = LocalStrings.current.bookmarksTitle,
         )
     }
-    entry<Destination.QuotingEntries>(metadata = ListDetailSceneStrategy.listPane()) {
-        val model: EntryListMvi = assistedMetroViewModel<EntryListViewModel>(
-            extras = EntryListViewModel.getExtras(
-                EntryListViewModelArgs(
-                    type = EntryListType.Quoting(entryId = it.entryId, otherInstance = it.otherInstance),
+    entry<Destination.QuotingPosts>(metadata = ListDetailSceneStrategy.listPane()) {
+        val model: PostListMvi = assistedMetroViewModel<PostListViewModel>(
+            extras = PostListViewModel.getExtras(
+                PostListViewModelArgs(
+                    type = PostListType.Quoting(postId = it.postId, otherInstance = it.otherInstance),
                 )
             )
         )
-        EntryListScreen(
+        PostListScreen(
             model = model,
             title = LocalStrings.current.extendedSocialInfoQuotes(it.count),
             otherInstance = it.otherInstance,
@@ -218,7 +218,7 @@ internal fun getEntryProvider(
     }
     entry<Destination.Thread>(metadata = ListDetailSceneStrategy.listPane()) {
         ThreadScreen(
-            entryId = it.entryId,
+            postId = it.postId,
             swipeNavigationEnabled = it.swipeNavigationEnabled,
             otherInstance = it.otherInstance,
         )
@@ -278,7 +278,7 @@ internal fun getEntryProvider(
     entry<Destination.CreateReport> {
         CreateReportScreen(
             userId = it.userId,
-            entryId = it.entryId,
+            postId = it.postId,
         )
     }
     entry<Destination.UserFeedback> {

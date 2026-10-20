@@ -113,7 +113,7 @@ class GalleryViewModel(
     }
 
     private suspend fun removeItemFromState(name: String) {
-        updateState { it.copy(items = it.items.filter { e -> e.name != name }) }
+        updateState { it.copy(items = it.items.filter { album -> album.name != name }) }
     }
 
     private suspend fun updateItemInState(name: String, block: (MediaAlbumModel) -> MediaAlbumModel) {

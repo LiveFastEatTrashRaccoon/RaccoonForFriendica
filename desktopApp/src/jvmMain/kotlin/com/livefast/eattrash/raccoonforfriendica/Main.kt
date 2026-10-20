@@ -10,8 +10,8 @@ import androidx.compose.ui.window.rememberWindowState
 import dev.zacsweers.metro.createGraph
 
 fun main() {
-    Thread.setDefaultUncaughtExceptionHandler { _, e ->
-        e.printStackTrace()
+    Thread.setDefaultUncaughtExceptionHandler { _, exc ->
+        exc.printStackTrace()
     }
 
     val rootGraph = createGraph<DesktopRootGraph>()

@@ -50,8 +50,8 @@ class DefaultInboxManagerTest {
     fun `given results when refreshUnreadCount then count is as expected`() = runTest {
         val list =
             listOf(
-                NotificationModel(id = "1", entry = null),
-                NotificationModel(id = "2", entry = null),
+                NotificationModel(id = "1", post = null),
+                NotificationModel(id = "2", post = null),
             )
         everySuspend { notificationRepository.getAll(any(), any(), any()) } returns PagedList(list)
 
@@ -72,8 +72,8 @@ class DefaultInboxManagerTest {
     fun `when refreshUnreadCount then count is as expected`() = runTest {
         val list =
             listOf(
-                NotificationModel(id = "1", entry = null),
-                NotificationModel(id = "2", entry = null),
+                NotificationModel(id = "1", post = null),
+                NotificationModel(id = "2", post = null),
             )
         everySuspend { notificationRepository.getAll(any(), any(), any()) } returns PagedList(list)
         sut.refreshUnreadCount()
@@ -89,8 +89,8 @@ class DefaultInboxManagerTest {
     fun `when decrementUnreadCount then count is as expected`() = runTest {
         val list =
             listOf(
-                NotificationModel(id = "1", entry = null),
-                NotificationModel(id = "2", entry = null),
+                NotificationModel(id = "1", post = null),
+                NotificationModel(id = "2", post = null),
             )
         everySuspend { notificationRepository.getAll(any(), any(), any()) } returns PagedList(list)
         sut.refreshUnreadCount()

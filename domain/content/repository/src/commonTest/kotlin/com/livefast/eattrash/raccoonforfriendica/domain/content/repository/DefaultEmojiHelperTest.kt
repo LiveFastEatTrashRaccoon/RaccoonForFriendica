@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import dev.mokkery.answering.returns
 import dev.mokkery.everySuspend
@@ -93,8 +93,8 @@ class DefaultEmojiHelperTest {
                 displayName = "name :test1:",
                 bio = "bio :test2:",
             )
-        val entry =
-            TimelineEntryModel(
+        val post =
+            PostModel(
                 creator = user,
                 id = "1",
                 content = "post text",
@@ -102,7 +102,7 @@ class DefaultEmojiHelperTest {
 
         val res =
             with(sut) {
-                entry.withEmojisIfMissing()
+                post.withEmojisIfMissing()
             }
 
         assertEquals(2, res.creator?.emojis?.size)
@@ -127,22 +127,22 @@ class DefaultEmojiHelperTest {
                 displayName = "name :test1:",
                 bio = "bio :test2:",
             )
-        val originalEntry =
-            TimelineEntryModel(
+        val originalPost =
+            PostModel(
                 creator = user,
                 id = "1",
                 content = "post text",
             )
-        val entry =
-            TimelineEntryModel(
+        val post =
+            PostModel(
                 id = "1",
                 content = "post text",
-                reblog = originalEntry,
+                reblog = originalPost,
             )
 
         val res =
             with(sut) {
-                entry.withEmojisIfMissing()
+                post.withEmojisIfMissing()
             }
 
         assertEquals(
@@ -171,8 +171,8 @@ class DefaultEmojiHelperTest {
                 id = "1",
                 handle = "user@$DOMAIN",
             )
-        val entry =
-            TimelineEntryModel(
+        val post =
+            PostModel(
                 id = "1",
                 content = "post text",
                 creator = user,
@@ -188,7 +188,7 @@ class DefaultEmojiHelperTest {
 
         val res =
             with(sut) {
-                entry.withEmojisIfMissing()
+                post.withEmojisIfMissing()
             }
 
         assertEquals(1, res.emojis.size)

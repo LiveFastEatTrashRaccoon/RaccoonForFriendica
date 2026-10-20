@@ -70,7 +70,7 @@ internal fun ReblogInfo(
             tint = ancillaryColor,
         )
         Text(
-            text = LocalStrings.current.timelineEntryRebloggedBy,
+            text = LocalStrings.current.rebloggedBy,
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
         )

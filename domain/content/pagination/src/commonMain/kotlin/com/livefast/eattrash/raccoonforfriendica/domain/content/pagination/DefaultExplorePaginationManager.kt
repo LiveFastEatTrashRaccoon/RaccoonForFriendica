@@ -1,11 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
@@ -35,7 +34,7 @@ class DefaultExplorePaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
-    private val entryActionHelper: EntryActionHelper,
+    private val postActionHelper: PostActionHelper,
     private val accountRepository: AccountRepository,
     private val stopWordRepository: StopWordRepository,
     notificationCenter: NotificationCenter,
@@ -59,16 +58,16 @@ class DefaultExplorePaginationManager(
                     }
                 }.launchIn(this)
             notificationCenter
-                .subscribe(TimelineEntryUpdatedEvent::class)
+                .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
                     withPaginationLock {
-                        updateHistoryItem(event.entry.id) { item ->
-                            (item as? ExploreItemModel.Entry)?.copy(entry = event.entry) ?: item
+                        updateHistoryItem(event.post.id) { item ->
+                            (item as? ExploreItemModel.Post)?.copy(post = event.post) ?: item
                         }
                     }
                 }.launchIn(this)
             notificationCenter
-                .subscribe(TimelineEntryDeletedEvent::class)
+                .subscribe(PostDeletedEvent::class)
                 .onEach { event ->
                     withPaginationLock {
                         removeHistoryItem(event.id)
@@ -115,11 +114,11 @@ class DefaultExplorePaginationManager(
 
                 is ExplorePaginationSpecification.Posts ->
                     trendingRepository
-                        .getEntries(
+                        .getPosts(
                             offset = history.size,
                             otherInstance = spec.otherInstance,
                         )?.map {
-                            ExploreItemModel.Entry(it)
+                            ExploreItemModel.Post(it)
                         }
 
                 ExplorePaginationSpecification.Suggestions ->
@@ -140,13 +139,13 @@ class DefaultExplorePaginationManager(
                     .filterNsfw(included = if (spec is ExplorePaginationSpecification.Posts) spec.includeNsfw else true)
                     .map { item ->
                         when (item) {
-                            is ExploreItemModel.Entry -> item.copy(
-                                entry = item.entry.let {
+                            is ExploreItemModel.Post -> item.copy(
+                                post = item.post.let {
                                     with(emojiHelper) { it.withEmojisIfMissing() }
                                 }.let {
                                     with(replyHelper) { it.withInReplyToIfMissing() }
                                 }.let {
-                                    with(entryActionHelper) { it.withActions() }
+                                    with(postActionHelper) { it.withActions() }
                                 },
                             )
 
@@ -170,16 +169,16 @@ class DefaultExplorePaginationManager(
     }
 
     private suspend fun List<ExploreItemModel>.determineUserRelationshipStatus(): List<ExploreItemModel> = run {
-        val userIds = mapNotNull { e -> (e as? ExploreItemModel.User)?.user?.id }
+        val userIds = mapNotNull { item -> (item as? ExploreItemModel.User)?.user?.id }
         val relationships = userRepository.getRelationships(userIds)
-        map { entry ->
-            if (entry !is ExploreItemModel.User) {
-                entry
+        map { item ->
+            if (item !is ExploreItemModel.User) {
+                item
             } else {
-                val relationship = relationships?.firstOrNull { rel -> rel.id == entry.user.id }
-                entry.copy(
+                val relationship = relationships?.firstOrNull { rel -> rel.id == item.user.id }
+                item.copy(
                     user =
-                    entry.user.copy(
+                    item.user.copy(
                         relationshipStatus = relationship?.toStatus(),
                         notificationStatus = relationship?.toNotificationStatus(),
                     ),
@@ -190,17 +189,17 @@ class DefaultExplorePaginationManager(
 
     private fun List<ExploreItemModel>.filterByStopWords(): List<ExploreItemModel> = filter { item ->
         when (item) {
-            is ExploreItemModel.Entry ->
+            is ExploreItemModel.Post ->
                 stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
                     stopWordList.none { word ->
-                        val entryTexts =
+                        val postContents =
                             listOfNotNull(
-                                item.entry.content,
-                                item.entry.title,
-                                item.entry.reblog?.content,
-                                item.entry.reblog?.title,
+                                item.post.content,
+                                item.post.title,
+                                item.post.reblog?.content,
+                                item.post.reblog?.title,
                             )
-                        entryTexts.any { it.contains(other = word, ignoreCase = true) }
+                        postContents.any { it.contains(other = word, ignoreCase = true) }
                     }
                 } ?: true
 

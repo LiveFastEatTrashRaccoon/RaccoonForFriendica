@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -95,7 +95,7 @@ class DefaultTimelineNavigationManagerTest {
     fun givenHistory_whenGetPreviousWithFirstId_thenResultIsAsExpected() = runTest {
         val postId = "1"
         every { paginationManager.history } returns
-            listOf(TimelineEntryModel(id = postId, content = ""))
+            listOf(PostModel(id = postId, content = ""))
 
         val res = sut.getPrevious(postId)
 
@@ -108,8 +108,8 @@ class DefaultTimelineNavigationManagerTest {
         val postId = "2"
         every { paginationManager.history } returns
             listOf(
-                TimelineEntryModel(id = otherPostId, content = ""),
-                TimelineEntryModel(id = postId, content = ""),
+                PostModel(id = otherPostId, content = ""),
+                PostModel(id = postId, content = ""),
             )
 
         val res = sut.getPrevious(postId)
@@ -131,7 +131,7 @@ class DefaultTimelineNavigationManagerTest {
     fun givenHistoryAndCanNotFetchMore_whenGetNextWithLastId_thenResultIsAsExpected() = runTest {
         val postId = "1"
         every { paginationManager.history } returns
-            listOf(TimelineEntryModel(id = postId, content = ""))
+            listOf(PostModel(id = postId, content = ""))
         every { paginationManager.canFetchMore } returns false
 
         val res = sut.getNext(postId)
@@ -147,10 +147,10 @@ class DefaultTimelineNavigationManagerTest {
         val postId = "1"
         val otherPostId = "2"
         every { paginationManager.history } returns
-            listOf(TimelineEntryModel(id = postId, content = ""))
+            listOf(PostModel(id = postId, content = ""))
         every { paginationManager.canFetchMore } returns true
         everySuspend { paginationManager.loadNextPage() } returns
-            listOf(TimelineEntryModel(id = otherPostId, content = ""))
+            listOf(PostModel(id = otherPostId, content = ""))
 
         val res = sut.getNext(postId)
 
@@ -168,8 +168,8 @@ class DefaultTimelineNavigationManagerTest {
         val postId = "2"
         every { paginationManager.history } returns
             listOf(
-                TimelineEntryModel(id = postId, content = ""),
-                TimelineEntryModel(id = otherPostId, content = ""),
+                PostModel(id = postId, content = ""),
+                PostModel(id = otherPostId, content = ""),
             )
 
         val res = sut.getNext(postId)

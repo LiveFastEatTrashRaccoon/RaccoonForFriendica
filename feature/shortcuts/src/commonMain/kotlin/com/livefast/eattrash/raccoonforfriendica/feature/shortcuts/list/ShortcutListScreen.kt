@@ -173,7 +173,7 @@ fun ShortcutListScreen(model: ShortcutListMvi, modifier: Modifier = Modifier) {
 
                 items(
                     items = uiState.items,
-                    key = { e -> "shortcuts-$e" },
+                    key = { item -> "shortcuts-$item" },
                 ) { item ->
                     GenericListItem(
                         modifier =

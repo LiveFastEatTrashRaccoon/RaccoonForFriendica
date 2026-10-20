@@ -1,11 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledPostRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -21,11 +21,11 @@ import kotlinx.coroutines.flow.onEach
 @ContributesBinding(scope = AppScope::class, binding = binding<UnpublishedPaginationManager>())
 @Inject
 class DefaultUnpublishedPaginationManager(
-    private val scheduledEntryRepository: ScheduledEntryRepository,
+    private val scheduledPostRepository: ScheduledPostRepository,
     private val draftRepository: DraftRepository,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : BasePaginationManager<TimelineEntryModel, UnpublishedPaginationSpecification>(
+) : BasePaginationManager<PostModel, UnpublishedPaginationSpecification>(
     idSelector = { it.id },
 ),
     UnpublishedPaginationManager {
@@ -34,17 +34,17 @@ class DefaultUnpublishedPaginationManager(
 
     init {
         notificationCenter
-            .subscribe(TimelineEntryDeletedEvent::class)
+            .subscribe(PostDeletedEvent::class)
             .onEach { event ->
                 withPaginationLock {
                     removeHistoryItem(event.id)
                 }
             }.launchIn(scope)
         notificationCenter
-            .subscribe(TimelineEntryUpdatedEvent::class)
+            .subscribe(PostUpdatedEvent::class)
             .onEach { event ->
                 withPaginationLock {
-                    updateHistoryItem(event.entry.id) { event.entry }
+                    updateHistoryItem(event.post.id) { event.post }
                 }
             }.launchIn(scope)
     }
@@ -56,13 +56,13 @@ class DefaultUnpublishedPaginationManager(
         }
     }
 
-    override suspend fun loadNextPage(): List<TimelineEntryModel> {
+    override suspend fun loadNextPage(): List<PostModel> {
         val spec = currentSpecification ?: return emptyList()
 
         val results =
             when (spec) {
                 UnpublishedPaginationSpecification.Scheduled ->
-                    scheduledEntryRepository.getAll(currentPageCursor)
+                    scheduledPostRepository.getAll(currentPageCursor)
 
                 UnpublishedPaginationSpecification.Drafts ->
                     draftRepository.getAll(page = page)

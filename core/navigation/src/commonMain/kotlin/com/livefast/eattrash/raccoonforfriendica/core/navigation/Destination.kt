@@ -14,11 +14,8 @@ sealed interface Destination : NavKey {
     data object Main : Destination
 
     @Serializable
-    data class EntryDetail(
-        val entryId: String,
-        val swipeNavigationEnabled: Boolean,
-        val otherInstance: String? = null,
-    ) : Destination
+    data class PostDetail(val postId: String, val swipeNavigationEnabled: Boolean, val otherInstance: String? = null) :
+        Destination
 
     @Serializable
     data class ForumList(val userId: String, val otherInstance: String? = null) : Destination
@@ -36,7 +33,7 @@ sealed interface Destination : NavKey {
     data class UserList(
         val type: Int,
         val userId: String? = null,
-        val entryId: String? = null,
+        val postId: String? = null,
         val enableExport: Boolean = false,
         val infoCount: Int? = null,
         val otherInstance: String? = null,
@@ -49,7 +46,7 @@ sealed interface Destination : NavKey {
     data object Bookmarks : Destination
 
     @Serializable
-    data class QuotingEntries(val entryId: String, val count: Int, val otherInstance: String? = null) : Destination
+    data class QuotingPosts(val postId: String, val count: Int, val otherInstance: String? = null) : Destination
 
     @Serializable
     data object FollowedHashtags : Destination
@@ -74,7 +71,7 @@ sealed interface Destination : NavKey {
     data object Search : Destination
 
     @Serializable
-    data class Thread(val entryId: String, val swipeNavigationEnabled: Boolean, val otherInstance: String? = null) :
+    data class Thread(val postId: String, val swipeNavigationEnabled: Boolean, val otherInstance: String? = null) :
         Destination
 
     @Serializable
@@ -121,7 +118,7 @@ sealed interface Destination : NavKey {
     data object Unpublished : Destination
 
     @Serializable
-    data class CreateReport(val userId: String, val entryId: String? = null) : Destination
+    data class CreateReport(val userId: String, val postId: String? = null) : Destination
 
     @Serializable
     data object UserFeedback : Destination
@@ -177,7 +174,7 @@ sealed interface Destination : NavKey {
             serializersModule = SerializersModule {
                 polymorphic(NavKey::class) {
                     subclass(Main::class, Main.serializer())
-                    subclass(EntryDetail::class, EntryDetail.serializer())
+                    subclass(PostDetail::class, PostDetail.serializer())
                     subclass(ForumList::class, ForumList.serializer())
                     subclass(UserDetail::class, UserDetail.serializer())
                     subclass(Settings::class, Settings.serializer())
@@ -185,7 +182,7 @@ sealed interface Destination : NavKey {
                     subclass(UserList::class, UserList.serializer())
                     subclass(Favorites::class, Favorites.serializer())
                     subclass(Bookmarks::class, Bookmarks.serializer())
-                    subclass(QuotingEntries::class, QuotingEntries.serializer())
+                    subclass(QuotingPosts::class, QuotingPosts.serializer())
                     subclass(FollowedHashtags::class, FollowedHashtags.serializer())
                     subclass(Composer::class, Composer.serializer())
                     subclass(Search::class, Search.serializer())

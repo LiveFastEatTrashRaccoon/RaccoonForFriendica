@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
@@ -31,15 +31,15 @@ class DefaultNotificationsPaginationManagerTest {
     private val emojiHelper =
         mock<EmojiHelper> {
             everySuspend { any<UserModel>().withEmojisIfMissing() } returnsArgAt 0
-            everySuspend { any<TimelineEntryModel>().withEmojisIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withEmojisIfMissing() } returnsArgAt 0
         }
     private val replyHelper =
         mock<ReplyHelper> {
-            everySuspend { any<TimelineEntryModel>().withInReplyToIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withInReplyToIfMissing() } returnsArgAt 0
         }
-    private val entryActionHelper =
-        mock<EntryActionHelper> {
-            everySuspend { any<TimelineEntryModel>().withActions() } returnsArgAt 0
+    private val postActionHelper =
+        mock<PostActionHelper> {
+            everySuspend { any<PostModel>().withActions() } returnsArgAt 0
         }
     private val sut =
         DefaultNotificationsPaginationManager(
@@ -47,7 +47,7 @@ class DefaultNotificationsPaginationManagerTest {
             userRepository = userRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
-            entryActionHelper = entryActionHelper,
+            postActionHelper = postActionHelper,
         )
 
     @Test
@@ -147,7 +147,7 @@ class DefaultNotificationsPaginationManagerTest {
                 NotificationModel(id = "1"),
                 NotificationModel(
                     id = "2",
-                    entry = TimelineEntryModel(id = "3", content = "", sensitive = true),
+                    post = PostModel(id = "3", content = "", sensitive = true),
                 ),
             )
         everySuspend {
@@ -185,7 +185,7 @@ class DefaultNotificationsPaginationManagerTest {
                 NotificationModel(id = "1"),
                 NotificationModel(
                     id = "2",
-                    entry = TimelineEntryModel(id = "3", content = "", sensitive = true),
+                    post = PostModel(id = "3", content = "", sensitive = true),
                 ),
             )
         everySuspend {

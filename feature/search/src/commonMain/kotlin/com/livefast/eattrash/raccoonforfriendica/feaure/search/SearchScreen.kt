@@ -46,12 +46,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Search
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.HashtagItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -66,9 +66,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldPost
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
@@ -101,12 +101,12 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
-    var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
-    var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmDeletePostId by remember { mutableStateOf<String?>(null) }
+    var confirmMutePost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmBlockPost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmReblogPost by remember { mutableStateOf<PostModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
-    var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var seeDetailsPost by remember { mutableStateOf<PostModel?>(null) }
 
     suspend fun goBackToTop() {
         try {
@@ -297,23 +297,23 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
 
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e ->
-                        when (e) {
-                            is ExploreItemModel.Entry -> "search-${e.entry.safeKey}"
-                            else -> "search-${e.id}"
+                    key = { _, item ->
+                        when (item) {
+                            is ExploreItemModel.Post -> "search-${item.post.safeKey}"
+                            else -> "search-${item.id}"
                         }
                     },
                 ) { idx, item ->
                     when (item) {
-                        is ExploreItemModel.Entry -> {
+                        is ExploreItemModel.Post -> {
                             TimelineItem(
-                                entry = item.entry,
+                                post = item.post,
                                 layout = uiState.layout,
                                 blurNsfw = uiState.blurNsfw,
                                 autoloadImages = uiState.autoloadImages,
                                 maxBodyLines = uiState.maxBodyLines,
-                                onClick = { entry ->
-                                    mainRouter.openEntryDetail(entry)
+                                onClick = { post ->
+                                    mainRouter.openPostDetail(post)
                                 },
                                 onOpenUrl = { url, allowOpenInternal ->
                                     if (allowOpenInternal) {
@@ -333,46 +333,46 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                     )
                                 },
                                 onReblog =
-                                { e: TimelineEntryModel ->
+                                { post: PostModel ->
                                     val timeSinceCreation =
-                                        e.created?.run {
+                                        post.created?.run {
                                             getDurationFromDateToNow(this)
                                         } ?: Duration.ZERO
                                     when {
-                                        !e.reblogged && timeSinceCreation.isOldEntry ->
-                                            confirmReblogEntry = e
+                                        !post.reblogged && timeSinceCreation.isOldPost ->
+                                            confirmReblogPost = post
 
                                         else ->
                                             model.reduce(
-                                                SearchMvi.Intent.ToggleReblog(e),
+                                                SearchMvi.Intent.ToggleReblog(post),
                                             )
                                     }
-                                }.takeIf { item.entry.original.actionPermissions.canReblog },
+                                }.takeIf { item.post.original.actionPermissions.canReblog },
                                 onBookmark =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(SearchMvi.Intent.ToggleBookmark(e))
-                                }.takeIf { item.entry.original.actionPermissions.canBookmark },
+                                { post: PostModel ->
+                                    model.reduce(SearchMvi.Intent.ToggleBookmark(post))
+                                }.takeIf { item.post.original.actionPermissions.canBookmark },
                                 onFavorite =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(SearchMvi.Intent.ToggleFavorite(e))
-                                }.takeIf { item.entry.original.actionPermissions.canFavorite },
+                                { post: PostModel ->
+                                    model.reduce(SearchMvi.Intent.ToggleFavorite(post))
+                                }.takeIf { item.post.original.actionPermissions.canFavorite },
                                 onDislike =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(SearchMvi.Intent.ToggleDislike(e))
-                                }.takeIf { item.entry.original.actionPermissions.canDislike },
+                                { post: PostModel ->
+                                    model.reduce(SearchMvi.Intent.ToggleDislike(post))
+                                }.takeIf { item.post.original.actionPermissions.canDislike },
                                 onReply =
-                                { e: TimelineEntryModel ->
+                                { post: PostModel ->
                                     mainRouter.openComposer(
-                                        inReplyTo = e,
-                                        inReplyToUser = e.creator,
+                                        inReplyTo = post,
+                                        inReplyToUser = post.creator,
                                     )
-                                }.takeIf { item.entry.original.actionPermissions.canReply },
+                                }.takeIf { item.post.original.actionPermissions.canReply },
                                 onPollVote =
                                 uiState.currentUserId?.let {
-                                    { e, choices ->
+                                    { post, choices ->
                                         model.reduce(
                                             SearchMvi.Intent.SubmitPollVote(
-                                                entry = e,
+                                                post = post,
                                                 choices = choices,
                                             ),
                                         )
@@ -381,52 +381,52 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                 onShowOriginal = {
                                     model.reduce(
                                         SearchMvi.Intent.ToggleTranslation(
-                                            item.entry.original,
+                                            post = item.post.original,
                                         ),
                                     )
                                 },
-                                onOpenQuote = { e ->
-                                    mainRouter.openEntryDetail(e)
+                                onOpenQuote = { post ->
+                                    mainRouter.openPostDetail(post)
                                 },
                                 options =
                                 buildList {
-                                    val entry = item.entry
-                                    if (entry.original.actionPermissions.canShare) {
+                                    val post = item.post
+                                    if (post.original.actionPermissions.canShare) {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (entry.original.actionPermissions.canEdit) {
+                                    if (post.original.actionPermissions.canEdit) {
                                         this += OptionId.Edit.toOption()
                                     }
-                                    if (entry.original.actionPermissions.canDelete) {
+                                    if (post.original.actionPermissions.canDelete) {
                                         this += OptionId.Delete.toOption()
                                     }
-                                    if (entry.original.actionPermissions.canTogglePin) {
-                                        if (entry.pinned) {
+                                    if (post.original.actionPermissions.canTogglePin) {
+                                        if (post.pinned) {
                                             this += OptionId.Unpin.toOption()
                                         } else {
                                             this += OptionId.Pin.toOption()
                                         }
                                     }
-                                    if (entry.original.actionPermissions.canMute) {
+                                    if (post.original.actionPermissions.canMute) {
                                         this += OptionId.Mute.toOption()
                                     }
-                                    if (entry.original.actionPermissions.canBlock) {
+                                    if (post.original.actionPermissions.canBlock) {
                                         this += OptionId.Block.toOption()
                                     }
-                                    if (entry.original.actionPermissions.canReport) {
+                                    if (post.original.actionPermissions.canReport) {
                                         this += OptionId.ReportUser.toOption()
-                                        this += OptionId.ReportEntry.toOption()
+                                        this += OptionId.ReportPost.toOption()
                                     }
-                                    if (entry.original.actionPermissions.canQuote) {
+                                    if (post.original.actionPermissions.canQuote) {
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                     this += OptionId.CopyToClipboard.toOption()
                                     val currentLang = uiState.lang.orEmpty()
                                     if (currentLang.isNotEmpty() &&
-                                        entry.lang != currentLang &&
-                                        !entry.isShowingTranslation
+                                        post.lang != currentLang &&
+                                        !post.isShowingTranslation
                                     ) {
                                         this +=
                                             Option(
@@ -444,7 +444,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                                 },
                                             )
                                     }
-                                    val nodeName = entry.nodeName
+                                    val nodeName = post.nodeName
                                     if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
                                         this +=
                                             OptionId.AddShortcut.toOption(
@@ -456,12 +456,12 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                 onSelectOption = { optionId ->
                                     when (optionId) {
                                         OptionId.Share -> {
-                                            val urlString = item.entry.url.orEmpty()
+                                            val urlString = item.post.url.orEmpty()
                                             shareHelper.share(urlString)
                                         }
 
                                         OptionId.CopyUrl -> {
-                                            val urlString = item.entry.url.orEmpty()
+                                            val urlString = item.post.url.orEmpty()
                                             scope.launch {
                                                 clipboardHelper.setText(urlString)
                                                 snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -470,50 +470,50 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
 
                                         OptionId.Edit -> {
                                             (
-                                                item.entry.reblog
-                                                    ?: item.entry
-                                                ).also { entryToEdit ->
+                                                item.post.reblog
+                                                    ?: item.post
+                                                ).also { toEdit ->
                                                 mainRouter.openComposer(
-                                                    inReplyTo = entryToEdit.inReplyTo,
-                                                    inReplyToUser = entryToEdit.inReplyTo?.creator,
-                                                    editedPostId = entryToEdit.id,
+                                                    inReplyTo = toEdit.inReplyTo,
+                                                    inReplyToUser = toEdit.inReplyTo?.creator,
+                                                    editedPostId = toEdit.id,
                                                 )
                                             }
                                         }
 
-                                        OptionId.Delete -> confirmDeleteEntryId = item.entry.id
+                                        OptionId.Delete -> confirmDeletePostId = item.post.id
 
-                                        OptionId.Mute -> confirmMuteEntry = item.entry
+                                        OptionId.Mute -> confirmMutePost = item.post
 
-                                        OptionId.Block -> confirmBlockEntry = item.entry
+                                        OptionId.Block -> confirmBlockPost = item.post
 
                                         OptionId.Pin, OptionId.Unpin ->
                                             model.reduce(
-                                                SearchMvi.Intent.TogglePin(item.entry),
+                                                SearchMvi.Intent.TogglePin(item.post),
                                             )
 
                                         OptionId.ReportUser ->
-                                            item.entry.original.creator?.also { userToReport ->
+                                            item.post.original.creator?.also { userToReport ->
                                                 mainRouter.openCreateReport(user = userToReport)
                                             }
 
-                                        OptionId.ReportEntry ->
-                                            item.entry.original.also { entryToReport ->
-                                                entryToReport.creator?.also { userToReport ->
+                                        OptionId.ReportPost ->
+                                            item.post.original.also { postToReport ->
+                                                postToReport.creator?.also { userToReport ->
                                                     mainRouter.openCreateReport(
                                                         user = userToReport,
-                                                        entry = entryToReport,
+                                                        post = postToReport,
                                                     )
                                                 }
                                             }
 
-                                        OptionId.ViewDetails -> seeDetailsEntry = item.entry.original
+                                        OptionId.ViewDetails -> seeDetailsPost = item.post.original
 
                                         OptionId.Quote -> {
-                                            item.entry.original.also { entryToShare ->
+                                            item.post.original.also { toShare ->
                                                 mainRouter.openComposer(
-                                                    quoted = entryToShare,
-                                                    urlToShare = entryToShare.url,
+                                                    quoted = toShare,
+                                                    urlToShare = toShare.url,
                                                 )
                                             }
                                         }
@@ -521,27 +521,27 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                         OptionId.CopyToClipboard ->
                                             model.reduce(
                                                 SearchMvi.Intent.CopyToClipboard(
-                                                    item.entry.original,
+                                                    item.post.original,
                                                 ),
                                             )
 
                                         OptionId.Translate ->
                                             model.reduce(
                                                 SearchMvi.Intent.ToggleTranslation(
-                                                    item.entry.original,
+                                                    item.post.original,
                                                 ),
                                             )
 
                                         OptionId.AddShortcut ->
                                             model.reduce(
                                                 SearchMvi.Intent.AddInstanceShortcut(
-                                                    item.entry.nodeName,
+                                                    item.post.nodeName,
                                                 ),
                                             )
 
                                         OptionId.OpenInBrowser ->
                                             model.reduce(
-                                                SearchMvi.Intent.OpenInBrowser(item.entry),
+                                                SearchMvi.Intent.OpenInBrowser(item.post),
                                             )
 
                                         else -> Unit
@@ -653,33 +653,33 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
         )
     }
 
-    if (confirmDeleteEntryId != null) {
+    if (confirmDeletePostId != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
             onClose = { confirm ->
-                val entryId = confirmDeleteEntryId
-                confirmDeleteEntryId = null
-                if (confirm && entryId != null) {
-                    model.reduce(SearchMvi.Intent.DeleteEntry(entryId))
+                val postId = confirmDeletePostId
+                confirmDeletePostId = null
+                if (confirm && postId != null) {
+                    model.reduce(SearchMvi.Intent.Delete(postId))
                 }
             },
         )
     }
 
-    if (confirmMuteEntry != null) {
-        (confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator)?.also { user ->
+    if (confirmMutePost != null) {
+        (confirmMutePost?.reblog?.creator ?: confirmMutePost?.creator)?.also { user ->
             ConfirmMuteUserBottomSheet(
                 userHandle = user.handle.orEmpty(),
                 onClose = { result ->
-                    val entryId = confirmMuteEntry?.id
-                    confirmMuteEntry = null
+                    val postId = confirmMutePost?.id
+                    confirmMutePost = null
                     if (result != null) {
                         val (duration, disableNotifications) = result
-                        if (entryId != null) {
+                        if (postId != null) {
                             model.reduce(
                                 SearchMvi.Intent.MuteUser(
                                     userId = user.id,
-                                    entryId = entryId,
+                                    postId = postId,
                                     duration = duration,
                                     disableNotifications = disableNotifications,
                                 ),
@@ -691,8 +691,8 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
         }
     }
 
-    if (confirmBlockEntry != null) {
-        val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+    if (confirmBlockPost != null) {
+        val creator = confirmBlockPost?.reblog?.creator ?: confirmBlockPost?.creator
         CustomConfirmDialog(
             title =
             buildString {
@@ -703,14 +703,14 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                 }
             },
             onClose = { confirm ->
-                val entryId = confirmBlockEntry?.id
+                val postId = confirmBlockPost?.id
                 val creatorId = creator?.id
-                confirmBlockEntry = null
-                if (confirm && entryId != null && creatorId != null) {
+                confirmBlockPost = null
+                if (confirm && postId != null && creatorId != null) {
                     model.reduce(
                         SearchMvi.Intent.BlockUser(
                             userId = creatorId,
-                            entryId = entryId,
+                            postId = postId,
                         ),
                     )
                 }
@@ -726,13 +726,13 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
         )
     }
 
-    if (confirmReblogEntry != null) {
+    if (confirmReblogPost != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.buttonConfirm,
             body = LocalStrings.current.messageAreYouSureReblog,
             onClose = { confirm ->
-                val e = confirmReblogEntry
-                confirmReblogEntry = null
+                val e = confirmReblogPost
+                confirmReblogPost = null
                 if (confirm && e != null) {
                     model.reduce(SearchMvi.Intent.ToggleReblog(e))
                 }
@@ -740,11 +740,11 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
         )
     }
 
-    seeDetailsEntry?.let { entry ->
-        EntryDetailDialog(
-            entry = entry,
+    seeDetailsPost?.let { post ->
+        PostDetailDialog(
+            post = post,
             onClose = {
-                seeDetailsEntry = null
+                seeDetailsPost = null
             },
         )
     }

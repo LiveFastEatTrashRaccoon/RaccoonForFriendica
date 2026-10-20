@@ -114,7 +114,7 @@ class CreateReportViewModel(
             val successful =
                 reportRepository.create(
                     userId = args.userId,
-                    entryIds = args.entryId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
+                    postIds = args.postId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
                     category = category,
                     comment = currentState.commentValue.text,
                     forward = currentState.forward,
@@ -138,7 +138,7 @@ class CreateReportViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<CreateReportViewModelArgs>()
 
-data class CreateReportViewModelArgs(val userId: String, val entryId: String)
+data class CreateReportViewModelArgs(val userId: String, val postId: String)
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(CreateReportViewModel::class)

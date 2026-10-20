@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -15,7 +15,7 @@ class DefaultTimelineNavigationManager(private val paginationManager: TimelinePa
     override val canNavigate = MutableStateFlow(false)
     private var states: MutableList<TimelinePaginationManagerState> = mutableListOf()
 
-    override val currentList: List<TimelineEntryModel>
+    override val currentList: List<PostModel>
         get() = paginationManager.history
 
     override fun push(state: TimelinePaginationManagerState) {
@@ -35,7 +35,7 @@ class DefaultTimelineNavigationManager(private val paginationManager: TimelinePa
         }
     }
 
-    override suspend fun getPrevious(postId: String): TimelineEntryModel? {
+    override suspend fun getPrevious(postId: String): PostModel? {
         val history = paginationManager.history
         val index =
             history
@@ -47,7 +47,7 @@ class DefaultTimelineNavigationManager(private val paginationManager: TimelinePa
         }
     }
 
-    override suspend fun getNext(postId: String): TimelineEntryModel? {
+    override suspend fun getNext(postId: String): PostModel? {
         val history = paginationManager.history
         val index =
             history

@@ -85,7 +85,7 @@ import raccoonforfriendica.core.l10n.generated.resources.action_remove_poll
 import raccoonforfriendica.core.l10n.generated.resources.action_remove_spoiler
 import raccoonforfriendica.core.l10n.generated.resources.action_remove_title
 import raccoonforfriendica.core.l10n.generated.resources.action_reply
-import raccoonforfriendica.core.l10n.generated.resources.action_report_entry
+import raccoonforfriendica.core.l10n.generated.resources.action_report_post
 import raccoonforfriendica.core.l10n.generated.resources.action_report_user
 import raccoonforfriendica.core.l10n.generated.resources.action_reveal_content
 import raccoonforfriendica.core.l10n.generated.resources.action_save
@@ -165,7 +165,7 @@ import raccoonforfriendica.core.l10n.generated.resources.create_report_item_cate
 import raccoonforfriendica.core.l10n.generated.resources.create_report_item_forward
 import raccoonforfriendica.core.l10n.generated.resources.create_report_item_rules
 import raccoonforfriendica.core.l10n.generated.resources.create_report_selected_rules
-import raccoonforfriendica.core.l10n.generated.resources.create_report_title_entry
+import raccoonforfriendica.core.l10n.generated.resources.create_report_title_post
 import raccoonforfriendica.core.l10n.generated.resources.create_report_title_user
 import raccoonforfriendica.core.l10n.generated.resources.creation_date
 import raccoonforfriendica.core.l10n.generated.resources.custom_option
@@ -315,8 +315,8 @@ import raccoonforfriendica.core.l10n.generated.resources.node_info_section_conta
 import raccoonforfriendica.core.l10n.generated.resources.node_info_section_rules
 import raccoonforfriendica.core.l10n.generated.resources.node_info_title
 import raccoonforfriendica.core.l10n.generated.resources.node_via
-import raccoonforfriendica.core.l10n.generated.resources.notification_type_entry
-import raccoonforfriendica.core.l10n.generated.resources.notification_type_entry_name
+import raccoonforfriendica.core.l10n.generated.resources.notification_type_post
+import raccoonforfriendica.core.l10n.generated.resources.notification_type_post_name
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_favorite
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_favorite_name
 import raccoonforfriendica.core.l10n.generated.resources.notification_type_follow
@@ -456,8 +456,8 @@ import raccoonforfriendica.core.l10n.generated.resources.time_hour_short
 import raccoonforfriendica.core.l10n.generated.resources.time_minute_short
 import raccoonforfriendica.core.l10n.generated.resources.time_second_short
 import raccoonforfriendica.core.l10n.generated.resources.timeline_all
-import raccoonforfriendica.core.l10n.generated.resources.timeline_entry_in_reply_to
-import raccoonforfriendica.core.l10n.generated.resources.timeline_entry_reblogged_by
+import raccoonforfriendica.core.l10n.generated.resources.post_in_reply_to
+import raccoonforfriendica.core.l10n.generated.resources.post_reblogged_by
 import raccoonforfriendica.core.l10n.generated.resources.timeline_layout_card
 import raccoonforfriendica.core.l10n.generated.resources.timeline_layout_compact
 import raccoonforfriendica.core.l10n.generated.resources.timeline_layout_distraction_free
@@ -644,8 +644,8 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.action_remove_title)
     override val actionReply: String
         @Composable get() = stringResource(Res.string.action_reply)
-    override val actionReportEntry: String
-        @Composable get() = stringResource(Res.string.action_report_entry)
+    override val actionReportPost: String
+        @Composable get() = stringResource(Res.string.action_report_post)
     override val actionReportUser: String
         @Composable get() = stringResource(Res.string.action_report_user)
     override val actionRevealContent: String
@@ -798,8 +798,8 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.create_report_item_forward)
     override val createReportItemRules: String
         @Composable get() = stringResource(Res.string.create_report_item_rules)
-    override val createReportTitleEntry: String
-        @Composable get() = stringResource(Res.string.create_report_title_entry)
+    override val createReportTitlePost: String
+        @Composable get() = stringResource(Res.string.create_report_title_post)
     override val createReportTitleUser: String
         @Composable get() = stringResource(Res.string.create_report_title_user)
     override val creationDate: String
@@ -1086,10 +1086,10 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.node_info_title)
     override val nodeVia: String
         @Composable get() = stringResource(Res.string.node_via)
-    override val notificationTypeEntry: String
-        @Composable get() = stringResource(Res.string.notification_type_entry)
-    override val notificationTypeEntryName: String
-        @Composable get() = stringResource(Res.string.notification_type_entry_name)
+    override val notificationTypePost: String
+        @Composable get() = stringResource(Res.string.notification_type_post)
+    override val notificationTypePostName: String
+        @Composable get() = stringResource(Res.string.notification_type_post_name)
     override val notificationTypeFavorite: String
         @Composable get() = stringResource(Res.string.notification_type_favorite)
     override val notificationTypeFavoriteName: String
@@ -1366,10 +1366,10 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.time_second_short)
     override val timelineAll: String
         @Composable get() = stringResource(Res.string.timeline_all)
-    override val timelineEntryInReplyTo: String
-        @Composable get() = stringResource(Res.string.timeline_entry_in_reply_to)
-    override val timelineEntryRebloggedBy: String
-        @Composable get() = stringResource(Res.string.timeline_entry_reblogged_by)
+    override val inReplyTo: String
+        @Composable get() = stringResource(Res.string.post_in_reply_to)
+    override val rebloggedBy: String
+        @Composable get() = stringResource(Res.string.post_reblogged_by)
     override val timelineLayoutCard: String
         @Composable get() = stringResource(Res.string.timeline_layout_card)
     override val timelineLayoutCompact: String

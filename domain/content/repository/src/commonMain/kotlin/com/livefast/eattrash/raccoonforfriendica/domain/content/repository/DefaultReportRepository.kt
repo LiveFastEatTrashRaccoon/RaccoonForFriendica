@@ -16,7 +16,7 @@ import io.ktor.http.Parameters
 class DefaultReportRepository(private val provider: ServiceProvider) : ReportRepository {
     override suspend fun create(
         userId: String,
-        entryIds: List<String>?,
+        postIds: List<String>?,
         comment: String?,
         forward: Boolean,
         category: ReportCategory,
@@ -26,8 +26,8 @@ class DefaultReportRepository(private val provider: ServiceProvider) : ReportRep
             FormDataContent(
                 Parameters.build {
                     append("account_id", userId)
-                    if (entryIds != null) {
-                        append("status_ids", entryIds.joinToString(","))
+                    if (postIds != null) {
+                        append("status_ids", postIds.joinToString(","))
                     }
                     append("forward", forward.toString())
                     append("category", category.toDto())

@@ -183,7 +183,7 @@ fun AnnouncementsScreen(
 
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e -> "announcements-${e.id}" },
+                    key = { _, item -> "announcements-${item.id}" },
                 ) { idx, announcement ->
                     AnnouncementCard(
                         announcement = announcement,

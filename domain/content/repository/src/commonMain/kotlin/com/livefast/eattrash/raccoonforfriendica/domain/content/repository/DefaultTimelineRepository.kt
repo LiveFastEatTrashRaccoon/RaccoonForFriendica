@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import dev.zacsweers.metro.AppScope
@@ -22,9 +22,9 @@ class DefaultTimelineRepository(
 ) : TimelineRepository {
     private val mutex = Mutex()
     private val otherMutex = Mutex()
-    private val cachedValues: MutableList<TimelineEntryModel> = mutableListOf()
+    private val cachedValues: MutableList<PostModel> = mutableListOf()
 
-    override suspend fun getPublic(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? {
+    override suspend fun getPublic(pageCursor: String?, refresh: Boolean): List<PostModel>? {
         if (refresh) {
             mutex.withLock {
                 cachedValues.clear()
@@ -54,7 +54,7 @@ class DefaultTimelineRepository(
         }
     }
 
-    override suspend fun getHome(pageCursor: String?, refresh: Boolean): List<TimelineEntryModel>? {
+    override suspend fun getHome(pageCursor: String?, refresh: Boolean): List<PostModel>? {
         if (refresh) {
             mutex.withLock {
                 cachedValues.clear()
@@ -84,47 +84,44 @@ class DefaultTimelineRepository(
         }
     }
 
-    override suspend fun getLocal(
-        pageCursor: String?,
-        refresh: Boolean,
-        otherInstance: String?,
-    ): List<TimelineEntryModel>? = withProvider(otherInstance) { provider ->
-        if (refresh && otherInstance.isNullOrEmpty()) {
-            mutex.withLock {
-                cachedValues.clear()
+    override suspend fun getLocal(pageCursor: String?, refresh: Boolean, otherInstance: String?): List<PostModel>? =
+        withProvider(otherInstance) { provider ->
+            if (refresh && otherInstance.isNullOrEmpty()) {
+                mutex.withLock {
+                    cachedValues.clear()
+                }
             }
-        }
-        if (pageCursor == null && cachedValues.isNotEmpty() && otherInstance.isNullOrEmpty()) {
-            cachedValues
-        } else {
-            try {
-                val response =
-                    provider.timeline.getPublic(
-                        maxId = pageCursor,
-                        limit = DEFAULT_PAGE_SIZE,
-                        local = true,
-                    )
-                response
-                    .map { it.toModelWithReply() }
-                    .also {
-                        if (pageCursor == null && otherInstance.isNullOrEmpty()) {
-                            mutex.withLock {
-                                cachedValues.addAll(it)
+            if (pageCursor == null && cachedValues.isNotEmpty() && otherInstance.isNullOrEmpty()) {
+                cachedValues
+            } else {
+                try {
+                    val response =
+                        provider.timeline.getPublic(
+                            maxId = pageCursor,
+                            limit = DEFAULT_PAGE_SIZE,
+                            local = true,
+                        )
+                    response
+                        .map { it.toModelWithReply() }
+                        .also {
+                            if (pageCursor == null && otherInstance.isNullOrEmpty()) {
+                                mutex.withLock {
+                                    cachedValues.addAll(it)
+                                }
                             }
                         }
-                    }
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                null
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    null
+                }
             }
         }
-    }
 
     override suspend fun getHashtag(
         hashtag: String,
         pageCursor: String?,
         otherInstance: String?,
-    ): PagedList<TimelineEntryModel>? = try {
+    ): PagedList<PostModel>? = try {
         val (elements, cursor) = withProvider(otherInstance) { provider ->
             provider.timeline.getHashtag(
                 hashtag = hashtag,
@@ -138,7 +135,7 @@ class DefaultTimelineRepository(
         null
     }
 
-    override suspend fun getCircle(id: String, pageCursor: String?): List<TimelineEntryModel>? = try {
+    override suspend fun getCircle(id: String, pageCursor: String?): List<PostModel>? = try {
         val response =
             provider.timeline.getList(
                 id = id,

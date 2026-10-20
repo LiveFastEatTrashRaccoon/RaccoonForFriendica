@@ -11,7 +11,7 @@
     <string name="manage_blocks_section_blocked">தடுக்கப்பட்டது</string>
     <string name="message_auth_issue_hint_1">கட்டாய புதுப்பிப்பு</string>
     <string name="message_loading_users">பயனர்களை ஏற்றுகிறது</string>
-    <string name="notification_type_entry">ஒரு இடுகையை வெளியிட்டது</string>
+    <string name="notification_type_post">ஒரு இடுகையை வெளியிட்டது</string>
     <string name="notification_type_mention_name">குறிப்புகள் மற்றும் பதில்கள்</string>
     <string name="notification_type_poll_name">வாக்கெடுப்புகள்</string>
     <string name="notification_type_reblog">உங்கள் இடுகையை மீண்டும் பகிரவும்</string>
@@ -172,7 +172,7 @@
     <string name="create_report_item_category">வகை</string>
     <string name="create_report_item_forward">முன்னோக்கி அறிக்கை</string>
     <string name="create_report_item_rules">மீறப்பட்ட விதிகள்</string>
-    <string name="create_report_title_entry">அறிக்கை இடுகையிட்டது</string>
+    <string name="create_report_title_post">அறிக்கை இடுகையிட்டது</string>
     <string name="create_report_title_user">அறிக்கை</string>
     <string name="creation_date">உருவாக்கும் தேதி</string>
     <string name="custom_option">தனிப்பயன்</string>
@@ -291,7 +291,7 @@
     <string name="node_info_section_rules">விதிகள்</string>
     <string name="node_info_title">முனை செய்தி</string>
     <string name="node_via">வழிமம்</string>
-    <string name="notification_type_entry_name">இடுகை அறிவிப்புகள்</string>
+    <string name="notification_type_post_name">இடுகை அறிவிப்புகள்</string>
     <string name="notification_type_favorite">உங்கள் இடுகையை பிடித்தவைகளில் சேர்த்தது</string>
     <string name="notification_type_favorite_name">பிடித்தவை</string>
     <string name="notification_type_follow">உங்களைப் பின்தொடரத் தொடங்கினார்</string>
@@ -362,7 +362,7 @@
     <string name="action_remove_spoiler">ச்பாய்லரை அகற்று</string>
     <string name="action_remove_title">தலைப்பை அகற்று</string>
     <string name="action_reply">பதில்</string>
-    <string name="action_report_entry">அறிக்கை இடுகை</string>
+    <string name="action_report_post">அறிக்கை இடுகை</string>
     <string name="action_report_user">பயனர் புகாரளிக்கவும்</string>
     <string name="action_reveal_content">உள்ளடக்கத்தை வெளிப்படுத்துங்கள்</string>
     <string name="action_save">சேமி</string>
@@ -396,8 +396,8 @@
     <string name="time_minute_short">மணித்துளி</string>
     <string name="time_second_short">கள்</string>
     <string name="timeline_all">அனைத்தும்</string>
-    <string name="timeline_entry_in_reply_to">இதற்குப் பதிலளிக்கையில்</string>
-    <string name="timeline_entry_reblogged_by">மீண்டும் பகிரவும்</string>
+    <string name="post_in_reply_to">இதற்குப் பதிலளிக்கையில்</string>
+    <string name="post_reblogged_by">மீண்டும் பகிரவும்</string>
     <string name="timeline_local">உள்ளக</string>
     <string name="timeline_layout_card">அட்டை</string>
     <string name="timeline_layout_compact">கச்சிதமான</string>

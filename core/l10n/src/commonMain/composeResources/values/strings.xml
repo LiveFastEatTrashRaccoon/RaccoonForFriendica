@@ -71,7 +71,7 @@
     <string name="action_remove_spoiler">Remove spoiler</string>
     <string name="action_remove_title">Remove title</string>
     <string name="action_reply">Reply</string>
-    <string name="action_report_entry">Report post</string>
+    <string name="action_report_post">Report post</string>
     <string name="action_report_user">Report user</string>
     <string name="action_reveal_content">Reveal content</string>
     <string name="action_save">Save</string>
@@ -147,7 +147,7 @@
     <string name="create_report_item_category">Category</string>
     <string name="create_report_item_forward">Forward report</string>
     <string name="create_report_item_rules">Violated rules</string>
-    <string name="create_report_title_entry">Report post by</string>
+    <string name="create_report_title_post">Report post by</string>
     <string name="create_report_title_user">Report</string>
     <string name="creation_date">creation date</string>
     <string name="custom_option">Custom</string>
@@ -276,8 +276,8 @@
     <string name="node_info_section_rules">Rules</string>
     <string name="node_info_title">Node info</string>
     <string name="node_via">via</string>
-    <string name="notification_type_entry">published a post</string>
-    <string name="notification_type_entry_name">Post notifications</string>
+    <string name="notification_type_post">published a post</string>
+    <string name="notification_type_post_name">Post notifications</string>
     <string name="notification_type_favorite">added your post to favorites</string>
     <string name="notification_type_favorite_name">Favorites</string>
     <string name="notification_type_follow">started following you</string>
@@ -415,8 +415,8 @@
     <string name="time_minute_short">min</string>
     <string name="time_second_short">s</string>
     <string name="timeline_all">All</string>
-    <string name="timeline_entry_in_reply_to">in reply to</string>
-    <string name="timeline_entry_reblogged_by">re-shared by</string>
+    <string name="post_in_reply_to">in reply to</string>
+    <string name="post_reblogged_by">re-shared by</string>
     <string name="timeline_local">Local</string>
     <string name="timeline_layout_card">Card</string>
     <string name="timeline_layout_compact">Compact</string>

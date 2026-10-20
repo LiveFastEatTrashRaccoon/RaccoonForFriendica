@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashParams
 
 data class NotificationModel(
-    val entry: TimelineEntryModel? = null,
+    val post: PostModel? = null,
     val id: String,
     val read: Boolean = true,
     val type: NotificationType = NotificationType.Unknown,
@@ -13,7 +13,7 @@ data class NotificationModel(
 val NotificationModel.urlsForPreload: List<String>
     get() =
         buildList {
-            entry
+            post
                 ?.attachments
                 ?.mapNotNull { attachment ->
                     if (attachment.type != MediaType.Image) {
@@ -24,12 +24,12 @@ val NotificationModel.urlsForPreload: List<String>
                 }?.also { urls ->
                     addAll(urls)
                 }
-            entry
+            post
                 ?.creator
                 ?.avatar
                 ?.takeUnless { it.isNotBlank() }
                 ?.also { add(it) }
-            entry
+            post
                 ?.card
                 ?.image
                 ?.takeUnless { it.isNotBlank() }
@@ -42,7 +42,7 @@ val NotificationModel.urlsForPreload: List<String>
 val NotificationModel.blurHashParamsForPreload: List<BlurHashParams>
     get() =
         buildList {
-            entry
+            post
                 ?.attachments
                 ?.mapNotNull { attachment ->
                     if (attachment.type != MediaType.Image) {

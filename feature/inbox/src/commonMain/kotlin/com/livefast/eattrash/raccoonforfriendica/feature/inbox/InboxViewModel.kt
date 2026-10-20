@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.hasPriorIdThen
@@ -22,7 +22,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.Notif
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
@@ -49,7 +49,7 @@ class InboxViewModel(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val notificationRepository: NotificationRepository,
-    private val entryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val inboxManager: InboxManager,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
@@ -107,7 +107,7 @@ class InboxViewModel(
             is InboxMvi.Intent.MarkAsRead -> handleMarkAsRead(intent.notification)
             InboxMvi.Intent.DismissAll -> handleDismissAll()
             is InboxMvi.Intent.Dismiss -> handleDismiss(intent.notification)
-            is InboxMvi.Intent.RevokeQuote -> handleRevokeQuote(intent.entry)
+            is InboxMvi.Intent.RevokeQuote -> handleRevokeQuote(intent.post)
         }
     }
 
@@ -194,8 +194,8 @@ class InboxViewModel(
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }
-        flatMap { entry ->
-            entry.blurHashParamsForPreload
+        flatMap { post ->
+            post.blurHashParamsForPreload
         }.forEach {
             blurHashRepository.preload(it)
         }
@@ -323,12 +323,12 @@ class InboxViewModel(
         }
     }
 
-    private fun handleRevokeQuote(entry: TimelineEntryModel) {
+    private fun handleRevokeQuote(post: PostModel) {
         viewModelScope.launch {
             updateState { it.copy(loading = true) }
-            val success = entryRepository.revokeQuote(
-                quotedId = entry.quoted?.id.orEmpty(),
-                quotingId = entry.id,
+            val success = postRepository.revokeQuote(
+                quotedId = post.quoted?.id.orEmpty(),
+                quotingId = post.id,
             )
             updateState { it.copy(loading = false) }
             if (success) {

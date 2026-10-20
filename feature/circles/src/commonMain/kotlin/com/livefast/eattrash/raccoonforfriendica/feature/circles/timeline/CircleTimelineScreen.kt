@@ -41,10 +41,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowI
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -56,8 +56,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWit
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldPost
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
@@ -89,12 +89,12 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
     val shareHelper = LocalUiDeps.current.shareHelper
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
-    var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
-    var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmDeletePostId by remember { mutableStateOf<String?>(null) }
+    var confirmMutePost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmBlockPost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmReblogPost by remember { mutableStateOf<PostModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
-    var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var seeDetailsPost by remember { mutableStateOf<PostModel?>(null) }
 
     suspend fun goBackToTop() {
         try {
@@ -122,8 +122,8 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                     }
 
                     is CircleTimelineMvi.Effect.OpenDetail -> {
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
+                        mainRouter.openPostDetail(
+                            post = event.post,
                             swipeNavigationEnabled = true,
                         )
                     }
@@ -214,7 +214,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                     }
                 }
 
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.posts.isEmpty()) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
@@ -226,17 +226,17 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                 }
 
                 itemsIndexed(
-                    items = uiState.entries,
-                    key = { _, e -> "timeline-${e.safeKey}" },
-                ) { idx, entry ->
+                    items = uiState.posts,
+                    key = { _, post -> "timeline-${post.safeKey}" },
+                ) { idx, post ->
                     TimelineItem(
-                        entry = entry,
+                        post = post,
                         layout = uiState.layout,
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onClick = { e ->
-                            model.reduce(CircleTimelineMvi.Intent.WillOpenDetail(e))
+                        onClick = { post ->
+                            model.reduce(CircleTimelineMvi.Intent.WillOpenDetail(post))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -256,46 +256,46 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                             )
                         },
                         onReblog =
-                        { e: TimelineEntryModel ->
+                        { post: PostModel ->
                             val timeSinceCreation =
-                                e.created?.run {
+                                post.created?.run {
                                     getDurationFromDateToNow(this)
                                 } ?: Duration.ZERO
                             when {
-                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                    confirmReblogEntry = e
+                                !post.reblogged && timeSinceCreation.isOldPost ->
+                                    confirmReblogPost = post
 
                                 else ->
                                     model.reduce(
-                                        CircleTimelineMvi.Intent.ToggleReblog(e),
+                                        CircleTimelineMvi.Intent.ToggleReblog(post),
                                     )
                             }
-                        }.takeIf { entry.original.actionPermissions.canReblog },
+                        }.takeIf { post.original.actionPermissions.canReblog },
                         onBookmark =
-                        { e: TimelineEntryModel ->
-                            model.reduce(CircleTimelineMvi.Intent.ToggleBookmark(e))
-                        }.takeIf { entry.original.actionPermissions.canBookmark },
+                        { post: PostModel ->
+                            model.reduce(CircleTimelineMvi.Intent.ToggleBookmark(post))
+                        }.takeIf { post.original.actionPermissions.canBookmark },
                         onFavorite =
-                        { e: TimelineEntryModel ->
-                            model.reduce(CircleTimelineMvi.Intent.ToggleFavorite(e))
-                        }.takeIf { entry.original.actionPermissions.canFavorite },
+                        { post: PostModel ->
+                            model.reduce(CircleTimelineMvi.Intent.ToggleFavorite(post))
+                        }.takeIf { post.original.actionPermissions.canFavorite },
                         onDislike =
-                        { e: TimelineEntryModel ->
-                            model.reduce(CircleTimelineMvi.Intent.ToggleDislike(e))
-                        }.takeIf { entry.original.actionPermissions.canDislike },
+                        { post: PostModel ->
+                            model.reduce(CircleTimelineMvi.Intent.ToggleDislike(post))
+                        }.takeIf { post.original.actionPermissions.canDislike },
                         onReply =
-                        { e: TimelineEntryModel ->
+                        { post: PostModel ->
                             mainRouter.openComposer(
-                                inReplyTo = e,
-                                inReplyToUser = e.creator,
+                                inReplyTo = post,
+                                inReplyToUser = post.creator,
                             )
-                        }.takeIf { entry.original.actionPermissions.canReply },
+                        }.takeIf { post.original.actionPermissions.canReply },
                         onPollVote =
                         uiState.currentUserId?.let {
-                            { e, choices ->
+                            { post, choices ->
                                 model.reduce(
                                     CircleTimelineMvi.Intent.SubmitPollVote(
-                                        entry = e,
+                                        post = post,
                                         choices = choices,
                                     ),
                                 )
@@ -303,50 +303,50 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         },
                         onShowOriginal = {
                             model.reduce(
-                                CircleTimelineMvi.Intent.ToggleTranslation(entry.original),
+                                CircleTimelineMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { e ->
-                            mainRouter.openEntryDetail(e)
+                        onOpenQuote = { post ->
+                            mainRouter.openPostDetail(post)
                         },
                         options =
                         buildList {
-                            if (entry.original.actionPermissions.canShare) {
+                            if (post.original.actionPermissions.canShare) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (entry.original.actionPermissions.canEdit) {
+                            if (post.original.actionPermissions.canEdit) {
                                 this += OptionId.Edit.toOption()
                             }
-                            if (entry.original.actionPermissions.canDelete) {
+                            if (post.original.actionPermissions.canDelete) {
                                 this += OptionId.Delete.toOption()
                             }
-                            if (entry.original.actionPermissions.canTogglePin) {
-                                if (entry.pinned) {
+                            if (post.original.actionPermissions.canTogglePin) {
+                                if (post.pinned) {
                                     this += OptionId.Unpin.toOption()
                                 } else {
                                     this += OptionId.Pin.toOption()
                                 }
                             }
-                            if (entry.original.actionPermissions.canMute) {
+                            if (post.original.actionPermissions.canMute) {
                                 this += OptionId.Mute.toOption()
                             }
-                            if (entry.original.actionPermissions.canBlock) {
+                            if (post.original.actionPermissions.canBlock) {
                                 this += OptionId.Block.toOption()
                             }
-                            if (entry.original.actionPermissions.canReport) {
+                            if (post.original.actionPermissions.canReport) {
                                 this += OptionId.ReportUser.toOption()
-                                this += OptionId.ReportEntry.toOption()
+                                this += OptionId.ReportPost.toOption()
                             }
-                            if (entry.original.actionPermissions.canQuote) {
+                            if (post.original.actionPermissions.canQuote) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()
                             this += OptionId.CopyToClipboard.toOption()
                             val currentLang = uiState.lang.orEmpty()
                             if (currentLang.isNotEmpty() &&
-                                entry.lang != currentLang &&
-                                !entry.isShowingTranslation
+                                post.lang != currentLang &&
+                                !post.isShowingTranslation
                             ) {
                                 this +=
                                     Option(
@@ -364,7 +364,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                                         },
                                     )
                             }
-                            val nodeName = entry.nodeName
+                            val nodeName = post.nodeName
                             if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
                                 this +=
                                     OptionId.AddShortcut.toOption(
@@ -376,12 +376,12 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         onSelectOption = { optionId ->
                             when (optionId) {
                                 OptionId.Share -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     shareHelper.share(urlString)
                                 }
 
                                 OptionId.CopyUrl -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     scope.launch {
                                         clipboardHelper.setText(urlString)
                                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -389,86 +389,86 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                                 }
 
                                 OptionId.Edit -> {
-                                    entry.original.also { entryToEdit ->
+                                    post.original.also { toEdit ->
                                         mainRouter.openComposer(
-                                            inReplyTo = entryToEdit.inReplyTo,
-                                            inReplyToUser = entryToEdit.inReplyTo?.creator,
-                                            editedPostId = entryToEdit.id,
+                                            inReplyTo = toEdit.inReplyTo,
+                                            inReplyToUser = toEdit.inReplyTo?.creator,
+                                            editedPostId = toEdit.id,
                                         )
                                     }
                                 }
 
-                                OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                OptionId.Delete -> confirmDeletePostId = post.id
 
-                                OptionId.Mute -> confirmMuteEntry = entry
+                                OptionId.Mute -> confirmMutePost = post
 
-                                OptionId.Block -> confirmBlockEntry = entry
+                                OptionId.Block -> confirmBlockPost = post
 
                                 OptionId.Pin, OptionId.Unpin ->
-                                    model.reduce(CircleTimelineMvi.Intent.TogglePin(entry))
+                                    model.reduce(CircleTimelineMvi.Intent.TogglePin(post))
 
                                 OptionId.ReportUser ->
-                                    entry.original.creator?.also { userToReport ->
-                                        mainRouter.openCreateReport(user = userToReport)
+                                    post.original.creator?.also { toReport ->
+                                        mainRouter.openCreateReport(user = toReport)
                                     }
 
-                                OptionId.ReportEntry ->
-                                    entry.original.also { entryToReport ->
-                                        entryToReport.creator?.also { userToReport ->
+                                OptionId.ReportPost ->
+                                    post.original.also { postToReport ->
+                                        postToReport.creator?.also { userToReport ->
                                             mainRouter.openCreateReport(
                                                 user = userToReport,
-                                                entry = entryToReport,
+                                                post = postToReport,
                                             )
                                         }
                                     }
 
                                 OptionId.Quote -> {
-                                    entry.original.also { entryToShare ->
+                                    post.original.also { toShare ->
                                         mainRouter.openComposer(
-                                            quoted = entryToShare,
+                                            quoted = toShare,
                                         )
                                     }
                                 }
 
-                                OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                OptionId.ViewDetails -> seeDetailsPost = post.original
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
                                         CircleTimelineMvi.Intent.CopyToClipboard(
-                                            entry.original,
+                                            post.original,
                                         ),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
                                         CircleTimelineMvi.Intent.ToggleTranslation(
-                                            entry.original,
+                                            post.original,
                                         ),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
                                         CircleTimelineMvi.Intent.AddInstanceShortcut(
-                                            entry.nodeName,
+                                            post.nodeName,
                                         ),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        CircleTimelineMvi.Intent.OpenInBrowser(entry),
+                                        CircleTimelineMvi.Intent.OpenInBrowser(post),
                                     )
 
                                 else -> Unit
                             }
                         },
                     )
-                    if (idx < uiState.entries.lastIndex) {
+                    if (idx < uiState.posts.lastIndex) {
                         TimelineDivider(layout = uiState.layout)
                     }
 
                     val canFetchMore =
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
-                    val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.posts)
                     if (isNearTheEnd && canFetchMore) {
                         model.reduce(CircleTimelineMvi.Intent.LoadNextPage)
                     }
@@ -492,33 +492,33 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
         }
     }
 
-    if (confirmDeleteEntryId != null) {
+    if (confirmDeletePostId != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
             onClose = { confirm ->
-                val entryId = confirmDeleteEntryId ?: ""
-                confirmDeleteEntryId = null
-                if (confirm && entryId.isNotEmpty()) {
-                    model.reduce(CircleTimelineMvi.Intent.DeleteEntry(entryId))
+                val postId = confirmDeletePostId ?: ""
+                confirmDeletePostId = null
+                if (confirm && postId.isNotEmpty()) {
+                    model.reduce(CircleTimelineMvi.Intent.Delete(postId))
                 }
             },
         )
     }
 
-    if (confirmMuteEntry != null) {
-        (confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator)?.also { user ->
+    if (confirmMutePost != null) {
+        (confirmMutePost?.reblog?.creator ?: confirmMutePost?.creator)?.also { user ->
             ConfirmMuteUserBottomSheet(
                 userHandle = user.handle.orEmpty(),
                 onClose = { result ->
-                    val entryId = confirmMuteEntry?.id
-                    confirmMuteEntry = null
+                    val postId = confirmMutePost?.id
+                    confirmMutePost = null
                     if (result != null) {
                         val (duration, disableNotifications) = result
-                        if (entryId != null) {
+                        if (postId != null) {
                             model.reduce(
                                 CircleTimelineMvi.Intent.MuteUser(
                                     userId = user.id,
-                                    entryId = entryId,
+                                    postId = postId,
                                     duration = duration,
                                     disableNotifications = disableNotifications,
                                 ),
@@ -530,8 +530,8 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
         }
     }
 
-    if (confirmBlockEntry != null) {
-        val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+    if (confirmBlockPost != null) {
+        val creator = confirmBlockPost?.reblog?.creator ?: confirmBlockPost?.creator
         CustomConfirmDialog(
             title =
             buildString {
@@ -542,15 +542,15 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                 }
             },
             onClose = { confirm ->
-                val entryId = confirmBlockEntry?.id
-                confirmBlockEntry = null
+                val postId = confirmBlockPost?.id
+                confirmBlockPost = null
                 val creatorId = creator?.id
-                confirmBlockEntry = null
-                if (confirm && entryId != null && creatorId != null) {
+                confirmBlockPost = null
+                if (confirm && postId != null && creatorId != null) {
                     model.reduce(
                         CircleTimelineMvi.Intent.BlockUser(
                             userId = creatorId,
-                            entryId = entryId,
+                            postId = postId,
                         ),
                     )
                 }
@@ -566,13 +566,13 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
         )
     }
 
-    if (confirmReblogEntry != null) {
+    if (confirmReblogPost != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.buttonConfirm,
             body = LocalStrings.current.messageAreYouSureReblog,
             onClose = { confirm ->
-                val e = confirmReblogEntry
-                confirmReblogEntry = null
+                val e = confirmReblogPost
+                confirmReblogPost = null
                 if (confirm && e != null) {
                     model.reduce(CircleTimelineMvi.Intent.ToggleReblog(e))
                 }
@@ -580,11 +580,11 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
         )
     }
 
-    seeDetailsEntry?.let { entry ->
-        EntryDetailDialog(
-            entry = entry,
+    seeDetailsPost?.let { post ->
+        PostDetailDialog(
+            post = post,
             onClose = {
-                seeDetailsEntry = null
+                seeDetailsPost = null
             },
         )
     }

@@ -2,12 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.NotificationCenterEvent
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
@@ -37,12 +37,12 @@ class DefaultUserPaginationManagerTest {
         mock<UserRepository> {
             everySuspend { getRelationships(any()) } returns emptyList()
         }
-    private val timelineEntryRepository = mock<TimelineEntryRepository>()
+    private val postRepository = mock<PostRepository>()
     private val circlesRepository = mock<CirclesRepository>()
     private val emojiHelper =
         mock<EmojiHelper> {
             everySuspend { any<UserModel>().withEmojisIfMissing() } returnsArgAt 0
-            everySuspend { any<TimelineEntryModel>().withEmojisIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withEmojisIfMissing() } returnsArgAt 0
         }
     private val notificationCenter =
         mock<NotificationCenter> {
@@ -56,7 +56,7 @@ class DefaultUserPaginationManagerTest {
     private val sut =
         DefaultUserPaginationManager(
             userRepository = userRepository,
-            timelineEntryRepository = timelineEntryRepository,
+            postRepository = postRepository,
             circlesRepository = circlesRepository,
             accountRepository = accountRepository,
             userRateLimitRepository = userRateLimitRepository,
@@ -201,23 +201,23 @@ class DefaultUserPaginationManagerTest {
         }
     // endregion
 
-    // region EntryUsersReblog
+    // region PostUsersReblog
     @Test
-    fun `given no results when loadNextPage with EntryUsersReblog then result is as expected`() = runTest {
+    fun `given no results when loadNextPage with PostUsersReblog then result is as expected`() = runTest {
         everySuspend {
-            timelineEntryRepository.getUsersWhoReblogged(
+            postRepository.getUsersWhoReblogged(
                 id = any(),
                 pageCursor = any(),
             )
         } returns PagedList(emptyList(), null)
 
-        sut.reset(UserPaginationSpecification.EntryUsersReblog(entryId = "1"))
+        sut.reset(UserPaginationSpecification.PostUsersReblog(postId = "1"))
         val res = sut.loadNextPage()
 
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getUsersWhoReblogged(
+            postRepository.getUsersWhoReblogged(
                 id = "1",
                 pageCursor = null,
             )
@@ -225,22 +225,22 @@ class DefaultUserPaginationManagerTest {
     }
 
     @Test
-    fun `given results when loadNextPage with EntryUsersReblog then result is as expected`() = runTest {
+    fun `given results when loadNextPage with PostUsersReblog then result is as expected`() = runTest {
         val list = listOf(UserModel(id = "2"))
         everySuspend {
-            timelineEntryRepository.getUsersWhoReblogged(
+            postRepository.getUsersWhoReblogged(
                 id = any(),
                 pageCursor = any(),
             )
         } returns PagedList(list, "2")
 
-        sut.reset(UserPaginationSpecification.EntryUsersReblog(entryId = "1"))
+        sut.reset(UserPaginationSpecification.PostUsersReblog(postId = "1"))
         val res = sut.loadNextPage()
 
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getUsersWhoReblogged(
+            postRepository.getUsersWhoReblogged(
                 id = "1",
                 pageCursor = null,
             )
@@ -248,11 +248,11 @@ class DefaultUserPaginationManagerTest {
     }
 
     @Test
-    fun `given can not fetch more results when loadNextPage with EntryUsersReblog twice then result is as expected`() =
+    fun `given can not fetch more results when loadNextPage with PostUsersReblog twice then result is as expected`() =
         runTest {
             val list = listOf(UserModel(id = "2"))
             everySuspend {
-                timelineEntryRepository.getUsersWhoReblogged(
+                postRepository.getUsersWhoReblogged(
                     id = any(),
                     pageCursor = any(),
                 )
@@ -262,18 +262,18 @@ class DefaultUserPaginationManagerTest {
                     PagedList(emptyList(), null),
                 )
 
-            sut.reset(UserPaginationSpecification.EntryUsersReblog(entryId = "1"))
+            sut.reset(UserPaginationSpecification.PostUsersReblog(postId = "1"))
             sut.loadNextPage()
             val res = sut.loadNextPage()
 
             assertEquals(list, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getUsersWhoReblogged(
+                postRepository.getUsersWhoReblogged(
                     id = "1",
                     pageCursor = null,
                 )
-                timelineEntryRepository.getUsersWhoReblogged(
+                postRepository.getUsersWhoReblogged(
                     id = "1",
                     pageCursor = "2",
                 )
@@ -281,23 +281,23 @@ class DefaultUserPaginationManagerTest {
         }
     // endregion
 
-    // region EntryUsersFavorite
+    // region PostUsersFavorite
     @Test
-    fun `given no results when loadNextPage with EntryUsersFavorite then result is as expected`() = runTest {
+    fun `given no results when loadNextPage with PostUsersFavorite then result is as expected`() = runTest {
         everySuspend {
-            timelineEntryRepository.getUsersWhoFavorited(
+            postRepository.getUsersWhoFavorited(
                 id = any(),
                 pageCursor = any(),
             )
         } returns PagedList(emptyList(), null)
 
-        sut.reset(UserPaginationSpecification.EntryUsersFavorite(entryId = "1"))
+        sut.reset(UserPaginationSpecification.PostUsersFavorite(postId = "1"))
         val res = sut.loadNextPage()
 
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getUsersWhoFavorited(
+            postRepository.getUsersWhoFavorited(
                 id = "1",
                 pageCursor = null,
             )
@@ -305,22 +305,22 @@ class DefaultUserPaginationManagerTest {
     }
 
     @Test
-    fun `given results when loadNextPage with EntryUsersFavorite then result is as expected`() = runTest {
+    fun `given results when loadNextPage with PostUsersFavorite then result is as expected`() = runTest {
         val list = listOf(UserModel(id = "2"))
         everySuspend {
-            timelineEntryRepository.getUsersWhoFavorited(
+            postRepository.getUsersWhoFavorited(
                 id = any(),
                 pageCursor = any(),
             )
         } returns PagedList(list, "2")
 
-        sut.reset(UserPaginationSpecification.EntryUsersFavorite(entryId = "1"))
+        sut.reset(UserPaginationSpecification.PostUsersFavorite(postId = "1"))
         val res = sut.loadNextPage()
 
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            timelineEntryRepository.getUsersWhoFavorited(
+            postRepository.getUsersWhoFavorited(
                 id = "1",
                 pageCursor = null,
             )
@@ -328,11 +328,11 @@ class DefaultUserPaginationManagerTest {
     }
 
     @Test
-    fun `given cannot fetch more results when loadNextPage with EntryUsersFavorite twice then result is as expected`() =
+    fun `given cannot fetch more results when loadNextPage with PostUsersFavorite twice then result is as expected`() =
         runTest {
             val list = listOf(UserModel(id = "2"))
             everySuspend {
-                timelineEntryRepository.getUsersWhoFavorited(
+                postRepository.getUsersWhoFavorited(
                     id = any(),
                     pageCursor = any(),
                 )
@@ -342,18 +342,18 @@ class DefaultUserPaginationManagerTest {
                     PagedList(emptyList(), null),
                 )
 
-            sut.reset(UserPaginationSpecification.EntryUsersFavorite(entryId = "1"))
+            sut.reset(UserPaginationSpecification.PostUsersFavorite(postId = "1"))
             sut.loadNextPage()
             val res = sut.loadNextPage()
 
             assertEquals(list, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                timelineEntryRepository.getUsersWhoFavorited(
+                postRepository.getUsersWhoFavorited(
                     id = "1",
                     pageCursor = null,
                 )
-                timelineEntryRepository.getUsersWhoFavorited(
+                postRepository.getUsersWhoFavorited(
                     id = "1",
                     pageCursor = "2",
                 )

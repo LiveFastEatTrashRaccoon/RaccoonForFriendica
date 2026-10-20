@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 /*
@@ -12,5 +12,5 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 interface EmojiHelper {
     suspend fun UserModel.withEmojisIfMissing(): UserModel
 
-    suspend fun TimelineEntryModel.withEmojisIfMissing(): TimelineEntryModel
+    suspend fun PostModel.withEmojisIfMissing(): PostModel
 }

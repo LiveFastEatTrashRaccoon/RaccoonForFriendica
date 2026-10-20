@@ -46,7 +46,7 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
                 bio = user.note,
                 created = user.createdAt,
                 displayName = user.displayName,
-                entryCount = user.statusesCount,
+                postCount = user.statusesCount,
                 fields =
                 user.fields.map {
                     FieldModel(
@@ -74,7 +74,7 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
                 bio = user.note,
                 created = user.createdAt,
                 displayName = user.displayName,
-                entryCount = user.statusesCount,
+                postCount = user.statusesCount,
                 fields =
                 user.fields.map {
                     FieldModel(

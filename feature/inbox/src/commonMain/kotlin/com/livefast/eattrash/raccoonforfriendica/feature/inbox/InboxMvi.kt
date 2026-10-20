@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.inbox
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.Mvi
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 
 interface InboxMvi : Mvi<InboxMvi.Intent, InboxMvi.State, InboxMvi.Effect> {
     sealed interface Intent {
@@ -23,7 +23,7 @@ interface InboxMvi : Mvi<InboxMvi.Intent, InboxMvi.State, InboxMvi.Effect> {
 
         data class Dismiss(val notification: NotificationModel) : Intent
 
-        data class RevokeQuote(val entry: TimelineEntryModel) : Intent
+        data class RevokeQuote(val post: PostModel) : Intent
     }
 
     data class State(

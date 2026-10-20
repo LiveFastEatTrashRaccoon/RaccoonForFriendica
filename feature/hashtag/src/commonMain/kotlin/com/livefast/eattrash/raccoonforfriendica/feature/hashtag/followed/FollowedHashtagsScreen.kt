@@ -132,7 +132,7 @@ fun FollowedHashtagsScreen(model: FollowedHashtagsMvi, modifier: Modifier = Modi
                 }
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e -> "followed-hashtag-${e.name}" },
+                    key = { _, tag -> "followed-hashtag-${tag.name}" },
                 ) { idx, tag ->
                     // use item with button
                     FollowHashtagItem(

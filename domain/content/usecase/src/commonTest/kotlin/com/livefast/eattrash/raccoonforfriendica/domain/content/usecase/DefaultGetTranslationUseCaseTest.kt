@@ -3,8 +3,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedPostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FallbackTranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TranslationRepository
@@ -44,22 +44,22 @@ class DefaultGetTranslationUseCaseTest {
     @Test
     fun `given translation Mastodon API supported when invoked then result and interactions are as expected`() =
         runTest {
-            val entry =
-                TimelineEntryModel(
+            val post =
+                PostModel(
                     id = "1",
                     content = "source text",
                 )
-            val targetEntry =
-                TimelineEntryModel(
+            val targetPost =
+                PostModel(
                     id = "1",
                     content = "target text",
                 )
             val targetLang = "it"
             val expected =
-                TranslatedTimelineEntryModel(
-                    source = entry,
+                TranslatedPostModel(
+                    source = post,
                     provider = "TAS",
-                    target = targetEntry,
+                    target = targetPost,
                 )
             every {
                 supportedFeatureRepository.features
@@ -70,13 +70,13 @@ class DefaultGetTranslationUseCaseTest {
 
             val res =
                 sut(
-                    entry = entry,
+                    post = post,
                     targetLang = targetLang,
                 )
 
             assertEquals(res, expected)
             verifySuspend {
-                defaultRepository.getTranslation(entry, targetLang)
+                defaultRepository.getTranslation(post, targetLang)
             }
             verifySuspend(VerifyMode.not) {
                 stripMarkupUseCase(any(), any())
@@ -89,22 +89,22 @@ class DefaultGetTranslationUseCaseTest {
     @Test
     fun `given translation Mastodon API unavailable when invoked then result and interactions are as expected`() =
         runTest {
-            val entry =
-                TimelineEntryModel(
+            val post =
+                PostModel(
                     id = "1",
                     content = "source text",
                 )
-            val targetEntry =
-                TimelineEntryModel(
+            val targetPost =
+                PostModel(
                     id = "1",
                     content = "target text",
                 )
             val targetLang = "it"
             val expected =
-                TranslatedTimelineEntryModel(
-                    source = entry,
+                TranslatedPostModel(
+                    source = post,
                     provider = "TAS",
-                    target = targetEntry,
+                    target = targetPost,
                 )
             every {
                 supportedFeatureRepository.features
@@ -120,7 +120,7 @@ class DefaultGetTranslationUseCaseTest {
 
             val res =
                 sut(
-                    entry = entry,
+                    post = post,
                     targetLang = targetLang,
                 )
 
@@ -130,29 +130,29 @@ class DefaultGetTranslationUseCaseTest {
                 defaultRepository.getTranslation(any(), any())
                 translationProviderConfigStore.getDefaultId()
                 translationProviderConfigStore.getById(defaultConfigId)
-                fallbackRepository.getTranslation(entry, targetLang, defaultConfig)
+                fallbackRepository.getTranslation(post, targetLang, defaultConfig)
             }
         }
 
     @Test
     fun `given translation Mastodon API not supported when invoked then result and interactions are as expected`() =
         runTest {
-            val entry =
-                TimelineEntryModel(
+            val post =
+                PostModel(
                     id = "1",
                     content = "source text",
                 )
-            val targetEntry =
-                TimelineEntryModel(
+            val targetPost =
+                PostModel(
                     id = "1",
                     content = "target text",
                 )
             val targetLang = "it"
             val expected =
-                TranslatedTimelineEntryModel(
-                    source = entry,
+                TranslatedPostModel(
+                    source = post,
                     provider = "TAS",
-                    target = targetEntry,
+                    target = targetPost,
                 )
             every { supportedFeatureRepository.features } returns MutableStateFlow(NodeFeatures())
             val defaultConfigId = "default-config-id"
@@ -165,7 +165,7 @@ class DefaultGetTranslationUseCaseTest {
 
             val res =
                 sut(
-                    entry = entry,
+                    post = post,
                     targetLang = targetLang,
                 )
 
@@ -177,7 +177,7 @@ class DefaultGetTranslationUseCaseTest {
                 stripMarkupUseCase("source text", MarkupMode.HTML)
                 translationProviderConfigStore.getDefaultId()
                 translationProviderConfigStore.getById(defaultConfigId)
-                fallbackRepository.getTranslation(entry, targetLang, defaultConfig)
+                fallbackRepository.getTranslation(post, targetLang, defaultConfig)
             }
         }
 }

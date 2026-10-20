@@ -60,7 +60,7 @@
     <string name="action_remove_spoiler">Supprimer spoiler</string>
     <string name="action_remove_title">Supprimer titre</string>
     <string name="action_reply">Répondre</string>
-    <string name="action_report_entry">Signaler poste</string>
+    <string name="action_report_post">Signaler poste</string>
     <string name="action_report_user">Signaler utilisateur</string>
     <string name="action_reveal_content">Révéler le contenu</string>
     <string name="action_save">Sauvegarder</string>
@@ -129,7 +129,7 @@
     <string name="create_report_item_category">Catégorie</string>
     <string name="create_report_item_forward">Transmettre le rapport</string>
     <string name="create_report_item_rules">Violation des règles</string>
-    <string name="create_report_title_entry">Signaler poste par</string>
+    <string name="create_report_title_post">Signaler poste par</string>
     <string name="create_report_title_user">Signaler</string>
     <string name="creation_date">date de création</string>
     <string name="custom_option">Personnalisé</string>
@@ -250,8 +250,8 @@
     <string name="node_info_section_rules">Règles</string>
     <string name="node_info_title">Informations sur l'instance</string>
     <string name="node_via">par</string>
-    <string name="notification_type_entry">a publié un message</string>
-    <string name="notification_type_entry_name">Notifications de publication</string>
+    <string name="notification_type_post">a publié un message</string>
+    <string name="notification_type_post_name">Notifications de publication</string>
     <string name="notification_type_favorite">a ajouté votre message à ses favoris</string>
     <string name="notification_type_favorite_name">Favoris</string>
     <string name="notification_type_follow">a commencé à vous suivre</string>
@@ -374,8 +374,8 @@
     <string name="time_minute_short">min</string>
     <string name="time_second_short">s</string>
     <string name="timeline_all">Tous</string>
-    <string name="timeline_entry_in_reply_to">en réponse à</string>
-    <string name="timeline_entry_reblogged_by">repartagé par</string>
+    <string name="post_in_reply_to">en réponse à</string>
+    <string name="post_reblogged_by">repartagé par</string>
     <string name="timeline_local">Local</string>
     <string name="timeline_subscriptions">Abonnements</string>
     <string name="topic_title">Sujet</string>

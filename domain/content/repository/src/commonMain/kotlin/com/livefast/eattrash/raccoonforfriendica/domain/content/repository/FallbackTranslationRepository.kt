@@ -1,13 +1,13 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedPostModel
 
 interface FallbackTranslationRepository {
     suspend fun getTranslation(
-        entry: TimelineEntryModel,
+        post: PostModel,
         targetLang: String,
         config: TranslationProviderConfig?,
-    ): TranslatedTimelineEntryModel?
+    ): TranslatedPostModel?
 }

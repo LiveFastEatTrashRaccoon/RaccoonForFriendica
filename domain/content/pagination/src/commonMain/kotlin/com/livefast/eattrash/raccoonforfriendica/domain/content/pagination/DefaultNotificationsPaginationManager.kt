@@ -20,7 +20,7 @@ class DefaultNotificationsPaginationManager(
     private val userRepository: UserRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
-    private val entryActionHelper: EntryActionHelper,
+    private val postActionHelper: PostActionHelper,
 ) : BasePaginationManager<NotificationModel, NotificationsPaginationSpecification>(
     idSelector = { it.id },
 ),
@@ -48,12 +48,12 @@ class DefaultNotificationsPaginationManager(
                     .filterNsfw(spec.includeNsfw)
                     .map { notification ->
                         notification.copy(
-                            entry = notification.entry?.let {
+                            post = notification.post?.let {
                                 with(emojiHelper) { it.withEmojisIfMissing() }
                             }?.let {
                                 with(replyHelper) { it.withInReplyToIfMissing() }
                             }?.let {
-                                with(entryActionHelper) { it.withActions() }
+                                with(postActionHelper) { it.withActions() }
                             },
                         )
                     }
@@ -78,5 +78,5 @@ class DefaultNotificationsPaginationManager(
     }
 
     private fun List<NotificationModel>.filterNsfw(included: Boolean): List<NotificationModel> =
-        filter { included || it.entry?.isNsfw != true }
+        filter { included || it.post?.isNsfw != true }
 }

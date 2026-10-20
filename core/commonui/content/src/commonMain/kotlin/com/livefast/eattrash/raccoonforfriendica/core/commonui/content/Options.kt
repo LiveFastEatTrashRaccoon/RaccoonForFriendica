@@ -28,7 +28,7 @@ sealed interface OptionId {
 
     data object ReportUser : OptionId
 
-    data object ReportEntry : OptionId
+    data object ReportPost : OptionId
 
     data object ViewDetails : OptionId
 
@@ -61,7 +61,7 @@ private fun OptionId.toReadableName(): String = when (this) {
     OptionId.Pin -> LocalStrings.current.actionPin
     OptionId.Unpin -> LocalStrings.current.actionUnpin
     OptionId.ReportUser -> LocalStrings.current.actionReportUser
-    OptionId.ReportEntry -> LocalStrings.current.actionReportEntry
+    OptionId.ReportPost -> LocalStrings.current.actionReportPost
     OptionId.ViewDetails -> LocalStrings.current.actionViewDetails
     OptionId.Quote -> LocalStrings.current.actionQuote
     OptionId.CopyToClipboard -> LocalStrings.current.actionCopyToClipboard

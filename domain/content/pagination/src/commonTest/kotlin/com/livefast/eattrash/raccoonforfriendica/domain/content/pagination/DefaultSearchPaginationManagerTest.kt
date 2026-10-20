@@ -3,9 +3,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.NotificationCenterEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
@@ -42,15 +42,15 @@ class DefaultSearchPaginationManagerTest {
     private val emojiHelper =
         mock<EmojiHelper> {
             everySuspend { any<UserModel>().withEmojisIfMissing() } returnsArgAt 0
-            everySuspend { any<TimelineEntryModel>().withEmojisIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withEmojisIfMissing() } returnsArgAt 0
         }
     private val replyHelper =
         mock<ReplyHelper> {
-            everySuspend { any<TimelineEntryModel>().withInReplyToIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withInReplyToIfMissing() } returnsArgAt 0
         }
-    private val entryActionHelper =
-        mock<EntryActionHelper> {
-            everySuspend { any<TimelineEntryModel>().withActions() } returnsArgAt 0
+    private val postActionHelper =
+        mock<PostActionHelper> {
+            everySuspend { any<PostModel>().withActions() } returnsArgAt 0
         }
     private val notificationCenter =
         mock<NotificationCenter> {
@@ -68,7 +68,7 @@ class DefaultSearchPaginationManagerTest {
             userRepository = userRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
-            entryActionHelper = entryActionHelper,
+            postActionHelper = postActionHelper,
             accountRepository = accountRepository,
             stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,
@@ -77,7 +77,7 @@ class DefaultSearchPaginationManagerTest {
 
     // region Posts
     @Test
-    fun `given no results when loadNextPage with Entries specification then result is as expected`() = runTest {
+    fun `given no results when loadNextPage with Posts specification then result is as expected`() = runTest {
         everySuspend {
             searchRepository.search(
                 query = any(),
@@ -87,7 +87,7 @@ class DefaultSearchPaginationManagerTest {
             )
         } returns emptyList()
 
-        sut.reset(SearchPaginationSpecification.Entries(query = "query", includeNsfw = false))
+        sut.reset(SearchPaginationSpecification.Posts(query = "query", includeNsfw = false))
         val res = sut.loadNextPage()
 
         assertTrue(res.isEmpty())
@@ -95,7 +95,7 @@ class DefaultSearchPaginationManagerTest {
         verifySuspend {
             searchRepository.search(
                 query = "query",
-                type = SearchResultType.Entries,
+                type = SearchResultType.Posts,
                 pageCursor = null,
                 resolve = false,
             )
@@ -103,10 +103,10 @@ class DefaultSearchPaginationManagerTest {
     }
 
     @Test
-    fun `given results when loadNextPage with Entries specification then result is as expected`() = runTest {
+    fun `given results when loadNextPage with Posts specification then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                PostModel(id = "1", content = "", creator = UserModel(id = "2")),
             )
         everySuspend {
             searchRepository.search(
@@ -115,17 +115,17 @@ class DefaultSearchPaginationManagerTest {
                 pageCursor = any(),
                 resolve = any(),
             )
-        } returns list.map { ExploreItemModel.Entry(it) }
+        } returns list.map { ExploreItemModel.Post(it) }
 
-        sut.reset(SearchPaginationSpecification.Entries(query = "query", includeNsfw = false))
+        sut.reset(SearchPaginationSpecification.Posts(query = "query", includeNsfw = false))
         val res = sut.loadNextPage()
 
-        assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+        assertEquals(list.map { ExploreItemModel.Post(it) }, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
             searchRepository.search(
                 query = "query",
-                type = SearchResultType.Entries,
+                type = SearchResultType.Posts,
                 pageCursor = null,
                 resolve = false,
             )
@@ -133,12 +133,12 @@ class DefaultSearchPaginationManagerTest {
     }
 
     @Test
-    fun `given sensitive results when loadNextPage with Entries spec and not includeNsfw then result is as expected`() =
+    fun `given sensitive results when loadNextPage with Posts spec and not includeNsfw then result is as expected`() =
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                    TimelineEntryModel(
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(
                         id = "3",
                         content = "",
                         creator = UserModel(id = "2"),
@@ -152,17 +152,17 @@ class DefaultSearchPaginationManagerTest {
                     pageCursor = any(),
                     resolve = any(),
                 )
-            } returns list.map { ExploreItemModel.Entry(it) }
+            } returns list.map { ExploreItemModel.Post(it) }
 
-            sut.reset(SearchPaginationSpecification.Entries(query = "query", includeNsfw = false))
+            sut.reset(SearchPaginationSpecification.Posts(query = "query", includeNsfw = false))
             val res = sut.loadNextPage()
 
-            assertEquals(list.subList(0, 1).map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.subList(0, 1).map { ExploreItemModel.Post(it) }, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
                 searchRepository.search(
                     query = "query",
-                    type = SearchResultType.Entries,
+                    type = SearchResultType.Posts,
                     pageCursor = null,
                     resolve = false,
                 )
@@ -170,11 +170,11 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given sensitive results when loadNextPage with Entries specification then result is as expected`() = runTest {
+    fun `given sensitive results when loadNextPage with Posts specification then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                TimelineEntryModel(
+                PostModel(id = "1", content = "", creator = UserModel(id = "2")),
+                PostModel(
                     id = "3",
                     content = "",
                     creator = UserModel(id = "2"),
@@ -188,17 +188,17 @@ class DefaultSearchPaginationManagerTest {
                 pageCursor = any(),
                 resolve = any(),
             )
-        } returns list.map { ExploreItemModel.Entry(it) }
+        } returns list.map { ExploreItemModel.Post(it) }
 
-        sut.reset(SearchPaginationSpecification.Entries(query = "query", includeNsfw = true))
+        sut.reset(SearchPaginationSpecification.Posts(query = "query", includeNsfw = true))
         val res = sut.loadNextPage()
 
-        assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+        assertEquals(list.map { ExploreItemModel.Post(it) }, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
             searchRepository.search(
                 query = "query",
-                type = SearchResultType.Entries,
+                type = SearchResultType.Posts,
                 pageCursor = null,
                 resolve = false,
             )
@@ -206,11 +206,11 @@ class DefaultSearchPaginationManagerTest {
     }
 
     @Test
-    fun `given no more results when loadNextPage twice with Entries specification then result is as expected`() =
+    fun `given no more results when loadNextPage twice with Posts specification then result is as expected`() =
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
                 )
             everySuspend {
                 searchRepository.search(
@@ -219,24 +219,24 @@ class DefaultSearchPaginationManagerTest {
                     pageCursor = any(),
                     resolve = any(),
                 )
-            } sequentiallyReturns listOf(list.map { ExploreItemModel.Entry(it) }, emptyList())
+            } sequentiallyReturns listOf(list.map { ExploreItemModel.Post(it) }, emptyList())
 
-            sut.reset(SearchPaginationSpecification.Entries(query = "query", includeNsfw = false))
+            sut.reset(SearchPaginationSpecification.Posts(query = "query", includeNsfw = false))
             sut.loadNextPage()
             val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.map { ExploreItemModel.Post(it) }, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
                 searchRepository.search(
                     query = "query",
-                    type = SearchResultType.Entries,
+                    type = SearchResultType.Posts,
                     pageCursor = null,
                     resolve = false,
                 )
                 searchRepository.search(
                     query = "query",
-                    type = SearchResultType.Entries,
+                    type = SearchResultType.Posts,
                     pageCursor = "1",
                     resolve = false,
                 )
@@ -244,13 +244,13 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given results and stopwords when loadNextPage with Entries specification then result is as expected`() =
+    fun `given results and stopwords when loadNextPage with Posts specification then result is as expected`() =
         runTest {
             val accountId = 1L
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "foo"),
-                    TimelineEntryModel(
+                    PostModel(id = "1", content = "foo"),
+                    PostModel(
                         id = "3",
                         content = "bar",
                     ),
@@ -262,19 +262,19 @@ class DefaultSearchPaginationManagerTest {
                     pageCursor = any(),
                     resolve = any(),
                 )
-            } returns list.map { ExploreItemModel.Entry(it) }
+            } returns list.map { ExploreItemModel.Post(it) }
             everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
             everySuspend { stopWordRepository.get(any()) } returns listOf("foo")
 
-            sut.reset(SearchPaginationSpecification.Entries(query = "query", includeNsfw = false))
+            sut.reset(SearchPaginationSpecification.Posts(query = "query", includeNsfw = false))
             val res = sut.loadNextPage()
 
-            assertEquals(list.subList(1, 2).map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.subList(1, 2).map { ExploreItemModel.Post(it) }, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
                 searchRepository.search(
                     query = "query",
-                    type = SearchResultType.Entries,
+                    type = SearchResultType.Posts,
                     pageCursor = null,
                     resolve = false,
                 )
@@ -284,11 +284,11 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given query is a Mastodon post URL when loadNextPage with Entries specification then resolve is true`() =
+    fun `given query is a Mastodon post URL when loadNextPage with Posts specification then resolve is true`() =
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
                 )
             everySuspend {
                 searchRepository.search(
@@ -297,18 +297,18 @@ class DefaultSearchPaginationManagerTest {
                     pageCursor = any(),
                     resolve = any(),
                 )
-            } returns list.map { ExploreItemModel.Entry(it) }
+            } returns list.map { ExploreItemModel.Post(it) }
             val query = "https://instance.example/@username/01234567890123456789"
 
-            sut.reset(SearchPaginationSpecification.Entries(query = query, includeNsfw = false))
+            sut.reset(SearchPaginationSpecification.Posts(query = query, includeNsfw = false))
             val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.map { ExploreItemModel.Post(it) }, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
                 searchRepository.search(
                     query = query,
-                    type = SearchResultType.Entries,
+                    type = SearchResultType.Posts,
                     pageCursor = null,
                     resolve = true,
                 )
@@ -316,11 +316,11 @@ class DefaultSearchPaginationManagerTest {
         }
 
     @Test
-    fun `given query is a Friendica post URL when loadNextPage with Entries specification then resolve is true`() =
+    fun `given query is a Friendica post URL when loadNextPage with Posts specification then resolve is true`() =
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
                 )
             everySuspend {
                 searchRepository.search(
@@ -329,18 +329,18 @@ class DefaultSearchPaginationManagerTest {
                     pageCursor = any(),
                     resolve = any(),
                 )
-            } returns list.map { ExploreItemModel.Entry(it) }
+            } returns list.map { ExploreItemModel.Post(it) }
             val query = "https://instance.example/display/f80d4c95-1cea4d450d7dc6c7-1b4d36da"
 
-            sut.reset(SearchPaginationSpecification.Entries(query = query, includeNsfw = false))
+            sut.reset(SearchPaginationSpecification.Posts(query = query, includeNsfw = false))
             val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.map { ExploreItemModel.Post(it) }, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
                 searchRepository.search(
                     query = query,
-                    type = SearchResultType.Entries,
+                    type = SearchResultType.Posts,
                     pageCursor = null,
                     resolve = true,
                 )

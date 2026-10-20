@@ -95,10 +95,10 @@ class FollowRequestsViewModel(
 
         updateState { it.copy(loading = true) }
         try {
-            val entries = paginationManager.loadNextPage()
+            val posts = paginationManager.loadNextPage()
             updateState {
                 it.copy(
-                    items = entries,
+                    items = posts,
                     canFetchMore = paginationManager.canFetchMore,
                     loading = false,
                     initial = false,
@@ -130,7 +130,7 @@ class FollowRequestsViewModel(
         updateState {
             it.copy(
                 items =
-                it.items.filter { e -> e.id != id },
+                it.items.filter { item -> item.id != id },
             )
         }
     }

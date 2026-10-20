@@ -6,9 +6,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
@@ -164,8 +164,8 @@ interface ComposerMvi : Mvi<ComposerMvi.Intent, ComposerMvi.State, ComposerMvi.E
         val availableEmojis: List<EmojiModel> = emptyList(),
         val hasUnsavedChanges: Boolean = false,
         val autoloadImages: Boolean = true,
-        val inReplyTo: TimelineEntryModel? = null,
-        val quoted: TimelineEntryModel? = null,
+        val inReplyTo: PostModel? = null,
+        val quoted: PostModel? = null,
         val markupMode: MarkupMode = MarkupMode.PlainText,
         val availableMarkupModes: List<MarkupMode> = emptyList(),
         val shouldShowMentionSuggestions: Boolean = false,
@@ -199,7 +199,7 @@ interface ComposerMvi : Mvi<ComposerMvi.Intent, ComposerMvi.State, ComposerMvi.E
 
         data class Failure(val message: String? = null) : Effect
 
-        data class OpenPreview(val entry: TimelineEntryModel) : Effect
+        data class OpenPreview(val post: PostModel) : Effect
 
         data class TriggerAttachmentEdit(val attachment: AttachmentModel) : Effect
 

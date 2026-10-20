@@ -6,8 +6,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationPro
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.every
@@ -37,8 +37,8 @@ class DefaultFallbackTranslationRepositoryTest {
         val config = TranslationProviderConfig(name = "DUMMY", url = "")
         val sourceLang = "en"
         val sourceContent = "source content"
-        val entry =
-            TimelineEntryModel(
+        val post =
+            PostModel(
                 id = "1",
                 content = sourceContent,
                 lang = sourceLang,
@@ -46,7 +46,7 @@ class DefaultFallbackTranslationRepositoryTest {
 
         val res =
             sut.getTranslation(
-                entry = entry,
+                post = post,
                 targetLang = targetLang,
                 config = config,
             )
@@ -66,7 +66,7 @@ class DefaultFallbackTranslationRepositoryTest {
     }
 
     @Test
-    fun `given entry with title card and spoiler when getTranslation then result and interactions are as expected`() =
+    fun `given post with title card and spoiler when getTranslation then result and interactions are as expected`() =
         runTest {
             val targetLang = "it"
             val config = TranslationProviderConfig(name = "DUMMY", url = "")
@@ -75,8 +75,8 @@ class DefaultFallbackTranslationRepositoryTest {
             val sourceSpoiler = "source spoiler"
             val sourceCardTitle = "source card title"
             val sourceCardDescription = "source card description"
-            val entry =
-                TimelineEntryModel(
+            val post =
+                PostModel(
                     id = "1",
                     content = "",
                     lang = sourceLang,
@@ -91,7 +91,7 @@ class DefaultFallbackTranslationRepositoryTest {
 
             val res =
                 sut.getTranslation(
-                    entry = entry,
+                    post = post,
                     targetLang = targetLang,
                     config = config,
                 )
@@ -139,13 +139,13 @@ class DefaultFallbackTranslationRepositoryTest {
         }
 
     @Test
-    fun `given entry with poll when getTranslation then result and interactions are as expected`() = runTest {
+    fun `given post with poll when getTranslation then result and interactions are as expected`() = runTest {
         val targetLang = "it"
         val config = TranslationProviderConfig(name = "DUMMY", url = "")
         val sourceLang = "en"
         val sourceOption = "source option 1"
-        val entry =
-            TimelineEntryModel(
+        val post =
+            PostModel(
                 id = "1",
                 content = "",
                 lang = sourceLang,
@@ -158,7 +158,7 @@ class DefaultFallbackTranslationRepositoryTest {
 
         val res =
             sut.getTranslation(
-                entry = entry,
+                post = post,
                 targetLang = targetLang,
                 config = config,
             )
@@ -185,13 +185,13 @@ class DefaultFallbackTranslationRepositoryTest {
     }
 
     @Test
-    fun `given entry with attachments when getTranslation then result and interactions are as expected`() = runTest {
+    fun `given post with attachments when getTranslation then result and interactions are as expected`() = runTest {
         val targetLang = "it"
         val config = TranslationProviderConfig(name = "DUMMY", url = "")
         val sourceLang = "en"
         val sourceDescription = "source description"
-        val entry =
-            TimelineEntryModel(
+        val post =
+            PostModel(
                 id = "1",
                 content = "",
                 lang = sourceLang,
@@ -207,7 +207,7 @@ class DefaultFallbackTranslationRepositoryTest {
 
         val res =
             sut.getTranslation(
-                entry = entry,
+                post = post,
                 targetLang = targetLang,
                 config = config,
             )

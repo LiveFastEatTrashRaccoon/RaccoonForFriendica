@@ -26,7 +26,7 @@ class DefaultReportRepositoryTest {
 
         val res = sut.create(
             userId = "userId",
-            entryIds = listOf("1", "2"),
+            postIds = listOf("1", "2"),
             comment = "comment",
             forward = true,
             category = ReportCategory.Other,
