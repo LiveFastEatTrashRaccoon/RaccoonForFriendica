@@ -4,8 +4,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.notifications.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.NotificationCenterEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
@@ -42,16 +42,16 @@ class DefaultExplorePaginationManagerTest {
     private val emojiHelper =
         mock<EmojiHelper> {
             everySuspend { any<UserModel>().withEmojisIfMissing() } returnsArgAt 0
-            everySuspend { any<TimelineEntryModel>().withEmojisIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withEmojisIfMissing() } returnsArgAt 0
         }
     private val replyHelper =
         mock<ReplyHelper> {
-            everySuspend { any<TimelineEntryModel>().withInReplyToIfMissing() } returnsArgAt 0
+            everySuspend { any<PostModel>().withInReplyToIfMissing() } returnsArgAt 0
         }
 
-    private val entryActionHelper =
-        mock<EntryActionHelper> {
-            everySuspend { any<TimelineEntryModel>().withActions() } returnsArgAt 0
+    private val postActionHelper =
+        mock<PostActionHelper> {
+            everySuspend { any<PostModel>().withActions() } returnsArgAt 0
         }
     private val notificationCenter =
         mock<NotificationCenter> {
@@ -69,7 +69,7 @@ class DefaultExplorePaginationManagerTest {
             userRepository = userRepository,
             emojiHelper = emojiHelper,
             replyHelper = replyHelper,
-            entryActionHelper = entryActionHelper,
+            postActionHelper = postActionHelper,
             accountRepository = accountRepository,
             stopWordRepository = stopWordRepository,
             notificationCenter = notificationCenter,
@@ -80,7 +80,7 @@ class DefaultExplorePaginationManagerTest {
     @Test
     fun `given no results when loadNextPage with Posts specification then result is as expected`() = runTest {
         everySuspend {
-            trendingRepository.getEntries(offset = any())
+            trendingRepository.getPosts(offset = any())
         } returns emptyList()
 
         sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
@@ -89,7 +89,7 @@ class DefaultExplorePaginationManagerTest {
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            trendingRepository.getEntries(offset = 0)
+            trendingRepository.getPosts(offset = 0)
         }
     }
 
@@ -97,19 +97,19 @@ class DefaultExplorePaginationManagerTest {
     fun `given results when loadNextPage with Posts specification then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                PostModel(id = "1", content = "", creator = UserModel(id = "2")),
             )
         everySuspend {
-            trendingRepository.getEntries(offset = any())
+            trendingRepository.getPosts(offset = any())
         } returns list
 
         sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
         val res = sut.loadNextPage()
 
-        assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+        assertEquals(list.map { ExploreItemModel.Post(it) }, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            trendingRepository.getEntries(offset = 0)
+            trendingRepository.getPosts(offset = 0)
         }
     }
 
@@ -118,8 +118,8 @@ class DefaultExplorePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                    TimelineEntryModel(
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(
                         id = "3",
                         content = "",
                         creator = UserModel(id = "2"),
@@ -127,16 +127,16 @@ class DefaultExplorePaginationManagerTest {
                     ),
                 )
             everySuspend {
-                trendingRepository.getEntries(offset = any())
+                trendingRepository.getPosts(offset = any())
             } returns list
 
             sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
             val res = sut.loadNextPage()
 
-            assertEquals(list.subList(0, 1).map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.subList(0, 1).map { ExploreItemModel.Post(it) }, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
-                trendingRepository.getEntries(offset = 0)
+                trendingRepository.getPosts(offset = 0)
             }
         }
 
@@ -144,8 +144,8 @@ class DefaultExplorePaginationManagerTest {
     fun `given sensitive results when loadNextPage with Posts specification then result is as expected`() = runTest {
         val list =
             listOf(
-                TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
-                TimelineEntryModel(
+                PostModel(id = "1", content = "", creator = UserModel(id = "2")),
+                PostModel(
                     id = "3",
                     content = "",
                     creator = UserModel(id = "2"),
@@ -153,16 +153,16 @@ class DefaultExplorePaginationManagerTest {
                 ),
             )
         everySuspend {
-            trendingRepository.getEntries(offset = any())
+            trendingRepository.getPosts(offset = any())
         } returns list
 
         sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = true))
         val res = sut.loadNextPage()
 
-        assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+        assertEquals(list.map { ExploreItemModel.Post(it) }, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            trendingRepository.getEntries(offset = 0)
+            trendingRepository.getPosts(offset = 0)
         }
     }
 
@@ -172,14 +172,14 @@ class DefaultExplorePaginationManagerTest {
             val accountId = 1L
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "foo"),
-                    TimelineEntryModel(
+                    PostModel(id = "1", content = "foo"),
+                    PostModel(
                         id = "3",
                         content = "bar",
                     ),
                 )
             everySuspend {
-                trendingRepository.getEntries(offset = any())
+                trendingRepository.getPosts(offset = any())
             } returns list
             everySuspend { accountRepository.getActive() } returns AccountModel(id = accountId)
             everySuspend { stopWordRepository.get(any()) } returns listOf("foo")
@@ -187,10 +187,10 @@ class DefaultExplorePaginationManagerTest {
             sut.reset(ExplorePaginationSpecification.Posts())
             val res = sut.loadNextPage()
 
-            assertEquals(list.subList(1, 2).map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.subList(1, 2).map { ExploreItemModel.Post(it) }, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
-                trendingRepository.getEntries(offset = 0)
+                trendingRepository.getPosts(offset = 0)
                 accountRepository.getActive()
                 stopWordRepository.get(accountId)
             }
@@ -201,21 +201,21 @@ class DefaultExplorePaginationManagerTest {
         runTest {
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
                 )
             everySuspend {
-                trendingRepository.getEntries(offset = any())
+                trendingRepository.getPosts(offset = any())
             } sequentiallyReturns listOf(list, emptyList())
 
             sut.reset(ExplorePaginationSpecification.Posts(includeNsfw = false))
             sut.loadNextPage()
             val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.map { ExploreItemModel.Post(it) }, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                trendingRepository.getEntries(offset = 0)
-                trendingRepository.getEntries(offset = 1)
+                trendingRepository.getPosts(offset = 0)
+                trendingRepository.getPosts(offset = 1)
             }
         }
 
@@ -225,19 +225,19 @@ class DefaultExplorePaginationManagerTest {
             val otherInstance = "example.com"
             val list =
                 listOf(
-                    TimelineEntryModel(id = "1", content = "", creator = UserModel(id = "2")),
+                    PostModel(id = "1", content = "", creator = UserModel(id = "2")),
                 )
             everySuspend {
-                trendingRepository.getEntries(offset = any(), otherInstance = any())
+                trendingRepository.getPosts(offset = any(), otherInstance = any())
             } returns list
 
             sut.reset(ExplorePaginationSpecification.Posts(otherInstance = otherInstance))
             val res = sut.loadNextPage()
 
-            assertEquals(list.map { ExploreItemModel.Entry(it) }, res)
+            assertEquals(list.map { ExploreItemModel.Post(it) }, res)
             assertTrue(sut.canFetchMore)
             verifySuspend {
-                trendingRepository.getEntries(offset = 0, otherInstance = otherInstance)
+                trendingRepository.getPosts(offset = 0, otherInstance = otherInstance)
             }
         }
     // endregion

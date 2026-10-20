@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import dev.mokkery.answering.returns
@@ -16,8 +16,8 @@ import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultContentPreloadManagerTest {
-    private val timelineEntryRepository =
-        mock<TimelineEntryRepository> {
+    private val postRepository =
+        mock<PostRepository> {
             everySuspend {
                 getByUser(
                     userId = any(),
@@ -52,7 +52,7 @@ class DefaultContentPreloadManagerTest {
         }
     private val sut =
         DefaultContentPreloadManager(
-            timelineEntryRepository = timelineEntryRepository,
+            postRepository = postRepository,
             trendingRepository = trendingRepository,
             notificationRepository = notificationRepository,
             dispatcher = UnconfinedTestDispatcher(),
@@ -80,7 +80,7 @@ class DefaultContentPreloadManagerTest {
                 offset = 0,
                 refresh = true,
             )
-            timelineEntryRepository.getByUser(
+            postRepository.getByUser(
                 userId = userId,
                 excludeReplies = true,
                 enableCache = true,

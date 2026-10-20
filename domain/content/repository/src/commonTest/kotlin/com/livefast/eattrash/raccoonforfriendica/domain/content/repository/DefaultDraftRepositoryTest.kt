@@ -8,7 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.DraftEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import dev.mokkery.MockMode
 import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
@@ -51,7 +51,7 @@ class DefaultDraftRepositoryTest {
         } returns listOf(DraftEntity(id = "1", text = "text"))
 
         val res = sut.getAll(page = 0)
-        assertEquals(listOf(TimelineEntryModel(id = "1", content = "text")), res)
+        assertEquals(listOf(PostModel(id = "1", content = "text")), res)
         verifySuspend {
             draftDao.getAll(offset = 0, limit = 20)
         }
@@ -66,7 +66,7 @@ class DefaultDraftRepositoryTest {
         val res = sut.getAll(page = 0)
         assertEquals(
             listOf(
-                TimelineEntryModel(
+                PostModel(
                     id = "1",
                     content = "text",
                     attachments =
@@ -100,7 +100,7 @@ class DefaultDraftRepositoryTest {
         } returns DraftEntity(id = "1", text = "text")
 
         val res = sut.getById(id = "1")
-        assertEquals(TimelineEntryModel(id = "1", content = "text"), res)
+        assertEquals(PostModel(id = "1", content = "text"), res)
         verifySuspend {
             draftDao.getBy(id = "1")
         }
@@ -117,10 +117,10 @@ class DefaultDraftRepositoryTest {
                 visibility = "public",
             )
         everySuspend { draftDao.getBy(any()) } returns entity
-        val entry = TimelineEntryModel(id = "1", content = "text")
-        val res = sut.create(entry)
+        val post = PostModel(id = "1", content = "text")
+        val res = sut.create(post)
 
-        assertEquals(entry, res)
+        assertEquals(post, res)
         verifySuspend {
             draftDao.insert(entity)
         }
@@ -138,10 +138,10 @@ class DefaultDraftRepositoryTest {
             )
         everySuspend { draftDao.getBy(any()) } returns entity
 
-        val entry = TimelineEntryModel(id = "1", content = "text")
-        val res = sut.update(entry)
+        val post = PostModel(id = "1", content = "text")
+        val res = sut.update(post)
 
-        assertEquals(entry, res)
+        assertEquals(post, res)
         verifySuspend {
             draftDao.update(entity)
         }

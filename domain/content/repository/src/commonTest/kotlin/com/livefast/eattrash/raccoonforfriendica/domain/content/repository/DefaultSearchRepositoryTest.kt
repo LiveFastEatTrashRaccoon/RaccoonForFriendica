@@ -42,13 +42,13 @@ class DefaultSearchRepositoryTest {
             )
         } throws IOException("Network error")
 
-        val result = sut.search("query", SearchResultType.Entries)
+        val result = sut.search("query", SearchResultType.Posts)
 
         assertNull(result)
     }
 
     @Test
-    fun `given entries type when search then return entries`() = runTest {
+    fun `given posts type when search then return posts`() = runTest {
         everySuspend {
             searchService.search(
                 query = any(),
@@ -61,11 +61,11 @@ class DefaultSearchRepositoryTest {
             statuses = listOf(Status(id = "1", content = "content")),
         )
 
-        val result = sut.search("query", SearchResultType.Entries)
+        val result = sut.search("query", SearchResultType.Posts)
 
         assertNotNull(result)
         assertEquals(1, result.size)
-        assertIs<ExploreItemModel.Entry>(result.first())
+        assertIs<ExploreItemModel.Post>(result.first())
         assertEquals("1", result.first().id)
         verifySuspend {
             searchService.search(

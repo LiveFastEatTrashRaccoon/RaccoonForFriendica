@@ -69,7 +69,7 @@ internal fun InReplyToInfo(
             tint = ancillaryColor,
         )
         Text(
-            text = LocalStrings.current.timelineEntryInReplyTo,
+            text = LocalStrings.current.inReplyTo,
             style = MaterialTheme.typography.bodyMedium,
             color = ancillaryColor,
         )

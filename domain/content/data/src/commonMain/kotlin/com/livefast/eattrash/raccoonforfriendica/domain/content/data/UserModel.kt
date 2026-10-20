@@ -11,7 +11,7 @@ data class UserModel(
     val discoverable: Boolean = true,
     val displayName: String? = null,
     val emojis: List<EmojiModel> = emptyList(),
-    val entryCount: Int = 0,
+    val postCount: Int = 0,
     val fields: List<FieldModel> = emptyList(),
     val followers: Int = 0,
     val following: Int = 0,

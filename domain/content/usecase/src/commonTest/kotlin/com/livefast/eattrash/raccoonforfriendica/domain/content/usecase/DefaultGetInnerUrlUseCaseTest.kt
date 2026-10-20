@@ -1,6 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.every
@@ -22,14 +22,14 @@ class DefaultGetInnerUrlUseCaseTest {
         every {
             apiConfigurationRepository.node
         } returns mock { every { value } returns FAKE_INSTANCE }
-        val entry = TimelineEntryModel(id = "0", url = FAKE_ENTRY_URL, content = "")
+        val post = PostModel(id = "0", url = FAKE_POST_URL, content = "")
 
-        val res = sut(entry)
+        val res = sut(post)
 
         assertEquals(
             buildString {
                 append("https://$FAKE_INSTANCE/search?q=")
-                append(FAKE_ENTRY_URL)
+                append(FAKE_POST_URL)
                 append("&type=statuses")
                 append("&resolve=true")
                 append("&limit=1")
@@ -43,15 +43,15 @@ class DefaultGetInnerUrlUseCaseTest {
         every {
             apiConfigurationRepository.node
         } returns mock { every { value } returns "" }
-        val entry = TimelineEntryModel(id = "0", url = FAKE_ENTRY_URL, content = "")
+        val post = PostModel(id = "0", url = FAKE_POST_URL, content = "")
 
-        val res = sut(entry)
+        val res = sut(post)
 
         assertNull(res)
     }
 
     companion object {
         private const val FAKE_INSTANCE = "example.com"
-        private const val FAKE_ENTRY_URL = "https://other.com/@someone/124072605638855217"
+        private const val FAKE_POST_URL = "https://other.com/@someone/124072605638855217"
     }
 }

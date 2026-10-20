@@ -232,10 +232,10 @@ fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAc
 
                 items(
                     items = uiState.items,
-                    key = { e ->
-                        when (e) {
-                            is CircleListItem.Circle -> "circles-${e.circle.id}"
-                            is CircleListItem.Header -> "circles-${e.type}"
+                    key = { item ->
+                        when (item) {
+                            is CircleListItem.Circle -> "circles-${item.circle.id}"
+                            is CircleListItem.Header -> "circles-${item.type}"
                         }
                     },
                 ) { item ->

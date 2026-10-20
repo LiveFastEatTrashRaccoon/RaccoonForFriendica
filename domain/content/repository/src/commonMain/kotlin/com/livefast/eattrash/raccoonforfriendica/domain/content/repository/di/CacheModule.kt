@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository.di
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.DefaultLocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
@@ -21,7 +21,7 @@ class CacheModule {
 
     @Provides
     @SingleIn(AppScope::class)
-    fun timelineEntryCache(): LocalItemCache<TimelineEntryModel> = DefaultLocalItemCache()
+    fun postCache(): LocalItemCache<PostModel> = DefaultLocalItemCache()
 
     @Provides
     @SingleIn(AppScope::class)

@@ -55,7 +55,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
     val uiState by model.uiState.collectAsState()
@@ -67,7 +66,7 @@ fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
+    var confirmDeletePostId by remember { mutableStateOf<String?>(null) }
 
     suspend fun goBackToTop() {
         try {
@@ -184,7 +183,7 @@ fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
                     }
                 }
 
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.posts.isEmpty()) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
@@ -196,11 +195,11 @@ fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
                 }
 
                 itemsIndexed(
-                    items = uiState.entries,
-                    key = { _, e -> "unpublished-${e.safeKey}" },
-                ) { idx, entry ->
+                    items = uiState.posts,
+                    key = { _, post -> "unpublished-${post.safeKey}" },
+                ) { idx, post ->
                     TimelineItem(
-                        entry = entry,
+                        post = post,
                         layout = uiState.layout,
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
@@ -215,17 +214,17 @@ fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
                             when (optionId) {
                                 OptionId.Edit ->
                                     mainRouter.openEditUnpublished(
-                                        entry = entry,
+                                        post = post,
                                         type = uiState.section,
                                     )
 
-                                OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                OptionId.Delete -> confirmDeletePostId = post.id
 
                                 else -> Unit
                             }
                         },
                     )
-                    if (idx < uiState.entries.lastIndex) {
+                    if (idx < uiState.posts.lastIndex) {
                         TimelineDivider(layout = uiState.layout)
                     }
                 }
@@ -233,14 +232,14 @@ fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
         }
     }
 
-    if (confirmDeleteEntryId != null) {
+    if (confirmDeletePostId != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
             onClose = { confirm ->
-                val entryId = confirmDeleteEntryId
-                confirmDeleteEntryId = null
-                if (confirm && entryId != null) {
-                    model.reduce(UnpublishedMvi.Intent.DeleteEntry(entryId))
+                val postId = confirmDeletePostId
+                confirmDeletePostId = null
+                if (confirm && postId != null) {
+                    model.reduce(UnpublishedMvi.Intent.Delete(postId))
                 }
             },
         )

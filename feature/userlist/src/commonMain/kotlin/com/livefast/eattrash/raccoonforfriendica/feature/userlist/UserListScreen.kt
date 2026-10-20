@@ -71,7 +71,7 @@ fun UserListScreen(
     type: Int,
     modifier: Modifier = Modifier,
     userId: String? = null,
-    entryId: String? = null,
+    postId: String? = null,
     infoCount: Int? = null,
     enableExport: Boolean = false,
     otherInstance: String? = null,
@@ -81,7 +81,7 @@ fun UserListScreen(
             UserListViewModelArgs(
                 type = type.toUserListType(),
                 userId = userId.orEmpty(),
-                entryId = entryId.orEmpty(),
+                postId = postId.orEmpty(),
             ),
         ),
     )
@@ -322,7 +322,7 @@ fun UserListScreen(
 
                 itemsIndexed(
                     items = uiState.users,
-                    key = { _, e -> "user-list-${e.id}" },
+                    key = { _, user -> "user-list-${user.id}" },
                 ) { idx, user ->
                     UserItem(
                         user = user.let { u ->

@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.timeline
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.Mvi
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 
 interface ShortcutTimelineMvi : Mvi<ShortcutTimelineMvi.Intent, ShortcutTimelineMvi.State, ShortcutTimelineMvi.Effect> {
@@ -11,23 +11,23 @@ interface ShortcutTimelineMvi : Mvi<ShortcutTimelineMvi.Intent, ShortcutTimeline
 
         data object LoadNextPage : Intent
 
-        data class ToggleReblog(val entry: TimelineEntryModel) : Intent
+        data class ToggleReblog(val post: PostModel) : Intent
 
-        data class ToggleFavorite(val entry: TimelineEntryModel) : Intent
+        data class ToggleFavorite(val post: PostModel) : Intent
 
-        data class ToggleDislike(val entry: TimelineEntryModel) : Intent
+        data class ToggleDislike(val post: PostModel) : Intent
 
-        data class ToggleBookmark(val entry: TimelineEntryModel) : Intent
+        data class ToggleBookmark(val post: PostModel) : Intent
 
-        data class SubmitPollVote(val entry: TimelineEntryModel, val choices: List<Int>) : Intent
+        data class SubmitPollVote(val post: PostModel, val choices: List<Int>) : Intent
 
-        data class CopyToClipboard(val entry: TimelineEntryModel) : Intent
+        data class CopyToClipboard(val post: PostModel) : Intent
 
-        data class ToggleTranslation(val entry: TimelineEntryModel) : Intent
+        data class ToggleTranslation(val post: PostModel) : Intent
 
-        data class WillOpenDetail(val entry: TimelineEntryModel) : Intent
+        data class WillOpenDetail(val post: PostModel) : Intent
 
-        data class OpenInBrowser(val entry: TimelineEntryModel) : Intent
+        data class OpenInBrowser(val post: PostModel) : Intent
     }
 
     data class State(
@@ -38,7 +38,7 @@ interface ShortcutTimelineMvi : Mvi<ShortcutTimelineMvi.Intent, ShortcutTimeline
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val availableTimelineTypes: List<TimelineType> = emptyList(),
-        val entries: List<TimelineEntryModel> = emptyList(),
+        val posts: List<PostModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val maxBodyLines: Int = Int.MAX_VALUE,
         val autoloadImages: Boolean = true,
@@ -56,7 +56,7 @@ interface ShortcutTimelineMvi : Mvi<ShortcutTimelineMvi.Intent, ShortcutTimeline
 
         data class TriggerCopy(val text: String) : Effect
 
-        data class OpenDetail(val entry: TimelineEntryModel) : Effect
+        data class OpenDetail(val post: PostModel) : Effect
 
         data class OpenUrl(val url: String) : Effect
     }

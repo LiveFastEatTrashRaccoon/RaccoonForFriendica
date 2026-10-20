@@ -6,8 +6,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.EntryProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.PostProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
 import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
@@ -42,8 +42,8 @@ class DefaultCustomUriHandlerTest {
         mock<UserProcessor> {
             everySuspend { process(any()) } returns false
         }
-    private val entryProcessor =
-        mock<EntryProcessor> {
+    private val postProcessor =
+        mock<PostProcessor> {
             everySuspend { process(any()) } returns false
         }
 
@@ -56,7 +56,7 @@ class DefaultCustomUriHandlerTest {
             mainRouter = mainRouter,
             hashtagProcessor = hashtagProcessor,
             userProcessor = userProcessor,
-            entryProcessor = entryProcessor,
+            postProcessor = postProcessor,
             dispatcher = UnconfinedTestDispatcher(),
         )
 
@@ -147,13 +147,13 @@ class DefaultCustomUriHandlerTest {
 
     @Test
     fun `given post display URL when openUri then interactions are as expected`() {
-        everySuspend { entryProcessor.process(any()) } returns true
+        everySuspend { postProcessor.process(any()) } returns true
         val url = "https://$CURRENT_INSTANCE/display/objectId"
 
         sut.openUri(url)
 
         verifySuspend {
-            entryProcessor.process(url)
+            postProcessor.process(url)
         }
         verify(mode = VerifyMode.not) {
             defaultHandler.openUri(url)
@@ -169,7 +169,7 @@ class DefaultCustomUriHandlerTest {
         verifySuspend(mode = VerifyMode.not) {
             hashtagProcessor.process(any())
             userProcessor.process(any())
-            entryProcessor.process(any())
+            postProcessor.process(any())
         }
         verify {
             defaultHandler.openUri(url)
@@ -185,7 +185,7 @@ class DefaultCustomUriHandlerTest {
         verifySuspend {
             hashtagProcessor.process(any())
             userProcessor.process(any())
-            entryProcessor.process(any())
+            postProcessor.process(any())
         }
         verify(mode = VerifyMode.not) {
             defaultHandler.openUri(url)

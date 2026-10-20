@@ -1,7 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TrendingRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultContentPreloadManager(
-    private val timelineEntryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val trendingRepository: TrendingRepository,
     private val notificationRepository: NotificationRepository,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -29,7 +29,7 @@ class DefaultContentPreloadManager(
 
     override suspend fun preload(userRemoteId: String?) {
         // actually, it is not so important to wait for completion
-        // timelineEntryRepository.getByUser may take a long time
+        // PostRepository#getByUser may take a long time
         scope.launch {
             val tasks =
                 buildList {
@@ -44,7 +44,7 @@ class DefaultContentPreloadManager(
                     if (userRemoteId != null) {
                         this +=
                             async {
-                                timelineEntryRepository.getByUser(
+                                postRepository.getByUser(
                                     userId = userRemoteId,
                                     refresh = true,
                                     enableCache = true,

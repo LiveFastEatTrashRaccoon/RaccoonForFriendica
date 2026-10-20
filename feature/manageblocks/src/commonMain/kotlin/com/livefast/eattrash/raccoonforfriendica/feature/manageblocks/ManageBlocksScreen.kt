@@ -279,7 +279,7 @@ fun ManageBlocksScreen(
 
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e -> "manage-blocks-${e.safeKey}" },
+                    key = { _, item -> "manage-blocks-${item.safeKey}" },
                 ) { idx, item ->
                     when (item) {
                         is ManageBlocksItem.StopWord ->

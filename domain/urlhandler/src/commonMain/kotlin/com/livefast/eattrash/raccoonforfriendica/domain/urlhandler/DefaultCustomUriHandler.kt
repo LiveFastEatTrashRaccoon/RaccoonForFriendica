@@ -5,8 +5,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.utils.url.CustomTabsHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.UrlOpeningMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.EntryProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.HashtagProcessor
+import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.PostProcessor
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.processor.UserProcessor
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -29,7 +29,7 @@ class DefaultCustomUriHandler(
     private val mainRouter: MainRouter,
     private val hashtagProcessor: HashtagProcessor,
     private val userProcessor: UserProcessor,
-    private val entryProcessor: EntryProcessor,
+    private val postProcessor: PostProcessor,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : CustomUriHandler {
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
@@ -52,7 +52,7 @@ class DefaultCustomUriHandler(
                 if (allowOpenInternal) {
                     this += hashtagProcessor
                     this += userProcessor
-                    this += entryProcessor
+                    this += postProcessor
                 }
             }
         scope.launch {

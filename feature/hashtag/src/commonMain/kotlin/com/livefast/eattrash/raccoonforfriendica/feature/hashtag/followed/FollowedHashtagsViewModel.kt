@@ -111,10 +111,10 @@ class FollowedHashtagsViewModel(
 
         updateState { it.copy(loading = true) }
         try {
-            val entries = paginationManager.loadNextPage()
+            val posts = paginationManager.loadNextPage()
             updateState {
                 it.copy(
-                    items = entries,
+                    items = posts,
                     canFetchMore = paginationManager.canFetchMore,
                     loading = false,
                     initial = false,

@@ -10,8 +10,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostCreatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.epochMillis
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromNowToDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toIso8601Timestamp
@@ -24,9 +24,9 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.compareTo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
@@ -36,10 +36,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Emoji
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MediaRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledPostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.AttachmentCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
@@ -69,14 +69,14 @@ import kotlin.time.Duration.Companion.milliseconds
 class ComposerViewModel(
     @Assisted private val args: ComposerViewModelArgs,
     private val identityRepository: IdentityRepository,
-    private val timelineEntryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val photoRepository: PhotoRepository,
     private val circlesRepository: CirclesRepository,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val mediaRepository: MediaRepository,
-    private val entryCache: LocalItemCache<TimelineEntryModel>,
-    private val scheduledEntryRepository: ScheduledEntryRepository,
+    private val postCache: LocalItemCache<PostModel>,
+    private val scheduledPostRepository: ScheduledPostRepository,
     private val draftRepository: DraftRepository,
     private val settingsRepository: SettingsRepository,
     private val emojiRepository: EmojiRepository,
@@ -152,7 +152,7 @@ class ComposerViewModel(
                         )
                     }
                 }.launchIn(this)
-            val parent = args.inReplyToId?.let { e -> entryCache.get(e) }
+            val parent = args.inReplyToId?.let { id -> postCache.get(id) }
             val initialVisibility =
                 when {
                     editedPostId != null -> uiState.value.visibility
@@ -167,7 +167,7 @@ class ComposerViewModel(
 
                     else -> currentSettings?.defaultPostVisibility?.toVisibility()
                 } ?: Visibility.Unlisted
-            val quoted = args.quotedId?.let { e -> entryCache.get(e) ?: TimelineEntryModel(id = e, content = "") }
+            val quoted = args.quotedId?.let { id -> postCache.get(id) ?: PostModel(id = id, content = "") }
             val initialQuotePolicy = userRepository.getCurrent()?.quotePolicy ?: QuotePolicy.Public
 
             updateState {
@@ -191,8 +191,8 @@ class ComposerViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        uploadJobs.forEach { entry ->
-            entry.value.cancel()
+        uploadJobs.forEach { job ->
+            job.value.cancel()
         }
         uploadJobs.clear()
     }
@@ -298,14 +298,14 @@ class ComposerViewModel(
     private fun handleLoadScheduled(id: String) {
         viewModelScope.launch {
             editedPostId = id
-            val entry = entryCache.get(id)
-            if (entry != null) {
-                entry.scheduled?.also { scheduleDate ->
+            val post = postCache.get(id)
+            if (post != null) {
+                post.scheduled?.also { scheduleDate ->
                     updateState {
                         it.copy(publicationType = PublicationType.Scheduled(scheduleDate))
                     }
                 }
-                loadEntry(entry)
+                loadPost(post)
             }
         }
     }
@@ -313,12 +313,12 @@ class ComposerViewModel(
     private fun handleLoadDraft(id: String) {
         viewModelScope.launch {
             draftId = id
-            val entry = entryCache.get(id)
-            if (entry != null) {
+            val post = postCache.get(id)
+            if (post != null) {
                 updateState {
                     it.copy(publicationType = PublicationType.Draft)
                 }
-                loadEntry(entry)
+                loadPost(post)
             }
         }
     }
@@ -410,7 +410,7 @@ class ComposerViewModel(
                     }
                     val mentions =
                         args.inReplyToId
-                            ?.let { entryCache.get(it) }
+                            ?.let { postCache.get(it) }
                             ?.mentions
                             .orEmpty()
                             .mapNotNull { it.handle }
@@ -1397,17 +1397,17 @@ class ComposerViewModel(
         viewModelScope.launch {
             editedPostId = id
             updateState { it.copy(loading = true) }
-            val entry = timelineEntryRepository.getById(id)
-            if (entry != null) {
-                loadEntry(entry)
+            val post = postRepository.getById(id)
+            if (post != null) {
+                loadPost(post)
             }
         }
     }
 
-    private suspend fun loadEntry(entry: TimelineEntryModel) {
+    private suspend fun loadPost(post: PostModel) {
         // workaround to make sure Friendica-specific circle visibility is preserved
         val visibility =
-            entry.visibility.let { visibility ->
+            post.visibility.let { visibility ->
                 when (visibility) {
                     is Visibility.Circle ->
                         visibility.id
@@ -1423,7 +1423,7 @@ class ComposerViewModel(
             } ?: Visibility.Public
         // workaround to make sure IDs are preserved
         val attachments =
-            entry.attachments.map { attachment ->
+            post.attachments.map { attachment ->
                 if (attachment.mediaId.isNotEmpty()) {
                     attachment
                 } else {
@@ -1436,25 +1436,25 @@ class ComposerViewModel(
             when (markupMode) {
                 // attempt to reconstruct the original BBCode syntax
                 MarkupMode.BBCode -> {
-                    val bbCode = bbCodeConverter.fromHtml(entry.content)
-                    entry.copy(content = bbCode)
+                    val bbCode = bbCodeConverter.fromHtml(post.content)
+                    post.copy(content = bbCode)
                 }
 
                 // make the server strip off all the HTML
-                else -> timelineEntryRepository.getSource(entry.id) ?: entry
+                else -> postRepository.getSource(post.id) ?: post
             }
 
         updateState {
             it.copy(
                 bodyValue = TextFieldValue(reference.content),
-                sensitive = entry.sensitive,
+                sensitive = post.sensitive,
                 attachments = attachments,
                 visibility = visibility,
                 spoilerValue = TextFieldValue(reference.spoiler.orEmpty()),
                 hasSpoiler = !reference.spoiler.isNullOrEmpty(),
                 titleValue = TextFieldValue(reference.title.orEmpty()),
                 hasTitle = !reference.title.isNullOrEmpty(),
-                poll = entry.poll,
+                poll = post.poll,
                 loading = false,
             )
         }
@@ -1463,10 +1463,10 @@ class ComposerViewModel(
     private fun handleCreatePreview() {
         viewModelScope.launch {
             val currentState = uiState.value
-            val inReplyTo = args.inReplyToId?.let { entryCache.get(it) }
+            val inReplyTo = args.inReplyToId?.let { postCache.get(it) }
             val localId = getUuid()
-            val entry =
-                TimelineEntryModel(
+            val post =
+                PostModel(
                     creator = currentState.author,
                     spoiler =
                     currentState.spoilerValue.text
@@ -1489,7 +1489,7 @@ class ComposerViewModel(
                     id = localId,
                     inReplyTo = inReplyTo,
                 )
-            emitEffect(ComposerMvi.Effect.OpenPreview(entry))
+            emitEffect(ComposerMvi.Effect.OpenPreview(post))
         }
     }
 
@@ -1663,12 +1663,12 @@ class ComposerViewModel(
                     when (publicationType) {
                         is PublicationType.Scheduled -> {
                             if (editId != null) {
-                                scheduledEntryRepository.update(
+                                scheduledPostRepository.update(
                                     id = editId,
                                     date = publicationType.date,
                                 )
                             } else {
-                                timelineEntryRepository.create(
+                                postRepository.create(
                                     localId = key,
                                     title = title,
                                     text = text,
@@ -1694,7 +1694,7 @@ class ComposerViewModel(
 
                         PublicationType.Default -> {
                             if (editId != null) {
-                                timelineEntryRepository.update(
+                                postRepository.update(
                                     id = editId,
                                     title = title,
                                     text = text,
@@ -1715,7 +1715,7 @@ class ComposerViewModel(
                                     pollExpirationDate = poll?.expiresAt,
                                 )
                             } else {
-                                timelineEntryRepository.create(
+                                postRepository.create(
                                     localId = key,
                                     title = title,
                                     text = text,
@@ -1739,8 +1739,8 @@ class ComposerViewModel(
                         }
 
                         PublicationType.Draft -> {
-                            val entry =
-                                TimelineEntryModel(
+                            val post =
+                                PostModel(
                                     id = editId ?: key,
                                     content = text,
                                     title = title,
@@ -1749,7 +1749,7 @@ class ComposerViewModel(
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
                                     parentId = args.inReplyToId,
-                                    quoted = args.quotedId?.let { TimelineEntryModel(id = it, content = "") },
+                                    quoted = args.quotedId?.let { PostModel(id = it, content = "") },
                                     lang = currentState.lang,
                                     attachments =
                                     attachmentIds.map {
@@ -1758,9 +1758,9 @@ class ComposerViewModel(
                                     poll = poll,
                                 )
                             if (draftId != null) {
-                                draftRepository.update(entry)
+                                draftRepository.update(post)
                             } else {
-                                draftRepository.create(entry)
+                                draftRepository.create(post)
                             }
                         }
                     }
@@ -1775,17 +1775,17 @@ class ComposerViewModel(
                             }
 
                             if (editId != null) {
-                                notificationCenter.send(TimelineEntryUpdatedEvent(res))
+                                notificationCenter.send(PostUpdatedEvent(res))
                             } else {
-                                notificationCenter.send(TimelineEntryCreatedEvent(res))
+                                notificationCenter.send(PostCreatedEvent(res))
                             }
                         }
 
                         PublicationType.Draft -> {
                             if (draftId != null) {
-                                notificationCenter.send(TimelineEntryUpdatedEvent(res))
+                                notificationCenter.send(PostUpdatedEvent(res))
                             } else {
-                                notificationCenter.send(TimelineEntryCreatedEvent(res))
+                                notificationCenter.send(PostCreatedEvent(res))
                             }
                         }
 
@@ -1797,9 +1797,9 @@ class ComposerViewModel(
                             }
 
                             if (editId != null) {
-                                notificationCenter.send(TimelineEntryUpdatedEvent(res))
+                                notificationCenter.send(PostUpdatedEvent(res))
                             } else {
-                                notificationCenter.send(TimelineEntryCreatedEvent(res))
+                                notificationCenter.send(PostCreatedEvent(res))
                             }
                         }
                     }

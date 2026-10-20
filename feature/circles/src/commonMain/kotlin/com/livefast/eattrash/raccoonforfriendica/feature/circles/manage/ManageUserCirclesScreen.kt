@@ -149,7 +149,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
                 }
                 items(
                     items = uiState.items,
-                    key = { e -> "manage-user-circles-${e.circle.id}" },
+                    key = { item -> "manage-user-circles-${item.circle.id}" },
                 ) { item ->
                     ManageCircleItem(
                         modifier = Modifier.padding(bottom = Spacing.interItem),

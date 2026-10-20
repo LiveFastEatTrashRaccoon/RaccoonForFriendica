@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -13,8 +13,8 @@ interface MainRouter {
 
     fun switchUserDetailToForumMode(user: UserModel, otherInstance: String? = null)
 
-    fun openEntryDetail(
-        entry: TimelineEntryModel,
+    fun openPostDetail(
+        post: PostModel,
         replaceTop: Boolean = false,
         swipeNavigationEnabled: Boolean = false,
         otherInstance: String? = null,
@@ -34,26 +34,26 @@ interface MainRouter {
 
     fun openFollowedHashtags()
 
-    fun openEntryUsersFavorite(entryId: String, count: Int, otherInstance: String? = null)
+    fun openPostUsersFavorite(postId: String, count: Int, otherInstance: String? = null)
 
-    fun openEntryUsersReblog(entryId: String, count: Int, otherInstance: String? = null)
+    fun openPostUsersReblog(postId: String, count: Int, otherInstance: String? = null)
 
     fun openComposer(
-        inReplyTo: TimelineEntryModel? = null,
+        inReplyTo: PostModel? = null,
         inReplyToUser: UserModel? = null,
         editedPostId: String? = null,
-        quoted: TimelineEntryModel? = null,
+        quoted: PostModel? = null,
         urlToShare: String? = null,
         inGroup: Boolean = false,
         initialText: String? = null,
         initialAttachment: ByteArray? = null,
     )
 
-    fun openEditUnpublished(entry: TimelineEntryModel, type: UnpublishedType)
+    fun openEditUnpublished(post: PostModel, type: UnpublishedType)
 
     fun openSearch()
 
-    fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean = false, otherInstance: String? = null)
+    fun openThread(post: PostModel, swipeNavigationEnabled: Boolean = false, otherInstance: String? = null)
 
     fun openImageDetail(url: String)
 
@@ -83,7 +83,7 @@ interface MainRouter {
 
     fun openUnpublished()
 
-    fun openCreateReport(user: UserModel, entry: TimelineEntryModel? = null)
+    fun openCreateReport(user: UserModel, post: PostModel? = null)
 
     fun openUserFeedback()
 

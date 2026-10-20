@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderConfig
 import com.livefast.eattrash.raccoonforfriendica.core.translation.TranslationProviderFactory
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedPostModel
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -16,54 +16,54 @@ import io.ktor.utils.io.CancellationException
 class DefaultFallbackTranslationRepository(private val translationProviderFactory: TranslationProviderFactory) :
     FallbackTranslationRepository {
     override suspend fun getTranslation(
-        entry: TimelineEntryModel,
+        post: PostModel,
         targetLang: String,
         config: TranslationProviderConfig?,
-    ): TranslatedTimelineEntryModel? = try {
-        TranslatedTimelineEntryModel(
-            source = entry,
+    ): TranslatedPostModel? = try {
+        TranslatedPostModel(
+            source = post,
             target =
-            entry.copy(
+            post.copy(
                 content =
-                entry.content.translate(
-                    sourceLang = entry.lang,
+                post.content.translate(
+                    sourceLang = post.lang,
                     targetLang = targetLang,
                     config = config,
                 ),
                 title =
-                entry.title?.translate(
-                    sourceLang = entry.lang,
+                post.title?.translate(
+                    sourceLang = post.lang,
                     targetLang = targetLang,
                     config = config,
-                ) ?: entry.title,
+                ) ?: post.title,
                 spoiler =
-                entry.spoiler?.translate(
-                    sourceLang = entry.lang,
+                post.spoiler?.translate(
+                    sourceLang = post.lang,
                     targetLang = targetLang,
                     config = config,
-                ) ?: entry.spoiler,
+                ) ?: post.spoiler,
                 card =
-                entry.card?.let { card ->
+                post.card?.let { card ->
                     card.copy(
                         title =
                         card.title.translate(
-                            sourceLang = entry.lang,
+                            sourceLang = post.lang,
                             targetLang = targetLang,
                             config = config,
                         ),
                         description =
                         card.description.translate(
-                            sourceLang = entry.lang,
+                            sourceLang = post.lang,
                             targetLang = targetLang,
                             config = config,
                         ),
                     )
                 },
                 attachments =
-                entry.attachments.map { att ->
+                post.attachments.map { att ->
                     val translatedDescription =
                         att.description?.translate(
-                            sourceLang = entry.lang,
+                            sourceLang = post.lang,
                             targetLang = targetLang,
                             config = config,
                         )
@@ -72,14 +72,14 @@ class DefaultFallbackTranslationRepository(private val translationProviderFactor
                     )
                 },
                 poll =
-                entry.poll?.copy(
+                post.poll?.copy(
                     options =
-                    entry.poll
+                    post.poll
                         ?.options
                         ?.map { opt ->
                             val translatedTitle =
                                 opt.title.translate(
-                                    sourceLang = entry.lang,
+                                    sourceLang = post.lang,
                                     targetLang = targetLang,
                                     config = config,
                                 )

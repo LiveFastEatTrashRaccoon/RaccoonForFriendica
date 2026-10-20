@@ -66,11 +66,11 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLo
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SectionSelector
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -93,9 +93,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FieldModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldPost
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
@@ -144,15 +144,15 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
     var confirmMuteUserDialogOpen by remember { mutableStateOf(false) }
     var confirmBlockUserDialogOpen by remember { mutableStateOf(false) }
-    var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmReblogPost by remember { mutableStateOf<PostModel?>(null) }
+    var seeDetailsPost by remember { mutableStateOf<PostModel?>(null) }
     var changeRateLimitBottomSheetOpen by remember { mutableStateOf(false) }
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
     suspend fun goBackToTop() {
         try {
             if (lazyListState.firstVisibleItemIndex > 0) {
-                if (uiState.entries.isEmpty()) {
+                if (uiState.posts.isEmpty()) {
                     lazyListState.scrollToItem(1)
                 } else {
                     lazyListState.scrollToItem(2)
@@ -184,8 +184,8 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                     }
 
                     is UserDetailMvi.Effect.OpenDetail -> {
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
+                        mainRouter.openPostDetail(
+                            post = event.post,
                             swipeNavigationEnabled = true,
                             otherInstance = otherInstance,
                         )
@@ -632,18 +632,18 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                 }
 
                 itemsIndexed(
-                    items = uiState.entries,
-                    key = { _, e -> "user-detail-${e.safeKey}" },
-                ) { idx, entry ->
+                    items = uiState.posts,
+                    key = { _, post -> "user-detail-${post.safeKey}" },
+                ) { idx, post ->
                     TimelineItem(
-                        entry = entry,
+                        post = post,
                         layout = uiState.layout,
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         pollEnabled = isHomeInstance,
-                        onClick = { e ->
-                            model.reduce(UserDetailMvi.Intent.WillOpenDetail(e))
+                        onClick = { post ->
+                            model.reduce(UserDetailMvi.Intent.WillOpenDetail(post))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -665,46 +665,46 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                             )
                         },
                         onReblog =
-                        { e: TimelineEntryModel ->
+                        { post: PostModel ->
                             val timeSinceCreation =
-                                e.created?.run {
+                                post.created?.run {
                                     getDurationFromDateToNow(this)
                                 } ?: Duration.ZERO
                             when {
-                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                    confirmReblogEntry = e
+                                !post.reblogged && timeSinceCreation.isOldPost ->
+                                    confirmReblogPost = post
 
                                 else ->
                                     model.reduce(
-                                        UserDetailMvi.Intent.ToggleReblog(e),
+                                        UserDetailMvi.Intent.ToggleReblog(post),
                                     )
                             }
-                        }.takeIf { entry.original.actionPermissions.canReblog && isHomeInstance },
+                        }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                         onBookmark =
-                        { e: TimelineEntryModel ->
-                            model.reduce(UserDetailMvi.Intent.ToggleBookmark(e))
-                        }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
+                        { post: PostModel ->
+                            model.reduce(UserDetailMvi.Intent.ToggleBookmark(post))
+                        }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                         onFavorite =
-                        { e: TimelineEntryModel ->
-                            model.reduce(UserDetailMvi.Intent.ToggleFavorite(e))
-                        }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
+                        { post: PostModel ->
+                            model.reduce(UserDetailMvi.Intent.ToggleFavorite(post))
+                        }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                         onDislike =
-                        { e: TimelineEntryModel ->
-                            model.reduce(UserDetailMvi.Intent.ToggleDislike(e))
-                        }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
+                        { post: PostModel ->
+                            model.reduce(UserDetailMvi.Intent.ToggleDislike(post))
+                        }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
                         onReply =
-                        { e: TimelineEntryModel ->
+                        { post: PostModel ->
                             mainRouter.openComposer(
-                                inReplyTo = e,
-                                inReplyToUser = e.creator,
+                                inReplyTo = post,
+                                inReplyToUser = post.creator,
                             )
-                        }.takeIf { entry.original.actionPermissions.canReply && isHomeInstance },
+                        }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
-                            { e, choices ->
+                            { post, choices ->
                                 model.reduce(
                                     UserDetailMvi.Intent.SubmitPollVote(
-                                        entry = e,
+                                        post = post,
                                         choices = choices,
                                     ),
                                 )
@@ -712,30 +712,30 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         },
                         onShowOriginal = {
                             model.reduce(
-                                UserDetailMvi.Intent.ToggleTranslation(entry.original),
+                                UserDetailMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { e ->
-                            mainRouter.openEntryDetail(e)
+                        onOpenQuote = { post ->
+                            mainRouter.openPostDetail(post)
                         },
                         options =
                         buildList {
-                            if (entry.original.actionPermissions.canShare && isHomeInstance) {
+                            if (post.original.actionPermissions.canShare && isHomeInstance) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (entry.original.actionPermissions.canReport && isHomeInstance) {
-                                this += OptionId.ReportEntry.toOption()
+                            if (post.original.actionPermissions.canReport && isHomeInstance) {
+                                this += OptionId.ReportPost.toOption()
                             }
-                            if (entry.original.actionPermissions.canQuote && isHomeInstance) {
+                            if (post.original.actionPermissions.canQuote && isHomeInstance) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()
                             this += OptionId.CopyToClipboard.toOption()
                             val currentLang = uiState.lang.orEmpty()
                             if (currentLang.isNotEmpty() &&
-                                entry.lang != currentLang &&
-                                !entry.isShowingTranslation
+                                post.lang != currentLang &&
+                                !post.isShowingTranslation
                             ) {
                                 this +=
                                     Option(
@@ -753,7 +753,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                         },
                                     )
                             }
-                            val nodeName = entry.nodeName
+                            val nodeName = post.nodeName
                             if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
                                 this +=
                                     OptionId.AddShortcut.toOption(
@@ -765,74 +765,74 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         onSelectOption = { optionId ->
                             when (optionId) {
                                 OptionId.Share -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     shareHelper.share(urlString)
                                 }
 
                                 OptionId.CopyUrl -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     scope.launch {
                                         clipboardHelper.setText(urlString)
                                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
                                     }
                                 }
 
-                                OptionId.ReportEntry ->
-                                    entry.original.also { entryToReport ->
-                                        entryToReport.creator?.also { userToReport ->
+                                OptionId.ReportPost ->
+                                    post.original.also { postToReport ->
+                                        postToReport.creator?.also { userToReport ->
                                             mainRouter.openCreateReport(
                                                 user = userToReport,
-                                                entry = entryToReport,
+                                                post = postToReport,
                                             )
                                         }
                                     }
 
-                                OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                OptionId.ViewDetails -> seeDetailsPost = post.original
 
                                 OptionId.Quote -> {
-                                    entry.original.also { entryToShare ->
+                                    post.original.also { toShare ->
                                         mainRouter.openComposer(
-                                            quoted = entryToShare,
-                                            urlToShare = entryToShare.url,
+                                            quoted = toShare,
+                                            urlToShare = toShare.url,
                                         )
                                     }
                                 }
 
                                 OptionId.CopyToClipboard ->
-                                    model.reduce(UserDetailMvi.Intent.CopyToClipboard(entry.original))
+                                    model.reduce(UserDetailMvi.Intent.CopyToClipboard(post.original))
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        UserDetailMvi.Intent.ToggleTranslation(entry.original),
+                                        UserDetailMvi.Intent.ToggleTranslation(post.original),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        UserDetailMvi.Intent.AddInstanceShortcut(entry.nodeName),
+                                        UserDetailMvi.Intent.AddInstanceShortcut(post.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        UserDetailMvi.Intent.OpenInBrowser(entry),
+                                        UserDetailMvi.Intent.OpenInBrowser(post),
                                     )
 
                                 else -> Unit
                             }
                         },
                     )
-                    if (idx < uiState.entries.lastIndex) {
+                    if (idx < uiState.posts.lastIndex) {
                         TimelineDivider(layout = uiState.layout)
                     }
 
                     val canFetchMore =
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
-                    val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.posts)
                     if (isNearTheEnd && canFetchMore) {
                         model.reduce(UserDetailMvi.Intent.LoadNextPage)
                     }
                 }
 
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.posts.isEmpty()) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
@@ -943,13 +943,13 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
         )
     }
 
-    if (confirmReblogEntry != null) {
+    if (confirmReblogPost != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.buttonConfirm,
             body = LocalStrings.current.messageAreYouSureReblog,
             onClose = { confirm ->
-                val e = confirmReblogEntry
-                confirmReblogEntry = null
+                val e = confirmReblogPost
+                confirmReblogPost = null
                 if (confirm && e != null) {
                     model.reduce(UserDetailMvi.Intent.ToggleReblog(e))
                 }
@@ -998,11 +998,11 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
         )
     }
 
-    seeDetailsEntry?.let { entry ->
-        EntryDetailDialog(
-            entry = entry,
+    seeDetailsPost?.let { post ->
+        PostDetailDialog(
+            post = post,
             onClose = {
-                seeDetailsEntry = null
+                seeDetailsPost = null
             },
         )
     }

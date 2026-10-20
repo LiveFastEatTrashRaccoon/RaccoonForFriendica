@@ -1,11 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 
 internal data class DefaultTimelinePaginationManagerState(
     val specification: TimelinePaginationSpecification? = null,
     val pageCursor: String? = null,
-    val history: List<TimelineEntryModel> = emptyList(),
+    val history: List<PostModel> = emptyList(),
     val userRateLimits: Map<String, Double> = emptyMap(),
     val stopWords: List<String>? = null,
 ) : TimelinePaginationManagerState

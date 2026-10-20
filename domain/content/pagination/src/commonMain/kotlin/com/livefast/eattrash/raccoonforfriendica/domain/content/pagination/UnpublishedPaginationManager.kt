@@ -1,12 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 
 interface UnpublishedPaginationManager {
     val canFetchMore: Boolean
-    val history: List<TimelineEntryModel>
+    val history: List<PostModel>
 
     suspend fun reset(specification: UnpublishedPaginationSpecification)
 
-    suspend fun loadNextPage(): List<TimelineEntryModel>
+    suspend fun loadNextPage(): List<PostModel>
 }

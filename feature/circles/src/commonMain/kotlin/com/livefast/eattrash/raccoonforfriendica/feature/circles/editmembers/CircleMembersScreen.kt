@@ -229,7 +229,7 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
 
                 itemsIndexed(
                     items = uiState.users,
-                    key = { _, e -> "circle-detail-${e.id}" },
+                    key = { _, user -> "circle-detail-${user.id}" },
                 ) { _, user ->
                     UserItem(
                         user = user,

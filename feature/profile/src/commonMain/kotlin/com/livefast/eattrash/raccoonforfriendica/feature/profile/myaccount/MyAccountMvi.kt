@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.Mvi
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
 interface MyAccountMvi : Mvi<MyAccountMvi.Intent, MyAccountMvi.State, MyAccountMvi.Effect> {
@@ -14,23 +14,23 @@ interface MyAccountMvi : Mvi<MyAccountMvi.Intent, MyAccountMvi.State, MyAccountM
 
         data class ChangeSection(val section: UserSection) : Intent
 
-        data class ToggleReblog(val entry: TimelineEntryModel) : Intent
+        data class ToggleReblog(val post: PostModel) : Intent
 
-        data class ToggleFavorite(val entry: TimelineEntryModel) : Intent
+        data class ToggleFavorite(val post: PostModel) : Intent
 
-        data class ToggleDislike(val entry: TimelineEntryModel) : Intent
+        data class ToggleDislike(val post: PostModel) : Intent
 
-        data class ToggleBookmark(val entry: TimelineEntryModel) : Intent
+        data class ToggleBookmark(val post: PostModel) : Intent
 
-        data class DeleteEntry(val entryId: String) : Intent
+        data class Delete(val postId: String) : Intent
 
-        data class TogglePin(val entry: TimelineEntryModel) : Intent
+        data class TogglePin(val post: PostModel) : Intent
 
-        data class CopyToClipboard(val entry: TimelineEntryModel) : Intent
+        data class CopyToClipboard(val post: PostModel) : Intent
 
         data object Logout : Intent
 
-        data class OpenInBrowser(val entry: TimelineEntryModel) : Intent
+        data class OpenInBrowser(val post: PostModel) : Intent
     }
 
     data class State(
@@ -40,7 +40,7 @@ interface MyAccountMvi : Mvi<MyAccountMvi.Intent, MyAccountMvi.State, MyAccountM
         val canFetchMore: Boolean = true,
         val user: UserModel? = null,
         val section: UserSection = UserSection.Posts,
-        val entries: List<TimelineEntryModel> = emptyList(),
+        val posts: List<PostModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val maxBodyLines: Int = Int.MAX_VALUE,
         val autoloadImages: Boolean = true,

@@ -141,7 +141,7 @@ fun FollowRequestsScreen(model: FollowRequestsMvi, modifier: Modifier = Modifier
 
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e -> "follow-request-${e.id}" },
+                    key = { _, item -> "follow-request-${item.id}" },
                 ) { idx, user ->
                     FollowRequestItem(
                         user = user,

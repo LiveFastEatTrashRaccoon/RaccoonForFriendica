@@ -7,7 +7,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificat
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.onEach
 @Inject
 class DefaultUserPaginationManager(
     private val userRepository: UserRepository,
-    private val timelineEntryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val circlesRepository: CirclesRepository,
     private val accountRepository: AccountRepository,
     private val userRateLimitRepository: UserRateLimitRepository,
@@ -70,17 +70,17 @@ class DefaultUserPaginationManager(
                             pageCursor = currentPageCursor,
                         )
 
-                is UserPaginationSpecification.EntryUsersFavorite ->
-                    timelineEntryRepository
+                is UserPaginationSpecification.PostUsersFavorite ->
+                    postRepository
                         .getUsersWhoFavorited(
-                            id = spec.entryId,
+                            id = spec.postId,
                             pageCursor = currentPageCursor,
                         )
 
-                is UserPaginationSpecification.EntryUsersReblog ->
-                    timelineEntryRepository
+                is UserPaginationSpecification.PostUsersReblog ->
+                    postRepository
                         .getUsersWhoReblogged(
-                            id = spec.entryId,
+                            id = spec.postId,
                             pageCursor = currentPageCursor,
                         )
 
@@ -132,8 +132,8 @@ class DefaultUserPaginationManager(
                 when (spec) {
                     is UserPaginationSpecification.Follower,
                     is UserPaginationSpecification.Following,
-                    is UserPaginationSpecification.EntryUsersFavorite,
-                    is UserPaginationSpecification.EntryUsersReblog,
+                    is UserPaginationSpecification.PostUsersFavorite,
+                    is UserPaginationSpecification.PostUsersReblog,
                     UserPaginationSpecification.Blocked,
                     UserPaginationSpecification.Muted,
                     -> {

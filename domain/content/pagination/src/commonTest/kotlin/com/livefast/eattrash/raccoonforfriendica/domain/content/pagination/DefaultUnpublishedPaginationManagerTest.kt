@@ -2,9 +2,9 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.NotificationCenterEvent
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledPostRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.sequentiallyReturns
 import dev.mokkery.every
@@ -21,7 +21,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class DefaultUnpublishedPaginationManagerTest {
-    private val scheduledEntryRepository = mock<ScheduledEntryRepository>()
+    private val scheduledPostRepository = mock<ScheduledPostRepository>()
     private val draftRepository = mock<DraftRepository>()
     private val notificationCenter =
         mock<NotificationCenter> {
@@ -29,7 +29,7 @@ class DefaultUnpublishedPaginationManagerTest {
         }
     private val sut =
         DefaultUnpublishedPaginationManager(
-            scheduledEntryRepository = scheduledEntryRepository,
+            scheduledPostRepository = scheduledPostRepository,
             draftRepository = draftRepository,
             notificationCenter = notificationCenter,
         )
@@ -37,7 +37,7 @@ class DefaultUnpublishedPaginationManagerTest {
     // region Scheduled
     @Test
     fun `given no results when loadNextPage with Scheduled then result is as expected`() = runTest {
-        everySuspend { scheduledEntryRepository.getAll(any()) } returns emptyList()
+        everySuspend { scheduledPostRepository.getAll(any()) } returns emptyList()
 
         sut.reset(UnpublishedPaginationSpecification.Scheduled)
         val res = sut.loadNextPage()
@@ -45,14 +45,14 @@ class DefaultUnpublishedPaginationManagerTest {
         assertTrue(res.isEmpty())
         assertFalse(sut.canFetchMore)
         verifySuspend {
-            scheduledEntryRepository.getAll(null)
+            scheduledPostRepository.getAll(null)
         }
     }
 
     @Test
     fun `given results when loadNextPage with Scheduled then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
-        everySuspend { scheduledEntryRepository.getAll(any()) } returns list
+        val list = listOf(PostModel(id = "1", content = ""))
+        everySuspend { scheduledPostRepository.getAll(any()) } returns list
 
         sut.reset(UnpublishedPaginationSpecification.Scheduled)
         val res = sut.loadNextPage()
@@ -60,15 +60,15 @@ class DefaultUnpublishedPaginationManagerTest {
         assertEquals(list, res)
         assertTrue(sut.canFetchMore)
         verifySuspend {
-            scheduledEntryRepository.getAll(null)
+            scheduledPostRepository.getAll(null)
         }
     }
 
     @Test
     fun `given can not fetch more results when loadNextPage with Scheduled twice then result is as expected`() =
         runTest {
-            val list = listOf(TimelineEntryModel(id = "1", content = ""))
-            everySuspend { scheduledEntryRepository.getAll(any()) } sequentiallyReturns
+            val list = listOf(PostModel(id = "1", content = ""))
+            everySuspend { scheduledPostRepository.getAll(any()) } sequentiallyReturns
                 listOf(list, emptyList())
 
             sut.reset(UnpublishedPaginationSpecification.Scheduled)
@@ -78,8 +78,8 @@ class DefaultUnpublishedPaginationManagerTest {
             assertEquals(list, res)
             assertFalse(sut.canFetchMore)
             verifySuspend {
-                scheduledEntryRepository.getAll(null)
-                scheduledEntryRepository.getAll("1")
+                scheduledPostRepository.getAll(null)
+                scheduledPostRepository.getAll("1")
             }
         }
     // endregion
@@ -101,7 +101,7 @@ class DefaultUnpublishedPaginationManagerTest {
 
     @Test
     fun `given results when loadNextPage with Drafts then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend { draftRepository.getAll(any()) } returns list
 
         sut.reset(UnpublishedPaginationSpecification.Drafts)
@@ -116,7 +116,7 @@ class DefaultUnpublishedPaginationManagerTest {
 
     @Test
     fun `given can not fetch more results when loadNextPage with Drafts twice then result is as expected`() = runTest {
-        val list = listOf(TimelineEntryModel(id = "1", content = ""))
+        val list = listOf(PostModel(id = "1", content = ""))
         everySuspend { draftRepository.getAll(any()) } sequentiallyReturns
             listOf(list, emptyList())
 

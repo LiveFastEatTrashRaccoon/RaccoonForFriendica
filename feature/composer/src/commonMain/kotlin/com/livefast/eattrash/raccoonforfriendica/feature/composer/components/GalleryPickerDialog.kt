@@ -237,7 +237,7 @@ fun GalleryPickerDialog(
 
                     itemsIndexed(
                         items = photos,
-                        key = { _, e -> "gallery-picker-${e.id}" },
+                        key = { _, attachment -> "gallery-picker-${attachment.id}" },
                     ) { idx, attachment ->
                         val selectionIndex = selection.indexOf(attachment)
                         Box {

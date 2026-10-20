@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.unpublished
 
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.Mvi
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 
@@ -14,7 +14,7 @@ interface UnpublishedMvi : Mvi<UnpublishedMvi.Intent, UnpublishedMvi.State, Unpu
 
         data class ChangeSection(val section: UnpublishedType) : Intent
 
-        data class DeleteEntry(val entryId: String) : Intent
+        data class Delete(val postId: String) : Intent
     }
 
     data class State(
@@ -24,7 +24,7 @@ interface UnpublishedMvi : Mvi<UnpublishedMvi.Intent, UnpublishedMvi.State, Unpu
         val initial: Boolean = true,
         val canFetchMore: Boolean = true,
         val section: UnpublishedType = UnpublishedType.Scheduled,
-        val entries: List<TimelineEntryModel> = emptyList(),
+        val posts: List<PostModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val maxBodyLines: Int = Int.MAX_VALUE,
         val autoloadImages: Boolean = true,

@@ -236,7 +236,7 @@ private val AccountModel.notificationEnabled: Boolean get() = !unifiedPushUrl.is
 private val NotificationType.channelIdSegment: String?
     get() =
         when (this) {
-            NotificationType.Entry -> "post"
+            NotificationType.Post -> "post"
             NotificationType.Favorite -> "favorite"
             NotificationType.Follow -> "follow"
             NotificationType.FollowRequest -> "follow_request"

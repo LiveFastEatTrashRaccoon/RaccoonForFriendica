@@ -2,8 +2,8 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.LinkModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModelWithReply
 import dev.zacsweers.metro.AppScope
@@ -26,7 +26,7 @@ class DefaultTrendingRepository(
     private val otherMutex = Mutex()
     private val cachedTags: MutableList<TagModel> = mutableListOf()
 
-    override suspend fun getEntries(offset: Int, otherInstance: String?): List<TimelineEntryModel>? = try {
+    override suspend fun getPosts(offset: Int, otherInstance: String?): List<PostModel>? = try {
         withProvider(otherInstance) { provider ->
             val response =
                 provider.trend

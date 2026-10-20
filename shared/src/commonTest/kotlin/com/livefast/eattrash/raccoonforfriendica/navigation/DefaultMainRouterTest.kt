@@ -4,7 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -38,7 +38,7 @@ class DefaultMainRouterTest {
             every { current } returns MutableStateFlow(SettingsModel())
         }
     private val userCache = mock<LocalItemCache<UserModel>>(mode = MockMode.autoUnit)
-    private val entryCache = mock<LocalItemCache<TimelineEntryModel>>(mode = MockMode.autoUnit)
+    private val postCache = mock<LocalItemCache<PostModel>>(mode = MockMode.autoUnit)
     private val eventCache = mock<LocalItemCache<EventModel>>(mode = MockMode.autoUnit)
     private val circleCache = mock<LocalItemCache<CircleModel>>(mode = MockMode.autoUnit)
     private val attachmentCache = mock<AttachmentCache>(mode = MockMode.autoUnit)
@@ -48,7 +48,7 @@ class DefaultMainRouterTest {
             identityRepository = identityRepository,
             settingsRepository = settingsRepository,
             userCache = userCache,
-            entryCache = entryCache,
+            postCache = postCache,
             eventCache = eventCache,
             circleCache = circleCache,
             attachmentCache = attachmentCache,
@@ -106,35 +106,35 @@ class DefaultMainRouterTest {
     }
 
     @Test
-    fun `when openEntryDetail then interactions are as expected`() {
-        sut.openEntryDetail(entry = TimelineEntryModel(id = "0", content = ""))
+    fun `when openPostDetail then interactions are as expected`() {
+        sut.openPostDetail(post = PostModel(id = "0", content = ""))
 
         verify {
-            navigationCoordinator.push(Destination.EntryDetail("0", swipeNavigationEnabled = false))
+            navigationCoordinator.push(Destination.PostDetail("0", swipeNavigationEnabled = false))
         }
     }
 
     @Test
-    fun `when openEntryDetail with replaceTop then interactions are as expected`() {
-        sut.openEntryDetail(
-            entry = TimelineEntryModel(id = "0", content = ""),
+    fun `when openPostDetail with replaceTop then interactions are as expected`() {
+        sut.openPostDetail(
+            post = PostModel(id = "0", content = ""),
             replaceTop = true,
         )
 
         verify {
-            navigationCoordinator.replace(Destination.EntryDetail("0", swipeNavigationEnabled = false))
+            navigationCoordinator.replace(Destination.PostDetail("0", swipeNavigationEnabled = false))
         }
     }
 
     @Test
-    fun `when openEntryDetail with swipeNavigationEnabled then interactions are as expected`() {
-        sut.openEntryDetail(
-            entry = TimelineEntryModel(id = "0", content = ""),
+    fun `when openPostDetail with swipeNavigationEnabled then interactions are as expected`() {
+        sut.openPostDetail(
+            post = PostModel(id = "0", content = ""),
             swipeNavigationEnabled = true,
         )
 
         verify {
-            navigationCoordinator.push(Destination.EntryDetail("0", swipeNavigationEnabled = true))
+            navigationCoordinator.push(Destination.PostDetail("0", swipeNavigationEnabled = true))
         }
     }
 
@@ -202,14 +202,14 @@ class DefaultMainRouterTest {
     }
 
     @Test
-    fun `when openEntryUsersFavorite then interactions are as expected`() {
-        sut.openEntryUsersFavorite(entryId = "1", count = 1)
+    fun `when openPostUsersFavorite then interactions are as expected`() {
+        sut.openPostUsersFavorite(postId = "1", count = 1)
 
         verify {
             navigationCoordinator.push(
                 Destination.UserList(
                     type = UserListType.UsersFavorite.toInt(),
-                    entryId = "1",
+                    postId = "1",
                     infoCount = 1,
                 ),
             )
@@ -217,14 +217,14 @@ class DefaultMainRouterTest {
     }
 
     @Test
-    fun `when openEntryUsersReblog then interactions are as expected`() {
-        sut.openEntryUsersReblog(entryId = "1", count = 1)
+    fun `when openPostUsersReblog then interactions are as expected`() {
+        sut.openPostUsersReblog(postId = "1", count = 1)
 
         verify {
             navigationCoordinator.push(
                 Destination.UserList(
                     type = UserListType.UsersReblog.toInt(),
-                    entryId = "1",
+                    postId = "1",
                     infoCount = 1,
                 ),
             )
@@ -242,42 +242,42 @@ class DefaultMainRouterTest {
 
     @Test
     fun `given reply when openComposer then interactions are as expected`() {
-        val entry = TimelineEntryModel(id = "0", content = "")
+        val post = PostModel(id = "0", content = "")
         val user = UserModel(id = "1")
         sut.openComposer(
-            inReplyTo = entry,
+            inReplyTo = post,
             inReplyToUser = user,
         )
 
         verifySuspend {
-            entryCache.put(entry.id, entry)
+            postCache.put(post.id, post)
             userCache.put(user.id, user)
-            navigationCoordinator.push(Destination.Composer(inReplyToId = entry.id))
+            navigationCoordinator.push(Destination.Composer(inReplyToId = post.id))
         }
     }
 
     @Test
     fun `given quote when openComposer then interactions are as expected`() {
-        val entry = TimelineEntryModel(id = "0", content = "")
-        sut.openComposer(quoted = entry)
+        val post = PostModel(id = "0", content = "")
+        sut.openComposer(quoted = post)
 
         verifySuspend {
-            entryCache.put(entry.id, entry)
-            navigationCoordinator.push(Destination.Composer(quotedId = entry.id))
+            postCache.put(post.id, post)
+            navigationCoordinator.push(Destination.Composer(quotedId = post.id))
         }
     }
 
     @Test
     fun `when openEditUnpublished then interactions are as expected`() {
-        val entry = TimelineEntryModel(id = "0", content = "")
+        val post = PostModel(id = "0", content = "")
         sut.openEditUnpublished(
-            entry = entry,
+            post = post,
             type = UnpublishedType.Scheduled,
         )
 
         verifySuspend {
-            entryCache.put(entry.id, entry)
-            navigationCoordinator.push(Destination.Composer(scheduledPostId = entry.id))
+            postCache.put(post.id, post)
+            navigationCoordinator.push(Destination.Composer(scheduledPostId = post.id))
         }
     }
 
@@ -292,23 +292,23 @@ class DefaultMainRouterTest {
 
     @Test
     fun `given reply when openThread then interactions are as expected`() {
-        val entry = TimelineEntryModel(id = "0", content = "")
-        sut.openThread(entry = entry)
+        val post = PostModel(id = "0", content = "")
+        sut.openThread(post)
 
         verifySuspend {
-            entryCache.put(entry.id, entry)
-            navigationCoordinator.push(Destination.Thread(entryId = entry.id, swipeNavigationEnabled = false))
+            postCache.put(post.id, post)
+            navigationCoordinator.push(Destination.Thread(postId = post.id, swipeNavigationEnabled = false))
         }
     }
 
     @Test
     fun `given reply when openThread with swipeNavigationEnabled then interactions are as expected`() {
-        val entry = TimelineEntryModel(id = "0", content = "")
-        sut.openThread(entry = entry, swipeNavigationEnabled = true)
+        val post = PostModel(id = "0", content = "")
+        sut.openThread(post = post, swipeNavigationEnabled = true)
 
         verifySuspend {
-            entryCache.put(entry.id, entry)
-            navigationCoordinator.push(Destination.Thread(entryId = entry.id, swipeNavigationEnabled = true))
+            postCache.put(post.id, post)
+            navigationCoordinator.push(Destination.Thread(postId = post.id, swipeNavigationEnabled = true))
         }
     }
 
@@ -445,14 +445,14 @@ class DefaultMainRouterTest {
     }
 
     @Test
-    fun `when openCreateReport for entry then interactions are as expected`() {
+    fun `when openCreateReport for post then interactions are as expected`() {
         sut.openCreateReport(
             user = UserModel(id = "1"),
-            entry = TimelineEntryModel(id = "2", content = ""),
+            post = PostModel(id = "2", content = ""),
         )
 
         verify {
-            navigationCoordinator.push(Destination.CreateReport(userId = "1", entryId = "2"))
+            navigationCoordinator.push(Destination.CreateReport(userId = "1", postId = "2"))
         }
     }
 

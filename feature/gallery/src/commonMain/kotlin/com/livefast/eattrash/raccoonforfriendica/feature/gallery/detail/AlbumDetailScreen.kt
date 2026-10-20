@@ -254,7 +254,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
 
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e -> "album-detail-${e.id}" },
+                    key = { _, attachment -> "album-detail-${attachment.id}" },
                 ) { idx, attachment ->
                     AlbumImageItem(
                         attachment = attachment,

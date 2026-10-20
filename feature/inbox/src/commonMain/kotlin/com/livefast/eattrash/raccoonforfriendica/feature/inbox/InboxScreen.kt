@@ -225,15 +225,15 @@ fun InboxScreen(
 
                 itemsIndexed(
                     items = uiState.notifications,
-                    key = { _, e -> "inbox-${e.type}-${e.id}" },
+                    key = { _, notification -> "inbox-${notification.type}-${notification.id}" },
                 ) { idx, notification ->
                     NotificationItem(
                         notification = notification,
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onOpenEntry = { entry ->
-                            mainRouter.openEntryDetail(entry.original)
+                        onOpenPost = { post ->
+                            mainRouter.openPostDetail(post.original)
                             model.reduce(InboxMvi.Intent.MarkAsRead(notification))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
@@ -271,8 +271,8 @@ fun InboxScreen(
                                 }
                             }
                         },
-                        onRevokeQuote = { entry ->
-                            model.reduce(InboxMvi.Intent.RevokeQuote(entry))
+                        onRevokeQuote = { post ->
+                            model.reduce(InboxMvi.Intent.RevokeQuote(post))
                         },
                     )
 

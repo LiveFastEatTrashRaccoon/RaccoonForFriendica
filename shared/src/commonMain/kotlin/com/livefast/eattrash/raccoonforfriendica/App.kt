@@ -41,11 +41,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.ProvideAppCompositionLocals
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.UiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.Locales
-import com.livefast.eattrash.raccoonforfriendica.core.navigation.DefaultNavigationAdapter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.DrawerEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassBelow
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EntryListType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostListType
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.di.RootGraph
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openInternally
@@ -57,9 +56,9 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.Con
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.DrawerContent
 import com.livefast.eattrash.raccoonforfriendica.feature.drawer.PermanentDrawerContent
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListMvi
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.entrylist.EntryListViewModelArgs
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListMvi
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMvi
@@ -275,18 +274,18 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                         val inboxViewModel: InboxMvi = metroViewModel<InboxViewModel>()
                                         val profileViewModel: ProfileMvi = metroViewModel<ProfileViewModel>()
                                         val myAccountViewModel: MyAccountMvi = metroViewModel<MyAccountViewModel>()
-                                        val favoritesViewModel: EntryListMvi =
-                                            assistedMetroViewModel<EntryListViewModel>(
-                                                extras = EntryListViewModel.getExtras(
-                                                    EntryListViewModelArgs(
-                                                        type = EntryListType.Favorites,
+                                        val favoritesViewModel: PostListMvi =
+                                            assistedMetroViewModel<PostListViewModel>(
+                                                extras = PostListViewModel.getExtras(
+                                                    PostListViewModelArgs(
+                                                        type = PostListType.Favorites,
                                                     )
                                                 ),
                                             )
-                                        val bookmarksViewModel: EntryListMvi =
-                                            assistedMetroViewModel<EntryListViewModel>(
-                                                extras = EntryListViewModel.getExtras(
-                                                    EntryListViewModelArgs(type = EntryListType.Bookmarks)
+                                        val bookmarksViewModel: PostListMvi =
+                                            assistedMetroViewModel<PostListViewModel>(
+                                                extras = PostListViewModel.getExtras(
+                                                    PostListViewModelArgs(type = PostListType.Bookmarks)
                                                 ),
                                             )
                                         val followedHashtagsViewModel: FollowedHashtagsMvi =

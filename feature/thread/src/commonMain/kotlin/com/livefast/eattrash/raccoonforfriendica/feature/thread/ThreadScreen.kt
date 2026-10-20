@@ -61,10 +61,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -78,8 +78,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeC
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getDurationFromDateToNow
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldPost
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
@@ -94,7 +94,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThreadScreen(
-    entryId: String,
+    postId: String,
     swipeNavigationEnabled: Boolean,
     modifier: Modifier = Modifier,
     otherInstance: String? = null,
@@ -102,7 +102,7 @@ fun ThreadScreen(
     val model: ThreadMvi = assistedMetroViewModel<ThreadViewModel>(
         extras = ThreadViewModel.getExtras(
             ThreadViewModelArgs(
-                entryId = entryId,
+                postId = postId,
                 swipeNavigationEnabled = swipeNavigationEnabled,
             ),
         ),
@@ -121,12 +121,12 @@ fun ThreadScreen(
     val shareHelper = LocalUiDeps.current.shareHelper
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
-    var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
-    var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmDeletePostId by remember { mutableStateOf<String?>(null) }
+    var confirmMutePost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmBlockPost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmReblogPost by remember { mutableStateOf<PostModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
-    var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var seeDetailsPost by remember { mutableStateOf<PostModel?>(null) }
     var lazyListState = rememberLazyListState()
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
@@ -191,11 +191,11 @@ fun ThreadScreen(
                             shape = MaterialTheme.shapes.small,
                             colors = IconButtonDefaults.filledTonalIconButtonColors(),
                             onClick = {
-                                val mainEntry = uiState.mainEntries.getOrNull(uiState.currentIndex)
-                                if (mainEntry != null) {
+                                val mainPost = uiState.mainPosts.getOrNull(uiState.currentIndex)
+                                if (mainPost != null) {
                                     mainRouter.openComposer(
-                                        inReplyTo = mainEntry,
-                                        inReplyToUser = mainEntry.creator,
+                                        inReplyTo = mainPost,
+                                        inReplyToUser = mainPost.creator,
                                     )
                                 }
                             },
@@ -224,11 +224,11 @@ fun ThreadScreen(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            val mainEntry = uiState.mainEntries.getOrNull(uiState.currentIndex)
-                            if (mainEntry != null) {
+                            val mainPost = uiState.mainPosts.getOrNull(uiState.currentIndex)
+                            if (mainPost != null) {
                                 mainRouter.openComposer(
-                                    inReplyTo = mainEntry,
-                                    inReplyToUser = mainEntry.creator,
+                                    inReplyTo = mainPost,
+                                    inReplyToUser = mainPost.creator,
                                 )
                             }
                         },
@@ -253,7 +253,7 @@ fun ThreadScreen(
             }
         },
     ) { padding ->
-        val pageCount = uiState.mainEntries.size
+        val pageCount = uiState.mainPosts.size
         val pagerState =
             remember(pageCount) {
                 PagerState(
@@ -278,7 +278,7 @@ fun ThreadScreen(
             state = pagerState,
             beyondViewportPageCount = 1,
         ) { index ->
-            val mainEntry = uiState.mainEntries.getOrNull(index)
+            val mainPost = uiState.mainPosts.getOrNull(index)
             val replies = uiState.replies.getOrNull(index).orEmpty()
             lazyListState = rememberLazyListState()
             PullToRefreshBox(
@@ -300,13 +300,13 @@ fun ThreadScreen(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
                 ) {
-                    // original entry
-                    mainEntry?.also { entry ->
+                    // original post
+                    mainPost?.also { post ->
                         item {
                             TimelineItem(
                                 modifier =
                                 Modifier
-                                    // since the main entry is forced to "full", recreates card appearance
+                                    // since the main post is forced to "full", recreates card appearance
                                     .padding(horizontal = Spacing.xs)
                                     .padding(bottom = Spacing.xs)
                                     .shadow(
@@ -322,7 +322,7 @@ fun ThreadScreen(
                                         vertical = Spacing.xs,
                                         horizontal = Spacing.xxxs,
                                     ),
-                                entry = entry,
+                                post = post,
                                 layout = TimelineLayout.Full,
                                 reshareAndReplyVisible = false,
                                 followedHashtagsVisible = false,
@@ -348,37 +348,37 @@ fun ThreadScreen(
                                     )
                                 },
                                 onBookmark =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(ThreadMvi.Intent.ToggleBookmark(e))
-                                }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
+                                { post: PostModel ->
+                                    model.reduce(ThreadMvi.Intent.ToggleBookmark(post))
+                                }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                                 onFavorite =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(ThreadMvi.Intent.ToggleFavorite(e))
-                                }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
+                                { post: PostModel ->
+                                    model.reduce(ThreadMvi.Intent.ToggleFavorite(post))
+                                }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                                 onDislike =
-                                { e: TimelineEntryModel ->
-                                    model.reduce(ThreadMvi.Intent.ToggleDislike(e))
-                                }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
-                                onOpenUsersFavorite = { e ->
-                                    mainRouter.openEntryUsersFavorite(
-                                        entryId = e.id,
-                                        count = e.favoriteCount,
+                                { post: PostModel ->
+                                    model.reduce(ThreadMvi.Intent.ToggleDislike(post))
+                                }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
+                                onOpenUsersFavorite = { post ->
+                                    mainRouter.openPostUsersFavorite(
+                                        postId = post.id,
+                                        count = post.favoriteCount,
                                         otherInstance = otherInstance,
                                     )
                                 },
-                                onOpenUsersReblog = { e ->
-                                    mainRouter.openEntryUsersReblog(
-                                        entryId = e.id,
-                                        count = e.reblogCount,
+                                onOpenUsersReblog = { post ->
+                                    mainRouter.openPostUsersReblog(
+                                        postId = post.id,
+                                        count = post.reblogCount,
                                         otherInstance = otherInstance,
                                     )
                                 },
                                 onPollVote =
                                 uiState.currentUserId?.let {
-                                    { e, choices ->
+                                    { post, choices ->
                                         model.reduce(
                                             ThreadMvi.Intent.SubmitPollVote(
-                                                entry = e,
+                                                post = post,
                                                 choices = choices,
                                             ),
                                         )
@@ -386,25 +386,25 @@ fun ThreadScreen(
                                 },
                                 onShowOriginal = {
                                     model.reduce(
-                                        ThreadMvi.Intent.ToggleTranslation(entry.original),
+                                        ThreadMvi.Intent.ToggleTranslation(post.original),
                                     )
                                 },
 
                                 options =
                                 buildList {
-                                    if (entry.original.actionPermissions.canShare) {
+                                    if (post.original.actionPermissions.canShare) {
                                         this += OptionId.Share.toOption()
                                         this += OptionId.CopyUrl.toOption()
                                     }
-                                    if (entry.original.actionPermissions.canQuote) {
+                                    if (post.original.actionPermissions.canQuote) {
                                         this += OptionId.Quote.toOption()
                                     }
                                     this += OptionId.ViewDetails.toOption()
                                     this += OptionId.CopyToClipboard.toOption()
                                     val currentLang = uiState.lang.orEmpty()
                                     if (currentLang.isNotEmpty() &&
-                                        entry.lang != currentLang &&
-                                        !entry.isShowingTranslation
+                                        post.lang != currentLang &&
+                                        !post.isShowingTranslation
                                     ) {
                                         this +=
                                             Option(
@@ -422,7 +422,7 @@ fun ThreadScreen(
                                                 },
                                             )
                                     }
-                                    val nodeName = entry.nodeName
+                                    val nodeName = post.nodeName
                                     if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
                                         this +=
                                             OptionId.AddShortcut.toOption(
@@ -434,12 +434,12 @@ fun ThreadScreen(
                                 onSelectOption = { optionId ->
                                     when (optionId) {
                                         OptionId.Share -> {
-                                            val urlString = entry.url.orEmpty()
+                                            val urlString = post.url.orEmpty()
                                             shareHelper.share(urlString)
                                         }
 
                                         OptionId.CopyUrl -> {
-                                            val urlString = entry.url.orEmpty()
+                                            val urlString = post.url.orEmpty()
                                             scope.launch {
                                                 clipboardHelper.setText(urlString)
                                                 snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -447,36 +447,36 @@ fun ThreadScreen(
                                         }
 
                                         OptionId.ViewDetails ->
-                                            seeDetailsEntry =
-                                                entry.original
+                                            seeDetailsPost =
+                                                post.original
 
                                         OptionId.Quote -> {
-                                            entry.original.also { entryToShare ->
+                                            post.original.also { toShare ->
                                                 mainRouter.openComposer(
-                                                    quoted = entryToShare,
-                                                    urlToShare = entryToShare.url,
+                                                    quoted = toShare,
+                                                    urlToShare = toShare.url,
                                                 )
                                             }
                                         }
 
                                         OptionId.CopyToClipboard ->
-                                            entry.original.also { entry ->
-                                                model.reduce(ThreadMvi.Intent.CopyToClipboard(entry))
+                                            post.original.also { post ->
+                                                model.reduce(ThreadMvi.Intent.CopyToClipboard(post))
                                             }
 
                                         OptionId.Translate ->
-                                            entry.original.also { entry ->
-                                                model.reduce(ThreadMvi.Intent.ToggleTranslation(entry))
+                                            post.original.also { post ->
+                                                model.reduce(ThreadMvi.Intent.ToggleTranslation(post))
                                             }
 
                                         OptionId.AddShortcut ->
                                             model.reduce(
-                                                ThreadMvi.Intent.AddInstanceShortcut(entry.nodeName),
+                                                ThreadMvi.Intent.AddInstanceShortcut(post.nodeName),
                                             )
 
                                         OptionId.OpenInBrowser ->
                                             model.reduce(
-                                                ThreadMvi.Intent.OpenInBrowser(entry),
+                                                ThreadMvi.Intent.OpenInBrowser(post),
                                             )
 
                                         else -> Unit
@@ -487,7 +487,7 @@ fun ThreadScreen(
                         }
                     }
 
-                    // here to show the initial entry from cache at startup
+                    // here to show the initial post from cache at startup
                     if (uiState.initial) {
                         val placeholderCount = 5
                         items(placeholderCount) { idx ->
@@ -501,10 +501,10 @@ fun ThreadScreen(
                     // replies
                     itemsIndexed(
                         items = replies,
-                        key = { _, e -> "thread-${e.safeKey}" },
-                    ) { idx, entry ->
+                        key = { _, post -> "thread-${post.safeKey}" },
+                    ) { idx, post ->
                         TimelineReplyItem(
-                            entry = entry,
+                            post = post,
                             layout = uiState.layout,
                             autoloadImages = uiState.autoloadImages,
                             onOpenUrl = { url, allowOpenInternal ->
@@ -525,79 +525,79 @@ fun ThreadScreen(
                                 )
                             },
                             onReblog =
-                            { e: TimelineEntryModel ->
+                            { post: PostModel ->
                                 val timeSinceCreation =
-                                    e.created?.run {
+                                    post.created?.run {
                                         getDurationFromDateToNow(this)
                                     } ?: Duration.ZERO
                                 when {
-                                    !e.reblogged && timeSinceCreation.isOldEntry ->
-                                        confirmReblogEntry = e
+                                    !post.reblogged && timeSinceCreation.isOldPost ->
+                                        confirmReblogPost = post
 
                                     else ->
                                         model.reduce(
-                                            ThreadMvi.Intent.ToggleReblog(e),
+                                            ThreadMvi.Intent.ToggleReblog(post),
                                         )
                                 }
-                            }.takeIf { entry.original.actionPermissions.canReblog && isHomeInstance },
+                            }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                             onBookmark =
-                            { e: TimelineEntryModel ->
-                                model.reduce(ThreadMvi.Intent.ToggleBookmark(e))
-                            }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
+                            { post: PostModel ->
+                                model.reduce(ThreadMvi.Intent.ToggleBookmark(post))
+                            }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                             onFavorite =
-                            { e: TimelineEntryModel ->
-                                model.reduce(ThreadMvi.Intent.ToggleFavorite(e))
-                            }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
+                            { post: PostModel ->
+                                model.reduce(ThreadMvi.Intent.ToggleFavorite(post))
+                            }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                             onDislike =
-                            { e: TimelineEntryModel ->
-                                model.reduce(ThreadMvi.Intent.ToggleDislike(e))
-                            }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
+                            { post: PostModel ->
+                                model.reduce(ThreadMvi.Intent.ToggleDislike(post))
+                            }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
                             onReply =
-                            { e: TimelineEntryModel ->
+                            { post: PostModel ->
                                 mainRouter.openComposer(
-                                    inReplyTo = e,
-                                    inReplyToUser = e.creator,
+                                    inReplyTo = post,
+                                    inReplyToUser = post.creator,
                                 )
-                            }.takeIf { entry.original.actionPermissions.canReply && isHomeInstance },
+                            }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                             onShowOriginal = {
                                 model.reduce(
-                                    ThreadMvi.Intent.ToggleTranslation(entry.original),
+                                    ThreadMvi.Intent.ToggleTranslation(post.original),
                                 )
                             },
-                            onOpenQuote = { e ->
-                                mainRouter.openEntryDetail(e)
+                            onOpenQuote = { post ->
+                                mainRouter.openPostDetail(post)
                             },
                             options =
                             buildList {
-                                if (entry.original.actionPermissions.canShare && isHomeInstance) {
+                                if (post.original.actionPermissions.canShare && isHomeInstance) {
                                     this += OptionId.Share.toOption()
                                     this += OptionId.CopyUrl.toOption()
                                 }
-                                if (entry.original.actionPermissions.canEdit && isHomeInstance) {
+                                if (post.original.actionPermissions.canEdit && isHomeInstance) {
                                     this += OptionId.Edit.toOption()
                                 }
-                                if (entry.original.actionPermissions.canDelete && isHomeInstance) {
+                                if (post.original.actionPermissions.canDelete && isHomeInstance) {
                                     this += OptionId.Delete.toOption()
                                 }
-                                if (entry.original.actionPermissions.canMute && isHomeInstance) {
+                                if (post.original.actionPermissions.canMute && isHomeInstance) {
                                     this += OptionId.Mute.toOption()
                                 }
-                                if (entry.original.actionPermissions.canBlock && isHomeInstance) {
+                                if (post.original.actionPermissions.canBlock && isHomeInstance) {
                                     this += OptionId.Block.toOption()
                                 }
-                                if (entry.original.actionPermissions.canReport && isHomeInstance) {
+                                if (post.original.actionPermissions.canReport && isHomeInstance) {
                                     this += OptionId.ReportUser.toOption()
-                                    this += OptionId.ReportEntry.toOption()
+                                    this += OptionId.ReportPost.toOption()
                                 }
-                                if (entry.original.actionPermissions.canQuote && isHomeInstance) {
+                                if (post.original.actionPermissions.canQuote && isHomeInstance) {
                                     this += OptionId.Quote.toOption()
                                 }
                                 this += OptionId.ViewDetails.toOption()
                                 this += OptionId.CopyToClipboard.toOption()
                                 val currentLang = uiState.lang.orEmpty()
                                 if (currentLang.isNotEmpty() &&
-                                    entry.lang != currentLang &&
-                                    !entry.isShowingTranslation
+                                    post.lang != currentLang &&
+                                    !post.isShowingTranslation
                                 ) {
                                     this +=
                                         Option(
@@ -615,7 +615,7 @@ fun ThreadScreen(
                                             },
                                         )
                                 }
-                                val nodeName = entry.nodeName
+                                val nodeName = post.nodeName
                                 if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
                                     this +=
                                         OptionId.AddShortcut.toOption(
@@ -627,12 +627,12 @@ fun ThreadScreen(
                             onSelectOption = { optionId ->
                                 when (optionId) {
                                     OptionId.Share -> {
-                                        val urlString = entry.url.orEmpty()
+                                        val urlString = post.url.orEmpty()
                                         shareHelper.share(urlString)
                                     }
 
                                     OptionId.CopyUrl -> {
-                                        val urlString = entry.url.orEmpty()
+                                        val urlString = post.url.orEmpty()
                                         scope.launch {
                                             clipboardHelper.setText(urlString)
                                             snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -641,59 +641,59 @@ fun ThreadScreen(
 
                                     OptionId.Edit -> {
                                         mainRouter.openComposer(
-                                            inReplyToUser = entry.creator,
-                                            editedPostId = entry.reblog?.id,
+                                            inReplyToUser = post.creator,
+                                            editedPostId = post.reblog?.id,
                                             inGroup = true,
                                         )
                                     }
 
-                                    OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                    OptionId.Delete -> confirmDeletePostId = post.id
 
-                                    OptionId.Mute -> confirmMuteEntry = entry
+                                    OptionId.Mute -> confirmMutePost = post
 
-                                    OptionId.Block -> confirmBlockEntry = entry
+                                    OptionId.Block -> confirmBlockPost = post
 
                                     OptionId.ReportUser ->
-                                        entry.original.creator?.also { userToReport ->
-                                            mainRouter.openCreateReport(user = userToReport)
+                                        post.original.creator?.also { toReport ->
+                                            mainRouter.openCreateReport(user = toReport)
                                         }
 
-                                    OptionId.ReportEntry ->
-                                        entry.original.also { entryToReport ->
-                                            entryToReport.creator?.also { userToReport ->
+                                    OptionId.ReportPost ->
+                                        post.original.also { postToReport ->
+                                            postToReport.creator?.also { userToReport ->
                                                 mainRouter.openCreateReport(
                                                     user = userToReport,
-                                                    entry = entryToReport,
+                                                    post = postToReport,
                                                 )
                                             }
                                         }
 
-                                    OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                    OptionId.ViewDetails -> seeDetailsPost = post.original
 
                                     OptionId.Quote -> {
-                                        entry.original.also { entryToShare ->
+                                        post.original.also { toShare ->
                                             mainRouter.openComposer(
-                                                quoted = entryToShare,
+                                                quoted = toShare,
                                             )
                                         }
                                     }
 
                                     OptionId.CopyToClipboard ->
-                                        model.reduce(ThreadMvi.Intent.CopyToClipboard(entry.original))
+                                        model.reduce(ThreadMvi.Intent.CopyToClipboard(post.original))
 
                                     OptionId.Translate ->
                                         model.reduce(
-                                            ThreadMvi.Intent.ToggleTranslation(entry.original),
+                                            ThreadMvi.Intent.ToggleTranslation(post.original),
                                         )
 
                                     OptionId.AddShortcut ->
                                         model.reduce(
-                                            ThreadMvi.Intent.AddInstanceShortcut(entry.nodeName),
+                                            ThreadMvi.Intent.AddInstanceShortcut(post.nodeName),
                                         )
 
                                     OptionId.OpenInBrowser ->
                                         model.reduce(
-                                            ThreadMvi.Intent.OpenInBrowser(entry),
+                                            ThreadMvi.Intent.OpenInBrowser(post),
                                         )
 
                                     else -> Unit
@@ -702,7 +702,7 @@ fun ThreadScreen(
                         )
 
                         // load more button
-                        if (entry.loadMoreButtonVisible) {
+                        if (post.loadMoreButtonVisible) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center,
@@ -710,7 +710,7 @@ fun ThreadScreen(
                                 Button(
                                     onClick = {
                                         model.reduce(
-                                            ThreadMvi.Intent.LoadMoreReplies(entry),
+                                            ThreadMvi.Intent.LoadMoreReplies(post),
                                         )
                                     },
                                 ) {
@@ -718,7 +718,7 @@ fun ThreadScreen(
                                         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
-                                        if (entry.loadMoreButtonLoading) {
+                                        if (post.loadMoreButtonLoading) {
                                             CircularProgressIndicator(
                                                 modifier = Modifier.size(IconSize.s),
                                                 color = MaterialTheme.colorScheme.onPrimary,
@@ -728,7 +728,7 @@ fun ThreadScreen(
                                             text =
                                             buildString {
                                                 append(LocalStrings.current.buttonLoadMoreReplies)
-                                                entry.replyCount
+                                                post.replyCount
                                                     .takeIf { it > 0 }
                                                     ?.also { count ->
                                                         append(" (")
@@ -755,33 +755,33 @@ fun ThreadScreen(
         }
     }
 
-    if (confirmDeleteEntryId != null) {
+    if (confirmDeletePostId != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
             onClose = { confirm ->
-                val deletedEntryId = confirmDeleteEntryId
-                confirmDeleteEntryId = null
-                if (confirm && deletedEntryId != null) {
-                    model.reduce(ThreadMvi.Intent.DeleteEntry(deletedEntryId))
+                val deletePostId = confirmDeletePostId
+                confirmDeletePostId = null
+                if (confirm && deletePostId != null) {
+                    model.reduce(ThreadMvi.Intent.Delete(deletePostId))
                 }
             },
         )
     }
 
-    if (confirmMuteEntry != null) {
-        (confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator)?.also { user ->
+    if (confirmMutePost != null) {
+        (confirmMutePost?.reblog?.creator ?: confirmMutePost?.creator)?.also { user ->
             ConfirmMuteUserBottomSheet(
                 userHandle = user.handle.orEmpty(),
                 onClose = { result ->
-                    val mutedEntryId = confirmMuteEntry?.id
-                    confirmMuteEntry = null
+                    val mutePostId = confirmMutePost?.id
+                    confirmMutePost = null
                     if (result != null) {
                         val (duration, disableNotifications) = result
-                        if (mutedEntryId != null) {
+                        if (mutePostId != null) {
                             model.reduce(
                                 ThreadMvi.Intent.MuteUser(
                                     userId = user.id,
-                                    entryId = mutedEntryId,
+                                    postId = mutePostId,
                                     duration = duration,
                                     disableNotifications = disableNotifications,
                                 ),
@@ -793,8 +793,8 @@ fun ThreadScreen(
         }
     }
 
-    if (confirmBlockEntry != null) {
-        val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+    if (confirmBlockPost != null) {
+        val creator = confirmBlockPost?.reblog?.creator ?: confirmBlockPost?.creator
         CustomConfirmDialog(
             title =
             buildString {
@@ -805,14 +805,14 @@ fun ThreadScreen(
                 }
             },
             onClose = { confirm ->
-                val blockedEntryId = confirmBlockEntry?.id
+                val blockPostId = confirmBlockPost?.id
                 val creatorId = creator?.id
-                confirmBlockEntry = null
-                if (confirm && blockedEntryId != null && creatorId != null) {
+                confirmBlockPost = null
+                if (confirm && blockPostId != null && creatorId != null) {
                     model.reduce(
                         ThreadMvi.Intent.BlockUser(
                             userId = creatorId,
-                            entryId = blockedEntryId,
+                            postId = blockPostId,
                         ),
                     )
                 }
@@ -828,13 +828,13 @@ fun ThreadScreen(
         )
     }
 
-    if (confirmReblogEntry != null) {
+    if (confirmReblogPost != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.buttonConfirm,
             body = LocalStrings.current.messageAreYouSureReblog,
             onClose = { confirm ->
-                val e = confirmReblogEntry
-                confirmReblogEntry = null
+                val e = confirmReblogPost
+                confirmReblogPost = null
                 if (confirm && e != null) {
                     model.reduce(ThreadMvi.Intent.ToggleReblog(e))
                 }
@@ -842,11 +842,11 @@ fun ThreadScreen(
         )
     }
 
-    seeDetailsEntry?.let { entry ->
-        EntryDetailDialog(
-            entry = entry,
+    seeDetailsPost?.let { post ->
+        PostDetailDialog(
+            post = post,
             onClose = {
-                seeDetailsEntry = null
+                seeDetailsPost = null
             },
         )
     }

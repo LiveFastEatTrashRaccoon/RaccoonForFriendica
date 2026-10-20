@@ -40,10 +40,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -54,7 +54,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.clickableWithoutFocus
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
@@ -84,9 +84,9 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
     val shareHelper = LocalUiDeps.current.shareHelper
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
-    var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmReblogPost by remember { mutableStateOf<PostModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
-    var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var seeDetailsPost by remember { mutableStateOf<PostModel?>(null) }
     val genericError = LocalStrings.current.messageGenericError
 
     suspend fun goBackToTop() {
@@ -117,8 +117,8 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                     }
 
                     is ShortcutTimelineMvi.Effect.OpenDetail -> {
-                        mainRouter.openEntryDetail(
-                            entry = event.entry,
+                        mainRouter.openPostDetail(
+                            post = event.post,
                             swipeNavigationEnabled = true,
                             otherInstance = node,
                         )
@@ -210,7 +210,7 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                     }
                 }
 
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.posts.isEmpty()) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
@@ -227,17 +227,17 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                 }
 
                 itemsIndexed(
-                    items = uiState.entries,
-                    key = { _, e -> "timeline-${e.safeKey}" },
-                ) { idx, entry ->
+                    items = uiState.posts,
+                    key = { _, post -> "timeline-${post.safeKey}" },
+                ) { idx, post ->
                     TimelineItem(
-                        entry = entry,
+                        post = post,
                         layout = uiState.layout,
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onClick = { e ->
-                            model.reduce(ShortcutTimelineMvi.Intent.WillOpenDetail(e))
+                        onClick = { post ->
+                            model.reduce(ShortcutTimelineMvi.Intent.WillOpenDetail(post))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -258,27 +258,27 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         },
                         onShowOriginal = {
                             model.reduce(
-                                ShortcutTimelineMvi.Intent.ToggleTranslation(entry.original),
+                                ShortcutTimelineMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { e ->
-                            mainRouter.openEntryDetail(e)
+                        onOpenQuote = { post ->
+                            mainRouter.openPostDetail(post)
                         },
                         options =
                         buildList {
-                            if (entry.original.actionPermissions.canShare) {
+                            if (post.original.actionPermissions.canShare) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (entry.original.actionPermissions.canQuote) {
+                            if (post.original.actionPermissions.canQuote) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()
                             this += OptionId.CopyToClipboard.toOption()
                             val currentLang = uiState.lang.orEmpty()
                             if (currentLang.isNotEmpty() &&
-                                entry.lang != currentLang &&
-                                !entry.isShowingTranslation
+                                post.lang != currentLang &&
+                                !post.isShowingTranslation
                             ) {
                                 this +=
                                     Option(
@@ -301,12 +301,12 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         onSelectOption = { optionId ->
                             when (optionId) {
                                 OptionId.Share -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     shareHelper.share(urlString)
                                 }
 
                                 OptionId.CopyUrl -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     scope.launch {
                                         clipboardHelper.setText(urlString)
                                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -314,46 +314,46 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                                 }
 
                                 OptionId.Quote -> {
-                                    entry.original.also { entryToShare ->
+                                    post.original.also { toShare ->
                                         mainRouter.openComposer(
-                                            quoted = entryToShare,
-                                            urlToShare = entryToShare.url,
+                                            quoted = toShare,
+                                            urlToShare = toShare.url,
                                         )
                                     }
                                 }
 
-                                OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                OptionId.ViewDetails -> seeDetailsPost = post.original
 
                                 OptionId.CopyToClipboard ->
                                     model.reduce(
                                         ShortcutTimelineMvi.Intent.CopyToClipboard(
-                                            entry.original,
+                                            post.original,
                                         ),
                                     )
 
                                 OptionId.Translate ->
                                     model.reduce(
                                         ShortcutTimelineMvi.Intent.ToggleTranslation(
-                                            entry.original,
+                                            post.original,
                                         ),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        ShortcutTimelineMvi.Intent.OpenInBrowser(entry),
+                                        ShortcutTimelineMvi.Intent.OpenInBrowser(post),
                                     )
 
                                 else -> Unit
                             }
                         },
                     )
-                    if (idx < uiState.entries.lastIndex) {
+                    if (idx < uiState.posts.lastIndex) {
                         TimelineDivider(layout = uiState.layout)
                     }
 
                     val canFetchMore =
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
-                    val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.posts)
                     if (isNearTheEnd && canFetchMore) {
                         model.reduce(ShortcutTimelineMvi.Intent.LoadNextPage)
                     }
@@ -385,25 +385,25 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
         )
     }
 
-    if (confirmReblogEntry != null) {
+    if (confirmReblogPost != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.buttonConfirm,
             body = LocalStrings.current.messageAreYouSureReblog,
             onClose = { confirm ->
-                val e = confirmReblogEntry
-                confirmReblogEntry = null
-                if (confirm && e != null) {
-                    model.reduce(ShortcutTimelineMvi.Intent.ToggleReblog(e))
+                val post = confirmReblogPost
+                confirmReblogPost = null
+                if (confirm && post != null) {
+                    model.reduce(ShortcutTimelineMvi.Intent.ToggleReblog(post))
                 }
             },
         )
     }
 
-    seeDetailsEntry?.let { entry ->
-        EntryDetailDialog(
-            entry = entry,
+    seeDetailsPost?.let { post ->
+        PostDetailDialog(
+            post = post,
             onClose = {
-                seeDetailsEntry = null
+                seeDetailsPost = null
             },
         )
     }

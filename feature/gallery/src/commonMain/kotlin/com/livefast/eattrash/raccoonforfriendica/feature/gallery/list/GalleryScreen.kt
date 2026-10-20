@@ -230,7 +230,7 @@ fun GalleryScreen(model: GalleryMvi, modifier: Modifier = Modifier) {
 
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e -> "gallery-${e.name}" },
+                    key = { _, album -> "gallery-${album.name}" },
                 ) { idx, album ->
                     MediaAlbumItem(
                         album = album,

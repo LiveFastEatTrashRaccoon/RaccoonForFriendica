@@ -7,12 +7,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostCreatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
@@ -20,7 +20,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPrel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.DraftRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ScheduledPostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -43,7 +43,7 @@ class UnpublishedViewModel(
     private val paginationManager: UnpublishedPaginationManager,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
-    private val scheduledEntryRepository: ScheduledEntryRepository,
+    private val scheduledPostRepository: ScheduledPostRepository,
     private val draftRepository: DraftRepository,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
@@ -59,15 +59,15 @@ class UnpublishedViewModel(
             notificationCenter
                 .subscribe(DraftDeletedEvent::class)
                 .onEach { event ->
-                    removeEntryFromState(event.id)
+                    removePostFromState(event.id)
                 }.launchIn(this)
             notificationCenter
-                .subscribe(TimelineEntryUpdatedEvent::class)
+                .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updateEntryInState(event.entry.id) { event.entry }
+                    updatePostInState(event.post.id) { event.post }
                 }.launchIn(this)
             notificationCenter
-                .subscribe(TimelineEntryCreatedEvent::class)
+                .subscribe(PostCreatedEvent::class)
                 .onEach {
                     refresh()
                 }.launchIn(this)
@@ -110,7 +110,7 @@ class UnpublishedViewModel(
     override fun reduce(intent: UnpublishedMvi.Intent) {
         when (intent) {
             is UnpublishedMvi.Intent.ChangeSection -> handleChangeSection(intent.section)
-            is UnpublishedMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
+            is UnpublishedMvi.Intent.Delete -> handleDelete(intent.postId)
             UnpublishedMvi.Intent.LoadNextPage -> handleLoadNextPage()
             UnpublishedMvi.Intent.Refresh -> handleRefresh()
         }
@@ -158,11 +158,11 @@ class UnpublishedViewModel(
         updateState { it.copy(loading = true) }
         try {
             val currentUser = uiState.value.currentUser
-            val entries = paginationManager.loadNextPage().map { it.copy(creator = currentUser) }
-            entries.preloadImages()
+            val posts = paginationManager.loadNextPage().map { it.copy(creator = currentUser) }
+            posts.preloadImages()
             updateState {
                 it.copy(
-                    entries = entries,
+                    posts = posts,
                     canFetchMore = paginationManager.canFetchMore,
                     loading = false,
                     initial = false,
@@ -175,52 +175,52 @@ class UnpublishedViewModel(
         }
     }
 
-    private suspend fun List<TimelineEntryModel>.preloadImages() {
-        flatMap { entry ->
-            entry.original.urlsForPreload
+    private suspend fun List<PostModel>.preloadImages() {
+        flatMap { post ->
+            post.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }
-        flatMap { entry ->
-            entry.blurHashParamsForPreload
+        flatMap { post ->
+            post.blurHashParamsForPreload
         }.forEach {
             blurHashRepository.preload(it)
         }
     }
 
-    private suspend fun removeEntryFromState(entryId: String) {
+    private suspend fun removePostFromState(postId: String) {
         updateState {
             it.copy(
-                entries = it.entries.filter { e -> e.id != entryId },
+                posts = it.posts.filter { post -> post.id != postId },
             )
         }
     }
 
-    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
+    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
         updateState {
             it.copy(
-                entries =
-                it.entries.map { entry ->
+                posts =
+                it.posts.map { post ->
                     when {
-                        entry.id == entryId -> entry.let(block)
-                        else -> entry
+                        post.id == postId -> post.let(block)
+                        else -> post
                     }
                 },
             )
         }
     }
 
-    private fun handleDeleteEntry(entryId: String) {
+    private fun handleDelete(postId: String) {
         val currentState = uiState.value
         viewModelScope.launch {
             val success =
                 when (currentState.section) {
-                    UnpublishedType.Scheduled -> scheduledEntryRepository.delete(entryId)
-                    UnpublishedType.Drafts -> draftRepository.delete(entryId)
+                    UnpublishedType.Scheduled -> scheduledPostRepository.delete(postId)
+                    UnpublishedType.Drafts -> draftRepository.delete(postId)
                 }
             if (success) {
-                notificationCenter.send(TimelineEntryDeletedEvent(entryId))
-                removeEntryFromState(entryId)
+                notificationCenter.send(PostDeletedEvent(postId))
+                removePostFromState(postId)
             }
         }
     }

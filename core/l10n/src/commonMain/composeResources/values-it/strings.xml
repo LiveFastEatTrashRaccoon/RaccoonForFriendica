@@ -60,7 +60,7 @@
     <string name="action_remove_spoiler">Rimuovi spoiler</string>
     <string name="action_remove_title">Rimuovi titolo</string>
     <string name="action_reply">Rispondi</string>
-    <string name="action_report_entry">Segnala post</string>
+    <string name="action_report_post">Segnala post</string>
     <string name="action_report_user">Segnala utente</string>
     <string name="action_reveal_content">Rivela contenuto</string>
     <string name="action_save">Salva</string>
@@ -130,7 +130,7 @@
     <string name="create_report_item_category">Categoria</string>
     <string name="create_report_item_forward">Inoltra segnalazione</string>
     <string name="create_report_item_rules">Regole violate</string>
-    <string name="create_report_title_entry">Segnala post di</string>
+    <string name="create_report_title_post">Segnala post di</string>
     <string name="create_report_title_user">Segnala</string>
     <string name="creation_date">data creazione</string>
     <string name="custom_option">Personalizzato</string>
@@ -251,8 +251,8 @@
     <string name="node_info_section_rules">Regole</string>
     <string name="node_info_title">Informazioni istanza</string>
     <string name="node_via">via</string>
-    <string name="notification_type_entry">ha pubblicato un post</string>
-    <string name="notification_type_entry_name">Notifiche post</string>
+    <string name="notification_type_post">ha pubblicato un post</string>
+    <string name="notification_type_post_name">Notifiche post</string>
     <string name="notification_type_favorite">ha aggiunto il tuo post ai preferiti</string>
     <string name="notification_type_favorite_name">Preferiti</string>
     <string name="notification_type_follow">ha iniziato a seguirti</string>
@@ -375,8 +375,8 @@
     <string name="time_minute_short">min</string>
     <string name="time_second_short">s</string>
     <string name="timeline_all">Tutti</string>
-    <string name="timeline_entry_in_reply_to">in risposta a</string>
-    <string name="timeline_entry_reblogged_by">ricondiviso da</string>
+    <string name="post_in_reply_to">in risposta a</string>
+    <string name="post_reblogged_by">ricondiviso da</string>
     <string name="timeline_local">Locale</string>
     <string name="timeline_subscriptions">Iscrizioni</string>
     <string name="topic_title">Argomento</string>

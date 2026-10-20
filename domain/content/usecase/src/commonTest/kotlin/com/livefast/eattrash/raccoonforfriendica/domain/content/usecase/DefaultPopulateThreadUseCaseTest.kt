@@ -1,13 +1,11 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import dev.mokkery.answering.calls
 import dev.mokkery.answering.returns
-import dev.mokkery.answering.returnsArgAt
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
@@ -18,14 +16,14 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DefaultPopulateThreadUseCaseTest {
-    private val timelineEntryRepository = mock<TimelineEntryRepository>()
+    private val postRepository = mock<PostRepository>()
     private val sut =
-        DefaultPopulateThreadUseCase(timelineEntryRepository = timelineEntryRepository)
+        DefaultPopulateThreadUseCase(postRepository = postRepository)
 
     @Test
-    fun `given terminal entry when invoke then result and interactions are as expected`() = runTest {
+    fun `given terminal post when invoke then result and interactions are as expected`() = runTest {
         val root =
-            TimelineEntryModel(
+            PostModel(
                 id = "1",
                 content = "test",
             )
@@ -34,104 +32,104 @@ class DefaultPopulateThreadUseCaseTest {
 
         assertEquals(listOf(root), res)
         verifySuspend(VerifyMode.not) {
-            timelineEntryRepository.getContext(any())
+            postRepository.getContext(any())
         }
     }
 
     @Test
     fun `given descendants can not be determined then result has the load more option`() = runTest {
         val root =
-            TimelineEntryModel(
+            PostModel(
                 id = "1",
                 content = "test",
                 replyCount = 1,
             )
         everySuspend {
-            timelineEntryRepository.getContext(any())
+            postRepository.getContext(any())
         } returns TimelineContextModel(descendants = listOf())
 
         val res = sut.invoke(root)
 
         assertEquals(listOf(root.copy(loadMoreButtonVisible = true)), res)
         verifySuspend {
-            timelineEntryRepository.getContext(root.id)
+            postRepository.getContext(root.id)
         }
     }
 
     @Test
     fun `given max depth less than actual depth when invoke then result is as expected`() = runTest {
         val root =
-            TimelineEntryModel(
+            PostModel(
                 id = "P0",
                 content = "root",
                 replyCount = 2,
             )
         val child1 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P1",
                 content = "reply 1",
-                inReplyTo = TimelineEntryModel(id = root.id, content = ""),
+                inReplyTo = PostModel(id = root.id, content = ""),
                 replyCount = 3,
             )
         val child2 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P2",
                 content = "reply 2",
-                inReplyTo = TimelineEntryModel(id = root.id, content = ""),
+                inReplyTo = PostModel(id = root.id, content = ""),
                 replyCount = 2,
             )
         val child11 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P3",
                 content = "reply 3",
-                inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                inReplyTo = PostModel(id = child1.id, content = ""),
             )
         val child12 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P4",
                 content = "reply 4",
-                inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                inReplyTo = PostModel(id = child1.id, content = ""),
             )
         val child13 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P5",
                 content = "reply 5",
-                inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                inReplyTo = PostModel(id = child1.id, content = ""),
                 replyCount = 2,
             )
         val child21 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P6",
                 content = "reply 6",
-                inReplyTo = TimelineEntryModel(id = child2.id, content = ""),
+                inReplyTo = PostModel(id = child2.id, content = ""),
             )
         val child22 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P7",
                 content = "reply 7",
-                inReplyTo = TimelineEntryModel(id = child2.id, content = ""),
+                inReplyTo = PostModel(id = child2.id, content = ""),
             )
         val child131 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P8",
                 content = "reply 8",
-                inReplyTo = TimelineEntryModel(id = child13.id, content = ""),
+                inReplyTo = PostModel(id = child13.id, content = ""),
             )
         val child132 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P9",
                 content = "reply 9",
-                inReplyTo = TimelineEntryModel(id = child13.id, content = ""),
+                inReplyTo = PostModel(id = child13.id, content = ""),
             )
         everySuspend {
-            timelineEntryRepository.getContext(any())
+            postRepository.getContext(any())
         } returns TimelineContextModel(
             descendants = listOf(
                 child1, child2, child11, child12, child13, child131, child132, child21, child22,
             ),
         )
 
-        val res = sut.invoke(entry = root, maxDepth = 2)
+        val res = sut.invoke(post = root, maxDepth = 2)
 
         assertEquals(
             listOf(
@@ -148,135 +146,135 @@ class DefaultPopulateThreadUseCaseTest {
             res,
         )
         verifySuspend {
-            timelineEntryRepository.getContext(root.id)
+            postRepository.getContext(root.id)
         }
         verifySuspend(VerifyMode.not) {
-            timelineEntryRepository.getContext(child1.id)
-            timelineEntryRepository.getContext(child2.id)
-            timelineEntryRepository.getContext(child11.id)
-            timelineEntryRepository.getContext(child12.id)
-            timelineEntryRepository.getContext(child13.id)
-            timelineEntryRepository.getContext(child131.id)
-            timelineEntryRepository.getContext(child132.id)
-            timelineEntryRepository.getContext(child21.id)
-            timelineEntryRepository.getContext(child22.id)
+            postRepository.getContext(child1.id)
+            postRepository.getContext(child2.id)
+            postRepository.getContext(child11.id)
+            postRepository.getContext(child12.id)
+            postRepository.getContext(child13.id)
+            postRepository.getContext(child131.id)
+            postRepository.getContext(child132.id)
+            postRepository.getContext(child21.id)
+            postRepository.getContext(child22.id)
         }
     }
 
     @Test
     fun `given structure with reblogs when invoke then result is as expected`() = runTest {
         val root =
-            TimelineEntryModel(
+            PostModel(
                 id = "P0",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P0",
                     content = "root",
                     replyCount = 2,
                 ),
             )
         val child1 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P1",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P1",
                     content = "reply 1",
-                    inReplyTo = TimelineEntryModel(id = root.id, content = ""),
+                    inReplyTo = PostModel(id = root.id, content = ""),
                     replyCount = 3,
                 ),
             )
         val child2 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P2",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P2",
                     content = "reply 2",
-                    inReplyTo = TimelineEntryModel(id = root.id, content = ""),
+                    inReplyTo = PostModel(id = root.id, content = ""),
                     replyCount = 2,
                 ),
             )
         val child11 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P3",
                 content = "reply 3",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P3",
                     content = "reply 3",
-                    inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                    inReplyTo = PostModel(id = child1.id, content = ""),
                 ),
             )
         val child12 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P4",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P4",
                     content = "reply 4",
-                    inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                    inReplyTo = PostModel(id = child1.id, content = ""),
                 ),
             )
         val child13 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P5",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P5",
                     content = "reply 5",
-                    inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                    inReplyTo = PostModel(id = child1.id, content = ""),
                     replyCount = 2,
                 ),
             )
         val child21 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P6",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P6",
                     content = "reply 6",
-                    inReplyTo = TimelineEntryModel(id = child2.id, content = ""),
+                    inReplyTo = PostModel(id = child2.id, content = ""),
                 ),
             )
         val child22 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P7",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P7",
                     content = "reply 7",
-                    inReplyTo = TimelineEntryModel(id = child2.id, content = ""),
+                    inReplyTo = PostModel(id = child2.id, content = ""),
                 ),
             )
         val child131 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P8",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P8",
                     content = "reply 8",
-                    inReplyTo = TimelineEntryModel(id = child13.id, content = ""),
+                    inReplyTo = PostModel(id = child13.id, content = ""),
                 ),
             )
         val child132 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P9",
                 content = "",
-                reblog = TimelineEntryModel(
+                reblog = PostModel(
                     id = "P9",
                     content = "reply 9",
-                    inReplyTo = TimelineEntryModel(id = child13.id, content = ""),
+                    inReplyTo = PostModel(id = child13.id, content = ""),
                 ),
             )
         everySuspend {
-            timelineEntryRepository.getContext(any())
+            postRepository.getContext(any())
         } returns TimelineContextModel(
             descendants = listOf(
                 child1, child2, child11, child12, child13, child131, child132, child21, child22,
             ),
         )
 
-        val res = sut.invoke(entry = root, maxDepth = 2)
+        val res = sut.invoke(post = root, maxDepth = 2)
 
         assertEquals(
             listOf(
@@ -296,73 +294,73 @@ class DefaultPopulateThreadUseCaseTest {
     @Test
     fun `given further invocation on partial tree when invoke then result is as expected`() = runTest {
         val root =
-            TimelineEntryModel(
+            PostModel(
                 id = "P0",
                 content = "root",
                 replyCount = 2,
             )
         val child1 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P1",
                 content = "reply 1",
-                inReplyTo = TimelineEntryModel(id = root.id, content = ""),
+                inReplyTo = PostModel(id = root.id, content = ""),
                 replyCount = 3,
             )
         val child2 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P2",
                 content = "reply 2",
-                inReplyTo = TimelineEntryModel(id = root.id, content = ""),
+                inReplyTo = PostModel(id = root.id, content = ""),
                 replyCount = 2,
             )
         val child11 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P3",
                 content = "reply 3",
-                inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                inReplyTo = PostModel(id = child1.id, content = ""),
             )
         val child12 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P4",
                 content = "reply 4",
-                inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                inReplyTo = PostModel(id = child1.id, content = ""),
             )
         val child13 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P5",
                 content = "reply 5",
-                inReplyTo = TimelineEntryModel(id = child1.id, content = ""),
+                inReplyTo = PostModel(id = child1.id, content = ""),
                 replyCount = 2,
             )
         val child21 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P6",
                 content = "reply 6",
-                inReplyTo = TimelineEntryModel(id = child2.id, content = ""),
+                inReplyTo = PostModel(id = child2.id, content = ""),
             )
         val child22 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P7",
                 content = "reply 7",
-                inReplyTo = TimelineEntryModel(id = child2.id, content = ""),
+                inReplyTo = PostModel(id = child2.id, content = ""),
             )
         val child131 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P8",
                 content = "reply 8",
-                inReplyTo = TimelineEntryModel(id = child13.id, content = ""),
+                inReplyTo = PostModel(id = child13.id, content = ""),
             )
         val child132 =
-            TimelineEntryModel(
+            PostModel(
                 id = "P9",
                 content = "reply 9",
-                inReplyTo = TimelineEntryModel(id = child13.id, content = ""),
+                inReplyTo = PostModel(id = child13.id, content = ""),
             )
         everySuspend {
-            timelineEntryRepository.getContext(any())
+            postRepository.getContext(any())
         } calls {
-            val entryId = it.arg<String>(0)
-            when (entryId) {
+            val postId = it.arg<String>(0)
+            when (postId) {
                 root.id ->
                     TimelineContextModel(
                         descendants = listOf(
@@ -379,11 +377,11 @@ class DefaultPopulateThreadUseCaseTest {
                 else -> TimelineContextModel()
             }
         }
-        val prunedTree = sut.invoke(entry = root, maxDepth = 2)
-        val pruningIndex = prunedTree.indexOfFirst { e -> e.loadMoreButtonVisible }
+        val prunedTree = sut.invoke(post = root, maxDepth = 2)
+        val pruningIndex = prunedTree.indexOfFirst { post -> post.loadMoreButtonVisible }
         val subroot = prunedTree[pruningIndex]
 
-        val res = sut.invoke(entry = subroot, maxDepth = 2)
+        val res = sut.invoke(post = subroot, maxDepth = 2)
 
         assertEquals(
             listOf(
@@ -394,11 +392,11 @@ class DefaultPopulateThreadUseCaseTest {
             res,
         )
         verifySuspend {
-            timelineEntryRepository.getContext(child13.id)
+            postRepository.getContext(child13.id)
         }
         verifySuspend(VerifyMode.not) {
-            timelineEntryRepository.getContext(child131.id)
-            timelineEntryRepository.getContext(child132.id)
+            postRepository.getContext(child131.id)
+            postRepository.getContext(child132.id)
         }
     }
 }

@@ -142,9 +142,9 @@ class UserListViewModel(
                 is UserListType.Following -> UserPaginationSpecification.Following(args.userId)
 
                 is UserListType.UsersFavorite ->
-                    UserPaginationSpecification.EntryUsersFavorite(args.entryId)
+                    UserPaginationSpecification.PostUsersFavorite(args.postId)
 
-                is UserListType.UsersReblog -> UserPaginationSpecification.EntryUsersReblog(args.entryId)
+                is UserListType.UsersReblog -> UserPaginationSpecification.PostUsersReblog(args.postId)
             },
         )
         loadNextPage()
@@ -280,7 +280,7 @@ class UserListViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<UserListViewModelArgs>()
 
-data class UserListViewModelArgs(val type: UserListType, val userId: String, val entryId: String)
+data class UserListViewModelArgs(val type: UserListType, val userId: String, val postId: String)
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(UserListViewModel::class)

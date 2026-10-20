@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.userdetail.classic
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.Mvi
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserRateLimitModel
 import kotlin.time.Duration
@@ -20,19 +20,19 @@ interface UserDetailMvi : Mvi<UserDetailMvi.Intent, UserDetailMvi.State, UserDet
 
         data object Unfollow : Intent
 
-        data class ToggleReblog(val entry: TimelineEntryModel) : Intent
+        data class ToggleReblog(val post: PostModel) : Intent
 
-        data class ToggleFavorite(val entry: TimelineEntryModel) : Intent
+        data class ToggleFavorite(val post: PostModel) : Intent
 
-        data class ToggleDislike(val entry: TimelineEntryModel) : Intent
+        data class ToggleDislike(val post: PostModel) : Intent
 
-        data class ToggleBookmark(val entry: TimelineEntryModel) : Intent
+        data class ToggleBookmark(val post: PostModel) : Intent
 
         data object EnableNotifications : Intent
 
         data object DisableNotifications : Intent
 
-        data class SubmitPollVote(val entry: TimelineEntryModel, val choices: List<Int>) : Intent
+        data class SubmitPollVote(val post: PostModel, val choices: List<Int>) : Intent
 
         data class ToggleMute(
             val muted: Boolean,
@@ -48,17 +48,17 @@ interface UserDetailMvi : Mvi<UserDetailMvi.Intent, UserDetailMvi.State, UserDet
 
         data object SubmitPersonalNote : Intent
 
-        data class CopyToClipboard(val entry: TimelineEntryModel) : Intent
+        data class CopyToClipboard(val post: PostModel) : Intent
 
         data class SetRateLimit(val rateLimit: Double) : Intent
 
-        data class ToggleTranslation(val entry: TimelineEntryModel) : Intent
+        data class ToggleTranslation(val post: PostModel) : Intent
 
-        data class WillOpenDetail(val entry: TimelineEntryModel) : Intent
+        data class WillOpenDetail(val post: PostModel) : Intent
 
         data class AddInstanceShortcut(val node: String) : Intent
 
-        data class OpenInBrowser(val entry: TimelineEntryModel) : Intent
+        data class OpenInBrowser(val post: PostModel) : Intent
     }
 
     data class State(
@@ -69,7 +69,7 @@ interface UserDetailMvi : Mvi<UserDetailMvi.Intent, UserDetailMvi.State, UserDet
         val canFetchMore: Boolean = true,
         val user: UserModel? = null,
         val section: UserSection = UserSection.Posts,
-        val entries: List<TimelineEntryModel> = emptyList(),
+        val posts: List<PostModel> = emptyList(),
         val blurNsfw: Boolean = true,
         val personalNote: String? = null,
         val personalNoteEditEnabled: Boolean = false,
@@ -91,7 +91,7 @@ interface UserDetailMvi : Mvi<UserDetailMvi.Intent, UserDetailMvi.State, UserDet
 
         data class TriggerCopy(val text: String) : Effect
 
-        data class OpenDetail(val entry: TimelineEntryModel) : Effect
+        data class OpenDetail(val post: PostModel) : Effect
 
         data class OpenUrl(val url: String) : Effect
     }

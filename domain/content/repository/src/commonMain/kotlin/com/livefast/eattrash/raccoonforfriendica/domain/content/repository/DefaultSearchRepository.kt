@@ -32,9 +32,9 @@ class DefaultSearchRepository(private val provider: ServiceProvider) : SearchRep
                     resolve = resolve,
                 )
         when (type) {
-            SearchResultType.Entries ->
+            SearchResultType.Posts ->
                 response.statuses.map {
-                    ExploreItemModel.Entry(it.toModelWithReply())
+                    ExploreItemModel.Post(it.toModelWithReply())
                 }
 
             SearchResultType.Hashtags ->

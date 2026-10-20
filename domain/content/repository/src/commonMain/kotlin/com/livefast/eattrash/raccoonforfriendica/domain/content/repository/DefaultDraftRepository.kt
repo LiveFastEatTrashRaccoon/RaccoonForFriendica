@@ -5,7 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.DraftEntity
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.CancellationException
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultDraftRepository(private val draftDao: DraftDao, private val provider: ServiceProvider) : DraftRepository {
-    override suspend fun getAll(page: Int): List<TimelineEntryModel>? = try {
+    override suspend fun getAll(page: Int): List<PostModel>? = try {
         draftDao
             .getAll(
                 offset = page * DEFAULT_PAGE_SIZE,
@@ -31,14 +31,14 @@ class DefaultDraftRepository(private val draftDao: DraftDao, private val provide
         null
     }
 
-    override suspend fun getById(id: String): TimelineEntryModel? = try {
+    override suspend fun getById(id: String): PostModel? = try {
         draftDao.getBy(id)?.toModel()
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
-    override suspend fun create(item: TimelineEntryModel): TimelineEntryModel? = try {
+    override suspend fun create(item: PostModel): PostModel? = try {
         val entity = item.toEntity()
         draftDao.insert(entity)
         getById(item.id)
@@ -47,7 +47,7 @@ class DefaultDraftRepository(private val draftDao: DraftDao, private val provide
         null
     }
 
-    override suspend fun update(item: TimelineEntryModel): TimelineEntryModel? = try {
+    override suspend fun update(item: PostModel): PostModel? = try {
         val entity = item.toEntity()
         draftDao.update(entity)
         getById(item.id)
@@ -65,7 +65,7 @@ class DefaultDraftRepository(private val draftDao: DraftDao, private val provide
         false
     }
 
-    private suspend fun DraftEntity.toModel() = TimelineEntryModel(
+    private suspend fun DraftEntity.toModel() = PostModel(
         id = id,
         attachments =
         mediaIds
@@ -111,7 +111,7 @@ class DefaultDraftRepository(private val draftDao: DraftDao, private val provide
         },
     )
 
-    private fun TimelineEntryModel.toEntity() = DraftEntity(
+    private fun PostModel.toEntity() = DraftEntity(
         id = id,
         mediaIds = attachments.joinToString(",") { it.id },
         inReplyToId = parentId,

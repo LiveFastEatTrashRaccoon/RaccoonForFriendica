@@ -27,13 +27,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLa
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 
 @Composable
 fun TimelineReplyItem(
-    entry: TimelineEntryModel,
+    post: PostModel,
     modifier: Modifier = Modifier,
     actionsEnabled: Boolean = true,
     pollEnabled: Boolean = true,
@@ -43,23 +43,23 @@ fun TimelineReplyItem(
     layout: TimelineLayout = TimelineLayout.Full,
     options: List<Option> = emptyList(),
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
-    onClick: ((TimelineEntryModel) -> Unit)? = null,
+    onClick: ((PostModel) -> Unit)? = null,
     onOpenUser: ((UserModel) -> Unit)? = null,
-    onReply: ((TimelineEntryModel) -> Unit)? = null,
-    onReblog: ((TimelineEntryModel) -> Unit)? = null,
-    onFavorite: ((TimelineEntryModel) -> Unit)? = null,
-    onDislike: ((TimelineEntryModel) -> Unit)? = null,
-    onBookmark: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenUsersFavorite: ((TimelineEntryModel) -> Unit)? = null,
-    onOpenUsersReblog: ((TimelineEntryModel) -> Unit)? = null,
+    onReply: ((PostModel) -> Unit)? = null,
+    onReblog: ((PostModel) -> Unit)? = null,
+    onFavorite: ((PostModel) -> Unit)? = null,
+    onDislike: ((PostModel) -> Unit)? = null,
+    onBookmark: ((PostModel) -> Unit)? = null,
+    onOpenUsersFavorite: ((PostModel) -> Unit)? = null,
+    onOpenUsersReblog: ((PostModel) -> Unit)? = null,
     onOpenImage: ((List<String>, Int, List<Int>) -> Unit)? = null,
     onSelectOption: ((OptionId) -> Unit)? = null,
-    onPollVote: ((TimelineEntryModel, List<Int>) -> Unit)? = null,
+    onPollVote: ((PostModel, List<Int>) -> Unit)? = null,
     onShowOriginal: (() -> Unit)? = null,
-    onOpenQuote: ((TimelineEntryModel) -> Unit)? = null,
+    onOpenQuote: ((PostModel) -> Unit)? = null,
 ) {
-    val entryToDisplay = entry.original
-    val depthZeroBased = (entry.depth - 1).coerceAtLeast(0)
+    val postToDisplay = post.original
+    val depthZeroBased = (post.depth - 1).coerceAtLeast(0)
     val themeRepository = LocalUiDeps.current.themeRepository
     val barWidth = 3.dp
     val barColor = themeRepository.getCommentBarColor(depthZeroBased)
@@ -70,46 +70,46 @@ fun TimelineReplyItem(
     val replyActionLabel =
         buildString {
             append(LocalStrings.current.actionReply)
-            if (entryToDisplay.replyCount > 0) {
+            if (postToDisplay.replyCount > 0) {
                 append(": ")
-                append(entryToDisplay.replyCount)
+                append(postToDisplay.replyCount)
             }
         }
     val reblogActionLabel =
         buildString {
             append(LocalStrings.current.actionReblog)
-            if (entryToDisplay.reblogCount > 0) {
+            if (postToDisplay.reblogCount > 0) {
                 append(": ")
-                append(entryToDisplay.reblogCount)
+                append(postToDisplay.reblogCount)
             }
         }
     val favoriteActionLabel =
         buildString {
-            if (entryToDisplay.favorite) {
+            if (postToDisplay.favorite) {
                 append(LocalStrings.current.actionRemoveFromFavorites)
             } else {
                 append(LocalStrings.current.actionAddToFavorites)
             }
-            if (entryToDisplay.favoriteCount > 0) {
+            if (postToDisplay.favoriteCount > 0) {
                 append(": ")
-                append(entryToDisplay.favoriteCount)
+                append(postToDisplay.favoriteCount)
             }
         }
     val dislikeActionLabel =
         buildString {
-            if (entryToDisplay.disliked) {
+            if (postToDisplay.disliked) {
                 append(LocalStrings.current.actionRemoveDislike)
             } else {
                 append(LocalStrings.current.actionDislike)
             }
-            if (entryToDisplay.dislikesCount > 0) {
+            if (postToDisplay.dislikesCount > 0) {
                 append(": ")
-                append(entryToDisplay.dislikesCount)
+                append(postToDisplay.dislikesCount)
             }
         }
     val bookmarkActionLabel =
         buildString {
-            if (entryToDisplay.bookmarked) {
+            if (postToDisplay.bookmarked) {
                 append(LocalStrings.current.actionRemoveFromBookmarks)
             } else {
                 append(LocalStrings.current.actionAddToBookmarks)
@@ -117,7 +117,7 @@ fun TimelineReplyItem(
         }
     val userActionLabel =
         buildString {
-            append(entryToDisplay.creator?.let { it.displayName ?: it.handle }.orEmpty())
+            append(postToDisplay.creator?.let { it.displayName ?: it.handle }.orEmpty())
             if (isNotEmpty()) {
                 append(": ")
             }
@@ -136,7 +136,7 @@ fun TimelineReplyItem(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                     ) {
-                        onClick(entryToDisplay)
+                        onClick(postToDisplay)
                     }
                 } else {
                     Modifier
@@ -149,7 +149,7 @@ fun TimelineReplyItem(
                             CustomAccessibilityAction(
                                 label = replyActionLabel,
                                 action = {
-                                    onReply(entryToDisplay)
+                                    onReply(postToDisplay)
                                     true
                                 },
                             )
@@ -159,7 +159,7 @@ fun TimelineReplyItem(
                             CustomAccessibilityAction(
                                 label = reblogActionLabel,
                                 action = {
-                                    onReblog(entryToDisplay)
+                                    onReblog(postToDisplay)
                                     true
                                 },
                             )
@@ -169,7 +169,7 @@ fun TimelineReplyItem(
                             CustomAccessibilityAction(
                                 label = favoriteActionLabel,
                                 action = {
-                                    onFavorite(entryToDisplay)
+                                    onFavorite(postToDisplay)
                                     true
                                 },
                             )
@@ -179,7 +179,7 @@ fun TimelineReplyItem(
                             CustomAccessibilityAction(
                                 label = dislikeActionLabel,
                                 action = {
-                                    onDislike(entryToDisplay)
+                                    onDislike(postToDisplay)
                                     true
                                 },
                             )
@@ -189,7 +189,7 @@ fun TimelineReplyItem(
                             CustomAccessibilityAction(
                                 label = bookmarkActionLabel,
                                 action = {
-                                    onBookmark(entryToDisplay)
+                                    onBookmark(postToDisplay)
                                     true
                                 },
                             )
@@ -200,7 +200,7 @@ fun TimelineReplyItem(
                         CustomAccessibilityAction(
                             label = userActionLabel,
                             action = {
-                                entryToDisplay.creator?.let { onOpenUser(it) }
+                                postToDisplay.creator?.let { onOpenUser(it) }
                                 true
                             },
                         )
@@ -255,7 +255,7 @@ fun TimelineReplyItem(
                         actionsEnabled = actionsEnabled,
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,
-                        entry = entryToDisplay,
+                        post = postToDisplay,
                         extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
@@ -285,7 +285,7 @@ fun TimelineReplyItem(
                         modifier = contentModifier,
                         actionsEnabled = actionsEnabled,
                         autoloadImages = autoloadImages,
-                        entry = entryToDisplay,
+                        post = postToDisplay,
                         extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,
@@ -314,7 +314,7 @@ fun TimelineReplyItem(
                         actionsEnabled = actionsEnabled,
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,
-                        entry = entryToDisplay,
+                        post = postToDisplay,
                         extendedSocialInfoEnabled = extendedSocialInfoEnabled,
                         options = options,
                         optionsMenuOpen = optionsMenuOpen,

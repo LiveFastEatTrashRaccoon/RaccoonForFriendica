@@ -7,13 +7,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLa
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResultType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
@@ -21,11 +21,11 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPrel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SearchRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleDislikeUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.SettingsModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
@@ -48,15 +48,15 @@ class ShortcutTimelineViewModel(
     @Assisted private val args: ShortcutTimelineViewModelArgs,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
-    private val timelineEntryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val settingsRepository: SettingsRepository,
     private val searchRepository: SearchRepository,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
-    private val toggleEntryDislike: ToggleEntryDislikeUseCase,
-    private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
+    private val toggleDislike: ToggleDislikeUseCase,
+    private val toggleFavorite: ToggleFavoriteUseCase,
     private val toggleTranslation: ToggleTranslationUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
@@ -99,9 +99,9 @@ class ShortcutTimelineViewModel(
                 }.launchIn(this)
 
             notificationCenter
-                .subscribe(TimelineEntryUpdatedEvent::class)
+                .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updateEntryInState(event.entry.id) { event.entry }
+                    updatePostInState(event.post.id) { event.post }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
@@ -116,26 +116,26 @@ class ShortcutTimelineViewModel(
 
             ShortcutTimelineMvi.Intent.LoadNextPage -> handleLoadNextPage()
 
-            is ShortcutTimelineMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleReblog -> handleToggleReblog(intent.post)
 
-            is ShortcutTimelineMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.post)
 
-            is ShortcutTimelineMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleDislike -> handleToggleDislike(intent.post)
 
-            is ShortcutTimelineMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.post)
 
             is ShortcutTimelineMvi.Intent.SubmitPollVote -> handleSubmitPollVote(
-                entry = intent.entry,
+                post = intent.post,
                 choices = intent.choices,
             )
 
-            is ShortcutTimelineMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
+            is ShortcutTimelineMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.post)
 
-            is ShortcutTimelineMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
+            is ShortcutTimelineMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.post)
 
-            is ShortcutTimelineMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.entry)
+            is ShortcutTimelineMvi.Intent.WillOpenDetail -> handleWillOpenDetail(intent.post)
 
-            is ShortcutTimelineMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+            is ShortcutTimelineMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.post)
         }
     }
 
@@ -151,11 +151,11 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun handleWillOpenDetail(entry: TimelineEntryModel) {
+    private fun handleWillOpenDetail(post: PostModel) {
         viewModelScope.launch {
             val state = paginationManager.extractState()
             timelineNavigationManager.push(state)
-            emitEffect(ShortcutTimelineMvi.Effect.OpenDetail(entry))
+            emitEffect(ShortcutTimelineMvi.Effect.OpenDetail(post))
         }
     }
 
@@ -181,11 +181,11 @@ class ShortcutTimelineViewModel(
         val wasRefreshing = uiState.value.refreshing
         updateState { it.copy(loading = true) }
         try {
-            val entries = paginationManager.loadNextPage()
-            entries.preloadImages()
+            val posts = paginationManager.loadNextPage()
+            posts.preloadImages()
             updateState {
                 it.copy(
-                    entries = entries,
+                    posts = posts,
                     canFetchMore = paginationManager.canFetchMore,
                     loading = false,
                     initial = false,
@@ -201,75 +201,75 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private suspend fun List<TimelineEntryModel>.preloadImages() {
-        flatMap { entry ->
-            entry.original.urlsForPreload
+    private suspend fun List<PostModel>.preloadImages() {
+        flatMap { post ->
+            post.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }
-        flatMap { entry ->
-            entry.blurHashParamsForPreload
+        flatMap { post ->
+            post.blurHashParamsForPreload
         }.forEach {
             blurHashRepository.preload(it)
         }
     }
 
-    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
+    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
         updateState {
             it.copy(
-                entries =
-                it.entries.map { entry ->
+                posts =
+                it.posts.map { post ->
                     when {
-                        entry.id == entryId -> entry.let(block)
+                        post.id == postId -> post.let(block)
 
-                        entry.reblog?.id == entryId ->
-                            entry.copy(reblog = entry.reblog?.let(block))
+                        post.reblog?.id == postId ->
+                            post.copy(reblog = post.reblog?.let(block))
 
-                        else -> entry
+                        else -> post
                     }
                 },
             )
         }
     }
 
-    private suspend fun resolveToLocal(entry: TimelineEntryModel): TimelineEntryModel? = entry.url?.let { url ->
+    private suspend fun resolveToLocal(post: PostModel): PostModel? = post.url?.let { url ->
         val results =
             searchRepository.search(
                 query = url,
                 resolve = true,
-                type = SearchResultType.Entries,
+                type = SearchResultType.Posts,
             )
-        val result = results?.firstOrNull() as? ExploreItemModel.Entry
-        result?.entry
+        val result = results?.firstOrNull() as? ExploreItemModel.Post
+        result?.post
     }
 
-    private fun handleToggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(reblogLoading = true)
             }
-            val newEntry =
-                resolveToLocal(entry)?.let { le ->
+            val newPost =
+                resolveToLocal(post)?.let { le ->
                     if (le.reblogged) {
-                        timelineEntryRepository.unreblog(le.id)
+                        postRepository.unreblog(le.id)
                     } else {
-                        timelineEntryRepository.reblog(le.id)
+                        postRepository.reblog(le.id)
                     }
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
+            if (newPost != null) {
+                updatePostInState(post.id) {
                     it
                         .copy(
-                            reblogged = newEntry.reblogged,
-                            reblogCount = newEntry.reblogCount,
+                            reblogged = newPost.reblogged,
+                            reblogCount = newPost.reblogCount,
                             reblogLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        ).also { post ->
+                            notificationCenter.send(PostUpdatedEvent(post))
                         }
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(reblogLoading = false)
                 }
                 emitEffect(ShortcutTimelineMvi.Effect.Failure)
@@ -277,34 +277,34 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun handleToggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     favoriteLoading = true,
                 )
             }
 
-            val localEntry =
-                resolveToLocal(entry)
+            val localPost =
+                resolveToLocal(post)
                     ?.let { le ->
-                        toggleEntryFavorite(le)
+                        toggleFavorite(le)
                     }?.also { le ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = le))
+                        notificationCenter.send(PostUpdatedEvent(post = le))
                     }
-            if (localEntry != null) {
-                updateEntryInState(entry.id) {
+            if (localPost != null) {
+                updatePostInState(post.id) {
                     it.copy(
-                        favorite = localEntry.favorite,
-                        favoriteCount = localEntry.favoriteCount,
-                        disliked = localEntry.disliked,
-                        dislikesCount = localEntry.dislikesCount,
+                        favorite = localPost.favorite,
+                        favoriteCount = localPost.favoriteCount,
+                        disliked = localPost.disliked,
+                        dislikesCount = localPost.dislikesCount,
                         favoriteLoading = false,
                     )
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(favoriteLoading = false)
                 }
                 emitEffect(ShortcutTimelineMvi.Effect.Failure)
@@ -312,22 +312,22 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun handleToggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(dislikeLoading = true)
             }
-            val newEntry =
-                toggleEntryDislike(entry)?.also { e ->
-                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
+            val newPost =
+                toggleDislike(post)?.also { post ->
+                    notificationCenter.send(PostUpdatedEvent(post))
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
-                    newEntry
+            if (newPost != null) {
+                updatePostInState(post.id) {
+                    newPost
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         dislikeLoading = false,
                     )
@@ -336,32 +336,32 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun handleToggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(bookmarkLoading = true)
             }
-            val newEntry =
-                resolveToLocal(entry)?.let { le ->
+            val newPost =
+                resolveToLocal(post)?.let { le ->
                     if (le.bookmarked) {
-                        timelineEntryRepository.unbookmark(le.id)
+                        postRepository.unbookmark(le.id)
                     } else {
-                        timelineEntryRepository.bookmark(le.id)
+                        postRepository.bookmark(le.id)
                     }
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
+            if (newPost != null) {
+                updatePostInState(post.id) {
                     it
                         .copy(
-                            bookmarked = newEntry.bookmarked,
+                            bookmarked = newPost.bookmarked,
                             bookmarkLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        ).also { post ->
+                            notificationCenter.send(PostUpdatedEvent(post))
                         }
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(bookmarkLoading = false)
                 }
                 emitEffect(ShortcutTimelineMvi.Effect.Failure)
@@ -369,38 +369,38 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
-        val poll = entry.poll ?: return
+    private fun handleSubmitPollVote(post: PostModel, choices: List<Int>) {
+        val poll = post.poll ?: return
         viewModelScope.launch {
-            updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
+            updatePostInState(post.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
-                resolveToLocal(entry)?.poll?.let { poll ->
-                    timelineEntryRepository.submitPoll(
+                resolveToLocal(post)?.poll?.let { poll ->
+                    postRepository.submitPoll(
                         pollId = poll.id,
                         choices = choices,
                     )
                 }
             if (newPoll != null) {
-                updateEntryInState(entry.id) {
-                    it.copy(poll = newPoll).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                updatePostInState(post.id) {
+                    it.copy(poll = newPoll).also { post ->
+                        notificationCenter.send(PostUpdatedEvent(post))
                     }
                 }
             } else {
-                updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = false)) }
+                updatePostInState(post.id) { it.copy(poll = poll.copy(loading = false)) }
                 emitEffect(ShortcutTimelineMvi.Effect.PollVoteFailure)
             }
         }
     }
 
-    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(post: PostModel) {
         viewModelScope.launch {
-            val source = timelineEntryRepository.getSource(entry.id)
+            val source = postRepository.getSource(post.id)
             if (source != null) {
                 val text =
                     buildString {
-                        if (!entry.title.isNullOrBlank()) {
-                            append(entry.title)
+                        if (!post.title.isNullOrBlank()) {
+                            append(post.title)
                             append("\n")
                         }
                         append(source.content)
@@ -410,22 +410,22 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private fun handleToggleTranslation(entry: TimelineEntryModel) {
+    private fun handleToggleTranslation(post: PostModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
+        if (post.translationLoading) {
             return
         }
 
         viewModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val newEntry = toggleTranslation(entry = entry, targetLang = targetLang)
-            updateEntryInState(entry.id) { newEntry }
+            updatePostInState(post.id) { post.copy(translationLoading = true) }
+            val newPost = toggleTranslation(post = post, targetLang = targetLang)
+            updatePostInState(post.id) { newPost }
         }
     }
 
-    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(post: PostModel) {
         viewModelScope.launch {
-            val url = getInnerUrl(entry)
+            val url = getInnerUrl(post)
             if (url != null) {
                 emitEffect(ShortcutTimelineMvi.Effect.OpenUrl(url))
             }

@@ -7,27 +7,27 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLa
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EntryActionHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.PostActionHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.cache.LocalItemCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.PopulateThreadUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleDislikeUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ApiConfigurationRepository
@@ -51,7 +51,7 @@ import kotlin.time.Duration
 @AssistedInject
 class ThreadViewModel(
     @Assisted private val args: ThreadViewModelArgs,
-    private val timelineEntryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val userRepository: UserRepository,
@@ -59,16 +59,16 @@ class ThreadViewModel(
     private val accountRepository: AccountRepository,
     private val instanceShortcutRepository: InstanceShortcutRepository,
     private val hapticFeedback: HapticFeedback,
-    private val entryCache: LocalItemCache<TimelineEntryModel>,
+    private val postCache: LocalItemCache<PostModel>,
     private val imagePreloadManager: ImagePreloadManager,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
-    private val entryActionHelper: EntryActionHelper,
+    private val postActionHelper: PostActionHelper,
     private val blurHashRepository: BlurHashRepository,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val populateThread: PopulateThreadUseCase,
-    private val toggleEntryDislike: ToggleEntryDislikeUseCase,
-    private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
+    private val toggleDislike: ToggleDislikeUseCase,
+    private val toggleFavorite: ToggleFavoriteUseCase,
     private val toggleTranslation: ToggleTranslationUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
     private val timelineNavigationManager: TimelineNavigationManager,
@@ -78,10 +78,10 @@ class ThreadViewModel(
     by DefaultMviDelegate(initialState = ThreadMvi.State()),
     ThreadMvi {
 
-    private val currentMainEntry: TimelineEntryModel?
+    private val currentMainPost: PostModel?
         get() {
             val currentState = uiState.value
-            return currentState.mainEntries.getOrNull(currentState.currentIndex)
+            return currentState.mainPosts.getOrNull(currentState.currentIndex)
         }
 
     init {
@@ -114,9 +114,9 @@ class ThreadViewModel(
                 }.launchIn(this)
 
             notificationCenter
-                .subscribe(TimelineEntryUpdatedEvent::class)
+                .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updateEntryInState(event.entry.id) { event.entry }
+                    updatePostInState(event.post.id) { event.post }
                 }.launchIn(this)
 
             apiConfigurationRepository.node
@@ -134,38 +134,38 @@ class ThreadViewModel(
         when (intent) {
             ThreadMvi.Intent.Refresh -> handleRefresh()
 
-            is ThreadMvi.Intent.LoadMoreReplies -> handleLoadMoreReplies(intent.entry)
+            is ThreadMvi.Intent.LoadMoreReplies -> handleLoadMoreReplies(intent.post)
 
-            is ThreadMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
+            is ThreadMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.post)
 
-            is ThreadMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
+            is ThreadMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.post)
 
-            is ThreadMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
+            is ThreadMvi.Intent.ToggleDislike -> handleToggleDislike(intent.post)
 
-            is ThreadMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
+            is ThreadMvi.Intent.ToggleReblog -> handleToggleReblog(intent.post)
 
-            is ThreadMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
+            is ThreadMvi.Intent.Delete -> handleDelete(intent.postId)
 
             is ThreadMvi.Intent.MuteUser -> handleMuteUser(
                 userId = intent.userId,
-                entryId = intent.entryId,
+                postId = intent.postId,
                 duration = intent.duration,
                 disableNotifications = intent.disableNotifications,
             )
 
-            is ThreadMvi.Intent.BlockUser -> handleBlockUser(userId = intent.userId, entryId = intent.entryId)
+            is ThreadMvi.Intent.BlockUser -> handleBlockUser(userId = intent.userId, postId = intent.postId)
 
-            is ThreadMvi.Intent.SubmitPollVote -> handleSubmitPollVote(intent.entry, intent.choices)
+            is ThreadMvi.Intent.SubmitPollVote -> handleSubmitPollVote(intent.post, intent.choices)
 
-            is ThreadMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
+            is ThreadMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.post)
 
-            is ThreadMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.entry)
+            is ThreadMvi.Intent.ToggleTranslation -> handleToggleTranslation(intent.post)
 
             is ThreadMvi.Intent.ChangeNavigationIndex -> handleChangeNavigationIndex(intent.index)
 
             is ThreadMvi.Intent.AddInstanceShortcut -> handleAddInstanceShortcut(intent.node)
 
-            is ThreadMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+            is ThreadMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.post)
         }
     }
 
@@ -175,9 +175,9 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleLoadMoreReplies(entry: TimelineEntryModel) {
+    private fun handleLoadMoreReplies(post: PostModel) {
         viewModelScope.launch {
-            loadMoreReplies(entry)
+            loadMoreReplies(post)
         }
     }
 
@@ -196,20 +196,20 @@ class ThreadViewModel(
         }
 
         if (initial) {
-            val currentEntry = entryCache.get(args.entryId)
-            val mainEntries =
+            val currentPost = postCache.get(args.postId)
+            val mainPosts =
                 if (args.swipeNavigationEnabled) {
                     timelineNavigationManager.currentList
                 } else {
-                    currentEntry?.let { listOf(it) } ?: emptyList()
+                    currentPost?.let { listOf(it) } ?: emptyList()
                 }
-            val initialIndex = mainEntries.indexOfFirst { it.id == args.entryId }.coerceAtLeast(0)
-            val replies: List<List<TimelineEntryModel>> = mainEntries.map { emptyList() }
-            check(mainEntries.size == replies.size) { "Unable to create navigation set " }
+            val initialIndex = mainPosts.indexOfFirst { it.id == args.postId }.coerceAtLeast(0)
+            val replies: List<List<PostModel>> = mainPosts.map { emptyList() }
+            check(mainPosts.size == replies.size) { "Unable to create navigation set " }
             updateState {
                 it.copy(
                     currentIndex = initialIndex,
-                    mainEntries = mainEntries,
+                    mainPosts = mainPosts,
                     replies = replies,
                 )
             }
@@ -231,17 +231,17 @@ class ThreadViewModel(
     }
 
     private suspend fun loadReplies() {
-        val mainEntry = currentMainEntry?.original ?: return
-        val result = populateThread(entry = mainEntry).map { entry ->
-            entry.let {
+        val mainPost = currentMainPost?.original ?: return
+        val result = populateThread(post = mainPost).map { post ->
+            post.let {
                 with(emojiHelper) { it.withEmojisIfMissing() }
             }.let {
                 with(replyHelper) { it.withInReplyToIfMissing() }
             }.let {
-                with(entryActionHelper) { it.withActions() }
+                with(postActionHelper) { it.withActions() }
             }
         }
-        val replies = result.filter { it.id != mainEntry.id }
+        val replies = result.filter { it.id != mainPost.id }
         replies.preloadImages()
         updateState {
             it.copy(
@@ -257,26 +257,26 @@ class ThreadViewModel(
         }
     }
 
-    private suspend fun loadMoreReplies(entry: TimelineEntryModel) {
-        if (entry.loadMoreButtonLoading) {
+    private suspend fun loadMoreReplies(post: PostModel) {
+        if (post.loadMoreButtonLoading) {
             return
         }
         val currentState = uiState.value
         val currentReplies = currentState.replies[currentState.currentIndex]
-        updateEntryInState(entry.id) { it.copy(loadMoreButtonLoading = true) }
-        val result = populateThread(entry = entry.original).map { entry ->
-            entry.let {
+        updatePostInState(post.id) { it.copy(loadMoreButtonLoading = true) }
+        val result = populateThread(post = post.original).map { post ->
+            post.let {
                 with(emojiHelper) { it.withEmojisIfMissing() }
             }.let {
                 with(replyHelper) { it.withInReplyToIfMissing() }
             }.let {
-                with(entryActionHelper) { it.withActions() }
+                with(postActionHelper) { it.withActions() }
             }
         }
         val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
         if (newReplies.isEmpty()) {
             // abort and disable load more button
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     loadMoreButtonVisible = false,
                     loadMoreButtonLoading = false,
@@ -284,14 +284,14 @@ class ThreadViewModel(
             }
         } else {
             newReplies.preloadImages()
-            val index = currentReplies.indexOfFirst { e -> e.id == entry.id }
+            val index = currentReplies.indexOfFirst { post -> post.id == post.id }
             val replies =
                 buildList {
                     if (index > 0) {
                         addAll(currentReplies.subList(fromIndex = 0, toIndex = index))
                     }
                     add(
-                        entry.copy(
+                        post.copy(
                             loadMoreButtonVisible = false,
                             loadMoreButtonLoading = false,
                         ),
@@ -321,46 +321,46 @@ class ThreadViewModel(
         }
     }
 
-    private suspend fun List<TimelineEntryModel>.preloadImages() {
-        flatMap { entry ->
-            entry.original.urlsForPreload
+    private suspend fun List<PostModel>.preloadImages() {
+        flatMap { post ->
+            post.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }
-        flatMap { entry ->
-            entry.blurHashParamsForPreload
+        flatMap { post ->
+            post.blurHashParamsForPreload
         }.forEach {
             blurHashRepository.preload(it)
         }
     }
 
-    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
-        val mainEntry = currentMainEntry ?: return
-        when (entryId) {
-            mainEntry.id -> {
+    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
+        val mainPost = currentMainPost ?: return
+        when (postId) {
+            mainPost.id -> {
                 updateState {
                     it.copy(
-                        mainEntries =
-                        it.mainEntries.mapIndexed { idx, entry ->
+                        mainPosts =
+                        it.mainPosts.mapIndexed { idx, post ->
                             if (idx == it.currentIndex) {
-                                mainEntry.let(block)
+                                mainPost.let(block)
                             } else {
-                                entry
+                                post
                             }
                         },
                     )
                 }
             }
 
-            mainEntry.reblog?.id -> {
+            mainPost.reblog?.id -> {
                 updateState {
                     it.copy(
-                        mainEntries =
-                        it.mainEntries.mapIndexed { idx, entry ->
+                        mainPosts =
+                        it.mainPosts.mapIndexed { idx, post ->
                             if (idx == it.currentIndex) {
-                                mainEntry.copy(reblog = mainEntry.reblog?.let(block))
+                                mainPost.copy(reblog = mainPost.reblog?.let(block))
                             } else {
-                                entry
+                                post
                             }
                         },
                     )
@@ -373,14 +373,14 @@ class ThreadViewModel(
                         replies =
                         it.replies.mapIndexed { idx, list ->
                             if (idx == it.currentIndex) {
-                                list.map { entry ->
+                                list.map { post ->
                                     when {
-                                        entry.id == entryId -> entry.let(block)
+                                        post.id == postId -> post.let(block)
 
-                                        entry.reblog?.id == entryId ->
-                                            entry.copy(reblog = entry.reblog?.let(block))
+                                        post.reblog?.id == postId ->
+                                            post.copy(reblog = post.reblog?.let(block))
 
-                                        else -> entry
+                                        else -> post
                                     }
                                 }
                             } else {
@@ -393,13 +393,13 @@ class ThreadViewModel(
         }
     }
 
-    private suspend fun removeEntryFromState(entryId: String) {
+    private suspend fun removePostFromState(postId: String) {
         updateState {
             it.copy(
                 replies =
                 it.replies.mapIndexed { idx, list ->
                     if (idx == it.currentIndex) {
-                        list.filter { e -> e.id != entryId && e.reblog?.id != entryId }
+                        list.filter { post -> post.id != postId && post.reblog?.id != postId }
                     } else {
                         list
                     }
@@ -408,33 +408,33 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleToggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     reblogLoading = true,
                 )
             }
-            val newEntry =
-                if (entry.reblogged) {
-                    timelineEntryRepository.unreblog(entry.id)
+            val newPost =
+                if (post.reblogged) {
+                    postRepository.unreblog(post.id)
                 } else {
-                    timelineEntryRepository.reblog(entry.id)
+                    postRepository.reblog(post.id)
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
+            if (newPost != null) {
+                updatePostInState(post.id) {
                     it
                         .copy(
-                            reblogged = newEntry.reblogged,
-                            reblogCount = newEntry.reblogCount,
+                            reblogged = newPost.reblogged,
+                            reblogCount = newPost.reblogCount,
                             reblogLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        ).also { post ->
+                            notificationCenter.send(PostUpdatedEvent(post))
                         }
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         reblogLoading = false,
                     )
@@ -443,24 +443,24 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleToggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     favoriteLoading = true,
                 )
             }
-            val newEntry =
-                toggleEntryFavorite(entry)?.also { e ->
-                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
+            val newPost =
+                toggleFavorite(post)?.also { post ->
+                    notificationCenter.send(PostUpdatedEvent(post))
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
-                    newEntry
+            if (newPost != null) {
+                updatePostInState(post.id) {
+                    newPost
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         favoriteLoading = false,
                     )
@@ -469,24 +469,24 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleToggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     dislikeLoading = true,
                 )
             }
-            val newEntry =
-                toggleEntryDislike(entry)?.also { e ->
-                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
+            val newPost =
+                toggleDislike(post)?.also { post ->
+                    notificationCenter.send(PostUpdatedEvent(post))
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
-                    newEntry
+            if (newPost != null) {
+                updatePostInState(post.id) {
+                    newPost
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         dislikeLoading = false,
                     )
@@ -495,32 +495,32 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleToggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     bookmarkLoading = true,
                 )
             }
-            val newEntry =
-                if (entry.bookmarked) {
-                    timelineEntryRepository.unbookmark(entry.id)
+            val newPost =
+                if (post.bookmarked) {
+                    postRepository.unbookmark(post.id)
                 } else {
-                    timelineEntryRepository.bookmark(entry.id)
+                    postRepository.bookmark(post.id)
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
+            if (newPost != null) {
+                updatePostInState(post.id) {
                     it
                         .copy(
-                            bookmarked = newEntry.bookmarked,
+                            bookmarked = newPost.bookmarked,
                             bookmarkLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        ).also { post ->
+                            notificationCenter.send(PostUpdatedEvent(post))
                         }
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         bookmarkLoading = false,
                     )
@@ -529,17 +529,17 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleDeleteEntry(entryId: String) {
+    private fun handleDelete(postId: String) {
         viewModelScope.launch {
-            val success = timelineEntryRepository.delete(entryId)
+            val success = postRepository.delete(postId)
             if (success) {
-                notificationCenter.send(TimelineEntryDeletedEvent(entryId))
-                removeEntryFromState(entryId)
+                notificationCenter.send(PostDeletedEvent(postId))
+                removePostFromState(postId)
             }
         }
     }
 
-    private fun handleMuteUser(userId: String, entryId: String, duration: Duration, disableNotifications: Boolean) {
+    private fun handleMuteUser(userId: String, postId: String, duration: Duration, disableNotifications: Boolean) {
         viewModelScope.launch {
             val res =
                 userRepository.mute(
@@ -548,35 +548,35 @@ class ThreadViewModel(
                     notifications = disableNotifications,
                 )
             if (res != null) {
-                removeEntryFromState(entryId)
+                removePostFromState(postId)
             }
         }
     }
 
-    private fun handleBlockUser(userId: String, entryId: String) {
+    private fun handleBlockUser(userId: String, postId: String) {
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
-                removeEntryFromState(entryId)
+                removePostFromState(postId)
             }
         }
     }
 
-    private fun handleSubmitPollVote(entry: TimelineEntryModel, choices: List<Int>) {
-        val poll = entry.poll ?: return
+    private fun handleSubmitPollVote(post: PostModel, choices: List<Int>) {
+        val poll = post.poll ?: return
         viewModelScope.launch {
-            updateEntryInState(entry.id) { it.copy(poll = poll.copy(loading = true)) }
+            updatePostInState(post.id) { it.copy(poll = poll.copy(loading = true)) }
             val newPoll =
-                timelineEntryRepository.submitPoll(
+                postRepository.submitPoll(
                     pollId = poll.id,
                     choices = choices,
                 )
             if (newPoll != null) {
-                updateEntryInState(entry.id) { it.copy(poll = newPoll) }
+                updatePostInState(post.id) { it.copy(poll = newPoll) }
             } else {
-                updateEntryInState(entry.id) {
-                    it.copy(poll = poll.copy(loading = false)).also { entry ->
-                        notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                updatePostInState(post.id) {
+                    it.copy(poll = poll.copy(loading = false)).also { post ->
+                        notificationCenter.send(PostUpdatedEvent(post))
                     }
                 }
                 emitEffect(ThreadMvi.Effect.PollVoteFailure)
@@ -584,14 +584,14 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(post: PostModel) {
         viewModelScope.launch {
-            val source = timelineEntryRepository.getSource(entry.id)
+            val source = postRepository.getSource(post.id)
             if (source != null) {
                 val text =
                     buildString {
-                        if (!entry.title.isNullOrBlank()) {
-                            append(entry.title)
+                        if (!post.title.isNullOrBlank()) {
+                            append(post.title)
                             append("\n")
                         }
                         append(source.content)
@@ -601,16 +601,16 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleToggleTranslation(entry: TimelineEntryModel) {
+    private fun handleToggleTranslation(post: PostModel) {
         val targetLang = uiState.value.lang ?: return
-        if (entry.translationLoading) {
+        if (post.translationLoading) {
             return
         }
 
         viewModelScope.launch {
-            updateEntryInState(entry.id) { entry.copy(translationLoading = true) }
-            val newEntry = toggleTranslation(entry = entry, targetLang = targetLang)
-            updateEntryInState(entry.id) { newEntry }
+            updatePostInState(post.id) { post.copy(translationLoading = true) }
+            val newPost = toggleTranslation(post = post, targetLang = targetLang)
+            updatePostInState(post.id) { newPost }
         }
     }
 
@@ -625,9 +625,9 @@ class ThreadViewModel(
                 )
             }
             val currentState = uiState.value
-            val mainEntry = currentMainEntry
+            val mainPost = currentMainPost
             val replies = currentState.replies.getOrNull(newIndex).orEmpty()
-            val hasReplies = (mainEntry?.original?.replyCount ?: 0) > 0
+            val hasReplies = (mainPost?.original?.replyCount ?: 0) > 0
             if (replies.isEmpty() && hasReplies) {
                 updateState { it.copy(initial = true) }
                 loadReplies()
@@ -646,22 +646,21 @@ class ThreadViewModel(
         }
         timelineNavigationManager.loadNextPage()
         updateState {
-            val currentEntries = it.mainEntries
-            val newEntries =
-                timelineNavigationManager.currentList.drop(currentEntries.size)
-            val mainEntries = currentEntries + newEntries
+            val currentPosts = it.mainPosts
+            val newPosts = timelineNavigationManager.currentList.drop(currentPosts.size)
+            val mainPosts = currentPosts + newPosts
             val replies =
                 buildList {
                     addAll(it.replies)
-                    val sizeDiff = abs(mainEntries.size - it.replies.size)
+                    val sizeDiff = abs(mainPosts.size - it.replies.size)
                     repeat(sizeDiff) {
                         add(emptyList())
                     }
                 }
 
-            check(mainEntries.size == replies.size) { "Unable to create navigation entry set" }
+            check(mainPosts.size == replies.size) { "Unable to create navigation post set" }
             it.copy(
-                mainEntries = mainEntries,
+                mainPosts = mainPosts,
                 replies = replies,
             )
         }
@@ -678,9 +677,9 @@ class ThreadViewModel(
         }
     }
 
-    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(post: PostModel) {
         viewModelScope.launch {
-            val url = getInnerUrl(entry)
+            val url = getInnerUrl(post)
             if (url != null) {
                 emitEffect(ThreadMvi.Effect.OpenUrl(url))
             }
@@ -696,7 +695,7 @@ class ThreadViewModel(
 
 private val KEY_ARGS = CreationExtras.Key<ThreadViewModelArgs>()
 
-data class ThreadViewModelArgs(val entryId: String, val swipeNavigationEnabled: Boolean)
+data class ThreadViewModelArgs(val postId: String, val swipeNavigationEnabled: Boolean)
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ThreadViewModel::class)

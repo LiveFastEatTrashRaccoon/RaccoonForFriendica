@@ -3,13 +3,13 @@ package com.livefast.eattrash.raccoonforfriendica.core.notifications
 import app.cash.turbine.test
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostCreatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryCreatedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -59,54 +59,52 @@ class DefaultNotificationCenterTest {
     }
 
     @Test
-    fun `given subscription when send TimelineEntryCreatedEvent then event is received just once`() = runTest {
-        val expected =
-            TimelineEntryCreatedEvent(entry = TimelineEntryModel(id = "0", content = ""))
+    fun `given subscription when send PostCreatedEvent then event is received just once`() = runTest {
+        val expected = PostCreatedEvent(post = PostModel(id = "0", content = ""))
         launch {
             sut.send(expected)
         }
 
-        sut.subscribe(TimelineEntryCreatedEvent::class).test {
+        sut.subscribe(PostCreatedEvent::class).test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }
 
-        sut.subscribe(TimelineEntryCreatedEvent::class).test {
+        sut.subscribe(PostCreatedEvent::class).test {
             expectNoEvents()
         }
     }
 
     @Test
-    fun `given subscription when send TimelineEntryUpdatedEvent then event is received just once`() = runTest {
-        val expected =
-            TimelineEntryUpdatedEvent(entry = TimelineEntryModel(id = "0", content = ""))
+    fun `given subscription when send PostUpdatedEvent then event is received just once`() = runTest {
+        val expected = PostUpdatedEvent(post = PostModel(id = "0", content = ""))
         launch {
             sut.send(expected)
         }
 
-        sut.subscribe(TimelineEntryUpdatedEvent::class).test {
+        sut.subscribe(PostUpdatedEvent::class).test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }
 
-        sut.subscribe(TimelineEntryUpdatedEvent::class).test {
+        sut.subscribe(PostUpdatedEvent::class).test {
             expectNoEvents()
         }
     }
 
     @Test
-    fun `given subscription when send TimelineEntryDeletedEvent then event is received just once`() = runTest {
-        val expected = TimelineEntryDeletedEvent(id = "0")
+    fun `given subscription when send PostDeletedEvent then event is received just once`() = runTest {
+        val expected = PostDeletedEvent(id = "0")
         launch {
             sut.send(expected)
         }
 
-        sut.subscribe(TimelineEntryDeletedEvent::class).test {
+        sut.subscribe(PostDeletedEvent::class).test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }
 
-        sut.subscribe(TimelineEntryDeletedEvent::class).test {
+        sut.subscribe(PostDeletedEvent::class).test {
             expectNoEvents()
         }
     }

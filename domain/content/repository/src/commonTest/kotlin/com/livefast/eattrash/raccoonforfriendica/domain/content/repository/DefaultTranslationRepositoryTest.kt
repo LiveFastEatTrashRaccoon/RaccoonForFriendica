@@ -10,7 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.every
@@ -40,7 +40,7 @@ class DefaultTranslationRepositoryTest {
 
     @Test
     fun `given success when getTranslation then result and interactions are as expected`() = runTest {
-        val entryId = "1"
+        val postId = "1"
         val targetContent = "target content"
         val targetLang = "it"
         val provider = "LibreTranslate"
@@ -51,15 +51,15 @@ class DefaultTranslationRepositoryTest {
                 content = targetContent,
                 provider = provider,
             )
-        val entry =
-            TimelineEntryModel(
-                id = entryId,
+        val post =
+            PostModel(
+                id = postId,
                 content = "source content",
             )
 
         val res =
             sut.getTranslation(
-                entry = entry,
+                post = post,
                 targetLang = targetLang,
             )
 
@@ -69,7 +69,7 @@ class DefaultTranslationRepositoryTest {
         assertEquals(provider, res.provider)
         verifySuspend {
             statusService.translate(
-                id = entryId,
+                id = postId,
                 data =
                 matches {
                     it.formData["lang"] == targetLang
@@ -79,8 +79,8 @@ class DefaultTranslationRepositoryTest {
     }
 
     @Test
-    fun `given entry with poll when getTranslation then result and interactions are as expected`() = runTest {
-        val entryId = "1"
+    fun `given post with poll when getTranslation then result and interactions are as expected`() = runTest {
+        val postId = "1"
         val targetContent = "target content"
         val targetLang = "it"
         val targetOption = "target option 1"
@@ -100,9 +100,9 @@ class DefaultTranslationRepositoryTest {
                     ),
                 ),
             )
-        val entry =
-            TimelineEntryModel(
-                id = entryId,
+        val post =
+            PostModel(
+                id = postId,
                 content = "source content",
                 poll =
                 PollModel(
@@ -118,7 +118,7 @@ class DefaultTranslationRepositoryTest {
 
         val res =
             sut.getTranslation(
-                entry = entry,
+                post = post,
                 targetLang = targetLang,
             )
 
@@ -135,7 +135,7 @@ class DefaultTranslationRepositoryTest {
         assertEquals(provider, res.provider)
         verifySuspend {
             statusService.translate(
-                id = entryId,
+                id = postId,
                 data =
                 matches {
                     it.formData["lang"] == targetLang
@@ -145,8 +145,8 @@ class DefaultTranslationRepositoryTest {
     }
 
     @Test
-    fun `given entry with attachment when getTranslation then result and interactions are as expected`() = runTest {
-        val entryId = "1"
+    fun `given post with attachment when getTranslation then result and interactions are as expected`() = runTest {
+        val postId = "1"
         val targetContent = "target content"
         val targetLang = "it"
         val targetDescription = "target description"
@@ -166,9 +166,9 @@ class DefaultTranslationRepositoryTest {
                     ),
                 ),
             )
-        val entry =
-            TimelineEntryModel(
-                id = entryId,
+        val post =
+            PostModel(
+                id = postId,
                 content = "source content",
                 attachments =
                 listOf(
@@ -183,7 +183,7 @@ class DefaultTranslationRepositoryTest {
 
         val res =
             sut.getTranslation(
-                entry = entry,
+                post = post,
                 targetLang = targetLang,
             )
 
@@ -199,7 +199,7 @@ class DefaultTranslationRepositoryTest {
         assertEquals(provider, res.provider)
         verifySuspend {
             statusService.translate(
-                id = entryId,
+                id = postId,
                 data =
                 matches {
                     it.formData["lang"] == targetLang
@@ -210,29 +210,29 @@ class DefaultTranslationRepositoryTest {
 
     @Test
     fun `given error when getTranslation then result and interactions are as expected`() = runTest {
-        val entryId = "1"
+        val postId = "1"
         val targetLang = "it"
         val provider = "LibreTranslate"
         everySuspend {
             statusService.translate(any(), any())
         } throws IOException("Network error")
-        val entry =
-            TimelineEntryModel(
-                id = entryId,
+        val post =
+            PostModel(
+                id = postId,
                 content = "source content",
                 translationProvider = provider,
             )
 
         val res =
             sut.getTranslation(
-                entry = entry,
+                post = post,
                 targetLang = targetLang,
             )
 
         assertNull(res)
         verifySuspend {
             statusService.translate(
-                id = entryId,
+                id = postId,
                 data =
                 matches {
                     it.formData["lang"] == targetLang

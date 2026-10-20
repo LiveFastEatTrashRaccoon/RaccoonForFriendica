@@ -210,7 +210,7 @@ fun ConversationListScreen(model: ConversationListMvi, modifier: Modifier = Modi
 
                 itemsIndexed(
                     items = uiState.items,
-                    key = { _, e -> "direct-message-list-${e.lastMessage.id}" },
+                    key = { _, conversation -> "direct-message-list-${conversation.lastMessage.id}" },
                 ) { idx, conversation ->
                     ConversationItem(
                         conversation = conversation,

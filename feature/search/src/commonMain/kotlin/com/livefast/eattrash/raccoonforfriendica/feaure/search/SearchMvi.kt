@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.feaure.search
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.Mvi
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ExploreItemModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.feaure.search.data.SearchSection
 import kotlin.time.Duration
 
@@ -21,36 +21,36 @@ interface SearchMvi : Mvi<SearchMvi.Intent, SearchMvi.State, SearchMvi.Effect> {
 
         data class Unfollow(val userId: String) : Intent
 
-        data class ToggleReblog(val entry: TimelineEntryModel) : Intent
+        data class ToggleReblog(val post: PostModel) : Intent
 
-        data class ToggleFavorite(val entry: TimelineEntryModel) : Intent
+        data class ToggleFavorite(val post: PostModel) : Intent
 
-        data class ToggleDislike(val entry: TimelineEntryModel) : Intent
+        data class ToggleDislike(val post: PostModel) : Intent
 
-        data class ToggleBookmark(val entry: TimelineEntryModel) : Intent
+        data class ToggleBookmark(val post: PostModel) : Intent
 
-        data class DeleteEntry(val entryId: String) : Intent
+        data class Delete(val postId: String) : Intent
 
         data class MuteUser(
             val userId: String,
-            val entryId: String,
+            val postId: String,
             val duration: Duration = Duration.INFINITE,
             val disableNotifications: Boolean = true,
         ) : Intent
 
-        data class BlockUser(val userId: String, val entryId: String) : Intent
+        data class BlockUser(val userId: String, val postId: String) : Intent
 
-        data class TogglePin(val entry: TimelineEntryModel) : Intent
+        data class TogglePin(val post: PostModel) : Intent
 
-        data class SubmitPollVote(val entry: TimelineEntryModel, val choices: List<Int>) : Intent
+        data class SubmitPollVote(val post: PostModel, val choices: List<Int>) : Intent
 
-        data class CopyToClipboard(val entry: TimelineEntryModel) : Intent
+        data class CopyToClipboard(val post: PostModel) : Intent
 
-        data class ToggleTranslation(val entry: TimelineEntryModel) : Intent
+        data class ToggleTranslation(val post: PostModel) : Intent
 
         data class AddInstanceShortcut(val node: String) : Intent
 
-        data class OpenInBrowser(val entry: TimelineEntryModel) : Intent
+        data class OpenInBrowser(val post: PostModel) : Intent
     }
 
     data class State(

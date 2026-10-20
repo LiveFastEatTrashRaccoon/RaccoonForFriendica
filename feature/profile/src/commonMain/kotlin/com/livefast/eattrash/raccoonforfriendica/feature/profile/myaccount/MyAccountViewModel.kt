@@ -7,27 +7,27 @@ import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDel
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.UserSection
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
-import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.EntryActionHelper
+import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.PostActionHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationSpecification
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryDislikeUseCase
-import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleEntryFavoriteUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleDislikeUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
@@ -55,18 +55,18 @@ class MyAccountViewModel(
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
     private val paginationManager: TimelinePaginationManager,
-    private val timelineEntryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val settingsRepository: SettingsRepository,
     private val hapticFeedback: HapticFeedback,
     private val imagePreloadManager: ImagePreloadManager,
     private val blurHashRepository: BlurHashRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
-    private val entryActionHelper: EntryActionHelper,
+    private val postActionHelper: PostActionHelper,
     private val imageAutoloadObserver: ImageAutoloadObserver,
     private val logout: LogoutUseCase,
-    private val toggleEntryDislike: ToggleEntryDislikeUseCase,
-    private val toggleEntryFavorite: ToggleEntryFavoriteUseCase,
+    private val toggleDislike: ToggleDislikeUseCase,
+    private val toggleFavorite: ToggleFavoriteUseCase,
     private val getInnerUrl: GetInnerUrlUseCase,
     private val notificationCenter: NotificationCenter,
 ) : ViewModel(),
@@ -112,14 +112,14 @@ class MyAccountViewModel(
                 }.launchIn(this)
 
             notificationCenter
-                .subscribe(TimelineEntryUpdatedEvent::class)
+                .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updateEntryInState(event.entry.id) { event.entry }
+                    updatePostInState(event.post.id) { event.post }
                 }.launchIn(this)
             notificationCenter
-                .subscribe(TimelineEntryDeletedEvent::class)
+                .subscribe(PostDeletedEvent::class)
                 .onEach { event ->
-                    removeEntryFromState(event.id)
+                    removePostFromState(event.id)
                 }.launchIn(this)
         }
     }
@@ -127,13 +127,13 @@ class MyAccountViewModel(
     private suspend fun loadData(currentUser: UserModel?) {
         if (currentUser != null) {
             updateState { it.copy(user = currentUser) }
-            val initialValues = timelineEntryRepository.getCachedByUser().map { entry ->
-                entry.let {
+            val initialValues = postRepository.getCachedByUser().map { post ->
+                post.let {
                     with(emojiHelper) { it.withEmojisIfMissing() }
                 }.let {
                     with(replyHelper) { it.withInReplyToIfMissing() }
                 }.let {
-                    with(entryActionHelper) { it.withActions() }
+                    with(postActionHelper) { it.withActions() }
                 }
             }
             paginationManager.restoreHistory(initialValues)
@@ -141,7 +141,7 @@ class MyAccountViewModel(
                 updateState {
                     it.copy(
                         initial = false,
-                        entries = initialValues,
+                        posts = initialValues,
                     )
                 }
                 paginationManager.reset(
@@ -168,14 +168,14 @@ class MyAccountViewModel(
             is MyAccountMvi.Intent.ChangeSection -> handleChangeSection(intent.section)
             MyAccountMvi.Intent.LoadNextPage -> handleLoadNextPage()
             MyAccountMvi.Intent.Refresh -> handleRefresh()
-            is MyAccountMvi.Intent.ToggleReblog -> handleToggleReblog(intent.entry)
-            is MyAccountMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.entry)
-            is MyAccountMvi.Intent.ToggleDislike -> handleToggleDislike(intent.entry)
-            is MyAccountMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.entry)
-            is MyAccountMvi.Intent.DeleteEntry -> handleDeleteEntry(intent.entryId)
-            is MyAccountMvi.Intent.TogglePin -> handleTogglePin(intent.entry)
-            is MyAccountMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.entry)
-            is MyAccountMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.entry)
+            is MyAccountMvi.Intent.ToggleReblog -> handleToggleReblog(intent.post)
+            is MyAccountMvi.Intent.ToggleFavorite -> handleToggleFavorite(intent.post)
+            is MyAccountMvi.Intent.ToggleDislike -> handleToggleDislike(intent.post)
+            is MyAccountMvi.Intent.ToggleBookmark -> handleToggleBookmark(intent.post)
+            is MyAccountMvi.Intent.Delete -> handleDelete(intent.postId)
+            is MyAccountMvi.Intent.TogglePin -> handleTogglePin(intent.post)
+            is MyAccountMvi.Intent.CopyToClipboard -> handleCopyToClipboard(intent.post)
+            is MyAccountMvi.Intent.OpenInBrowser -> handleOpenInBrowser(intent.post)
             MyAccountMvi.Intent.Logout -> handleLogout()
         }
     }
@@ -241,11 +241,11 @@ class MyAccountViewModel(
 
         updateState { it.copy(loading = true) }
         try {
-            val entries = paginationManager.loadNextPage().distinctBy { it.safeKey }
-            entries.preloadImages()
+            val posts = paginationManager.loadNextPage().distinctBy { it.safeKey }
+            posts.preloadImages()
             updateState {
                 it.copy(
-                    entries = entries,
+                    posts = posts,
                     canFetchMore = paginationManager.canFetchMore,
                     loading = false,
                     initial = false,
@@ -258,35 +258,35 @@ class MyAccountViewModel(
         }
     }
 
-    private suspend fun List<TimelineEntryModel>.preloadImages() {
-        flatMap { entry ->
-            entry.original.urlsForPreload
+    private suspend fun List<PostModel>.preloadImages() {
+        flatMap { post ->
+            post.original.urlsForPreload
         }.forEach { url ->
             imagePreloadManager.preload(url)
         }
-        flatMap { entry ->
-            entry.blurHashParamsForPreload
+        flatMap { post ->
+            post.blurHashParamsForPreload
         }.forEach {
             blurHashRepository.preload(it)
         }
     }
 
-    private suspend fun updateEntryInState(entryId: String, block: (TimelineEntryModel) -> TimelineEntryModel) {
+    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
         updateState {
             it.copy(
-                entries =
-                it.entries.map { entry ->
+                posts =
+                it.posts.map { post ->
                     when {
-                        entry.id == entryId -> {
-                            entry.let(block)
+                        post.id == postId -> {
+                            post.let(block)
                         }
 
-                        entry.reblog?.id == entryId -> {
-                            entry.copy(reblog = entry.reblog?.let(block))
+                        post.reblog?.id == postId -> {
+                            post.copy(reblog = post.reblog?.let(block))
                         }
 
                         else -> {
-                            entry
+                            post
                         }
                     }
                 },
@@ -294,41 +294,41 @@ class MyAccountViewModel(
         }
     }
 
-    private suspend fun removeEntryFromState(entryId: String) {
+    private suspend fun removePostFromState(postId: String) {
         updateState {
             it.copy(
-                entries = it.entries.filter { e -> e.id != entryId && e.reblog?.id != entryId },
+                posts = it.posts.filter { post -> post.id != postId && post.reblog?.id != postId },
             )
         }
     }
 
-    private fun handleToggleReblog(entry: TimelineEntryModel) {
+    private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     reblogLoading = true,
                 )
             }
-            val newEntry =
-                if (entry.reblogged) {
-                    timelineEntryRepository.unreblog(entry.id)
+            val newPost =
+                if (post.reblogged) {
+                    postRepository.unreblog(post.id)
                 } else {
-                    timelineEntryRepository.reblog(entry.id)
+                    postRepository.reblog(post.id)
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
+            if (newPost != null) {
+                updatePostInState(post.id) {
                     it
                         .copy(
-                            reblogged = newEntry.reblogged,
-                            reblogCount = newEntry.reblogCount,
+                            reblogged = newPost.reblogged,
+                            reblogCount = newPost.reblogCount,
                             reblogLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        ).also { post ->
+                            notificationCenter.send(PostUpdatedEvent(post))
                         }
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         reblogLoading = false,
                     )
@@ -337,24 +337,24 @@ class MyAccountViewModel(
         }
     }
 
-    private fun handleToggleFavorite(entry: TimelineEntryModel) {
+    private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     favoriteLoading = true,
                 )
             }
-            val newEntry =
-                toggleEntryFavorite(entry)?.also { e ->
-                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
+            val newPost =
+                toggleFavorite(post)?.also { post ->
+                    notificationCenter.send(PostUpdatedEvent(post))
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
-                    newEntry
+            if (newPost != null) {
+                updatePostInState(post.id) {
+                    newPost
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         favoriteLoading = false,
                     )
@@ -363,24 +363,24 @@ class MyAccountViewModel(
         }
     }
 
-    private fun handleToggleDislike(entry: TimelineEntryModel) {
+    private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     dislikeLoading = true,
                 )
             }
-            val newEntry =
-                toggleEntryDislike(entry)?.also { e ->
-                    notificationCenter.send(TimelineEntryUpdatedEvent(entry = e))
+            val newPost =
+                toggleDislike(post)?.also { post ->
+                    notificationCenter.send(PostUpdatedEvent(post))
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
-                    newEntry
+            if (newPost != null) {
+                updatePostInState(post.id) {
+                    newPost
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         dislikeLoading = false,
                     )
@@ -389,32 +389,32 @@ class MyAccountViewModel(
         }
     }
 
-    private fun handleToggleBookmark(entry: TimelineEntryModel) {
+    private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateEntryInState(entry.id) {
+            updatePostInState(post.id) {
                 it.copy(
                     bookmarkLoading = true,
                 )
             }
-            val newEntry =
-                if (entry.bookmarked) {
-                    timelineEntryRepository.unbookmark(entry.id)
+            val newPost =
+                if (post.bookmarked) {
+                    postRepository.unbookmark(post.id)
                 } else {
-                    timelineEntryRepository.bookmark(entry.id)
+                    postRepository.bookmark(post.id)
                 }
-            if (newEntry != null) {
-                updateEntryInState(entry.id) {
+            if (newPost != null) {
+                updatePostInState(post.id) {
                     it
                         .copy(
-                            bookmarked = newEntry.bookmarked,
+                            bookmarked = newPost.bookmarked,
                             bookmarkLoading = false,
-                        ).also { entry ->
-                            notificationCenter.send(TimelineEntryUpdatedEvent(entry = entry))
+                        ).also { post ->
+                            notificationCenter.send(PostUpdatedEvent(post))
                         }
                 }
             } else {
-                updateEntryInState(entry.id) {
+                updatePostInState(post.id) {
                     it.copy(
                         bookmarkLoading = false,
                     )
@@ -423,33 +423,33 @@ class MyAccountViewModel(
         }
     }
 
-    private fun handleDeleteEntry(entryId: String) {
+    private fun handleDelete(postId: String) {
         viewModelScope.launch {
-            val success = timelineEntryRepository.delete(entryId)
+            val success = postRepository.delete(postId)
             if (success) {
-                notificationCenter.send(TimelineEntryDeletedEvent(entryId))
-                removeEntryFromState(entryId)
+                notificationCenter.send(PostDeletedEvent(postId))
+                removePostFromState(postId)
             } else {
                 emitEffect(MyAccountMvi.Effect.Failure)
             }
         }
     }
 
-    private fun handleTogglePin(entry: TimelineEntryModel) {
+    private fun handleTogglePin(post: PostModel) {
         viewModelScope.launch {
-            val newEntry =
-                if (entry.pinned) {
-                    timelineEntryRepository.unpin(entry.id)
+            val newPost =
+                if (post.pinned) {
+                    postRepository.unpin(post.id)
                 } else {
-                    timelineEntryRepository.pin(entry.id)
+                    postRepository.pin(post.id)
                 }
-            if (newEntry != null) {
-                if (uiState.value.section == UserSection.Pinned && !newEntry.pinned) {
-                    removeEntryFromState(entry.id)
+            if (newPost != null) {
+                if (uiState.value.section == UserSection.Pinned && !newPost.pinned) {
+                    removePostFromState(post.id)
                 } else {
-                    updateEntryInState(entry.id) {
+                    updatePostInState(post.id) {
                         it.copy(
-                            pinned = newEntry.pinned,
+                            pinned = newPost.pinned,
                         )
                     }
                 }
@@ -457,14 +457,14 @@ class MyAccountViewModel(
         }
     }
 
-    private fun handleCopyToClipboard(entry: TimelineEntryModel) {
+    private fun handleCopyToClipboard(post: PostModel) {
         viewModelScope.launch {
-            val source = timelineEntryRepository.getSource(entry.id)
+            val source = postRepository.getSource(post.id)
             if (source != null) {
                 val text =
                     buildString {
-                        if (!entry.title.isNullOrBlank()) {
-                            append(entry.title)
+                        if (!post.title.isNullOrBlank()) {
+                            append(post.title)
                             append("\n")
                         }
                         append(source.content)
@@ -474,9 +474,9 @@ class MyAccountViewModel(
         }
     }
 
-    private fun handleOpenInBrowser(entry: TimelineEntryModel) {
+    private fun handleOpenInBrowser(post: PostModel) {
         viewModelScope.launch {
-            val url = getInnerUrl(entry)
+            val url = getInnerUrl(post)
             if (url != null) {
                 emitEffect(MyAccountMvi.Effect.OpenUrl(url))
             }

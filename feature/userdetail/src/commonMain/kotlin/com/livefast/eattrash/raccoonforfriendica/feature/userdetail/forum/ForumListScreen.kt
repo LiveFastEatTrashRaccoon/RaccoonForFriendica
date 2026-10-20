@@ -5,7 +5,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -56,12 +55,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.Custom
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ListLoadingIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ConfirmMuteUserBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomConfirmDialog
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.EntryDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GenericPlaceholder
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.GroupHeader
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItemPlaceholder
@@ -78,10 +77,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.ellipsize
 import com.livefast.eattrash.raccoonforfriendica.core.utils.isNearTheEnd
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldEntry
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isOldPost
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.nodeName
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
@@ -117,12 +115,12 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
     var confirmUnfollowDialogOpen by remember { mutableStateOf(false) }
     var confirmDeleteFollowRequestDialogOpen by remember { mutableStateOf(false) }
     var confirmMuteNotificationsDialogOpen by remember { mutableStateOf(false) }
-    var confirmDeleteEntryId by remember { mutableStateOf<String?>(null) }
-    var confirmMuteEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmBlockEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
-    var confirmReblogEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var confirmDeletePostId by remember { mutableStateOf<String?>(null) }
+    var confirmMutePost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmBlockPost by remember { mutableStateOf<PostModel?>(null) }
+    var confirmReblogPost by remember { mutableStateOf<PostModel?>(null) }
     var pollErrorDialogOpened by remember { mutableStateOf(false) }
-    var seeDetailsEntry by remember { mutableStateOf<TimelineEntryModel?>(null) }
+    var seeDetailsPost by remember { mutableStateOf<PostModel?>(null) }
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
     fun goBackToTop() {
@@ -150,7 +148,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
 
                     is ForumListMvi.Effect.OpenDetail -> {
                         mainRouter.openThread(
-                            entry = event.entry,
+                            post = event.post,
                             swipeNavigationEnabled = true,
                             otherInstance = otherInstance,
                         )
@@ -455,11 +453,11 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                 }
 
                 itemsIndexed(
-                    items = uiState.entries,
-                    key = { _, e -> "forum-list-${e.safeKey}" },
-                ) { idx, entry ->
+                    items = uiState.posts,
+                    key = { _, post -> "forum-list-${post.safeKey}" },
+                ) { idx, post ->
                     TimelineItem(
-                        entry = entry,
+                        post = post,
                         layout = uiState.layout,
                         reshareAndReplyVisible = false,
                         followedHashtagsVisible = false,
@@ -468,7 +466,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         maxBodyLines = uiState.maxBodyLines,
                         pollEnabled = isHomeInstance,
                         onClick = {
-                            model.reduce(ForumListMvi.Intent.WillOpenDetail(entry))
+                            model.reduce(ForumListMvi.Intent.WillOpenDetail(post))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -488,46 +486,46 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                             )
                         },
                         onReblog =
-                        { e: TimelineEntryModel ->
+                        { post: PostModel ->
                             val timeSinceCreation =
-                                e.created?.run {
+                                post.created?.run {
                                     getDurationFromDateToNow(this)
                                 } ?: Duration.ZERO
                             when {
-                                !e.reblogged && timeSinceCreation.isOldEntry ->
-                                    confirmReblogEntry = e
+                                !post.reblogged && timeSinceCreation.isOldPost ->
+                                    confirmReblogPost = post
 
                                 else ->
                                     model.reduce(
-                                        ForumListMvi.Intent.ToggleReblog(e),
+                                        ForumListMvi.Intent.ToggleReblog(post),
                                     )
                             }
-                        }.takeIf { entry.original.actionPermissions.canReblog && isHomeInstance },
+                        }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                         onBookmark =
-                        { e: TimelineEntryModel ->
-                            model.reduce(ForumListMvi.Intent.ToggleBookmark(e))
-                        }.takeIf { entry.original.actionPermissions.canBookmark && isHomeInstance },
+                        { post: PostModel ->
+                            model.reduce(ForumListMvi.Intent.ToggleBookmark(post))
+                        }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                         onFavorite =
-                        { e: TimelineEntryModel ->
-                            model.reduce(ForumListMvi.Intent.ToggleFavorite(e))
-                        }.takeIf { entry.original.actionPermissions.canFavorite && isHomeInstance },
+                        { post: PostModel ->
+                            model.reduce(ForumListMvi.Intent.ToggleFavorite(post))
+                        }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                         onDislike =
-                        { e: TimelineEntryModel ->
-                            model.reduce(ForumListMvi.Intent.ToggleDislike(e))
-                        }.takeIf { entry.original.actionPermissions.canDislike && isHomeInstance },
+                        { post: PostModel ->
+                            model.reduce(ForumListMvi.Intent.ToggleDislike(post))
+                        }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
                         onReply =
-                        { e: TimelineEntryModel ->
+                        { post: PostModel ->
                             mainRouter.openComposer(
-                                inReplyTo = e,
-                                inReplyToUser = e.creator,
+                                inReplyTo = post,
+                                inReplyToUser = post.creator,
                             )
-                        }.takeIf { entry.original.actionPermissions.canReply && isHomeInstance },
+                        }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
-                            { e, choices ->
+                            { post, choices ->
                                 model.reduce(
                                     ForumListMvi.Intent.SubmitPollVote(
-                                        entry = e,
+                                        post = post,
                                         choices = choices,
                                     ),
                                 )
@@ -535,43 +533,43 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         },
                         onShowOriginal = {
                             model.reduce(
-                                ForumListMvi.Intent.ToggleTranslation(entry.original),
+                                ForumListMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { e ->
-                            mainRouter.openEntryDetail(e)
+                        onOpenQuote = { post ->
+                            mainRouter.openPostDetail(post)
                         },
                         options =
                         buildList {
-                            if (entry.original.actionPermissions.canShare && isHomeInstance) {
+                            if (post.original.actionPermissions.canShare && isHomeInstance) {
                                 this += OptionId.Share.toOption()
                                 this += OptionId.CopyUrl.toOption()
                             }
-                            if (entry.original.actionPermissions.canEdit && isHomeInstance) {
+                            if (post.original.actionPermissions.canEdit && isHomeInstance) {
                                 this += OptionId.Edit.toOption()
                             }
-                            if (entry.original.actionPermissions.canDelete && isHomeInstance) {
+                            if (post.original.actionPermissions.canDelete && isHomeInstance) {
                                 this += OptionId.Delete.toOption()
                             }
-                            if (entry.original.actionPermissions.canMute && isHomeInstance) {
+                            if (post.original.actionPermissions.canMute && isHomeInstance) {
                                 this += OptionId.Mute.toOption()
                             }
-                            if (entry.original.actionPermissions.canBlock && isHomeInstance) {
+                            if (post.original.actionPermissions.canBlock && isHomeInstance) {
                                 this += OptionId.Block.toOption()
                             }
-                            if (entry.original.actionPermissions.canReport && isHomeInstance) {
+                            if (post.original.actionPermissions.canReport && isHomeInstance) {
                                 this += OptionId.ReportUser.toOption()
-                                this += OptionId.ReportEntry.toOption()
+                                this += OptionId.ReportPost.toOption()
                             }
-                            if (entry.original.actionPermissions.canQuote && isHomeInstance) {
+                            if (post.original.actionPermissions.canQuote && isHomeInstance) {
                                 this += OptionId.Quote.toOption()
                             }
                             this += OptionId.ViewDetails.toOption()
                             this += OptionId.CopyToClipboard.toOption()
                             val currentLang = uiState.lang.orEmpty()
                             if (currentLang.isNotEmpty() &&
-                                entry.lang != currentLang &&
-                                !entry.isShowingTranslation
+                                post.lang != currentLang &&
+                                !post.isShowingTranslation
                             ) {
                                 this +=
                                     Option(
@@ -589,7 +587,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                         },
                                     )
                             }
-                            val nodeName = entry.nodeName
+                            val nodeName = post.nodeName
                             if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
                                 this +=
                                     OptionId.AddShortcut.toOption(
@@ -601,12 +599,12 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         onSelectOption = { optionId ->
                             when (optionId) {
                                 OptionId.Share -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     shareHelper.share(urlString)
                                 }
 
                                 OptionId.CopyUrl -> {
-                                    val urlString = entry.url.orEmpty()
+                                    val urlString = post.url.orEmpty()
                                     scope.launch {
                                         clipboardHelper.setText(urlString)
                                         snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -615,79 +613,79 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
 
                                 OptionId.Edit -> {
                                     mainRouter.openComposer(
-                                        inReplyToUser = entry.creator,
-                                        editedPostId = entry.reblog?.id,
+                                        inReplyToUser = post.creator,
+                                        editedPostId = post.reblog?.id,
                                         inGroup = true,
                                     )
                                 }
 
-                                OptionId.Delete -> confirmDeleteEntryId = entry.id
+                                OptionId.Delete -> confirmDeletePostId = post.id
 
-                                OptionId.Mute -> confirmMuteEntry = entry
+                                OptionId.Mute -> confirmMutePost = post
 
-                                OptionId.Block -> confirmBlockEntry = entry
+                                OptionId.Block -> confirmBlockPost = post
 
                                 OptionId.ReportUser ->
-                                    entry.original.creator?.also { userToReport ->
-                                        mainRouter.openCreateReport(user = userToReport)
+                                    post.original.creator?.also { toReport ->
+                                        mainRouter.openCreateReport(user = toReport)
                                     }
 
-                                OptionId.ReportEntry ->
-                                    entry.original.also { entryToReport ->
-                                        entryToReport.creator?.also { userToReport ->
+                                OptionId.ReportPost ->
+                                    post.original.also { postToReport ->
+                                        postToReport.creator?.also { userToReport ->
                                             mainRouter.openCreateReport(
                                                 user = userToReport,
-                                                entry = entryToReport,
+                                                post = postToReport,
                                             )
                                         }
                                     }
 
                                 OptionId.Quote -> {
-                                    entry.original.also { entryToShare ->
+                                    post.original.also { toShare ->
                                         mainRouter.openComposer(
-                                            quoted = entryToShare,
-                                            urlToShare = entryToShare.url,
+                                            quoted = toShare,
+                                            urlToShare = toShare.url,
                                         )
                                     }
                                 }
 
-                                OptionId.ViewDetails -> seeDetailsEntry = entry.original
+                                OptionId.ViewDetails -> seeDetailsPost = post.original
 
                                 OptionId.CopyToClipboard ->
-                                    model.reduce(ForumListMvi.Intent.CopyToClipboard(entry.original))
+                                    model.reduce(ForumListMvi.Intent.CopyToClipboard(post.original))
 
                                 OptionId.Translate ->
                                     model.reduce(
-                                        ForumListMvi.Intent.ToggleTranslation(entry.original),
+                                        ForumListMvi.Intent.ToggleTranslation(post.original),
                                     )
 
                                 OptionId.AddShortcut ->
                                     model.reduce(
-                                        ForumListMvi.Intent.AddInstanceShortcut(entry.nodeName),
+                                        ForumListMvi.Intent.AddInstanceShortcut(post.nodeName),
                                     )
 
                                 OptionId.OpenInBrowser ->
                                     model.reduce(
-                                        ForumListMvi.Intent.OpenInBrowser(entry),
+                                        ForumListMvi.Intent.OpenInBrowser(post),
                                     )
 
                                 else -> Unit
                             }
                         },
                     )
-                    if (idx < uiState.entries.lastIndex) {
+                    if (idx < uiState.posts.lastIndex) {
                         TimelineDivider(layout = uiState.layout)
                     }
 
                     val canFetchMore =
                         !uiState.initial && !uiState.loading && uiState.canFetchMore
-                    val isNearTheEnd = idx.isNearTheEnd(uiState.entries)
+                    val isNearTheEnd = idx.isNearTheEnd(uiState.posts)
                     if (isNearTheEnd && canFetchMore) {
                         model.reduce(ForumListMvi.Intent.LoadNextPage)
                     }
                 }
 
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.entries.isEmpty()) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.posts.isEmpty()) {
                     item {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
@@ -752,33 +750,33 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
         )
     }
 
-    if (confirmDeleteEntryId != null) {
+    if (confirmDeletePostId != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
             onClose = { confirm ->
-                val entryId = confirmDeleteEntryId
-                confirmDeleteEntryId = null
-                if (confirm && entryId != null) {
-                    model.reduce(ForumListMvi.Intent.DeleteEntry(entryId))
+                val postId = confirmDeletePostId
+                confirmDeletePostId = null
+                if (confirm && postId != null) {
+                    model.reduce(ForumListMvi.Intent.Delete(postId))
                 }
             },
         )
     }
 
-    if (confirmMuteEntry != null) {
-        (confirmMuteEntry?.reblog?.creator ?: confirmMuteEntry?.creator)?.also { user ->
+    if (confirmMutePost != null) {
+        (confirmMutePost?.reblog?.creator ?: confirmMutePost?.creator)?.also { user ->
             ConfirmMuteUserBottomSheet(
                 userHandle = user.handle.orEmpty(),
                 onClose = { result ->
-                    val entryId = confirmMuteEntry?.id
-                    confirmMuteEntry = null
+                    val postId = confirmMutePost?.id
+                    confirmMutePost = null
                     if (result != null) {
                         val (duration, disableNotifications) = result
-                        if (entryId != null) {
+                        if (postId != null) {
                             model.reduce(
                                 ForumListMvi.Intent.MuteUser(
                                     userId = user.id,
-                                    entryId = entryId,
+                                    postId = postId,
                                     duration = duration,
                                     disableNotifications = disableNotifications,
                                 ),
@@ -790,8 +788,8 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
         }
     }
 
-    if (confirmBlockEntry != null) {
-        val creator = confirmBlockEntry?.reblog?.creator ?: confirmBlockEntry?.creator
+    if (confirmBlockPost != null) {
+        val creator = confirmBlockPost?.reblog?.creator ?: confirmBlockPost?.creator
         CustomConfirmDialog(
             title =
             buildString {
@@ -802,14 +800,14 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                 }
             },
             onClose = { confirm ->
-                val entryId = confirmBlockEntry?.id
+                val postId = confirmBlockPost?.id
                 val creatorId = creator?.id
-                confirmBlockEntry = null
-                if (confirm && entryId != null && creatorId != null) {
+                confirmBlockPost = null
+                if (confirm && postId != null && creatorId != null) {
                     model.reduce(
                         ForumListMvi.Intent.BlockUser(
                             userId = creatorId,
-                            entryId = entryId,
+                            postId = postId,
                         ),
                     )
                 }
@@ -825,13 +823,13 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
         )
     }
 
-    if (confirmReblogEntry != null) {
+    if (confirmReblogPost != null) {
         CustomConfirmDialog(
             title = LocalStrings.current.buttonConfirm,
             body = LocalStrings.current.messageAreYouSureReblog,
             onClose = { confirm ->
-                val e = confirmReblogEntry
-                confirmReblogEntry = null
+                val e = confirmReblogPost
+                confirmReblogPost = null
                 if (confirm && e != null) {
                     model.reduce(ForumListMvi.Intent.ToggleReblog(e))
                 }
@@ -839,11 +837,11 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
         )
     }
 
-    seeDetailsEntry?.let { entry ->
-        EntryDetailDialog(
-            entry = entry,
+    seeDetailsPost?.let { post ->
+        PostDetailDialog(
+            post = post,
             onClose = {
-                seeDetailsEntry = null
+                seeDetailsPost = null
             },
         )
     }

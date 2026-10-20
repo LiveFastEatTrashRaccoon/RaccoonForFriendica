@@ -5,7 +5,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.navigation.MainRouter
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.NavigationCoordinator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EventModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserListType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -33,7 +33,7 @@ class DefaultMainRouter(
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
     private val userCache: LocalItemCache<UserModel>,
-    private val entryCache: LocalItemCache<TimelineEntryModel>,
+    private val postCache: LocalItemCache<PostModel>,
     private val eventCache: LocalItemCache<EventModel>,
     private val circleCache: LocalItemCache<CircleModel>,
     private val attachmentCache: AttachmentCache,
@@ -67,13 +67,13 @@ class DefaultMainRouter(
         navigationCoordinator.replace(Destination.ForumList(userId = user.id, otherInstance = otherInstance))
     }
 
-    override fun openEntryDetail(entry: TimelineEntryModel, replaceTop: Boolean, swipeNavigationEnabled: Boolean, otherInstance: String?) {
+    override fun openPostDetail(post: PostModel, replaceTop: Boolean, swipeNavigationEnabled: Boolean, otherInstance: String?) {
         scope.launch {
-            entryCache.put(entry.id, entry)
+            postCache.put(post.id, post)
         }
         val destination =
-            Destination.EntryDetail(
-                entryId = entry.id,
+            Destination.PostDetail(
+                postId = post.id,
                 swipeNavigationEnabled = swipeNavigationEnabled,
                 otherInstance = otherInstance,
             )
@@ -135,22 +135,22 @@ class DefaultMainRouter(
         navigationCoordinator.push(Destination.FollowedHashtags)
     }
 
-    override fun openEntryUsersFavorite(entryId: String, count: Int, otherInstance: String?) {
+    override fun openPostUsersFavorite(postId: String, count: Int, otherInstance: String?) {
         navigationCoordinator.push(
             Destination.UserList(
                 type = UserListType.UsersFavorite.toInt(),
-                entryId = entryId,
+                postId = postId,
                 infoCount = count,
                 otherInstance = otherInstance,
             ),
         )
     }
 
-    override fun openEntryUsersReblog(entryId: String, count: Int, otherInstance: String?) {
+    override fun openPostUsersReblog(postId: String, count: Int, otherInstance: String?) {
         navigationCoordinator.push(
             Destination.UserList(
                 type = UserListType.UsersReblog.toInt(),
-                entryId = entryId,
+                postId = postId,
                 infoCount = count,
                 otherInstance = otherInstance,
             ),
@@ -158,10 +158,10 @@ class DefaultMainRouter(
     }
 
     override fun openComposer(
-        inReplyTo: TimelineEntryModel?,
+        inReplyTo: PostModel?,
         inReplyToUser: UserModel?,
         editedPostId: String?,
-        quoted: TimelineEntryModel?,
+        quoted: PostModel?,
         urlToShare: String?,
         inGroup: Boolean,
         initialText: String?,
@@ -170,13 +170,13 @@ class DefaultMainRouter(
         if (!isLogged) { return }
         scope.launch {
             if (inReplyTo != null) {
-                entryCache.put(inReplyTo.id, inReplyTo)
+                postCache.put(inReplyTo.id, inReplyTo)
             }
             if (inReplyToUser != null) {
                 userCache.put(inReplyToUser.id, inReplyToUser)
             }
             if (quoted != null) {
-                entryCache.put(quoted.id, quoted)
+                postCache.put(quoted.id, quoted)
             }
         }
         val isGroup = inReplyToUser?.group == true && inGroup
@@ -199,14 +199,14 @@ class DefaultMainRouter(
         )
     }
 
-    override fun openEditUnpublished(entry: TimelineEntryModel, type: UnpublishedType) {
+    override fun openEditUnpublished(post: PostModel, type: UnpublishedType) {
         scope.launch {
-            entryCache.put(entry.id, entry)
+            postCache.put(post.id, post)
         }
         navigationCoordinator.push(
             Destination.Composer(
-                scheduledPostId = entry.id.takeIf { type == UnpublishedType.Scheduled },
-                draftId = entry.id.takeIf { type == UnpublishedType.Drafts },
+                scheduledPostId = post.id.takeIf { type == UnpublishedType.Scheduled },
+                draftId = post.id.takeIf { type == UnpublishedType.Drafts },
             ),
         )
     }
@@ -215,13 +215,13 @@ class DefaultMainRouter(
         navigationCoordinator.push(Destination.Search)
     }
 
-    override fun openThread(entry: TimelineEntryModel, swipeNavigationEnabled: Boolean, otherInstance: String?) {
+    override fun openThread(post: PostModel, swipeNavigationEnabled: Boolean, otherInstance: String?) {
         scope.launch {
-            entryCache.put(entry.id, entry)
+            postCache.put(post.id, post)
         }
         navigationCoordinator.push(
             Destination.Thread(
-                entryId = entry.id,
+                postId = post.id,
                 swipeNavigationEnabled = swipeNavigationEnabled,
                 otherInstance = otherInstance,
             ),
@@ -308,17 +308,17 @@ class DefaultMainRouter(
         navigationCoordinator.push(Destination.Unpublished)
     }
 
-    override fun openCreateReport(user: UserModel, entry: TimelineEntryModel?) {
+    override fun openCreateReport(user: UserModel, post: PostModel?) {
         scope.launch {
             userCache.put(user.id, user)
-            if (entry != null) {
-                entryCache.put(entry.id, entry)
+            if (post != null) {
+                postCache.put(post.id, post)
             }
         }
         navigationCoordinator.push(
             Destination.CreateReport(
                 userId = user.id,
-                entryId = entry?.id,
+                postId = post?.id,
             ),
         )
     }

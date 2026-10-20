@@ -1,8 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import com.livefast.eattrash.raccoonforfriendica.core.translation.store.TranslationProviderConfigStore
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedTimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TranslatedPostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FallbackTranslationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TranslationRepository
@@ -20,49 +20,46 @@ class DefaultGetTranslationUseCase(
     private val stripMarkup: StripMarkupUseCase,
     private val translationProviderConfigStore: TranslationProviderConfigStore,
 ) : GetTranslationUseCase {
-    override suspend fun invoke(entry: TimelineEntryModel, targetLang: String): TranslatedTimelineEntryModel? {
+    override suspend fun invoke(post: PostModel, targetLang: String): TranslatedPostModel? {
         val nativeTranslationSupported =
             supportedFeatureRepository.features.value.supportsTranslation
         val nativeTranslation =
             if (nativeTranslationSupported) {
                 defaultRepository.getTranslation(
-                    entry = entry,
+                    post = post,
                     targetLang = targetLang,
                 )
             } else {
                 null
             }
-        return nativeTranslation ?: getFallbackTranslation(entry, targetLang)
+        return nativeTranslation ?: getFallbackTranslation(post, targetLang)
     }
 
-    private suspend fun getFallbackTranslation(
-        entry: TimelineEntryModel,
-        targetLang: String,
-    ): TranslatedTimelineEntryModel? {
+    private suspend fun getFallbackTranslation(post: PostModel, targetLang: String): TranslatedPostModel? {
         val configId = translationProviderConfigStore.getDefaultId() ?: return null
         val providerConfig = translationProviderConfigStore.getById(configId) ?: return null
         return fallbackRepository.getTranslation(
             config = providerConfig,
             targetLang = targetLang,
-            entry =
-            entry.copy(
-                title = entry.title?.stripMarkup(),
-                content = entry.content.stripMarkup(),
-                spoiler = entry.spoiler?.stripMarkup(),
+            post =
+            post.copy(
+                title = post.title?.stripMarkup(),
+                content = post.content.stripMarkup(),
+                spoiler = post.spoiler?.stripMarkup(),
                 card =
-                entry.card?.let { card ->
+                post.card?.let { card ->
                     card.copy(
                         title = card.title.stripMarkup(),
                         description = card.description.stripMarkup(),
                     )
                 },
                 poll =
-                entry.poll?.let { poll ->
+                post.poll?.let { poll ->
                     poll.copy(
                         options = poll.options.map { opt -> opt.copy(title = opt.title.stripMarkup()) },
                     )
                 },
-                attachments = entry.attachments.map { att ->
+                attachments = post.attachments.map { att ->
                     att.copy(description = att.description?.stripMarkup())
                 },
             ),

@@ -1,16 +1,16 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.pagination
 
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryDeletedEvent
-import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TimelineEntryUpdatedEvent
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineEntryModel
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
+import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.isNsfw
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.ReplyHelper
-import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineEntryRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TimelineRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRateLimitRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
@@ -32,17 +32,17 @@ import kotlinx.coroutines.flow.onEach
 @Inject
 class DefaultTimelinePaginationManager(
     private val timelineRepository: TimelineRepository,
-    private val timelineEntryRepository: TimelineEntryRepository,
+    private val postRepository: PostRepository,
     private val accountRepository: AccountRepository,
     private val userRateLimitRepository: UserRateLimitRepository,
     private val emojiHelper: EmojiHelper,
     private val replyHelper: ReplyHelper,
-    private val entryActionHelper: EntryActionHelper,
+    private val postActionHelper: PostActionHelper,
     private val stopWordRepository: StopWordRepository,
     private val followedHashtagCache: FollowedHashtagCache,
     notificationCenter: NotificationCenter,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : BasePaginationManager<TimelineEntryModel, TimelinePaginationSpecification>(
+) : BasePaginationManager<PostModel, TimelinePaginationSpecification>(
     idSelector = { it.id },
 ),
     TimelinePaginationManager {
@@ -52,14 +52,14 @@ class DefaultTimelinePaginationManager(
 
     init {
         notificationCenter
-            .subscribe(TimelineEntryUpdatedEvent::class)
+            .subscribe(PostUpdatedEvent::class)
             .onEach { event ->
                 withPaginationLock {
-                    updateHistoryItem(event.entry.id) { event.entry }
+                    updateHistoryItem(event.post.id) { event.post }
                 }
             }.launchIn(scope)
         notificationCenter
-            .subscribe(TimelineEntryDeletedEvent::class)
+            .subscribe(PostDeletedEvent::class)
             .onEach { event ->
                 withPaginationLock {
                     removeHistoryItem(event.id)
@@ -80,7 +80,7 @@ class DefaultTimelinePaginationManager(
         }
     }
 
-    override suspend fun restoreHistory(values: List<TimelineEntryModel>) {
+    override suspend fun restoreHistory(values: List<PostModel>) {
         withPaginationLock {
             restorePaginationState(
                 specification = currentSpecification,
@@ -90,10 +90,10 @@ class DefaultTimelinePaginationManager(
         }
     }
 
-    override suspend fun loadNextPage(): List<TimelineEntryModel> {
+    override suspend fun loadNextPage(): List<PostModel> {
         val spec = currentSpecification ?: return emptyList()
 
-        val results: PagedList<TimelineEntryModel>? =
+        val results: PagedList<PostModel>? =
             when (spec) {
                 is TimelinePaginationSpecification.Feed -> {
                     when (spec.timelineType) {
@@ -142,7 +142,7 @@ class DefaultTimelinePaginationManager(
                 }
 
                 is TimelinePaginationSpecification.User ->
-                    timelineEntryRepository
+                    postRepository
                         .getByUser(
                             userId = spec.userId,
                             pageCursor = currentPageCursor,
@@ -156,7 +156,7 @@ class DefaultTimelinePaginationManager(
                         )?.toPagedList()
 
                 is TimelinePaginationSpecification.Forum ->
-                    timelineEntryRepository
+                    postRepository
                         .getByUser(
                             userId = spec.userId,
                             pageCursor = currentPageCursor,
@@ -165,15 +165,15 @@ class DefaultTimelinePaginationManager(
                         )?.toPagedList()
 
                 is TimelinePaginationSpecification.Bookmarks ->
-                    timelineEntryRepository
+                    postRepository
                         .getBookmarks(pageCursor = currentPageCursor)
 
                 is TimelinePaginationSpecification.Favorites ->
-                    timelineEntryRepository
+                    postRepository
                         .getFavorites(pageCursor = currentPageCursor)
 
                 is TimelinePaginationSpecification.Quotes ->
-                    timelineEntryRepository
+                    postRepository
                         .getQuotes(
                             id = spec.id,
                             pageCursor = currentPageCursor,
@@ -192,13 +192,13 @@ class DefaultTimelinePaginationManager(
                             .filterNsfw(spec.includeNsfw)
                             .filterWithRateLimits()
                             .filterByStopWords()
-                            .map { entry ->
-                                entry.let {
+                            .map { post ->
+                                post.let {
                                     with(emojiHelper) { it.withEmojisIfMissing() }
                                 }.let {
                                     with(replyHelper) { it.withInReplyToIfMissing() }
                                 }.let {
-                                    with(entryActionHelper) { it.withActions() }
+                                    with(postActionHelper) { it.withActions() }
                                 }.let {
                                     it.copy(
                                         tags = it.tags.map { tag ->
@@ -213,13 +213,13 @@ class DefaultTimelinePaginationManager(
                             .filterNsfw(spec.includeNsfw)
                             .filterWithRateLimits()
                             .filterByStopWords()
-                            .map { entry ->
-                                entry.let {
+                            .map { post ->
+                                post.let {
                                     with(emojiHelper) { it.withEmojisIfMissing() }
                                 }.let {
                                     with(replyHelper) { it.withInReplyToIfMissing() }
                                 }.let {
-                                    with(entryActionHelper) { it.withActions() }
+                                    with(postActionHelper) { it.withActions() }
                                 }
                             }
 
@@ -227,13 +227,13 @@ class DefaultTimelinePaginationManager(
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filterByStopWords()
-                            .map { entry ->
-                                entry.let {
+                            .map { post ->
+                                post.let {
                                     with(emojiHelper) { it.withEmojisIfMissing() }
                                 }.let {
                                     with(replyHelper) { it.withInReplyToIfMissing() }
                                 }.let {
-                                    with(entryActionHelper) { it.withActions() }
+                                    with(postActionHelper) { it.withActions() }
                                 }
                             }
 
@@ -242,13 +242,13 @@ class DefaultTimelinePaginationManager(
                             .filterNsfw(spec.includeNsfw)
                             .filter { it.reblog != null && it.reblog?.inReplyTo == null }
                             .filterByStopWords()
-                            .map { entry ->
-                                entry.let {
+                            .map { post ->
+                                post.let {
                                     with(emojiHelper) { it.withEmojisIfMissing() }
                                 }.let {
                                     with(replyHelper) { it.withInReplyToIfMissing() }
                                 }.let {
-                                    with(entryActionHelper) { it.withActions() }
+                                    with(postActionHelper) { it.withActions() }
                                 }
                             }
 
@@ -256,13 +256,13 @@ class DefaultTimelinePaginationManager(
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filterByStopWords()
-                            .map { entry ->
-                                entry.let {
+                            .map { post ->
+                                post.let {
                                     with(emojiHelper) { it.withEmojisIfMissing() }
                                 }.let {
                                     with(replyHelper) { it.withInReplyToIfMissing() }
                                 }.let {
-                                    with(entryActionHelper) { it.withActions() }
+                                    with(postActionHelper) { it.withActions() }
                                 }
                             }
 
@@ -270,13 +270,13 @@ class DefaultTimelinePaginationManager(
                         newItems
                             .filterNsfw(spec.includeNsfw)
                             .filterByStopWords()
-                            .map { entry ->
-                                entry.let {
+                            .map { post ->
+                                post.let {
                                     with(emojiHelper) { it.withEmojisIfMissing() }
                                 }.let {
                                     with(replyHelper) { it.withInReplyToIfMissing() }
                                 }.let {
-                                    with(entryActionHelper) { it.withActions() }
+                                    with(postActionHelper) { it.withActions() }
                                 }
                             }
 
@@ -308,46 +308,45 @@ class DefaultTimelinePaginationManager(
         }
     }
 
-    private fun List<TimelineEntryModel>.toPagedList(): PagedList<TimelineEntryModel> {
+    private fun List<PostModel>.toPagedList(): PagedList<PostModel> {
         val cursor = lastOrNull()?.id
         return PagedList(list = this, cursor = cursor)
     }
 
-    private fun List<TimelineEntryModel>.filterWithRateLimits(): List<TimelineEntryModel> =
-        filterIndexed { index, timelineEntryModel ->
-            val creator = timelineEntryModel.creator ?: return@filterIndexed true
-            val rateLimit = userRateLimits[creator.handle] ?: return@filterIndexed true
-            val entriesByThisUserInHistory = history.count { it.creator?.id == creator.id }
-            val entriesByThisUserSoFar =
-                subList(0, index).count { it.creator?.id == creator.id }
-            val total = history.size + index
-            if (total == 0) {
-                return@filterIndexed true
-            }
-            val rate =
-                (entriesByThisUserInHistory + entriesByThisUserSoFar + 1).toDouble() / (total + 1)
-            rate <= rateLimit
+    private fun List<PostModel>.filterWithRateLimits(): List<PostModel> = filterIndexed { index, post ->
+        val creator = post.creator ?: return@filterIndexed true
+        val rateLimit = userRateLimits[creator.handle] ?: return@filterIndexed true
+        val postsByThisUserInHistory = history.count { it.creator?.id == creator.id }
+        val postsByThisUserSoFar =
+            subList(0, index).count { it.creator?.id == creator.id }
+        val total = history.size + index
+        if (total == 0) {
+            return@filterIndexed true
         }
+        val rate =
+            (postsByThisUserInHistory + postsByThisUserSoFar + 1).toDouble() / (total + 1)
+        rate <= rateLimit
+    }
 
-    private fun List<TimelineEntryModel>.filterReplies(included: Boolean): List<TimelineEntryModel> = filter {
+    private fun List<PostModel>.filterReplies(included: Boolean): List<PostModel> = filter {
         included || it.inReplyTo == null
     }
 
-    private fun List<TimelineEntryModel>.filterNsfw(included: Boolean): List<TimelineEntryModel> = filter {
+    private fun List<PostModel>.filterNsfw(included: Boolean): List<PostModel> = filter {
         included || !it.isNsfw
     }
 
-    private fun List<TimelineEntryModel>.filterByStopWords(): List<TimelineEntryModel> = filter { entry ->
+    private fun List<PostModel>.filterByStopWords(): List<PostModel> = filter { post ->
         stopWords?.takeIf { it.isNotEmpty() }?.let { stopWordList ->
             stopWordList.none { word ->
-                val entryTexts =
+                val postContents =
                     listOfNotNull(
-                        entry.content,
-                        entry.title,
-                        entry.reblog?.content,
-                        entry.reblog?.title,
+                        post.content,
+                        post.title,
+                        post.reblog?.content,
+                        post.reblog?.title,
                     )
-                entryTexts.any { it.contains(other = word, ignoreCase = true) }
+                postContents.any { it.contains(other = word, ignoreCase = true) }
             }
         } ?: true
     }

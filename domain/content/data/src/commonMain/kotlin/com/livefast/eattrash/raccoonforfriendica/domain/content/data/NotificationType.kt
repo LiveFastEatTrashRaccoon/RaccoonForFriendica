@@ -9,7 +9,7 @@ sealed interface NotificationType {
 
     data object FollowRequest : NotificationType
 
-    data object Entry : NotificationType
+    data object Post : NotificationType
 
     data object Favorite : NotificationType
 
@@ -26,7 +26,7 @@ sealed interface NotificationType {
     companion object {
         val ALL =
             listOf(
-                Entry,
+                Post,
                 Favorite,
                 Follow,
                 FollowRequest,

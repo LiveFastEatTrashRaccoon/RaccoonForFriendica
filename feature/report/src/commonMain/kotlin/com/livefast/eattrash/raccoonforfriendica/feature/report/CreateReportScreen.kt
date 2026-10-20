@@ -56,10 +56,10 @@ import kotlinx.coroutines.flow.onEach
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Modifier) {
+fun CreateReportScreen(userId: String, postId: String?, modifier: Modifier = Modifier) {
     val model: CreateReportMvi = assistedMetroViewModel<CreateReportViewModel>(
         extras = CreateReportViewModel.getExtras(
-            CreateReportViewModelArgs(userId = userId, entryId = entryId.orEmpty()),
+            CreateReportViewModelArgs(userId = userId, postId = postId.orEmpty()),
         ),
     )
     val uiState by model.uiState.collectAsState()
@@ -104,8 +104,8 @@ fun CreateReportScreen(userId: String, entryId: String?, modifier: Modifier = Mo
                         buildString {
                             val author = uiState.user
                             if (author != null) {
-                                if (entryId != null) {
-                                    append(LocalStrings.current.createReportTitleEntry)
+                                if (postId != null) {
+                                    append(LocalStrings.current.createReportTitlePost)
                                 } else {
                                     append(LocalStrings.current.createReportTitleUser)
                                 }
