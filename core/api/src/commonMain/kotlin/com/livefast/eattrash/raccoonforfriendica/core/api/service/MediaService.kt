@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.MediaAttachment
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
@@ -17,5 +16,5 @@ interface MediaService {
 }
 
 fun interface MediaServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): MediaService
+    fun create(baseUrl: String, client: HttpClient): MediaService
 }

@@ -4,13 +4,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.serialName
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -18,7 +18,8 @@ import io.ktor.client.request.post
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultNotificationService(@Assisted private val args: ServiceCreationArgs) : NotificationService {
+class DefaultNotificationService(@Assisted private val baseUrl: String, @Assisted private val client: HttpClient) :
+    NotificationService {
 
     override suspend fun get(
         types: List<NotificationType>,
@@ -28,7 +29,7 @@ class DefaultNotificationService(@Assisted private val args: ServiceCreationArgs
         includeAll: Boolean,
         limit: Int,
     ): Page<Notification> {
-        val response = args.client.get("${args.baseUrl}/v1/notifications") {
+        val response = client.get("$baseUrl/v1/notifications") {
             if (types.isNotEmpty()) {
                 types.forEach { value ->
                     parameter("types[]", value.serialName)
@@ -49,14 +50,13 @@ class DefaultNotificationService(@Assisted private val args: ServiceCreationArgs
     }
 
     override suspend fun dismiss(id: String): Boolean =
-        args.client.post("${args.baseUrl}/v1/notifications/$id/dismiss").status.isSuccess()
+        client.post("$baseUrl/v1/notifications/$id/dismiss").status.isSuccess()
 
-    override suspend fun clear(): Boolean =
-        args.client.post("${args.baseUrl}/v1/notifications/clear").status.isSuccess()
+    override suspend fun clear(): Boolean = client.post("$baseUrl/v1/notifications/clear").status.isSuccess()
 }
 
 @ContributesBinding(AppScope::class)
 @AssistedFactory
 fun interface DefaultNotificationServiceFactory : NotificationServiceFactory {
-    override fun create(@Assisted args: ServiceCreationArgs): DefaultNotificationService
+    override fun create(@Assisted baseUrl: String, @Assisted client: HttpClient): DefaultNotificationService
 }

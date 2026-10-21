@@ -3,8 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface TrendsService {
     suspend fun getHashtags(offset: Int, limit: Int = 20): List<Tag>
@@ -15,5 +14,5 @@ interface TrendsService {
 }
 
 fun interface TrendsServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): TrendsService
+    fun create(baseUrl: String, client: HttpClient): TrendsService
 }

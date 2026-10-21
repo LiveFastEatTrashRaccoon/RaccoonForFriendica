@@ -4,8 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Collection
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.CollectionItem
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.AddCollectionItemForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateCollectionForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface CollectionService {
     suspend fun create(data: CreateCollectionForm): Collection
@@ -18,5 +17,5 @@ interface CollectionService {
 }
 
 fun interface CollectionServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): CollectionService
+    fun create(baseUrl: String, client: HttpClient): CollectionService
 }

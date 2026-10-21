@@ -1,12 +1,12 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Announcement
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -14,23 +14,24 @@ import io.ktor.client.request.post
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultAnnouncementService(@Assisted private val args: ServiceCreationArgs) : AnnouncementService {
+class DefaultAnnouncementService(@Assisted private val baseUrl: String, @Assisted private val client: HttpClient) :
+    AnnouncementService {
 
     override suspend fun getAll(): List<Announcement> =
-        args.client.get("${args.baseUrl}/v1/announcements").body<List<Announcement>>()
+        client.get("$baseUrl/v1/announcements").body<List<Announcement>>()
 
     override suspend fun dismiss(id: String): Boolean =
-        args.client.post("${args.baseUrl}/v1/announcements/$id/dismiss").status.isSuccess()
+        client.post("$baseUrl/v1/announcements/$id/dismiss").status.isSuccess()
 
     override suspend fun addReaction(id: String, name: String): Boolean =
-        args.client.post("${args.baseUrl}/v1/announcements/$id/reactions/$name").status.isSuccess()
+        client.post("$baseUrl/v1/announcements/$id/reactions/$name").status.isSuccess()
 
     override suspend fun removeReaction(id: String, name: String): Boolean =
-        args.client.delete("${args.baseUrl}/v1/announcements/$id/reactions/$name").status.isSuccess()
+        client.delete("$baseUrl/v1/announcements/$id/reactions/$name").status.isSuccess()
 }
 
 @ContributesBinding(AppScope::class)
 @AssistedFactory
 fun interface DefaultAnnouncementServiceFactory : AnnouncementServiceFactory {
-    override fun create(@Assisted args: ServiceCreationArgs): DefaultAnnouncementService
+    override fun create(@Assisted baseUrl: String, @Assisted client: HttpClient): DefaultAnnouncementService
 }

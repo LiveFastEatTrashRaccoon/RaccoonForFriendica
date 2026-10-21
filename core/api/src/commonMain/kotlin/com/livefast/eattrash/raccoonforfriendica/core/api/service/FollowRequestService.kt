@@ -3,8 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Account
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Relationship
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface FollowRequestService {
     suspend fun getAll(maxId: String? = null, limit: Int = 20): Page<Account>
@@ -15,5 +14,5 @@ interface FollowRequestService {
 }
 
 fun interface FollowRequestServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): FollowRequestService
+    fun create(baseUrl: String, client: HttpClient): FollowRequestService
 }
