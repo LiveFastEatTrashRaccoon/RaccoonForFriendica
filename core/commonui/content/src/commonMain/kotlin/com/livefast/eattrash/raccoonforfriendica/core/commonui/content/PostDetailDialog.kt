@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +35,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostDetailDialog(post: PostModel, modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val fullColor = MaterialTheme.colorScheme.onBackground
