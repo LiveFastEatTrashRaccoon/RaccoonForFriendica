@@ -48,7 +48,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class HashtagViewModel(
-    @Assisted private val args: HashtagViewModelArgs,
+    @Assisted private val tag: String,
     private val paginationManager: TimelinePaginationManager,
     private val postRepository: PostRepository,
     private val tagRepository: TagRepository,
@@ -123,7 +123,7 @@ class HashtagViewModel(
                 }.launchIn(this)
 
             if (uiState.value.initial) {
-                val model = tagRepository.getBy(args.tag)
+                val model = tagRepository.getBy(tag)
                 updateState {
                     it.copy(
                         following = model?.following == true,
@@ -203,7 +203,7 @@ class HashtagViewModel(
         }
         paginationManager.reset(
             TimelinePaginationSpecification.Hashtag(
-                hashtag = args.tag,
+                hashtag = tag,
                 includeNsfw = settingsRepository.current.value?.includeNsfw == true,
             ),
         )
@@ -403,9 +403,9 @@ class HashtagViewModel(
             updateState { it.copy(followingPending = true) }
             val newModel =
                 if (newFollowing) {
-                    tagRepository.follow(args.tag)
+                    tagRepository.follow(tag)
                 } else {
-                    tagRepository.unfollow(args.tag)
+                    tagRepository.unfollow(tag)
                 }?.also { tag ->
                     notificationCenter.send(TagUpdatedEvent(tag = tag))
                 }
@@ -538,22 +538,20 @@ class HashtagViewModel(
     }
 
     companion object {
-        fun getExtras(args: HashtagViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(tag: String) = CreationExtras {
+            this[KEY_TAG] = tag
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<HashtagViewModelArgs>()
-
-data class HashtagViewModelArgs(val tag: String)
+private val KEY_TAG = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(HashtagViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface HashtagViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): HashtagViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_TAG] ?: error("tag argument not found"))
 
-    fun create(@Assisted args: HashtagViewModelArgs): HashtagViewModel
+    fun create(@Assisted tag: String): HashtagViewModel
 }

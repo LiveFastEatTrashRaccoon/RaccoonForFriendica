@@ -63,7 +63,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class SettingsViewModel(
-    @Assisted private val args: SettingsViewModelArgs,
+    @Assisted private val controller: PermissionControllerWrapper,
     private val settingsRepository: SettingsRepository,
     private val l10nManager: L10nManager,
     private val themeRepository: ThemeRepository,
@@ -94,7 +94,7 @@ class SettingsViewModel(
             val supportsPullNotifications = pullNotificationManager.isSupported
             val pushDistributors = pushNotificationManager.getAvailableDistributors()
             val supportsDynamicColors = colorSchemeProvider.supportsDynamicColors
-            val pushNotificationPermissionState = args.controller.getPermissionState(PermissionType.PushNotification)
+            val pushNotificationPermissionState = controller.getPermissionState(PermissionType.PushNotification)
             val supportsCustomTabs = customTabsHelper.isSupported
             updateState {
                 it.copy(
@@ -525,12 +525,12 @@ class SettingsViewModel(
     private fun handleGrantPushNotificationsPermission() {
         viewModelScope.launch {
             when (val state = uiState.value.pushNotificationPermissionState) {
-                PermissionState.DeniedAlways -> args.controller.openAppSettings()
+                PermissionState.DeniedAlways -> controller.openAppSettings()
 
                 else -> {
                     val newState =
                         try {
-                            args.controller.providePermission(PermissionType.PushNotification)
+                            controller.providePermission(PermissionType.PushNotification)
                             PermissionState.Granted
                         } catch (_: DeniedAlwaysException) {
                             PermissionState.DeniedAlways
@@ -617,22 +617,20 @@ class SettingsViewModel(
     }
 
     companion object {
-        fun getExtras(args: SettingsViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(controller: PermissionControllerWrapper) = CreationExtras {
+            this[KEY_PERMISSION_CONTROLLER] = controller
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<SettingsViewModelArgs>()
-
-data class SettingsViewModelArgs(val controller: PermissionControllerWrapper)
+private val KEY_PERMISSION_CONTROLLER = CreationExtras.Key<PermissionControllerWrapper>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(SettingsViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface SettingsViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): SettingsViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_PERMISSION_CONTROLLER] ?: error("controller argument not found"))
 
-    fun create(@Assisted args: SettingsViewModelArgs): SettingsViewModel
+    fun create(@Assisted controller: PermissionControllerWrapper): SettingsViewModel
 }

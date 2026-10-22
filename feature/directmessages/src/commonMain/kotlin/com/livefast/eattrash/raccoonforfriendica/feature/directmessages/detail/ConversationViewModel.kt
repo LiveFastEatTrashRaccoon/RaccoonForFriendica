@@ -38,7 +38,8 @@ private val POLLING_INTERVAL = 1.2.seconds
 
 @AssistedInject
 class ConversationViewModel(
-    @Assisted private val args: ConversationViewModelArgs,
+    @Assisted private val otherUserId: String,
+    @Assisted private val parentUri: String,
     private val paginationManager: DirectMessagesPaginationManager,
     private val identityRepository: IdentityRepository,
     private val userRepository: UserRepository,
@@ -51,7 +52,7 @@ class ConversationViewModel(
     ConversationMvi {
     private var job: Job? = null
 
-    private var parentUriToUse = args.parentUri
+    private var parentUriToUse = parentUri
 
     init {
         viewModelScope.launch {
@@ -63,7 +64,7 @@ class ConversationViewModel(
                         )
                     }
                 }.launchIn(this)
-            val otherUser = userCache.get(args.otherUserId)
+            val otherUser = userCache.get(otherUserId)
             val currentUser = identityRepository.currentUser.value
             updateState {
                 it.copy(
@@ -209,7 +210,7 @@ class ConversationViewModel(
 
         viewModelScope.launch {
             val relationshipStatus =
-                userRepository.getRelationships(listOf(args.otherUserId))?.firstOrNull()?.toStatus()
+                userRepository.getRelationships(listOf(otherUserId))?.firstOrNull()?.toStatus()
             if (relationshipStatus !in
                 listOf(
                     RelationshipStatus.MutualFollow,
@@ -242,7 +243,7 @@ class ConversationViewModel(
             emitEffect(ConversationMvi.Effect.BackToTop)
             val remoteMessage =
                 messageRepository.create(
-                    recipientId = args.otherUserId,
+                    recipientId = otherUserId,
                     text = text,
                     inReplyTo = inReplyToId,
                 )
@@ -270,22 +271,24 @@ class ConversationViewModel(
     }
 
     companion object {
-        fun getExtras(args: ConversationViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(otherUserId: String, parentUri: String) = CreationExtras {
+            this[KEY_OTHER_USER_ID] = otherUserId
+            this[KEY_PARENT_URI] = parentUri
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<ConversationViewModelArgs>()
-
-data class ConversationViewModelArgs(val otherUserId: String, val parentUri: String)
+private val KEY_OTHER_USER_ID = CreationExtras.Key<String>()
+private val KEY_PARENT_URI = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ConversationViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface ConversationViewModelFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): ConversationViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+    override fun create(extras: CreationExtras): ConversationViewModel = create(
+        extras[KEY_OTHER_USER_ID] ?: error("otherUserId argument not found"),
+        extras[KEY_PARENT_URI] ?: error("parentUri argument not found"),
+    )
 
-    fun create(@Assisted args: ConversationViewModelArgs): ConversationViewModel
+    fun create(@Assisted otherUserId: String, @Assisted parentUri: String): ConversationViewModel
 }

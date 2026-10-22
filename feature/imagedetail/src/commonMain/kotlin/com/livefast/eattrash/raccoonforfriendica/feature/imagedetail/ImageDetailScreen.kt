@@ -52,10 +52,8 @@ fun ImageDetailScreen(
 ) {
     val model: ImageDetailMvi = assistedMetroViewModel<ImageDetailViewModel>(
         extras = ImageDetailViewModel.getExtras(
-            ImageDetailViewModelArgs(
-                urls = urls,
-                initialIndex = initialIndex,
-            ),
+            urls = urls,
+            initialIndex = initialIndex,
         ),
     )
     val uiState by model.uiState.collectAsState()

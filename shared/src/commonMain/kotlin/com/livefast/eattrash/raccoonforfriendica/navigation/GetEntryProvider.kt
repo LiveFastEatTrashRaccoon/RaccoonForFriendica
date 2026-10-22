@@ -28,11 +28,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.detail.C
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.directmessages.list.ConversationListViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.postdetail.PostDetailScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListMvi
-import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListScreen
-import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListViewModelArgs
 import com.livefast.eattrash.raccoonforfriendica.feature.explore.ExploreMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.followrequests.FollowRequestsScreen
@@ -54,6 +49,10 @@ import com.livefast.eattrash.raccoonforfriendica.feature.manageblocks.ManageBloc
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo.NodeInfoViewModel
+import com.livefast.eattrash.raccoonforfriendica.feature.postdetail.PostDetailScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListMvi
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.postlist.PostListViewModel
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.ProfileMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.edit.EditProfileScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.myaccount.MyAccountMvi
@@ -163,7 +162,7 @@ internal fun getEntryProvider(
     }
     entry<Destination.Favorites>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: PostListMvi = favoritesViewModel ?: assistedMetroViewModel<PostListViewModel>(
-            extras = PostListViewModel.getExtras(PostListViewModelArgs(type = PostListType.Favorites))
+            extras = PostListViewModel.getExtras(type = PostListType.Favorites)
         )
         PostListScreen(
             model = model,
@@ -172,7 +171,7 @@ internal fun getEntryProvider(
     }
     entry<Destination.Bookmarks>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: PostListMvi = bookmarksViewModel ?: assistedMetroViewModel<PostListViewModel>(
-            extras = PostListViewModel.getExtras(PostListViewModelArgs(type = PostListType.Bookmarks))
+            extras = PostListViewModel.getExtras(type = PostListType.Bookmarks)
         )
         PostListScreen(
             model = model,
@@ -182,10 +181,11 @@ internal fun getEntryProvider(
     entry<Destination.QuotingPosts>(metadata = ListDetailSceneStrategy.listPane()) {
         val model: PostListMvi = assistedMetroViewModel<PostListViewModel>(
             extras = PostListViewModel.getExtras(
-                PostListViewModelArgs(
-                    type = PostListType.Quoting(postId = it.postId, otherInstance = it.otherInstance),
-                )
-            )
+                type = PostListType.Quoting(
+                    postId = it.postId,
+                    otherInstance = it.otherInstance,
+                ),
+            ),
         )
         PostListScreen(
             model = model,
@@ -238,7 +238,7 @@ internal fun getEntryProvider(
         CirclesScreen(model = model)
     }
     entry<Destination.CircleMembers>(metadata = ListDetailSceneStrategy.detailPane()) {
-        CircleMembersScreen(id = it.circleId)
+        CircleMembersScreen(circleId = it.circleId)
     }
     entry<Destination.CircleTimeline>(metadata = ListDetailSceneStrategy.listPane()) {
         CircleTimelineScreen(id = it.circleId)

@@ -75,7 +75,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @Composable
 fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val model: AlbumDetailMvi = assistedMetroViewModel<AlbumDetailViewModel>(
-        extras = AlbumDetailViewModel.getExtras(AlbumDetailViewModelArgs(albumName = name)),
+        extras = AlbumDetailViewModel.getExtras(name),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

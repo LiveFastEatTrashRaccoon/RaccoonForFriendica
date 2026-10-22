@@ -121,7 +121,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             factory.create()
         }
     val model: SettingsMvi = assistedMetroViewModel<SettingsViewModel>(
-        extras = SettingsViewModel.getExtras(SettingsViewModelArgs(controller)),
+        extras = SettingsViewModel.getExtras(controller),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

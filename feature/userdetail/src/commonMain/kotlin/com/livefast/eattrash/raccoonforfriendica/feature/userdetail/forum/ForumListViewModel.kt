@@ -51,7 +51,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class ForumListViewModel(
-    @Assisted private val args: ForumListViewModelArgs,
+    @Assisted private val id: String,
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val postRepository: PostRepository,
@@ -200,7 +200,7 @@ class ForumListViewModel(
     }
 
     private suspend fun loadUser() {
-        val account = userCache.get(args.id)
+        val account = userCache.get(id)
         updateState {
             it.copy(user = account)
         }
@@ -212,7 +212,7 @@ class ForumListViewModel(
         }
         paginationManager.reset(
             TimelinePaginationSpecification.Forum(
-                userId = args.id,
+                userId = id,
                 includeNsfw = settingsRepository.current.value?.includeNsfw == true,
             ),
         )
@@ -523,7 +523,7 @@ class ForumListViewModel(
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
-            val newRelationship = userRepository.follow(args.id)
+            val newRelationship = userRepository.follow(id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
@@ -547,7 +547,7 @@ class ForumListViewModel(
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
-            val newRelationship = userRepository.unfollow(args.id)
+            val newRelationship = userRepository.unfollow(id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
@@ -573,7 +573,7 @@ class ForumListViewModel(
             updateState { it.copy(user = it.user?.copy(notificationStatusPending = true)) }
             val newRelationship =
                 userRepository.follow(
-                    id = args.id,
+                    id = id,
                     notifications = enabled,
                 )
             val newNotificationStatus =
@@ -591,22 +591,20 @@ class ForumListViewModel(
     }
 
     companion object {
-        fun getExtras(args: ForumListViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(id: String) = CreationExtras {
+            this[KEY_GROUP_ID] = id
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<ForumListViewModelArgs>()
-
-data class ForumListViewModelArgs(val id: String)
+private val KEY_GROUP_ID = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ForumListViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface ForumListViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): ForumListViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_GROUP_ID] ?: error("groupId argument not found"))
 
-    fun create(@Assisted args: ForumListViewModelArgs): ForumListViewModel
+    fun create(@Assisted id: String): ForumListViewModel
 }

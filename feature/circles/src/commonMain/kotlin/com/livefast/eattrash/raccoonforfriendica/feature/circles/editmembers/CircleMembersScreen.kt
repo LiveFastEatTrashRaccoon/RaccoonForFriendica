@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,18 +58,16 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedFor
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.adduser.CircleAddUserViewModelArgs
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAction: (() -> Unit)? = null) {
+fun CircleMembersScreen(circleId: String, modifier: Modifier = Modifier, customBackAction: (() -> Unit)? = null) {
     val model: CircleMembersMvi = assistedMetroViewModel<CircleMembersViewModel>(
-        extras = CircleMembersViewModel.getExtras(CircleMembersViewModelArgs(id = id)),
+        extras = CircleMembersViewModel.getExtras(circleId),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
@@ -297,10 +294,8 @@ fun CircleMembersScreen(id: String, modifier: Modifier = Modifier, customBackAct
         val addUsersViewModel: CircleAddUserMvi = assistedMetroViewModel<CircleAddUserViewModel>(
             viewModelStoreOwner = viewModelStoreOwner,
             extras = CircleAddUserViewModel.getExtras(
-                CircleAddUserViewModelArgs(
-                    // exclude members of the current circle
-                    userIdsToExclude = uiState.users.map { it.id },
-                ),
+                // exclude members of the current circle
+                userIdsToExclude = uiState.users.map { user -> user.id },
             ),
         )
         val dialogUiState by addUsersViewModel.uiState.collectAsState()

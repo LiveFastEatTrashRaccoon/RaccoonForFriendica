@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class EventDetailViewModel(
-    @Assisted private val args: EventDetailViewModelArgs,
+    @Assisted private val eventId: String,
     eventCache: LocalItemCache<EventModel>,
     private val settingsRepository: SettingsRepository,
 ) : ViewModel(),
@@ -41,7 +41,7 @@ class EventDetailViewModel(
                     }
                 }.launchIn(this)
 
-            val event = eventCache.get(args.id)
+            val event = eventCache.get(eventId)
             updateState {
                 it.copy(event = event)
             }
@@ -49,22 +49,20 @@ class EventDetailViewModel(
     }
 
     companion object {
-        fun getExtras(args: EventDetailViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(eventId: String) = CreationExtras {
+            this[KEY_EVENT_ID] = eventId
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<EventDetailViewModelArgs>()
-
-data class EventDetailViewModelArgs(val id: String)
+private val KEY_EVENT_ID = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(EventDetailViewModel::class)
 @ContributesIntoMap(AppScope::class)
 interface EventDetailViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): EventDetailViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_EVENT_ID] ?: error("eventId argument not found"))
 
-    fun create(@Assisted args: EventDetailViewModelArgs): EventDetailViewModel
+    fun create(@Assisted eventId: String): EventDetailViewModel
 }

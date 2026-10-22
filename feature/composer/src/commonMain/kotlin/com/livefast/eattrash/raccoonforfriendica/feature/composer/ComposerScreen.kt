@@ -126,7 +126,8 @@ fun ComposerScreen(
 ) {
     val model: ComposerMvi = assistedMetroViewModel<ComposerViewModel>(
         extras = ComposerViewModel.getExtras(
-            ComposerViewModelArgs(inReplyToId = inReplyToId, quotedId = quotedId),
+            inReplyToId = inReplyToId,
+            quotedId = quotedId,
         ),
     )
     val uiState by model.uiState.collectAsState()

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,11 +43,10 @@ import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventDetailScreen(eventId: String, modifier: Modifier = Modifier) {
     val model: EventDetailMvi = assistedMetroViewModel<EventDetailViewModel>(
-        extras = EventDetailViewModel.getExtras(EventDetailViewModelArgs(eventId)),
+        extras = EventDetailViewModel.getExtras(eventId),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

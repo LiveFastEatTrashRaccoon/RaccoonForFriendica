@@ -27,7 +27,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @AssistedInject
 @OptIn(FlowPreview::class)
 class CircleAddUserViewModel(
-    @Assisted private val args: CircleAddUserViewModelArgs,
+    @Assisted private val userIdsToExclude: List<String>,
     private val searchPaginationManager: UserPaginationManager,
 ) : ViewModel(),
     MviDelegate<CircleAddUserMvi.Intent, CircleAddUserMvi.State, CircleAddUserMvi.Effect>
@@ -71,7 +71,7 @@ class CircleAddUserViewModel(
             UserPaginationSpecification.SearchFollowing(
                 query = query,
                 withRelationship = false,
-                excludeIds = args.userIdsToExclude,
+                excludeIds = userIdsToExclude,
             ),
         )
         updateState { it.copy(canFetchMore = searchPaginationManager.canFetchMore) }
@@ -95,23 +95,20 @@ class CircleAddUserViewModel(
     }
 
     companion object {
-        fun getExtras(args: CircleAddUserViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(userIdsToExclude: List<String>) = CreationExtras {
+            this[KEY_USER_IDS_TO_EXCLUDE] = userIdsToExclude
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<CircleAddUserViewModelArgs>()
-
-data class CircleAddUserViewModelArgs(val userIdsToExclude: List<String>)
+private val KEY_USER_IDS_TO_EXCLUDE = CreationExtras.Key<List<String>>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(CircleAddUserViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface CircleAddUserFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): CircleAddUserViewModel {
-        val args = extras[KEY_ARGS] ?: error("ViewModel creation args not found")
-        return create(args)
-    }
-    fun create(@Assisted args: CircleAddUserViewModelArgs): CircleAddUserViewModel
+    override fun create(extras: CreationExtras): CircleAddUserViewModel =
+        create(extras[KEY_USER_IDS_TO_EXCLUDE] ?: error("userIdsToExclude argument not found"))
+
+    fun create(@Assisted userIdsToExclude: List<String>): CircleAddUserViewModel
 }

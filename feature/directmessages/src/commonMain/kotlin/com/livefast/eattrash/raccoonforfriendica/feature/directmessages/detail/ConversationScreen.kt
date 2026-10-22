@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -72,15 +71,12 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.abs
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifier = Modifier) {
     val model: ConversationMvi = assistedMetroViewModel<ConversationViewModel>(
         extras = ConversationViewModel.getExtras(
-            ConversationViewModelArgs(
-                otherUserId = otherUserId,
-                parentUri = parentUri,
-            ),
+            otherUserId = otherUserId,
+            parentUri = parentUri,
         ),
     )
     val uiState by model.uiState.collectAsState()

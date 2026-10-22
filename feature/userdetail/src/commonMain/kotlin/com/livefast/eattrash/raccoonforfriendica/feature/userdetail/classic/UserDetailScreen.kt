@@ -112,7 +112,7 @@ import kotlin.time.Duration
 @Composable
 fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: UserDetailMvi = assistedMetroViewModel<UserDetailViewModel>(
-        extras = UserDetailViewModel.getExtras(UserDetailViewModelArgs(id = id)),
+        extras = UserDetailViewModel.getExtras(id),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
