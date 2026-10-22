@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class CircleEditorViewModel(
-    @Assisted args: CircleEditorViewModelArgs,
+    @Assisted private val data: CircleEditorData,
     private val circlesRepository: CirclesRepository,
 ) : ViewModel(),
     MviDelegate<CircleEditorMvi.Intent, CircleEditorMvi.State, CircleEditorMvi.Effect>
@@ -28,7 +28,7 @@ class CircleEditorViewModel(
     init {
         viewModelScope.launch {
             updateState {
-                it.copy(data = args.data)
+                it.copy(data = data)
             }
         }
     }
@@ -93,24 +93,20 @@ class CircleEditorViewModel(
     }
 
     companion object {
-        fun getExtras(args: CircleEditorViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(data: CircleEditorData) = CreationExtras {
+            this[KEY_DATA] = data
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<CircleEditorViewModelArgs>()
-
-data class CircleEditorViewModelArgs(val data: CircleEditorData)
+private val KEY_DATA = CreationExtras.Key<CircleEditorData>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(CircleEditorViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface CircleEditorViewModelFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): CircleEditorViewModel {
-        val args = extras[KEY_ARGS] ?: error("ViewModel creation args not found")
-        return create(args)
-    }
+    override fun create(extras: CreationExtras): CircleEditorViewModel =
+        create(extras[KEY_DATA] ?: error("data argument not found"))
 
-    fun create(@Assisted args: CircleEditorViewModelArgs): CircleEditorViewModel
+    fun create(@Assisted data: CircleEditorData): CircleEditorViewModel
 }

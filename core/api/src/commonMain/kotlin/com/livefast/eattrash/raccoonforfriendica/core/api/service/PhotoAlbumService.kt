@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaApiResult
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 
 interface PhotoAlbumService {
@@ -12,5 +11,5 @@ interface PhotoAlbumService {
 }
 
 fun interface PhotoAlbumServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): PhotoAlbumService
+    fun create(baseUrl: String, client: HttpClient): PhotoAlbumService
 }

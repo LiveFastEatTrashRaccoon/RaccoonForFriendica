@@ -67,7 +67,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @AssistedInject
 class ComposerViewModel(
-    @Assisted private val args: ComposerViewModelArgs,
+    @Assisted private val inReplyToId: String?,
+    @Assisted private val quotedId: String?,
     private val identityRepository: IdentityRepository,
     private val postRepository: PostRepository,
     private val photoRepository: PhotoRepository,
@@ -152,7 +153,7 @@ class ComposerViewModel(
                         )
                     }
                 }.launchIn(this)
-            val parent = args.inReplyToId?.let { id -> postCache.get(id) }
+            val parent = inReplyToId?.let { id -> postCache.get(id) }
             val initialVisibility =
                 when {
                     editedPostId != null -> uiState.value.visibility
@@ -167,7 +168,7 @@ class ComposerViewModel(
 
                     else -> currentSettings?.defaultPostVisibility?.toVisibility()
                 } ?: Visibility.Unlisted
-            val quoted = args.quotedId?.let { id -> postCache.get(id) ?: PostModel(id = id, content = "") }
+            val quoted = quotedId?.let { id -> postCache.get(id) ?: PostModel(id = id, content = "") }
             val initialQuotePolicy = userRepository.getCurrent()?.quotePolicy ?: QuotePolicy.Public
 
             updateState {
@@ -409,7 +410,7 @@ class ComposerViewModel(
                         this += initialValue
                     }
                     val mentions =
-                        args.inReplyToId
+                        inReplyToId
                             ?.let { postCache.get(it) }
                             ?.mentions
                             .orEmpty()
@@ -1463,7 +1464,7 @@ class ComposerViewModel(
     private fun handleCreatePreview() {
         viewModelScope.launch {
             val currentState = uiState.value
-            val inReplyTo = args.inReplyToId?.let { postCache.get(it) }
+            val inReplyTo = inReplyToId?.let { postCache.get(it) }
             val localId = getUuid()
             val post =
                 PostModel(
@@ -1672,8 +1673,8 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = args.inReplyToId,
-                                    quoted = args.quotedId,
+                                    inReplyTo = inReplyToId,
+                                    quoted = quotedId,
                                     quotePolicy = if (quotePolicy != defaultQuotePolicy) {
                                         quotePolicy
                                     } else {
@@ -1698,8 +1699,8 @@ class ComposerViewModel(
                                     id = editId,
                                     title = title,
                                     text = text,
-                                    inReplyTo = args.inReplyToId,
-                                    quoted = args.quotedId,
+                                    inReplyTo = inReplyToId,
+                                    quoted = quotedId,
                                     quotePolicy = if (quotePolicy != defaultQuotePolicy) {
                                         quotePolicy
                                     } else {
@@ -1719,8 +1720,8 @@ class ComposerViewModel(
                                     localId = key,
                                     title = title,
                                     text = text,
-                                    inReplyTo = args.inReplyToId,
-                                    quoted = args.quotedId,
+                                    inReplyTo = inReplyToId,
+                                    quoted = quotedId,
                                     quotePolicy = if (quotePolicy != defaultQuotePolicy) {
                                         quotePolicy
                                     } else {
@@ -1748,8 +1749,8 @@ class ComposerViewModel(
                                     spoiler = spoiler,
                                     sensitive = currentState.sensitive,
                                     visibility = visibility,
-                                    parentId = args.inReplyToId,
-                                    quoted = args.quotedId?.let { PostModel(id = it, content = "") },
+                                    parentId = inReplyToId,
+                                    quoted = quotedId?.let { PostModel(id = it, content = "") },
                                     lang = currentState.lang,
                                     attachments =
                                     attachmentIds.map {
@@ -1817,8 +1818,9 @@ class ComposerViewModel(
     }
 
     companion object {
-        fun getExtras(args: ComposerViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(inReplyToId: String?, quotedId: String?) = CreationExtras {
+            this[KEY_IN_REPLY_TO_ID] = inReplyToId
+            this[KEY_QUOTED_ID] = quotedId
         }
 
         private const val PLACEHOLDER_ID = "placeholder"
@@ -1826,16 +1828,17 @@ class ComposerViewModel(
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<ComposerViewModelArgs>()
-
-data class ComposerViewModelArgs(val inReplyToId: String?, val quotedId: String?)
+private val KEY_IN_REPLY_TO_ID = CreationExtras.Key<String?>()
+private val KEY_QUOTED_ID = CreationExtras.Key<String?>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ComposerViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface ComposerViewModelFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): ComposerViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+    override fun create(extras: CreationExtras): ComposerViewModel = create(
+        inReplyToId = extras[KEY_IN_REPLY_TO_ID] ?: error("inReplyToId argument not found"),
+        quotedId = extras[KEY_QUOTED_ID] ?: error("quotedId argument not found"),
+    )
 
-    fun create(@Assisted args: ComposerViewModelArgs): ComposerViewModel
+    fun create(@Assisted inReplyToId: String?, @Assisted quotedId: String?): ComposerViewModel
 }

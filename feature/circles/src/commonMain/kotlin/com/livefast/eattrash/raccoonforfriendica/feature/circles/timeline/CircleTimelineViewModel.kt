@@ -50,7 +50,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class CircleTimelineViewModel(
-    @Assisted private val args: CircleTimelineViewModelArgs,
+    @Assisted private val id: String,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val postRepository: PostRepository,
@@ -77,7 +77,7 @@ class CircleTimelineViewModel(
 
     init {
         viewModelScope.launch {
-            val circle = circleCache.get(args.id)
+            val circle = circleCache.get(id)
             updateState { it.copy(circle = circle) }
 
             settingsRepository.current
@@ -525,22 +525,20 @@ class CircleTimelineViewModel(
     }
 
     companion object {
-        fun getExtras(args: CircleTimelineViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(id: String) = CreationExtras {
+            this[KEY_CIRCLE_ID] = id
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<CircleTimelineViewModelArgs>()
-
-data class CircleTimelineViewModelArgs(val id: String)
+private val KEY_CIRCLE_ID = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(CircleTimelineViewModel::class)
 @ContributesIntoMap(AppScope::class)
 interface CircleTimelineViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): CircleTimelineViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_CIRCLE_ID] ?: error("circleId argument not found"))
 
-    fun create(@Assisted args: CircleTimelineViewModelArgs): CircleTimelineViewModel
+    fun create(@Assisted id: String): CircleTimelineViewModel
 }

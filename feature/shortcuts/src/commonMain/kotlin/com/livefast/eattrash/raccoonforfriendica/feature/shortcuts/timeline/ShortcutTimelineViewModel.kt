@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class ShortcutTimelineViewModel(
-    @Assisted private val args: ShortcutTimelineViewModelArgs,
+    @Assisted private val name: String,
     private val paginationManager: TimelinePaginationManager,
     private val identityRepository: IdentityRepository,
     private val postRepository: PostRepository,
@@ -68,7 +68,7 @@ class ShortcutTimelineViewModel(
 
     init {
         viewModelScope.launch {
-            updateState { it.copy(nodeName = args.name) }
+            updateState { it.copy(nodeName = name) }
 
             settingsRepository.current
                 .onEach { settings ->
@@ -166,7 +166,7 @@ class ShortcutTimelineViewModel(
         val settings = settingsRepository.current.value ?: SettingsModel()
         paginationManager.reset(
             TimelinePaginationSpecification.Feed(
-                timelineType = TimelineType.Foreign(args.name),
+                timelineType = TimelineType.Foreign(name),
                 includeNsfw = settings.includeNsfw,
                 excludeReplies = settings.excludeRepliesFromTimeline,
                 refresh = forceRefresh || !initial,
@@ -433,22 +433,20 @@ class ShortcutTimelineViewModel(
     }
 
     companion object {
-        fun getExtras(args: ShortcutTimelineViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(name: String) = CreationExtras {
+            this[KEY_NAME] = name
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<ShortcutTimelineViewModelArgs>()
-
-data class ShortcutTimelineViewModelArgs(val name: String)
+private val KEY_NAME = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ShortcutTimelineViewModel::class)
 @ContributesIntoMap(AppScope::class)
 interface ShortcutTimelineViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): ShortcutTimelineViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_NAME] ?: error("name argument not found"))
 
-    fun create(@Assisted args: ShortcutTimelineViewModelArgs): ShortcutTimelineViewModel
+    fun create(@Assisted name: String): ShortcutTimelineViewModel
 }

@@ -31,7 +31,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @AssistedInject
 @OptIn(FlowPreview::class)
 class LoginViewModel(
-    @Assisted private val args: LoginViewModelArgs,
+    @Assisted private val type: LoginType,
     private val apiConfigurationRepository: ApiConfigurationRepository,
     private val credentialsRepository: CredentialsRepository,
     private val authManager: AuthManager,
@@ -49,7 +49,7 @@ class LoginViewModel(
                     finalizeLogin(credentials)
                 }.launchIn(this)
             val currentNode = apiConfigurationRepository.node.value
-            val shouldUseDropDown = args.type == LoginType.Friendica
+            val shouldUseDropDown = type == LoginType.Friendica
             val isCurrentNodeInDropDown = DefaultFriendicaInstances.any { it.node == currentNode }
             updateState {
                 it.copy(
@@ -98,7 +98,7 @@ class LoginViewModel(
                 return@launch
             }
 
-            val url = getSignupUrl(node = node, type = args.type)
+            val url = getSignupUrl(node = node, type = type)
             if (url.isEmpty()) {
                 emitEffect(LoginMvi.Effect.Failure())
             } else {
@@ -168,13 +168,13 @@ class LoginViewModel(
     }
 
     companion object {
-        fun getExtras(args: LoginViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(type: LoginType) = CreationExtras {
+            this[KEY_TYPE] = type
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<LoginViewModelArgs>()
+private val KEY_TYPE = CreationExtras.Key<LoginType>()
 
 private fun getSignupUrl(node: String, type: LoginType) = buildString {
     when (type) {
@@ -194,14 +194,12 @@ private fun getSignupUrl(node: String, type: LoginType) = buildString {
     }
 }
 
-data class LoginViewModelArgs(val type: LoginType)
-
 @AssistedFactory
 @ViewModelAssistedFactoryKey(LoginViewModel::class)
 @ContributesIntoMap(AppScope::class)
 interface LoginViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): LoginViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_TYPE] ?: error("type argument not found"))
 
-    fun create(@Assisted args: LoginViewModelArgs): LoginViewModel
+    fun create(@Assisted type: LoginType): LoginViewModel
 }

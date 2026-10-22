@@ -2,8 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Status
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface TimelineService {
     suspend fun getPublic(
@@ -26,5 +25,5 @@ interface TimelineService {
 }
 
 fun interface TimelineServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): TimelineService
+    fun create(baseUrl: String, client: HttpClient): TimelineService
 }

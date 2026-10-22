@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +22,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.optimizedForLargeScreens
 import com.livefast.eattrash.raccoonforfriendica.feature.profile.loginintro.LoginIntroScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewAccountScreen(modifier: Modifier = Modifier) {
     val topAppBarState = rememberTopAppBarState()

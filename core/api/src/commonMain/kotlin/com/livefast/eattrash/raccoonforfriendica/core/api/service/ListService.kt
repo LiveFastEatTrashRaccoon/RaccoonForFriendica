@@ -6,8 +6,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface ListService {
     suspend fun getAll(): List<UserList>
@@ -30,5 +29,5 @@ interface ListService {
 }
 
 fun interface ListServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): ListService
+    fun create(baseUrl: String, client: HttpClient): ListService
 }

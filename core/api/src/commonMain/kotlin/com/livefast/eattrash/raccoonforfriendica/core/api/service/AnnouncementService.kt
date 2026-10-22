@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Announcement
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface AnnouncementService {
     suspend fun getAll(): List<Announcement>
@@ -15,5 +14,5 @@ interface AnnouncementService {
 }
 
 fun interface AnnouncementServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): AnnouncementService
+    fun create(baseUrl: String, client: HttpClient): AnnouncementService
 }

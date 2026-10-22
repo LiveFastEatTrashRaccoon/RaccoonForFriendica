@@ -49,7 +49,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class PostListViewModel(
-    @Assisted private val args: PostListViewModelArgs,
+    @Assisted private val type: PostListType,
     private val paginationManager: TimelinePaginationManager,
     private val postRepository: PostRepository,
     private val settingsRepository: SettingsRepository,
@@ -186,7 +186,7 @@ class PostListViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            when (args.type) {
+            when (type) {
                 PostListType.Bookmarks ->
                     Bookmarks(includeNsfw = settingsRepository.current.value?.includeNsfw == true)
 
@@ -194,7 +194,7 @@ class PostListViewModel(
                     Favorites(includeNsfw = settingsRepository.current.value?.includeNsfw == true)
 
                 is PostListType.Quoting ->
-                    Quotes(id = args.type.postId, otherInstance = args.type.otherInstance)
+                    Quotes(id = type.postId, otherInstance = type.otherInstance)
             },
         )
         loadNextPage()
@@ -372,7 +372,7 @@ class PostListViewModel(
                     postRepository.bookmark(post.id)
                 }
             if (newPost != null) {
-                if (!newPost.bookmarked && args.type == PostListType.Bookmarks) {
+                if (!newPost.bookmarked && type == PostListType.Bookmarks) {
                     removePostFromState(post.id)
                 } else {
                     updatePostInState(post.id) {
@@ -519,22 +519,20 @@ class PostListViewModel(
     }
 
     companion object {
-        fun getExtras(args: PostListViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(type: PostListType) = CreationExtras {
+            this[KEY_TYPE] = type
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<PostListViewModelArgs>()
-
-data class PostListViewModelArgs(val type: PostListType)
+private val KEY_TYPE = CreationExtras.Key<PostListType>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(PostListViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface PostListViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): PostListViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_TYPE] ?: error("type argument not found"))
 
-    fun create(@Assisted args: PostListViewModelArgs): PostListViewModel
+    fun create(@Assisted type: PostListType): PostListViewModel
 }

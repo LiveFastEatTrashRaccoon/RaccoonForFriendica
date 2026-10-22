@@ -73,7 +73,7 @@ import kotlin.time.Duration
 @Composable
 fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
     val model: CircleTimelineMvi = assistedMetroViewModel<CircleTimelineViewModel>(
-        extras = CircleTimelineViewModel.getExtras(CircleTimelineViewModelArgs(id)),
+        extras = CircleTimelineViewModel.getExtras(id),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

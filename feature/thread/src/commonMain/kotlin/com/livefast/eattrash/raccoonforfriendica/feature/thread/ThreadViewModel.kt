@@ -50,7 +50,8 @@ import kotlin.time.Duration
 
 @AssistedInject
 class ThreadViewModel(
-    @Assisted private val args: ThreadViewModelArgs,
+    @Assisted private val postId: String,
+    @Assisted private val swipeNavigationEnabled: Boolean,
     private val postRepository: PostRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -196,14 +197,14 @@ class ThreadViewModel(
         }
 
         if (initial) {
-            val currentPost = postCache.get(args.postId)
+            val currentPost = postCache.get(postId)
             val mainPosts =
-                if (args.swipeNavigationEnabled) {
+                if (swipeNavigationEnabled) {
                     timelineNavigationManager.currentList
                 } else {
                     currentPost?.let { listOf(it) } ?: emptyList()
                 }
-            val initialIndex = mainPosts.indexOfFirst { it.id == args.postId }.coerceAtLeast(0)
+            val initialIndex = mainPosts.indexOfFirst { it.id == postId }.coerceAtLeast(0)
             val replies: List<List<PostModel>> = mainPosts.map { emptyList() }
             check(mainPosts.size == replies.size) { "Unable to create navigation set " }
             updateState {
@@ -615,7 +616,7 @@ class ThreadViewModel(
     }
 
     private fun handleChangeNavigationIndex(newIndex: Int) {
-        if (!args.swipeNavigationEnabled) {
+        if (!swipeNavigationEnabled) {
             return
         }
         viewModelScope.launch {
@@ -641,7 +642,7 @@ class ThreadViewModel(
     }
 
     private suspend fun loadNavigationNextPage() {
-        if (!args.swipeNavigationEnabled) {
+        if (!swipeNavigationEnabled) {
             return
         }
         timelineNavigationManager.loadNextPage()
@@ -687,22 +688,24 @@ class ThreadViewModel(
     }
 
     companion object {
-        fun getExtras(args: ThreadViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(postId: String, swipeNavigationEnabled: Boolean) = CreationExtras {
+            this[KEY_POST_ID] = postId
+            this[KEY_SWIPE_NAV_ENABLED] = swipeNavigationEnabled
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<ThreadViewModelArgs>()
-
-data class ThreadViewModelArgs(val postId: String, val swipeNavigationEnabled: Boolean)
+private val KEY_POST_ID = CreationExtras.Key<String>()
+private val KEY_SWIPE_NAV_ENABLED = CreationExtras.Key<Boolean>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ThreadViewModel::class)
 @ContributesIntoMap(AppScope::class)
 interface ThreadViewModelFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): ThreadViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+    override fun create(extras: CreationExtras): ThreadViewModel = create(
+        extras[KEY_POST_ID] ?: error("postId argument not found"),
+        extras[KEY_SWIPE_NAV_ENABLED] ?: error("swipeNavigationEnabled argument not found"),
+    )
 
-    fun create(@Assisted args: ThreadViewModelArgs): ThreadViewModel
+    fun create(@Assisted postId: String, @Assisted swipeNavigationEnabled: Boolean): ThreadViewModel
 }

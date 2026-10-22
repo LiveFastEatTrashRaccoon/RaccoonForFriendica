@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Markers
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 
 interface MarkerService {
@@ -12,5 +11,5 @@ interface MarkerService {
 }
 
 fun interface MarkerServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): MarkerService
+    fun create(baseUrl: String, client: HttpClient): MarkerService
 }

@@ -95,7 +95,7 @@ import kotlin.time.Duration
 @Composable
 fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: ForumListMvi = assistedMetroViewModel<ForumListViewModel>(
-        extras = ForumListViewModel.getExtras(ForumListViewModelArgs(id = id)),
+        extras = ForumListViewModel.getExtras(id),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

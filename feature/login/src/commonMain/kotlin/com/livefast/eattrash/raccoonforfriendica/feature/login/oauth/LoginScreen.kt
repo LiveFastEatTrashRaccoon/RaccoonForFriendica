@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,11 +61,10 @@ import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
     val model: LoginMvi = assistedMetroViewModel<LoginViewModel>(
-        extras = LoginViewModel.getExtras(LoginViewModelArgs(type = loginType.toLoginType())),
+        extras = LoginViewModel.getExtras(type = loginType.toLoginType()),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

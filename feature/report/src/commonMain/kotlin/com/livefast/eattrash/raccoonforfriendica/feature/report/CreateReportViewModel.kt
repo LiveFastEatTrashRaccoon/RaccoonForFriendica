@@ -25,7 +25,8 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class CreateReportViewModel(
-    @Assisted private val args: CreateReportViewModelArgs,
+    @Assisted private val userId: String,
+    @Assisted private val postId: String,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
@@ -53,7 +54,7 @@ class CreateReportViewModel(
                         )
                     }
                 }.launchIn(this)
-            val user = userCache.get(args.userId)
+            val user = userCache.get(userId)
             val rules = nodeInfoRepository.getRules().orEmpty()
             updateState {
                 it.copy(
@@ -113,8 +114,8 @@ class CreateReportViewModel(
             updateState { it.copy(loading = true) }
             val successful =
                 reportRepository.create(
-                    userId = args.userId,
-                    postIds = args.postId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
+                    userId = userId,
+                    postIds = postId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
                     category = category,
                     comment = currentState.commentValue.text,
                     forward = currentState.forward,
@@ -130,22 +131,24 @@ class CreateReportViewModel(
     }
 
     companion object {
-        fun getExtras(args: CreateReportViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(userId: String, postId: String) = CreationExtras {
+            this[KEY_USER_ID] = userId
+            this[KEY_POST_ID] = postId
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<CreateReportViewModelArgs>()
-
-data class CreateReportViewModelArgs(val userId: String, val postId: String)
+private val KEY_USER_ID = CreationExtras.Key<String>()
+private val KEY_POST_ID = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(CreateReportViewModel::class)
 @ContributesIntoMap(AppScope::class)
 interface CreateReportViewModelFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): CreateReportViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+    override fun create(extras: CreationExtras): CreateReportViewModel = create(
+        userId = extras[KEY_USER_ID] ?: error("userId argument not found"),
+        postId = extras[KEY_POST_ID] ?: error("postId argument not found"),
+    )
 
-    fun create(@Assisted args: CreateReportViewModelArgs): CreateReportViewModel
+    fun create(@Assisted userId: String, @Assisted postId: String): CreateReportViewModel
 }

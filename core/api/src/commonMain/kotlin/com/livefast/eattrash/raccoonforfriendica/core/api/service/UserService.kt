@@ -10,8 +10,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
 
@@ -80,5 +79,5 @@ interface UserService {
 }
 
 fun interface UserServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): UserService
+    fun create(baseUrl: String, client: HttpClient): UserService
 }

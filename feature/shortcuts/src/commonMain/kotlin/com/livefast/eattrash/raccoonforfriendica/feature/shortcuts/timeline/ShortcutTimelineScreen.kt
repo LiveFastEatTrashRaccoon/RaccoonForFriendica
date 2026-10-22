@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -64,11 +63,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
     val model: ShortcutTimelineMvi = assistedMetroViewModel<ShortcutTimelineViewModel>(
-        extras = ShortcutTimelineViewModel.getExtras(ShortcutTimelineViewModelArgs(name = node)),
+        extras = ShortcutTimelineViewModel.getExtras(name = node),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

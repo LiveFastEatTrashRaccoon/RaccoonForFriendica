@@ -47,6 +47,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.service.UserServiceFac
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import io.ktor.client.HttpClient
 import kotlin.reflect.KClass
 import kotlin.reflect.cast
 
@@ -77,30 +78,30 @@ class DefaultServiceFactory(
     private val userServiceFactory: UserServiceFactory,
 ) : ServiceFactory {
 
-    override fun <T : Any> create(clazz: KClass<T>, args: ServiceCreationArgs): T {
+    override fun <T : Any> create(clazz: KClass<T>, baseUrl: String, client: HttpClient): T {
         val service = when (clazz) {
-            AnnouncementService::class -> announcementServiceFactory.create(args)
-            AppService::class -> appServiceFactory.create(args)
-            CollectionService::class -> collectionServiceFactory.create(args)
-            DirectMessageService::class -> directMessageServiceFactory.create(args)
-            EventService::class -> eventServiceFactory.create(args)
-            FollowRequestService::class -> followRequestServiceFactory.create(args)
-            InstanceService::class -> instanceServiceFactory.create(args)
-            ListService::class -> listServiceFactory.create(args)
-            MarkerService::class -> markerServiceFactory.create(args)
-            MediaService::class -> mediaServiceFactory.create(args)
-            NotificationService::class -> notificationServiceFactory.create(args)
-            PhotoAlbumService::class -> photoAlbumServiceFactory.create(args)
-            PhotoService::class -> photoServiceFactory.create(args)
-            PollService::class -> pollServiceFactory.create(args)
-            PushService::class -> pushServiceFactory.create(args)
-            ReportService::class -> reportServiceFactory.create(args)
-            SearchService::class -> searchServiceFactory.create(args)
-            StatusService::class -> statusServiceFactory.create(args)
-            TagsService::class -> tagsServiceFactory.create(args)
-            TimelineService::class -> timelineServiceFactory.create(args)
-            TrendsService::class -> trendsServiceFactory.create(args)
-            UserService::class -> userServiceFactory.create(args)
+            AnnouncementService::class -> announcementServiceFactory.create(baseUrl, client)
+            AppService::class -> appServiceFactory.create(baseUrl, client)
+            CollectionService::class -> collectionServiceFactory.create(baseUrl, client)
+            DirectMessageService::class -> directMessageServiceFactory.create(baseUrl, client)
+            EventService::class -> eventServiceFactory.create(baseUrl, client)
+            FollowRequestService::class -> followRequestServiceFactory.create(baseUrl, client)
+            InstanceService::class -> instanceServiceFactory.create(baseUrl, client)
+            ListService::class -> listServiceFactory.create(baseUrl, client)
+            MarkerService::class -> markerServiceFactory.create(baseUrl, client)
+            MediaService::class -> mediaServiceFactory.create(baseUrl, client)
+            NotificationService::class -> notificationServiceFactory.create(baseUrl, client)
+            PhotoAlbumService::class -> photoAlbumServiceFactory.create(baseUrl, client)
+            PhotoService::class -> photoServiceFactory.create(baseUrl, client)
+            PollService::class -> pollServiceFactory.create(baseUrl, client)
+            PushService::class -> pushServiceFactory.create(baseUrl, client)
+            ReportService::class -> reportServiceFactory.create(baseUrl, client)
+            SearchService::class -> searchServiceFactory.create(baseUrl, client)
+            StatusService::class -> statusServiceFactory.create(baseUrl, client)
+            TagsService::class -> tagsServiceFactory.create(baseUrl, client)
+            TimelineService::class -> timelineServiceFactory.create(baseUrl, client)
+            TrendsService::class -> trendsServiceFactory.create(baseUrl, client)
+            UserService::class -> userServiceFactory.create(baseUrl, client)
             else -> throw IllegalArgumentException("Unknown service class: ${clazz.simpleName}")
         }
         return clazz.cast(service)

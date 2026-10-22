@@ -101,10 +101,8 @@ fun ThreadScreen(
 ) {
     val model: ThreadMvi = assistedMetroViewModel<ThreadViewModel>(
         extras = ThreadViewModel.getExtras(
-            ThreadViewModelArgs(
-                postId = postId,
-                swipeNavigationEnabled = swipeNavigationEnabled,
-            ),
+            postId = postId,
+            swipeNavigationEnabled = swipeNavigationEnabled,
         ),
     )
     val uiState by model.uiState.collectAsState()

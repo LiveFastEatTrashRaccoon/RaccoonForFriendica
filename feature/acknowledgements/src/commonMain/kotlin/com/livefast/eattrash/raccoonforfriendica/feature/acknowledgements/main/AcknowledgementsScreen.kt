@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +36,6 @@ import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.compon
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.components.AcknowledgementItemPlaceholder
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AcknowledgementsScreen(
     modifier: Modifier = Modifier,

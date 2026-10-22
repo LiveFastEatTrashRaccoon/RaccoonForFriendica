@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class AlbumDetailViewModel(
-    @Assisted private val args: AlbumDetailViewModelArgs,
+    @Assisted private val name: String,
     private val paginationManager: AlbumPhotoPaginationManager,
     private val photoRepository: PhotoRepository,
     private val albumRepository: PhotoAlbumRepository,
@@ -67,7 +67,7 @@ class AlbumDetailViewModel(
                     albumRepository
                         .getAll()
                         ?.distinctBy { it.name }
-                        ?.filter { it.name != args.albumName }
+                        ?.filter { it.name != name }
                         .orEmpty()
                 updateState { it.copy(albums = albums) }
 
@@ -111,7 +111,7 @@ class AlbumDetailViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        paginationManager.reset(AlbumPhotoPaginationSpecification.Default(album = args.albumName))
+        paginationManager.reset(AlbumPhotoPaginationSpecification.Default(album = name))
         loadNextPage()
     }
 
@@ -172,7 +172,7 @@ class AlbumDetailViewModel(
                             id = localId,
                             url = "",
                             loading = true,
-                            album = args.albumName,
+                            album = name,
                         )
                     addAll(originalItems)
                 }
@@ -180,7 +180,7 @@ class AlbumDetailViewModel(
             val attachment =
                 photoRepository.create(
                     bytes = byteArray,
-                    album = args.albumName,
+                    album = name,
                 )
             if (attachment != null) {
                 updateItemInState(localId) { attachment }
@@ -212,7 +212,7 @@ class AlbumDetailViewModel(
     }
 
     private fun handleMove(attachment: AttachmentModel, otherAlbum: String) {
-        if (otherAlbum == args.albumName) {
+        if (otherAlbum == name) {
             return
         }
         viewModelScope.launch {
@@ -248,22 +248,20 @@ class AlbumDetailViewModel(
     }
 
     companion object {
-        fun getExtras(args: AlbumDetailViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(name: String) = CreationExtras {
+            this[KEY_NAME] = name
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<AlbumDetailViewModelArgs>()
-
-data class AlbumDetailViewModelArgs(val albumName: String)
+private val KEY_NAME = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(AlbumDetailViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface AlbumDetailViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): AlbumDetailViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_NAME] ?: error("name argument not found"))
 
-    fun create(@Assisted args: AlbumDetailViewModelArgs): AlbumDetailViewModel
+    fun create(@Assisted name: String): AlbumDetailViewModel
 }

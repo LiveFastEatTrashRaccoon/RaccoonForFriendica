@@ -6,13 +6,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.EditListMembersForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -25,17 +25,18 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 @AssistedInject
-class DefaultListService(@Assisted private val args: ServiceCreationArgs) : ListService {
+class DefaultListService(@Assisted private val baseUrl: String, @Assisted private val client: HttpClient) :
+    ListService {
 
-    override suspend fun getAll(): List<UserList> = args.client.get("${args.baseUrl}/v1/lists").body()
+    override suspend fun getAll(): List<UserList> = client.get("$baseUrl/v1/lists").body()
 
     override suspend fun getFriendicaCircles(): List<FriendicaCircle> =
-        args.client.get("${args.baseUrl}/friendica/group_show").body()
+        client.get("$baseUrl/friendica/group_show").body()
 
-    override suspend fun getBy(id: String): UserList = args.client.get("${args.baseUrl}/v1/lists/$id").body()
+    override suspend fun getBy(id: String): UserList = client.get("$baseUrl/v1/lists/$id").body()
 
     override suspend fun getMembers(id: String, maxId: String?, limit: Int): Page<Account> {
-        val response = args.client.get("${args.baseUrl}/v1/lists/$id/accounts") {
+        val response = client.get("$baseUrl/v1/lists/$id/accounts") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
@@ -44,28 +45,26 @@ class DefaultListService(@Assisted private val args: ServiceCreationArgs) : List
         return Page(elements = data, cursor = cursor)
     }
 
-    override suspend fun create(data: EditListForm): UserList = args.client.post("${args.baseUrl}/v1/lists") {
+    override suspend fun create(data: EditListForm): UserList = client.post("$baseUrl/v1/lists") {
         contentType(ContentType.Application.Json)
         setBody(data)
     }.body()
 
-    override suspend fun update(id: String, data: EditListForm): UserList =
-        args.client.put("${args.baseUrl}/v1/lists/$id") {
-            contentType(ContentType.Application.Json)
-            setBody(data)
-        }.body()
+    override suspend fun update(id: String, data: EditListForm): UserList = client.put("$baseUrl/v1/lists/$id") {
+        contentType(ContentType.Application.Json)
+        setBody(data)
+    }.body()
 
-    override suspend fun delete(id: String): Boolean =
-        args.client.delete("${args.baseUrl}/v1/lists/$id").status.isSuccess()
+    override suspend fun delete(id: String): Boolean = client.delete("$baseUrl/v1/lists/$id").status.isSuccess()
 
     override suspend fun addMembers(id: String, data: EditListMembersForm): Boolean =
-        args.client.post("${args.baseUrl}/v1/lists/$id/accounts") {
+        client.post("$baseUrl/v1/lists/$id/accounts") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.status.isSuccess()
 
     override suspend fun removeMembers(id: String, data: EditListMembersForm): Boolean =
-        args.client.delete("${args.baseUrl}/v1/lists/$id/accounts") {
+        client.delete("$baseUrl/v1/lists/$id/accounts") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.status.isSuccess()
@@ -74,5 +73,5 @@ class DefaultListService(@Assisted private val args: ServiceCreationArgs) : List
 @ContributesBinding(AppScope::class)
 @AssistedFactory
 fun interface DefaultListServiceFactory : ListServiceFactory {
-    override fun create(@Assisted args: ServiceCreationArgs): DefaultListService
+    override fun create(@Assisted baseUrl: String, @Assisted client: HttpClient): DefaultListService
 }

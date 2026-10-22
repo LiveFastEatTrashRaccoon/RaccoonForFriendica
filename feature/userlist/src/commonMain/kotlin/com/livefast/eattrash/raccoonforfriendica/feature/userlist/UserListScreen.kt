@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -65,7 +64,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserListScreen(
     type: Int,
@@ -78,11 +76,9 @@ fun UserListScreen(
 ) {
     val model: UserListMvi = assistedMetroViewModel<UserListViewModel>(
         extras = UserListViewModel.getExtras(
-            UserListViewModelArgs(
-                type = type.toUserListType(),
-                userId = userId.orEmpty(),
-                postId = postId.orEmpty(),
-            ),
+            type = type.toUserListType(),
+            userId = userId.orEmpty(),
+            postId = postId.orEmpty(),
         ),
     )
     val uiState by model.uiState.collectAsState()

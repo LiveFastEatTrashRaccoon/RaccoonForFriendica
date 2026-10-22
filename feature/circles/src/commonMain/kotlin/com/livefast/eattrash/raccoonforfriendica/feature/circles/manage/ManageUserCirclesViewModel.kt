@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class ManageUserCirclesViewModel(
-    @Assisted private val args: ManageUserCirclesViewModelArgs,
+    @Assisted private val userId: String,
     private val circlesRepository: CirclesRepository,
     private val userCache: LocalItemCache<UserModel>,
     private val userRepository: UserRepository,
@@ -36,7 +36,7 @@ class ManageUserCirclesViewModel(
     init {
         viewModelScope.launch {
             if (uiState.value.initial) {
-                val user = userCache.get(args.userId)
+                val user = userCache.get(userId)
                 updateState { it.copy(user = user) }
                 refresh(initial = true)
             }
@@ -61,7 +61,7 @@ class ManageUserCirclesViewModel(
         updateState {
             it.copy(initial = initial, refreshing = !initial)
         }
-        val circlesWithUser = userRepository.getListsContaining(args.userId).orEmpty()
+        val circlesWithUser = userRepository.getListsContaining(userId).orEmpty()
         val containingIds = circlesWithUser.map { it.id }
         val circlesWithoutUser = circlesRepository.getAll().orEmpty().filter { it.id !in containingIds }
         val items = buildList {
@@ -113,7 +113,7 @@ class ManageUserCirclesViewModel(
             }
             val success = circlesRepository.addMembers(
                 id = circleId,
-                userIds = listOf(args.userId),
+                userIds = listOf(userId),
             )
             if (success) {
                 updateItemInState(id = circleId) {
@@ -138,7 +138,7 @@ class ManageUserCirclesViewModel(
             }
             val success = circlesRepository.removeMembers(
                 id = circleId,
-                userIds = listOf(args.userId),
+                userIds = listOf(userId),
             )
             if (success) {
                 updateItemInState(id = circleId) {
@@ -157,22 +157,20 @@ class ManageUserCirclesViewModel(
     }
 
     companion object {
-        fun getExtras(args: ManageUserCirclesViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(userId: String) = CreationExtras {
+            this[KEY_USER_ID] = userId
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<ManageUserCirclesViewModelArgs>()
-
-data class ManageUserCirclesViewModelArgs(val userId: String)
+private val KEY_USER_ID = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ManageUserCirclesViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface ManageUserCirclesViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): ManageUserCirclesViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_USER_ID] ?: error("userId argument not found"))
 
-    fun create(@Assisted args: ManageUserCirclesViewModelArgs): ManageUserCirclesViewModel
+    fun create(@Assisted userId: String): ManageUserCirclesViewModel
 }

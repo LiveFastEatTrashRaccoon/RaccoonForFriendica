@@ -8,8 +8,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusContext
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.StatusSource
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Translation
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.CreateStatusForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 
 interface StatusService {
@@ -64,5 +63,5 @@ interface StatusService {
 }
 
 fun interface StatusServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): StatusService
+    fun create(baseUrl: String, client: HttpClient): StatusService
 }

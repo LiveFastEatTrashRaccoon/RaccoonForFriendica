@@ -2,8 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface TagsService {
     suspend fun getFollowedTags(maxId: String? = null): Page<Tag>
@@ -16,5 +15,5 @@ interface TagsService {
 }
 
 fun interface TagsServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): TagsService
+    fun create(baseUrl: String, client: HttpClient): TagsService
 }

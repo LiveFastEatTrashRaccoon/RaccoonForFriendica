@@ -3,8 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface NotificationService {
     suspend fun get(
@@ -22,5 +21,5 @@ interface NotificationService {
 }
 
 fun interface NotificationServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): NotificationService
+    fun create(baseUrl: String, client: HttpClient): NotificationService
 }

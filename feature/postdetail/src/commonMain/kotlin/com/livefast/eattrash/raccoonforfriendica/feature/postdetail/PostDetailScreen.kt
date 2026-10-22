@@ -103,10 +103,8 @@ fun PostDetailScreen(
     val model: PostDetailMvi = assistedMetroViewModel<PostDetailViewModel>(
         key = id,
         extras = PostDetailViewModel.getExtras(
-            PostDetailViewModelArgs(
-                id = id,
-                swipeNavigationEnabled = swipeNavigationEnabled,
-            ),
+            id = id,
+            swipeNavigationEnabled = swipeNavigationEnabled,
         ),
     )
     val uiState by model.uiState.collectAsState()

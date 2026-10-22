@@ -54,7 +54,7 @@ import kotlin.time.Duration
 
 @AssistedInject
 class UserDetailViewModel(
-    @Assisted private val args: UserDetailViewModelArgs,
+    @Assisted private val id: String,
     private val userRepository: UserRepository,
     private val paginationManager: TimelinePaginationManager,
     private val postRepository: PostRepository,
@@ -234,12 +234,12 @@ class UserDetailViewModel(
     private suspend fun loadUser() {
         val user =
             with(emojiHelper) {
-                userCache.get(args.id)?.withEmojisIfMissing()
+                userCache.get(id)?.withEmojisIfMissing()
             }
         updateState { it.copy(user = user) }
         val relationship =
-            if (args.id != uiState.value.currentUserId) {
-                userRepository.getRelationships(listOf(args.id))?.firstOrNull()
+            if (id != uiState.value.currentUserId) {
+                userRepository.getRelationships(listOf(id))?.firstOrNull()
             } else {
                 null
             }
@@ -272,7 +272,7 @@ class UserDetailViewModel(
         }
         paginationManager.reset(
             TimelinePaginationSpecification.User(
-                userId = args.id,
+                userId = id,
                 excludeReplies = uiState.value.section == UserSection.Posts,
                 onlyMedia = uiState.value.section == UserSection.Media,
                 pinned = uiState.value.section == UserSection.Pinned,
@@ -321,7 +321,7 @@ class UserDetailViewModel(
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
-            val newRelationship = userRepository.follow(args.id)
+            val newRelationship = userRepository.follow(id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
@@ -345,7 +345,7 @@ class UserDetailViewModel(
         hapticFeedback.vibrate()
         viewModelScope.launch {
             updateState { it.copy(user = it.user?.copy(relationshipStatusPending = true)) }
-            val newRelationship = userRepository.unfollow(args.id)
+            val newRelationship = userRepository.unfollow(id)
             val newStatus = newRelationship?.toStatus() ?: uiState.value.user?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: uiState.value.user?.notificationStatus
@@ -515,7 +515,7 @@ class UserDetailViewModel(
             updateState { it.copy(user = it.user?.copy(notificationStatusPending = true)) }
             val newRelationship =
                 userRepository.follow(
-                    id = args.id,
+                    id = id,
                     notifications = enabled,
                 )
             val newNotificationStatus =
@@ -563,12 +563,12 @@ class UserDetailViewModel(
             val relationship =
                 if (muted) {
                     userRepository.mute(
-                        id = args.id,
+                        id = id,
                         durationSeconds = duration.inWholeSeconds,
                         notifications = disableNotifications,
                     )
                 } else {
-                    userRepository.unmute(args.id)
+                    userRepository.unmute(id)
                 }
             if (relationship != null) {
                 updateState {
@@ -590,9 +590,9 @@ class UserDetailViewModel(
         viewModelScope.launch {
             val relationship =
                 if (blocked) {
-                    userRepository.block(args.id)
+                    userRepository.block(id)
                 } else {
-                    userRepository.unblock(args.id)
+                    userRepository.unblock(id)
                 }
             if (relationship != null) {
                 updateState {
@@ -618,7 +618,7 @@ class UserDetailViewModel(
                     it.copy(personalNoteEditEnabled = true)
                 }
             } else {
-                val relationship = userRepository.getRelationships(listOf(args.id))?.firstOrNull()
+                val relationship = userRepository.getRelationships(listOf(id))?.firstOrNull()
                 updateState {
                     it.copy(
                         personalNote = relationship?.note,
@@ -632,7 +632,7 @@ class UserDetailViewModel(
     private fun handleSubmitPersonalNote() {
         val note = uiState.value.personalNote ?: return
         viewModelScope.launch {
-            val relationShip = userRepository.updatePersonalNote(args.id, note)
+            val relationShip = userRepository.updatePersonalNote(id, note)
             if (relationShip != null) {
                 updateState {
                     it.copy(personalNoteEditEnabled = false)
@@ -732,22 +732,20 @@ class UserDetailViewModel(
     }
 
     companion object {
-        fun getExtras(args: UserDetailViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(id: String) = CreationExtras {
+            this[KEY_USER_ID] = id
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<UserDetailViewModelArgs>()
-
-data class UserDetailViewModelArgs(val id: String)
+private val KEY_USER_ID = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(UserDetailViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface UserDetailViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): UserDetailViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+        create(extras[KEY_USER_ID] ?: error("userId argument not found"))
 
-    fun create(@Assisted args: UserDetailViewModelArgs): UserDetailViewModel
+    fun create(@Assisted id: String): UserDetailViewModel
 }

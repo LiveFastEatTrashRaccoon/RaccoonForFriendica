@@ -51,7 +51,8 @@ import kotlin.time.Duration
 
 @AssistedInject
 class PostDetailViewModel(
-    @Assisted private val args: PostDetailViewModelArgs,
+    @Assisted private val id: String,
+    @Assisted private val swipeNavigationEnabled: Boolean,
     private val postRepository: PostRepository,
     private val identityRepository: IdentityRepository,
     private val settingsRepository: SettingsRepository,
@@ -134,7 +135,7 @@ class PostDetailViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        if (args.swipeNavigationEnabled) {
+        if (swipeNavigationEnabled) {
             timelineNavigationManager.pop()
         }
     }
@@ -195,9 +196,9 @@ class PostDetailViewModel(
         }
 
         if (initial) {
-            val currentPost = postCache.get(args.id)
+            val currentPost = postCache.get(id)
             val posts =
-                if (args.swipeNavigationEnabled) {
+                if (swipeNavigationEnabled) {
                     timelineNavigationManager.currentList.map { post -> listOf(post) }
                 } else {
                     currentPost?.let { listOf(listOf(it)) } ?: listOf(emptyList())
@@ -666,7 +667,7 @@ class PostDetailViewModel(
     }
 
     private fun handleChangeNavigationIndex(newIndex: Int) {
-        if (!args.swipeNavigationEnabled) {
+        if (!swipeNavigationEnabled) {
             return
         }
 
@@ -691,7 +692,7 @@ class PostDetailViewModel(
     }
 
     private suspend fun loadNavigationNextPage() {
-        if (!args.swipeNavigationEnabled) {
+        if (!swipeNavigationEnabled) {
             return
         }
 
@@ -775,22 +776,24 @@ class PostDetailViewModel(
     }
 
     companion object {
-        fun getExtras(args: PostDetailViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(id: String, swipeNavigationEnabled: Boolean) = CreationExtras {
+            this[KEY_POST_ID] = id
+            this[KEY_SWIPE_NAVIGATION_ENABLED] = swipeNavigationEnabled
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<PostDetailViewModelArgs>()
-
-data class PostDetailViewModelArgs(val id: String, val swipeNavigationEnabled: Boolean)
+private val KEY_POST_ID = CreationExtras.Key<String>()
+private val KEY_SWIPE_NAVIGATION_ENABLED = CreationExtras.Key<Boolean>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(PostDetailViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface PostDetailViewModelFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): PostDetailViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+    override fun create(extras: CreationExtras): PostDetailViewModel = create(
+        extras[KEY_POST_ID] ?: error("postId argument not found"),
+        extras[KEY_SWIPE_NAVIGATION_ENABLED] ?: error("swipeNavigationEnabled argument not found"),
+    )
 
-    fun create(@Assisted args: PostDetailViewModelArgs): PostDetailViewModel
+    fun create(@Assisted id: String, @Assisted swipeNavigationEnabled: Boolean): PostDetailViewModel
 }

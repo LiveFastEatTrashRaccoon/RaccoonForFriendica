@@ -36,7 +36,9 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 class UserListViewModel(
-    @Assisted private val args: UserListViewModelArgs,
+    @Assisted private val type: UserListType,
+    @Assisted private val userId: String,
+    @Assisted private val postId: String,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
@@ -96,9 +98,9 @@ class UserListViewModel(
 
     private suspend fun loadUser() {
         val userId =
-            when (args.type) {
-                is UserListType.Follower -> args.userId.takeIf { it.isNotEmpty() }
-                is UserListType.Following -> args.userId.takeIf { it.isNotEmpty() }
+            when (type) {
+                is UserListType.Follower -> userId.takeIf { it.isNotEmpty() }
+                is UserListType.Following -> userId.takeIf { it.isNotEmpty() }
                 else -> null
             }
         if (userId != null) {
@@ -136,15 +138,15 @@ class UserListViewModel(
             it.copy(initial = initial, refreshing = !initial)
         }
         paginationManager.reset(
-            when (args.type) {
-                is UserListType.Follower -> UserPaginationSpecification.Follower(args.userId)
+            when (type) {
+                is UserListType.Follower -> UserPaginationSpecification.Follower(userId)
 
-                is UserListType.Following -> UserPaginationSpecification.Following(args.userId)
+                is UserListType.Following -> UserPaginationSpecification.Following(userId)
 
                 is UserListType.UsersFavorite ->
-                    UserPaginationSpecification.PostUsersFavorite(args.postId)
+                    UserPaginationSpecification.PostUsersFavorite(postId)
 
-                is UserListType.UsersReblog -> UserPaginationSpecification.PostUsersReblog(args.postId)
+                is UserListType.UsersReblog -> UserPaginationSpecification.PostUsersReblog(postId)
             },
         )
         loadNextPage()
@@ -257,9 +259,9 @@ class UserListViewModel(
 
     private fun handleExport() {
         val specification =
-            when (args.type) {
-                UserListType.Follower -> ExportUserSpecification.Follower(args.userId)
-                UserListType.Following -> ExportUserSpecification.Following(args.userId)
+            when (type) {
+                UserListType.Follower -> ExportUserSpecification.Follower(userId)
+                UserListType.Following -> ExportUserSpecification.Following(userId)
                 UserListType.UsersFavorite -> null
                 UserListType.UsersReblog -> null
             } ?: return
@@ -272,22 +274,27 @@ class UserListViewModel(
     }
 
     companion object {
-        fun getExtras(args: UserListViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(type: UserListType, userId: String, postId: String) = CreationExtras {
+            this[KEY_TYPE] = type
+            this[KEY_USER_ID] = userId
+            this[KEY_POST_ID] = postId
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<UserListViewModelArgs>()
-
-data class UserListViewModelArgs(val type: UserListType, val userId: String, val postId: String)
+private val KEY_TYPE = CreationExtras.Key<UserListType>()
+private val KEY_USER_ID = CreationExtras.Key<String>()
+private val KEY_POST_ID = CreationExtras.Key<String>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(UserListViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface Factory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): UserListViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+    override fun create(extras: CreationExtras): UserListViewModel = create(
+        type = extras[KEY_TYPE] ?: error("type argument not found"),
+        userId = extras[KEY_USER_ID] ?: error("userId argument not found"),
+        postId = extras[KEY_POST_ID] ?: error("postId argument not found"),
+    )
 
-    fun create(@Assisted args: UserListViewModelArgs): UserListViewModel
+    fun create(@Assisted type: UserListType, @Assisted userId: String, @Assisted postId: String): UserListViewModel
 }

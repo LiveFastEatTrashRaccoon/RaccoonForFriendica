@@ -73,7 +73,7 @@ import kotlin.time.Duration
 @Composable
 fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: String? = null) {
     val model: HashtagMvi = assistedMetroViewModel<HashtagViewModel>(
-        extras = HashtagViewModel.getExtras(HashtagViewModelArgs(tag = tag)),
+        extras = HashtagViewModel.getExtras(tag),
     )
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator

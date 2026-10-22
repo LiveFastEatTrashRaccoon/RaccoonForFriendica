@@ -2,8 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaApiResult
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.FriendicaPrivateMessage
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 
 interface DirectMessageService {
@@ -31,5 +30,5 @@ interface DirectMessageService {
 }
 
 fun interface DirectMessageServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): DirectMessageService
+    fun create(baseUrl: String, client: HttpClient): DirectMessageService
 }

@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.PushSubscription
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.FormDataContent
 
 interface PushService {
@@ -16,5 +15,5 @@ interface PushService {
 }
 
 fun interface PushServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): PushService
+    fun create(baseUrl: String, client: HttpClient): PushService
 }

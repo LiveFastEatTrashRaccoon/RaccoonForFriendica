@@ -1,8 +1,7 @@
 package com.livefast.eattrash.raccoonforfriendica.core.api.service
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Search
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
-import dev.zacsweers.metro.Assisted
+import io.ktor.client.HttpClient
 
 interface SearchService {
     suspend fun search(
@@ -16,5 +15,5 @@ interface SearchService {
 }
 
 fun interface SearchServiceFactory {
-    fun create(@Assisted args: ServiceCreationArgs): SearchService
+    fun create(baseUrl: String, client: HttpClient): SearchService
 }

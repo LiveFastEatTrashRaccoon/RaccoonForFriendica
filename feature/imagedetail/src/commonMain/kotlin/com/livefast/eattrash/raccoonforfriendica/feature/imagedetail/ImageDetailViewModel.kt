@@ -26,7 +26,8 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @AssistedInject
 class ImageDetailViewModel(
-    @Assisted private val args: ImageDetailViewModelArgs,
+    @Assisted private val urls: List<String>,
+    @Assisted private val initialIndex: Int,
     private val shareHelper: ShareHelper,
     private val galleryHelper: GalleryHelper,
     private val imagePreloadManager: ImagePreloadManager,
@@ -39,7 +40,7 @@ class ImageDetailViewModel(
         viewModelScope.launch {
             updateState {
                 it.copy(
-                    currentIndex = args.initialIndex,
+                    currentIndex = initialIndex,
                 )
             }
         }
@@ -63,7 +64,7 @@ class ImageDetailViewModel(
 
     private fun handleChangeContentScale(contentScale: ContentScale) {
         val currentState = uiState.value
-        val url = args.urls[currentState.currentIndex]
+        val url = urls[currentState.currentIndex]
         imagePreloadManager.remove(url)
         viewModelScope.launch {
             updateState {
@@ -79,7 +80,7 @@ class ImageDetailViewModel(
         viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value
-            val url = args.urls[currentState.currentIndex]
+            val url = urls[currentState.currentIndex]
             try {
                 val bytes = galleryHelper.download(url)
                 val extension = url.extractExtension()
@@ -101,7 +102,7 @@ class ImageDetailViewModel(
 
     private fun handleShareAsUrl() {
         val currentState = uiState.value
-        val url = args.urls[currentState.currentIndex]
+        val url = urls[currentState.currentIndex]
         try {
             shareHelper.share(url)
         } catch (e: Exception) {
@@ -116,7 +117,7 @@ class ImageDetailViewModel(
         viewModelScope.launch {
             updateState { it.copy(loading = true) }
             val currentState = uiState.value
-            val url = args.urls[currentState.currentIndex]
+            val url = urls[currentState.currentIndex]
             try {
                 val bytes = galleryHelper.download(url)
                 val extension = url.extractExtension()
@@ -143,27 +144,29 @@ class ImageDetailViewModel(
     }
 
     companion object {
-        fun getExtras(args: ImageDetailViewModelArgs) = CreationExtras {
-            this[KEY_ARGS] = args
+        fun getExtras(urls: List<String>, initialIndex: Int) = CreationExtras {
+            this[KEY_URLS] = urls
+            this[KEY_INITIAL_INDEX] = initialIndex
         }
     }
 }
 
-private val KEY_ARGS = CreationExtras.Key<ImageDetailViewModelArgs>()
+private val KEY_URLS = CreationExtras.Key<List<String>>()
+private val KEY_INITIAL_INDEX = CreationExtras.Key<Int>()
 
 private fun String.extractExtension(): String {
     val idx = lastIndexOf(".").takeIf { it >= 0 } ?: length
     return substring(idx).takeIf { it.isNotEmpty() } ?: ".jpeg"
 }
 
-data class ImageDetailViewModelArgs(val urls: List<String>, val initialIndex: Int = 0)
-
 @AssistedFactory
 @ViewModelAssistedFactoryKey(ImageDetailViewModel::class)
 @ContributesIntoMap(AppScope::class)
 fun interface ImageDetailViewModelFactory : ViewModelAssistedFactory {
-    override fun create(extras: CreationExtras): ImageDetailViewModel =
-        create(extras[KEY_ARGS] ?: error("ViewModel creation args not found"))
+    override fun create(extras: CreationExtras): ImageDetailViewModel = create(
+        extras[KEY_URLS] ?: error("urls argument not found"),
+        extras[KEY_INITIAL_INDEX] ?: error("initialIndex argument not found"),
+    )
 
-    fun create(@Assisted args: ImageDetailViewModelArgs): ImageDetailViewModel
+    fun create(@Assisted urls: List<String>, @Assisted initialIndex: Int): ImageDetailViewModel
 }

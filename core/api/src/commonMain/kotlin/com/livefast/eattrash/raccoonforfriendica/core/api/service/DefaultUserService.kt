@@ -10,13 +10,13 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Suggestion
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.FollowUserForm
 import com.livefast.eattrash.raccoonforfriendica.core.api.form.MuteUserForm
-import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceCreationArgs
 import com.livefast.eattrash.raccoonforfriendica.core.api.utils.extractCursorFromLinkHeaderValue
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -29,15 +29,16 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @AssistedInject
-class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : UserService {
+class DefaultUserService(@Assisted private val baseUrl: String, @Assisted private val client: HttpClient) :
+    UserService {
 
     override suspend fun verifyCredentials(): CredentialAccount =
-        args.client.get("${args.baseUrl}/v1/accounts/verify_credentials").body()
+        client.get("$baseUrl/v1/accounts/verify_credentials").body()
 
-    override suspend fun getById(id: String): Account = args.client.get("${args.baseUrl}/v1/accounts/$id").body()
+    override suspend fun getById(id: String): Account = client.get("$baseUrl/v1/accounts/$id").body()
 
     override suspend fun search(query: String, offset: Int, resolve: Boolean, following: Boolean): List<Account> =
-        args.client.get("${args.baseUrl}/v1/accounts/search") {
+        client.get("$baseUrl/v1/accounts/search") {
             parameter("q", query)
             parameter("offset", offset)
             parameter("resolve", resolve)
@@ -53,7 +54,7 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
         excludeReblogs: Boolean,
         pinned: Boolean,
         limit: Int,
-    ): List<Status> = args.client.get("${args.baseUrl}/v1/accounts/$id/statuses") {
+    ): List<Status> = client.get("$baseUrl/v1/accounts/$id/statuses") {
         parameter("id", id)
         parameter("max_id", maxId)
         parameter("min_id", minId)
@@ -65,19 +66,18 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }.body()
 
     override suspend fun getRelationships(id: List<String>): List<Relationship> =
-        args.client.get("${args.baseUrl}/v1/accounts/relationships") {
+        client.get("$baseUrl/v1/accounts/relationships") {
             id.forEach { value ->
                 parameter("id[]", value)
             }
         }.body()
 
-    override suspend fun getSuggestions(limit: Int): List<Suggestion> =
-        args.client.get("${args.baseUrl}/v2/suggestions") {
-            parameter("limit", limit)
-        }.body()
+    override suspend fun getSuggestions(limit: Int): List<Suggestion> = client.get("$baseUrl/v2/suggestions") {
+        parameter("limit", limit)
+    }.body()
 
     override suspend fun getFollowers(id: String, maxId: String?, minId: String?, limit: Int): Page<Account> {
-        val response = args.client.get("${args.baseUrl}/v1/accounts/$id/followers") {
+        val response = client.get("$baseUrl/v1/accounts/$id/followers") {
             parameter("id", id)
             parameter("max_id", maxId)
             parameter("min_id", minId)
@@ -89,7 +89,7 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 
     override suspend fun getFollowing(id: String, maxId: String?, minId: String?, limit: Int): Page<Account> {
-        val response = args.client.get("${args.baseUrl}/v1/accounts/$id/following") {
+        val response = client.get("$baseUrl/v1/accounts/$id/following") {
             parameter("id", id)
             parameter("max_id", maxId)
             parameter("min_id", minId)
@@ -101,16 +101,15 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 
     override suspend fun follow(id: String, data: FollowUserForm): Relationship =
-        args.client.post("${args.baseUrl}/v1/accounts/$id/follow") {
+        client.post("$baseUrl/v1/accounts/$id/follow") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
-    override suspend fun unfollow(id: String): Relationship =
-        args.client.post("${args.baseUrl}/v1/accounts/$id/unfollow").body()
+    override suspend fun unfollow(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/unfollow").body()
 
     override suspend fun getFavorites(maxId: String?, minId: String?, limit: Int): Page<Status> {
-        val response = args.client.get("${args.baseUrl}/v1/favourites") {
+        val response = client.get("$baseUrl/v1/favourites") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
@@ -121,7 +120,7 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 
     override suspend fun getBookmarks(maxId: String?, minId: String?, limit: Int): Page<Status> {
-        val response = args.client.get("${args.baseUrl}/v1/bookmarks") {
+        val response = client.get("$baseUrl/v1/bookmarks") {
             parameter("max_id", maxId)
             parameter("min_id", minId)
             parameter("limit", limit)
@@ -132,25 +131,22 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 
     override suspend fun getListsContaining(id: String): List<UserList> =
-        args.client.get("${args.baseUrl}/v1/accounts/$id/lists").body()
+        client.get("$baseUrl/v1/accounts/$id/lists").body()
 
     override suspend fun mute(id: String, data: MuteUserForm): Relationship =
-        args.client.post("${args.baseUrl}/v1/accounts/$id/mute") {
+        client.post("$baseUrl/v1/accounts/$id/mute") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
-    override suspend fun unmute(id: String): Relationship =
-        args.client.post("${args.baseUrl}/v1/accounts/$id/unmute").body()
+    override suspend fun unmute(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/unmute").body()
 
-    override suspend fun block(id: String): Relationship =
-        args.client.post("${args.baseUrl}/v1/accounts/$id/block").body()
+    override suspend fun block(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/block").body()
 
-    override suspend fun unblock(id: String): Relationship =
-        args.client.post("${args.baseUrl}/v1/accounts/$id/unblock").body()
+    override suspend fun unblock(id: String): Relationship = client.post("$baseUrl/v1/accounts/$id/unblock").body()
 
     override suspend fun getMuted(maxId: String?, limit: Int): Page<Account> {
-        val response = args.client.get("${args.baseUrl}/v1/mutes") {
+        val response = client.get("$baseUrl/v1/mutes") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
@@ -160,7 +156,7 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 
     override suspend fun getBlocked(maxId: String?, limit: Int): Page<Account> {
-        val response = args.client.get("${args.baseUrl}/v1/blocks") {
+        val response = client.get("$baseUrl/v1/blocks") {
             parameter("max_id", maxId)
             parameter("limit", limit)
         }
@@ -170,25 +166,25 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 
     override suspend fun updateProfile(content: FormDataContent): Account =
-        args.client.patch("${args.baseUrl}/v1/accounts/update_credentials") {
+        client.patch("$baseUrl/v1/accounts/update_credentials") {
             contentType(ContentType.Application.Json)
             setBody(content)
         }.body()
 
     override suspend fun updateProfileImage(content: MultiPartFormDataContent): Account =
-        args.client.patch("${args.baseUrl}/v1/accounts/update_credentials") {
+        client.patch("$baseUrl/v1/accounts/update_credentials") {
             contentType(ContentType.Application.Json)
             setBody(content)
         }.body()
 
     override suspend fun updatePersonalNote(id: String, data: FormDataContent): Relationship =
-        args.client.post("${args.baseUrl}/v1/accounts/$id/note") {
+        client.post("$baseUrl/v1/accounts/$id/note") {
             contentType(ContentType.Application.Json)
             setBody(data)
         }.body()
 
     override suspend fun getCollections(id: String, offset: Int, limit: Int): Collections {
-        val response = args.client.get("${args.baseUrl}/v1/accounts/$id/collections") {
+        val response = client.get("$baseUrl/v1/accounts/$id/collections") {
             parameter("offset", offset)
             parameter("limit", limit)
         }
@@ -196,7 +192,7 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
     }
 
     override suspend fun getCollectionsContaining(id: String, offset: Int, limit: Int): Collections {
-        val response = args.client.get("${args.baseUrl}/v1/accounts/$id/in_collections") {
+        val response = client.get("$baseUrl/v1/accounts/$id/in_collections") {
             parameter("offset", offset)
             parameter("limit", limit)
         }
@@ -207,5 +203,5 @@ class DefaultUserService(@Assisted private val args: ServiceCreationArgs) : User
 @ContributesBinding(AppScope::class)
 @AssistedFactory
 fun interface DefaultUserServiceFactory : UserServiceFactory {
-    override fun create(@Assisted args: ServiceCreationArgs): DefaultUserService
+    override fun create(@Assisted baseUrl: String, @Assisted client: HttpClient): DefaultUserService
 }

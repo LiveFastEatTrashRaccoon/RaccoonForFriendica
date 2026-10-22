@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,14 +62,12 @@ import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEdit
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorDialog
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorViewModel
-import com.livefast.eattrash.raccoonforfriendica.feature.circles.edit.CircleEditorViewModelArgs
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAction: ((String) -> Unit)? = null) {
     val uiState by model.uiState.collectAsState()
@@ -343,7 +340,7 @@ fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAc
         val editorModel: CircleEditorMvi = assistedMetroViewModel<CircleEditorViewModel>(
             viewModelStoreOwner = viewModelStoreOwner,
             extras = CircleEditorViewModel.getExtras(
-                CircleEditorViewModelArgs(data = editorData as CircleEditorData),
+                data = editorData as CircleEditorData,
             ),
         )
         val dialogUiState by editorModel.uiState.collectAsState()
