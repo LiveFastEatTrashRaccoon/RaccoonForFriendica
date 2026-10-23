@@ -1,7 +1,9 @@
 ## What's Changed
 
-- fix(ui): hyperlink processing in release builds
-- refactor(di): improve assisted injection in `:core:api`, `:core:navigation` and `core:utils`
-- chore(deps): update Sentry SDK
+- fix(post-detail): missing actions in ancestors when opening from inbox
+- fix(timeline, post-detail): incorrect reblog count when toggling boost
+- refactor(data): rename timeline entries to posts
+- refactor(di): remove assisted parameter wrappers
+- chore(deps): update dependencies (Sentry, kotlinx-serialization-json)
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.4...1.1.5
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.5...1.1.6

@@ -1,0 +1,3 @@
+- fix: missing actions in ancestors when opening from inbox
+- fix: incorrect reblog count when toggling boost
+- chore: update dependencies and code cleanup
