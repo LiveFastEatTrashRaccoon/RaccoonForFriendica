@@ -440,12 +440,14 @@ class DefaultPostRepositoryTest {
     fun `given success when reblog then result and interactions are as expected`() = runTest {
         everySuspend {
             statusService.reblog(id = any(), data = any())
-        } returns Status(id = "2", reblogged = true)
+        } returns Status(id = "2", reblogged = true, reblog = Status(id = "1", reblogsCount = 5))
 
         val res = sut.reblog(id = "1")
 
         assertNotNull(res)
-        assertTrue(res.reblogged)
+        assertEquals("1", res.id)
+        assertEquals(5, res.reblogCount)
+
         verifySuspend {
             statusService.reblog(id = "1", data = any())
         }
@@ -453,9 +455,23 @@ class DefaultPostRepositoryTest {
 
     @Test
     fun `given success when unreblog then result and interactions are as expected`() = runTest {
-        everySuspend { statusService.unreblog(id = any()) } returns Status(id = "1", reblogged = false)
+        everySuspend { statusService.unreblog(id = any()) } returns
+            Status(id = "1", reblogged = false, reblogsCount = 5)
         val res = sut.unreblog(id = "1")
+
         assertNotNull(res)
+        assertEquals(4, res.reblogCount)
+        verifySuspend { statusService.unreblog(id = "1") }
+    }
+
+    @Test
+    fun `given success with 0 count when unreblog then count does not go below zero`() = runTest {
+        everySuspend { statusService.unreblog(id = any()) } returns
+            Status(id = "1", reblogged = false, reblogsCount = 0)
+        val res = sut.unreblog(id = "1")
+
+        assertNotNull(res)
+        assertEquals(0, res.reblogCount)
         verifySuspend { statusService.unreblog(id = "1") }
     }
 
