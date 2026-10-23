@@ -14,6 +14,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineContextModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.Visibility
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
@@ -125,14 +126,16 @@ class DefaultPostRepository(
             .reblog(
                 id = id,
                 data = data,
-            ).toModelWithReply()
+            ).toModelWithReply().original
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
     }
 
     override suspend fun unreblog(id: String): PostModel? = try {
-        provider.status.unreblog(id).toModel()
+        provider.status.unreblog(id).toModelWithReply().original.let { post ->
+            post.copy(reblogCount = (post.reblogCount - 1).coerceAtLeast(0))
+        }
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         null
