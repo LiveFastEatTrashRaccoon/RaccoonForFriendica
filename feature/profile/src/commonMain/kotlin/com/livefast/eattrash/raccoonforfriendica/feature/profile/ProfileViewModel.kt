@@ -58,7 +58,7 @@ class ProfileViewModel(
                     updateState {
                         it.copy(
                             hideNavigationBarWhileScrolling =
-                                settings?.hideNavigationBarWhileScrolling ?: true,
+                            settings?.hideNavigationBarWhileScrolling ?: true,
                         )
                     }
                 }.launchIn(this)

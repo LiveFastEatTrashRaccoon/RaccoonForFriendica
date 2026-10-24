@@ -92,27 +92,42 @@ class EditProfileViewModel(
     override fun reduce(intent: EditProfileMvi.Intent) {
         when (intent) {
             is EditProfileMvi.Intent.ChangeBio -> handleChangeBio(intent.value)
+
             is EditProfileMvi.Intent.ChangeBot -> handleChangeBot(intent.bot)
+
             is EditProfileMvi.Intent.ChangeDiscoverable -> handleChangeDiscoverable(intent.discoverable)
+
             is EditProfileMvi.Intent.ChangeDisplayName -> handleChangeDisplayName(intent.value)
+
             is EditProfileMvi.Intent.ChangeLocked -> handleChangeLocked(intent.locked)
+
             is EditProfileMvi.Intent.ChangeHideCollections -> handleChangeHideCollections(intent.hideCollections)
+
             is EditProfileMvi.Intent.ChangeNoIndex -> handleChangeNoIndex(intent.noIndex)
+
             EditProfileMvi.Intent.AddField -> handleAddField()
+
             is EditProfileMvi.Intent.RemoveField -> handleRemoveField(intent.index)
+
             is EditProfileMvi.Intent.EditField -> handleEditField(
                 index = intent.index,
                 key = intent.key,
                 value = intent.value,
             )
+
             is EditProfileMvi.Intent.AvatarSelected -> handleAvatarSelected(intent.bytes)
+
             is EditProfileMvi.Intent.HeaderSelected -> handleHeaderSelected(intent.bytes)
+
             is EditProfileMvi.Intent.InsertCustomEmoji -> handleInsertCustomEmoji(
                 fieldType = intent.fieldType,
-                emoji = intent.emoji
+                emoji = intent.emoji,
             )
+
             EditProfileMvi.Intent.DeleteAccount -> handleDeleteAccount()
+
             is EditProfileMvi.Intent.ChangeQuotePolicy -> handleChangeQuotePolicy(intent.policy)
+
             EditProfileMvi.Intent.Submit -> handleSubmit()
         }
     }
@@ -259,7 +274,9 @@ class EditProfileViewModel(
     }
 
     private fun handleAvatarSelected(bytes: ByteArray) {
-        if (bytes.isEmpty()) { return }
+        if (bytes.isEmpty()) {
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             updateState {
                 it.copy(
@@ -271,7 +288,9 @@ class EditProfileViewModel(
     }
 
     private fun handleHeaderSelected(bytes: ByteArray) {
-        if (bytes.isEmpty()) { return }
+        if (bytes.isEmpty()) {
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             updateState {
                 it.copy(
@@ -341,7 +360,9 @@ class EditProfileViewModel(
 
     private fun handleSubmit() {
         val currentState = uiState.value
-        if (currentState.loading) { return }
+        if (currentState.loading) {
+            return
+        }
 
         val fieldMap =
             currentState.fields.fold(mutableMapOf<String, String>()) { res, item ->

@@ -9,7 +9,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.Acco
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AuthManager
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase.SwitchAccountUseCase
-
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -31,7 +30,8 @@ class SwitchAccountViewModel(
     private val authManager: AuthManager,
 ) : ViewModel(),
     MviDelegate<SwitchAccountMvi.Intent, SwitchAccountMvi.State, SwitchAccountMvi.Effect>
-    by DefaultMviDelegate(initialState = SwitchAccountMvi.State()), SwitchAccountMvi {
+    by DefaultMviDelegate(initialState = SwitchAccountMvi.State()),
+    SwitchAccountMvi {
 
     init {
         identityRepository.currentUser

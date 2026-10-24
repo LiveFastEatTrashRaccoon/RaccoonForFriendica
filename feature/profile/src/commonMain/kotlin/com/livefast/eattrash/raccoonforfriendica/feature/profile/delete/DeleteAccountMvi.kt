@@ -9,9 +9,7 @@ interface DeleteAccountMvi : Mvi<DeleteAccountMvi.Intent, DeleteAccountMvi.State
         data class Submit(val account: AccountModel) : Intent
     }
 
-    data class State(
-        val currentUserId: String? = null,
-    )
+    data class State(val currentUserId: String? = null)
 
     sealed interface Effect {
         data object Success : Effect

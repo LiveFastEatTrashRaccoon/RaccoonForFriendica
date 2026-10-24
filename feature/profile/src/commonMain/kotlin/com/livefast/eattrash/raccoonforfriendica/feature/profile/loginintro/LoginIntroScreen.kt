@@ -64,36 +64,35 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginIntroScreen(modifier: Modifier = Modifier) {
-    val model: LoginIntroMvi = metroViewModel<LoginIntroViewModel>()
+fun LoginIntroScreen(modifier: Modifier = Modifier, model: LoginIntroMvi = metroViewModel<LoginIntroViewModel>()) {
     val uriHandler = LocalUriHandler.current
     val fullColor = MaterialTheme.colorScheme.onBackground
     var moreInfoBottomSheetOpened by remember { mutableStateOf(false) }
 
     Column(
         modifier =
-            modifier
-                .padding(Spacing.s)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+        modifier
+            .padding(Spacing.s)
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Text(
             modifier =
-                Modifier.fillMaxWidth().padding(top = Spacing.m),
+            Modifier.fillMaxWidth().padding(top = Spacing.m),
             text = LocalStrings.current.loginTitle,
             style = MaterialTheme.typography.titleLarge,
             color = fullColor,
         )
         Text(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = Spacing.s,
-                        start = Spacing.xs,
-                        end = Spacing.xs,
-                    ),
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = Spacing.s,
+                    start = Spacing.xs,
+                    end = Spacing.xs,
+                ),
             text = LocalStrings.current.loginSubtitle,
             style = MaterialTheme.typography.bodyMedium,
             color = fullColor,
@@ -130,18 +129,18 @@ fun LoginIntroScreen(modifier: Modifier = Modifier) {
                 uriHandler.openExternally(LoginIntroLinks.FRIENDICA_INSTANCE_HELP)
             },
             options =
-                buildList {
-                    this +=
-                        CustomOptions.LegacyLogin.toOption(
-                            label =
-                                buildString {
-                                    append(LocalStrings.current.buttonLogin)
-                                    append(" (")
-                                    append(LocalStrings.current.loginMethodBasic)
-                                    append(")")
-                                },
-                        )
-                },
+            buildList {
+                this +=
+                    CustomOptions.LegacyLogin.toOption(
+                        label =
+                        buildString {
+                            append(LocalStrings.current.buttonLogin)
+                            append(" (")
+                            append(LocalStrings.current.loginMethodBasic)
+                            append(")")
+                        },
+                    )
+            },
             onSelectOption = { optionId ->
                 when (optionId) {
                     CustomOptions.LegacyLogin ->
@@ -249,12 +248,12 @@ private fun PlatformHeader(
         if (onClickInfo != null) {
             Icon(
                 modifier =
-                    Modifier
-                        .padding(end = Spacing.xs)
-                        .clip(CircleShape)
-                        .clickable {
-                            onClickInfo()
-                        },
+                Modifier
+                    .padding(end = Spacing.xs)
+                    .clip(CircleShape)
+                    .clickable {
+                        onClickInfo()
+                    },
                 imageVector = LocalResources.current.info,
                 contentDescription = LocalStrings.current.moreInfo,
             )
@@ -274,24 +273,24 @@ private fun PlatformLink(
 ) {
     Row(
         modifier =
-            modifier
-                .padding(start = Spacing.xs)
-                .clip(RoundedCornerShape(CornerSize.l))
-                .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
+        modifier
+            .padding(start = Spacing.xs)
+            .clip(RoundedCornerShape(CornerSize.l))
+            .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier.weight(1f),
             text =
-                buildAnnotatedString {
-                    pushLink(
-                        LinkAnnotation.Clickable("action") {
-                            onClick?.invoke()
-                        },
-                    )
-                    append(title)
-                    pop()
-                },
+            buildAnnotatedString {
+                pushLink(
+                    LinkAnnotation.Clickable("action") {
+                        onClick?.invoke()
+                    },
+                )
+                append(title)
+                pop()
+            },
             style = MaterialTheme.typography.bodyMedium,
             textDecoration = if (underline) TextDecoration.Underline else TextDecoration.None,
             color = MaterialTheme.colorScheme.primary,
@@ -303,12 +302,12 @@ private fun PlatformLink(
                 var optionsMenuOpen by remember { mutableStateOf(false) }
                 IconButton(
                     modifier =
-                        Modifier
-                            .padding(end = Spacing.xxs)
-                            .size(IconSize.m)
-                            .onGloballyPositioned {
-                                optionsOffset = it.positionInParent()
-                            },
+                    Modifier
+                        .padding(end = Spacing.xxs)
+                        .size(IconSize.m)
+                        .onGloballyPositioned {
+                            optionsOffset = it.positionInParent()
+                        },
                     onClick = {
                         optionsMenuOpen = true
                     },
@@ -326,12 +325,12 @@ private fun PlatformLink(
                             optionsMenuOpen = false
                         },
                         offset =
-                            with(LocalDensity.current) {
-                                DpOffset(
-                                    x = optionsOffset.x.toDp(),
-                                    y = optionsOffset.y.toDp(),
-                                )
-                            },
+                        with(LocalDensity.current) {
+                            DpOffset(
+                                x = optionsOffset.x.toDp(),
+                                y = optionsOffset.y.toDp(),
+                            )
+                        },
                     ) {
                         options.forEach { option ->
                             DropdownMenuItem(

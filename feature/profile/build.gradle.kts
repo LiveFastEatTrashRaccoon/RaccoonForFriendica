@@ -36,13 +36,3 @@ kotlin {
 customDiExtension {
     useCompose(withViewModels = true)
 }
-
-spotless {
-    kotlin {
-        target("**/ProfileTopAppBarStateWrapper.kt")
-        suppressLintsFor {
-            step = "ktlint"
-            shortCode = "compose:compositionlocal-allowlist"
-        }
-    }
-}
