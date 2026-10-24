@@ -36,7 +36,6 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.ProvideCustomFontScale
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.AppTheme
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.ProvideAppCompositionLocals
@@ -165,7 +164,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
     }
 
     CompositionLocalProvider(
-        LocalMetroViewModelFactory provides graph.metroViewModelFactory
+        LocalMetroViewModelFactory provides graph.metroViewModelFactory,
     ) {
         val model: RootMvi = metroViewModel<RootViewModel>()
         val uiState by model.uiState.collectAsState()
@@ -181,6 +180,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
         ProvideAppCompositionLocals(
             uiDeps = uiDeps,
             lang = uiState.currentSettings?.lang ?: Locales.EN,
+            fontScale = uiState.currentSettings?.fontScale,
             uriHandler = customUriHandler,
         ) {
             AppTheme(
@@ -195,9 +195,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                         drawerState = drawerState,
                         gesturesEnabled = drawerGesturesEnabled,
                         drawerContent = {
-                            ProvideCustomFontScale(fontScale = uiState.currentSettings?.fontScale) {
-                                DrawerContent()
-                            }
+                            DrawerContent()
                         },
                     ) {
                         val canPop by drawerCoordinator.drawerOpened.collectAsState()
@@ -211,130 +209,126 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                 }
                             },
                         )
-                        ProvideCustomFontScale(fontScale = uiState.currentSettings?.fontScale) {
-                            // preload ViewModels for all top-level sections
-                            val timelineModel: TimelineMvi = metroViewModel<TimelineViewModel>()
-                            val exploreModel: ExploreMvi = metroViewModel<ExploreViewModel>()
-                            val inboxModel: InboxMvi = metroViewModel<InboxViewModel>()
-                            val profileModel: ProfileMvi = metroViewModel<ProfileViewModel>()
-                            val myAccountModel: MyAccountMvi = metroViewModel<MyAccountViewModel>()
-                            val timelineLazyListState = rememberLazyListState()
-                            val exploreLazyListState = rememberLazyListState()
-                            val inboxLazyListState = rememberLazyListState()
-                            val myAccountLazyListState = rememberLazyListState()
-                            NavDisplay(
-                                backStack = backStack,
-                                onBack = { navigationCoordinator.pop() },
-                                entryDecorators = listOf(
-                                    rememberSaveableStateHolderNavEntryDecorator(),
-                                    rememberViewModelStoreNavEntryDecorator(),
-                                ),
-                                sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
-                                entryProvider = getEntryProvider(
-                                    timelineViewModel = timelineModel,
-                                    timelineLazyListState = timelineLazyListState,
-                                    exploreViewModel = exploreModel,
-                                    exploreLazyListState = exploreLazyListState,
-                                    inboxViewModel = inboxModel,
-                                    inboxLazyListState = inboxLazyListState,
-                                    profileViewModel = profileModel,
-                                    myAccountViewModel = myAccountModel,
-                                    myAccountLazyListState = myAccountLazyListState,
-                                ),
-                            )
-                        }
-                    }
-                } else {
-                    ProvideCustomFontScale(fontScale = uiState.currentSettings?.fontScale) {
-                        Scaffold(
-                            content = { paddingValues ->
-                                var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
-                                    mutableStateOf(Destination.Main)
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(paddingValues),
-                                ) {
-                                    PermanentNavigationDrawer(
-                                        drawerContent = {
-                                            PermanentDrawerContent(
-                                                currentDestination = selectedDestination,
-                                                onSelectDestination = { destination ->
-                                                    selectedDestination = destination
-                                                    backStack[backStack.lastIndex] = destination
-                                                },
-                                            )
-                                        },
-                                    ) {
-                                        // preload ViewModels for all top-level sections
-                                        val timelineViewModel: TimelineMvi = metroViewModel<TimelineViewModel>()
-                                        val exploreViewModel: ExploreMvi = metroViewModel<ExploreViewModel>()
-                                        val inboxViewModel: InboxMvi = metroViewModel<InboxViewModel>()
-                                        val profileViewModel: ProfileMvi = metroViewModel<ProfileViewModel>()
-                                        val myAccountViewModel: MyAccountMvi = metroViewModel<MyAccountViewModel>()
-                                        val favoritesViewModel: PostListMvi =
-                                            assistedMetroViewModel<PostListViewModel>(
-                                                extras = PostListViewModel.getExtras(type = PostListType.Favorites),
-                                            )
-                                        val bookmarksViewModel: PostListMvi =
-                                            assistedMetroViewModel<PostListViewModel>(
-                                                extras = PostListViewModel.getExtras(type = PostListType.Bookmarks),
-                                            )
-                                        val followedHashtagsViewModel: FollowedHashtagsMvi =
-                                            metroViewModel<FollowedHashtagsViewModel>()
-                                        val followRequestsViewModel: FollowRequestsMvi =
-                                            metroViewModel<FollowRequestsViewModel>()
-                                        val circlesViewModel: CirclesMvi = metroViewModel<CirclesViewModel>()
-                                        val conversationListViewModel: ConversationListMvi =
-                                            metroViewModel<ConversationListViewModel>()
-                                        val galleryViewModel: GalleryMvi = metroViewModel<GalleryViewModel>()
-                                        val unpublishedViewModel: UnpublishedMvi =
-                                            metroViewModel<UnpublishedViewModel>()
-                                        val calendarViewModel: CalendarMvi = metroViewModel<CalendarViewModel>()
-                                        val shortcutListViewModel: ShortcutListMvi =
-                                            metroViewModel<ShortcutListViewModel>()
-                                        val nodeInfoViewModel: NodeInfoMvi = metroViewModel<NodeInfoViewModel>()
-                                        val timelineLazyListState = rememberLazyListState()
-                                        val exploreLazyListState = rememberLazyListState()
-                                        val inboxLazyListState = rememberLazyListState()
-                                        val myAccountLazyListState = rememberLazyListState()
-                                        NavDisplay(
-                                            backStack = backStack,
-                                            onBack = { navigationCoordinator.pop() },
-                                            entryDecorators = listOf(
-                                                rememberSaveableStateHolderNavEntryDecorator(),
-                                                rememberViewModelStoreNavEntryDecorator(),
-                                            ),
-                                            sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
-                                            entryProvider = getEntryProvider(
-                                                timelineViewModel = timelineViewModel,
-                                                timelineLazyListState = timelineLazyListState,
-                                                exploreViewModel = exploreViewModel,
-                                                exploreLazyListState = exploreLazyListState,
-                                                inboxViewModel = inboxViewModel,
-                                                inboxLazyListState = inboxLazyListState,
-                                                profileViewModel = profileViewModel,
-                                                myAccountViewModel = myAccountViewModel,
-                                                myAccountLazyListState = myAccountLazyListState,
-                                                favoritesViewModel = favoritesViewModel,
-                                                bookmarksViewModel = bookmarksViewModel,
-                                                followedHashtagsViewModel = followedHashtagsViewModel,
-                                                followRequestsViewModel = followRequestsViewModel,
-                                                circlesViewModel = circlesViewModel,
-                                                conversationListViewModel = conversationListViewModel,
-                                                galleryViewModel = galleryViewModel,
-                                                unpublishedViewModel = unpublishedViewModel,
-                                                calendarViewModel = calendarViewModel,
-                                                shortcutListViewModel = shortcutListViewModel,
-                                                nodeInfoViewModel = nodeInfoViewModel,
-                                            ),
-                                        )
-                                    }
-                                }
-                            },
+                        // preload ViewModels for all top-level sections
+                        val timelineModel: TimelineMvi = metroViewModel<TimelineViewModel>()
+                        val exploreModel: ExploreMvi = metroViewModel<ExploreViewModel>()
+                        val inboxModel: InboxMvi = metroViewModel<InboxViewModel>()
+                        val profileModel: ProfileMvi = metroViewModel<ProfileViewModel>()
+                        val myAccountModel: MyAccountMvi = metroViewModel<MyAccountViewModel>()
+                        val timelineLazyListState = rememberLazyListState()
+                        val exploreLazyListState = rememberLazyListState()
+                        val inboxLazyListState = rememberLazyListState()
+                        val myAccountLazyListState = rememberLazyListState()
+                        NavDisplay(
+                            backStack = backStack,
+                            onBack = { navigationCoordinator.pop() },
+                            entryDecorators = listOf(
+                                rememberSaveableStateHolderNavEntryDecorator(),
+                                rememberViewModelStoreNavEntryDecorator(),
+                            ),
+                            sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
+                            entryProvider = getEntryProvider(
+                                timelineViewModel = timelineModel,
+                                timelineLazyListState = timelineLazyListState,
+                                exploreViewModel = exploreModel,
+                                exploreLazyListState = exploreLazyListState,
+                                inboxViewModel = inboxModel,
+                                inboxLazyListState = inboxLazyListState,
+                                profileViewModel = profileModel,
+                                myAccountViewModel = myAccountModel,
+                                myAccountLazyListState = myAccountLazyListState,
+                            ),
                         )
                     }
+                } else {
+                    Scaffold(
+                        content = { paddingValues ->
+                            var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
+                                mutableStateOf(Destination.Main)
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(paddingValues),
+                            ) {
+                                PermanentNavigationDrawer(
+                                    drawerContent = {
+                                        PermanentDrawerContent(
+                                            currentDestination = selectedDestination,
+                                            onSelectDestination = { destination ->
+                                                selectedDestination = destination
+                                                backStack[backStack.lastIndex] = destination
+                                            },
+                                        )
+                                    },
+                                ) {
+                                    // preload ViewModels for all top-level sections
+                                    val timelineViewModel: TimelineMvi = metroViewModel<TimelineViewModel>()
+                                    val exploreViewModel: ExploreMvi = metroViewModel<ExploreViewModel>()
+                                    val inboxViewModel: InboxMvi = metroViewModel<InboxViewModel>()
+                                    val profileViewModel: ProfileMvi = metroViewModel<ProfileViewModel>()
+                                    val myAccountViewModel: MyAccountMvi = metroViewModel<MyAccountViewModel>()
+                                    val favoritesViewModel: PostListMvi =
+                                        assistedMetroViewModel<PostListViewModel>(
+                                            extras = PostListViewModel.getExtras(type = PostListType.Favorites),
+                                        )
+                                    val bookmarksViewModel: PostListMvi =
+                                        assistedMetroViewModel<PostListViewModel>(
+                                            extras = PostListViewModel.getExtras(type = PostListType.Bookmarks),
+                                        )
+                                    val followedHashtagsViewModel: FollowedHashtagsMvi =
+                                        metroViewModel<FollowedHashtagsViewModel>()
+                                    val followRequestsViewModel: FollowRequestsMvi =
+                                        metroViewModel<FollowRequestsViewModel>()
+                                    val circlesViewModel: CirclesMvi = metroViewModel<CirclesViewModel>()
+                                    val conversationListViewModel: ConversationListMvi =
+                                        metroViewModel<ConversationListViewModel>()
+                                    val galleryViewModel: GalleryMvi = metroViewModel<GalleryViewModel>()
+                                    val unpublishedViewModel: UnpublishedMvi =
+                                        metroViewModel<UnpublishedViewModel>()
+                                    val calendarViewModel: CalendarMvi = metroViewModel<CalendarViewModel>()
+                                    val shortcutListViewModel: ShortcutListMvi =
+                                        metroViewModel<ShortcutListViewModel>()
+                                    val nodeInfoViewModel: NodeInfoMvi = metroViewModel<NodeInfoViewModel>()
+                                    val timelineLazyListState = rememberLazyListState()
+                                    val exploreLazyListState = rememberLazyListState()
+                                    val inboxLazyListState = rememberLazyListState()
+                                    val myAccountLazyListState = rememberLazyListState()
+                                    NavDisplay(
+                                        backStack = backStack,
+                                        onBack = { navigationCoordinator.pop() },
+                                        entryDecorators = listOf(
+                                            rememberSaveableStateHolderNavEntryDecorator(),
+                                            rememberViewModelStoreNavEntryDecorator(),
+                                        ),
+                                        sceneStrategies = listOf(listDetailStrategy, SinglePaneSceneStrategy()),
+                                        entryProvider = getEntryProvider(
+                                            timelineViewModel = timelineViewModel,
+                                            timelineLazyListState = timelineLazyListState,
+                                            exploreViewModel = exploreViewModel,
+                                            exploreLazyListState = exploreLazyListState,
+                                            inboxViewModel = inboxViewModel,
+                                            inboxLazyListState = inboxLazyListState,
+                                            profileViewModel = profileViewModel,
+                                            myAccountViewModel = myAccountViewModel,
+                                            myAccountLazyListState = myAccountLazyListState,
+                                            favoritesViewModel = favoritesViewModel,
+                                            bookmarksViewModel = bookmarksViewModel,
+                                            followedHashtagsViewModel = followedHashtagsViewModel,
+                                            followRequestsViewModel = followRequestsViewModel,
+                                            circlesViewModel = circlesViewModel,
+                                            conversationListViewModel = conversationListViewModel,
+                                            galleryViewModel = galleryViewModel,
+                                            unpublishedViewModel = unpublishedViewModel,
+                                            calendarViewModel = calendarViewModel,
+                                            shortcutListViewModel = shortcutListViewModel,
+                                            nodeInfoViewModel = nodeInfoViewModel,
+                                        ),
+                                    )
+                                }
+                            }
+                        },
+                    )
                 }
             }
         }
