@@ -21,7 +21,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -69,7 +71,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
 import com.livefast.eattrash.raccoonforfriendica.domain.urlhandler.openExternally
-import com.livefast.eattrash.raccoonforfriendica.feature.profile.LocalProfileTopAppBarStateWrapper
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -80,6 +81,7 @@ fun MyAccountScreen(
     model: MyAccountMvi,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
+    topAppBarState: TopAppBarState = rememberTopAppBarState(),
 ) {
     val uiState by model.uiState.collectAsState()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
@@ -94,7 +96,6 @@ fun MyAccountScreen(
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
     var confirmDeletePostId by remember { mutableStateOf<String?>(null) }
     var confirmReblogPost by remember { mutableStateOf<PostModel?>(null) }
-    val topAppBarState = LocalProfileTopAppBarStateWrapper.current.topAppBarState
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val stickyHeaderTopOffset by animateDpAsState(
         if (lazyListState.firstVisibleItemIndex >= 2) {
@@ -128,6 +129,7 @@ fun MyAccountScreen(
             .onEach { event ->
                 when (event) {
                     MyAccountMvi.Effect.BackToTop -> goBackToTop()
+
                     MyAccountMvi.Effect.Failure ->
                         snackbarHostState.showSnackbar(message = genericError)
 
@@ -151,21 +153,21 @@ fun MyAccountScreen(
 
     PullToRefreshBox(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .then(
-                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                        Modifier.nestedScroll(connection)
-                    } else {
-                        Modifier
-                    },
-                ).then(
-                    if (connection != null && uiState.hideNavigationBarWhileScrolling) {
-                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                    } else {
-                        Modifier
-                    },
-                ),
+        modifier
+            .fillMaxWidth()
+            .then(
+                if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                    Modifier.nestedScroll(connection)
+                } else {
+                    Modifier
+                },
+            ).then(
+                if (connection != null && uiState.hideNavigationBarWhileScrolling) {
+                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                } else {
+                    Modifier
+                },
+            ),
         isRefreshing = uiState.refreshing,
         onRefresh = {
             model.reduce(MyAccountMvi.Intent.Refresh)
@@ -267,22 +269,22 @@ fun MyAccountScreen(
                         }
                     Box(
                         modifier =
-                            Modifier
-                                .padding(
-                                    vertical = Spacing.m,
-                                    horizontal = Spacing.s,
-                                ).border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    shape = RoundedCornerShape(CornerSize.l),
-                                ).padding(
-                                    vertical = Spacing.s,
-                                    horizontal = Spacing.m,
-                                ),
+                        Modifier
+                            .padding(
+                                vertical = Spacing.m,
+                                horizontal = Spacing.s,
+                            ).border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                shape = RoundedCornerShape(CornerSize.l),
+                            ).padding(
+                                vertical = Spacing.s,
+                                horizontal = Spacing.m,
+                            ),
                     ) {
                         Text(
                             modifier =
-                                Modifier.fillMaxWidth(),
+                            Modifier.fillMaxWidth(),
                             text = annotatedString,
                             style = MaterialTheme.typography.bodyLarge,
                         )
@@ -331,12 +333,12 @@ fun MyAccountScreen(
                     )
                 SectionSelector(
                     modifier =
-                        Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .padding(
-                                top = stickyHeaderTopOffset,
-                                bottom = Spacing.s,
-                            ),
+                    Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(
+                            top = stickyHeaderTopOffset,
+                            bottom = Spacing.s,
+                        ),
                     titles = titles.map { it.toReadableName() },
                     scrollable = true,
                     currentSection = titles.indexOf(uiState.section),
@@ -390,50 +392,50 @@ fun MyAccountScreen(
                         )
                     },
                     onBookmark =
-                        { post: PostModel ->
-                            model.reduce(MyAccountMvi.Intent.ToggleBookmark(post))
-                        }.takeIf { post.original.actionPermissions.canBookmark },
+                    { post: PostModel ->
+                        model.reduce(MyAccountMvi.Intent.ToggleBookmark(post))
+                    }.takeIf { post.original.actionPermissions.canBookmark },
                     onFavorite =
-                        { post: PostModel ->
-                            model.reduce(MyAccountMvi.Intent.ToggleFavorite(post))
-                        }.takeIf { post.original.actionPermissions.canFavorite },
+                    { post: PostModel ->
+                        model.reduce(MyAccountMvi.Intent.ToggleFavorite(post))
+                    }.takeIf { post.original.actionPermissions.canFavorite },
                     onDislike =
-                        { post: PostModel ->
-                            model.reduce(MyAccountMvi.Intent.ToggleDislike(post))
-                        }.takeIf { post.original.actionPermissions.canDislike },
+                    { post: PostModel ->
+                        model.reduce(MyAccountMvi.Intent.ToggleDislike(post))
+                    }.takeIf { post.original.actionPermissions.canDislike },
                     onReply =
-                        { post: PostModel ->
-                            mainRouter.openComposer(
-                                inReplyTo = post,
-                                inReplyToUser = post.creator,
-                            )
-                        }.takeIf { post.original.actionPermissions.canReply },
+                    { post: PostModel ->
+                        mainRouter.openComposer(
+                            inReplyTo = post,
+                            inReplyToUser = post.creator,
+                        )
+                    }.takeIf { post.original.actionPermissions.canReply },
                     options =
-                        buildList {
-                            if (post.original.actionPermissions.canShare) {
-                                this += OptionId.Share.toOption()
-                                this += OptionId.CopyUrl.toOption()
+                    buildList {
+                        if (post.original.actionPermissions.canShare) {
+                            this += OptionId.Share.toOption()
+                            this += OptionId.CopyUrl.toOption()
+                        }
+                        if (post.original.actionPermissions.canEdit) {
+                            this += OptionId.Edit.toOption()
+                        }
+                        if (post.original.actionPermissions.canDelete) {
+                            this += OptionId.Delete.toOption()
+                        }
+                        if (post.original.actionPermissions.canTogglePin) {
+                            if (post.pinned) {
+                                this += OptionId.Unpin.toOption()
+                            } else {
+                                this += OptionId.Pin.toOption()
                             }
-                            if (post.original.actionPermissions.canEdit) {
-                                this += OptionId.Edit.toOption()
-                            }
-                            if (post.original.actionPermissions.canDelete) {
-                                this += OptionId.Delete.toOption()
-                            }
-                            if (post.original.actionPermissions.canTogglePin) {
-                                if (post.pinned) {
-                                    this += OptionId.Unpin.toOption()
-                                } else {
-                                    this += OptionId.Pin.toOption()
-                                }
-                            }
-                            if (post.original.actionPermissions.canQuote) {
-                                this += OptionId.Quote.toOption()
-                            }
-                            this += OptionId.ViewDetails.toOption()
-                            this += OptionId.CopyToClipboard.toOption()
-                            this += OptionId.OpenInBrowser.toOption()
-                        },
+                        }
+                        if (post.original.actionPermissions.canQuote) {
+                            this += OptionId.Quote.toOption()
+                        }
+                        this += OptionId.ViewDetails.toOption()
+                        this += OptionId.CopyToClipboard.toOption()
+                        this += OptionId.OpenInBrowser.toOption()
+                    },
                     onSelectOption = { optionId ->
                         when (optionId) {
                             OptionId.Edit -> {
@@ -455,6 +457,7 @@ fun MyAccountScreen(
                             }
 
                             OptionId.Delete -> confirmDeletePostId = post.id
+
                             OptionId.Share -> {
                                 val urlString = post.url.orEmpty()
                                 shareHelper.share(urlString)
@@ -474,6 +477,7 @@ fun MyAccountScreen(
                                 )
 
                             OptionId.ViewDetails -> seeDetailsPost = post.original
+
                             OptionId.Quote -> {
                                 post.original.also { toShare ->
                                     mainRouter.openComposer(
@@ -539,9 +543,9 @@ fun MyAccountScreen(
 
         SnackbarHost(
             modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = Dimensions.floatingActionButtonBottomInset),
+            Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = Dimensions.floatingActionButtonBottomInset),
             hostState = snackbarHostState,
         ) { data ->
             Snackbar(

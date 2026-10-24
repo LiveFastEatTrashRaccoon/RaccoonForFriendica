@@ -80,96 +80,89 @@ fun ProfileScreen(
     var manageAccountsDialogOpened by remember { mutableStateOf(false) }
     var confirmDeleteAccount by remember { mutableStateOf<AccountModel?>(null) }
 
-    CompositionLocalProvider(
-        LocalProfileTopAppBarStateWrapper provides
-            object : ProfileTopAppBarStateWrapper {
-                override val topAppBarState: TopAppBarState
-                    get() = topAppBarState
-            },
-    ) {
-        Scaffold(
-            modifier = modifier,
-            topBar = {
-                TopAppBar(
-                    windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        Text(
-                            text = LocalStrings.current.sectionTitleProfile,
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    },
-                    navigationIcon = {
-                        if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        drawerCoordinator.toggleDrawer()
-                                    }
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = LocalResources.current.menu,
-                                    contentDescription = LocalStrings.current.actionOpenSideMenu,
-                                )
-                            }
-                        }
-                    },
-                    actions = {
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                windowInsets = topAppBarState.toWindowInsets().optimizedForLargeScreens(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        text = LocalStrings.current.sectionTitleProfile,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                },
+                navigationIcon = {
+                    if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
                         IconButton(
                             onClick = {
-                                manageAccountsDialogOpened = true
+                                scope.launch {
+                                    drawerCoordinator.toggleDrawer()
+                                }
                             },
                         ) {
                             Icon(
-                                imageVector = LocalResources.current.changeCircle,
-                                contentDescription = LocalStrings.current.actionSwitchAccount,
+                                imageVector = LocalResources.current.menu,
+                                contentDescription = LocalStrings.current.actionOpenSideMenu,
                             )
                         }
-                        if (uiState.currentUserId != null) {
-                            IconButton(
-                                onClick = {
-                                    confirmLogoutDialogOpened = true
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = LocalResources.current.logout,
-                                    contentDescription = LocalStrings.current.actionLogout,
-                                )
-                            }
-                        }
-                    },
-                )
-            },
-            content = { padding ->
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(padding)
-                            .then(
-                                if (uiState.hideNavigationBarWhileScrolling) {
-                                    Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                                } else {
-                                    Modifier
-                                },
-                            ),
-                ) {
-                    if (uiState.currentUserId != null) {
-                        MyAccountScreen(
-                            model = myAccountModel,
-                            lazyListState = myAccountLazyListState,
-                        )
-                    } else {
-                        LoginIntroScreen()
                     }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            manageAccountsDialogOpened = true
+                        },
+                    ) {
+                        Icon(
+                            imageVector = LocalResources.current.changeCircle,
+                            contentDescription = LocalStrings.current.actionSwitchAccount,
+                        )
+                    }
+                    if (uiState.currentUserId != null) {
+                        IconButton(
+                            onClick = {
+                                confirmLogoutDialogOpened = true
+                            },
+                        ) {
+                            Icon(
+                                imageVector = LocalResources.current.logout,
+                                contentDescription = LocalStrings.current.actionLogout,
+                            )
+                        }
+                    }
+                },
+            )
+        },
+        content = { padding ->
+            Box(
+                modifier =
+                Modifier
+                    .padding(padding)
+                    .then(
+                        if (uiState.hideNavigationBarWhileScrolling) {
+                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        },
+                    ),
+            ) {
+                if (uiState.currentUserId != null) {
+                    MyAccountScreen(
+                        model = myAccountModel,
+                        lazyListState = myAccountLazyListState,
+                        topAppBarState = topAppBarState,
+                    )
+                } else {
+                    LoginIntroScreen()
                 }
-            },
-        )
-    }
+            }
+        },
+    )
 
     if (manageAccountsDialogOpened) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
-        val  switchAccountModel: SwitchAccountMvi = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
+        val switchAccountModel: SwitchAccountMvi = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
         val dialogUiState by switchAccountModel.uiState.collectAsState()
 
         LaunchedEffect(switchAccountModel) {
@@ -197,9 +190,9 @@ fun ProfileScreen(
                         if (avatar.isNotEmpty() && uiState.autoloadImages) {
                             CustomImage(
                                 modifier =
-                                    Modifier
-                                        .size(avatarSize)
-                                        .clip(RoundedCornerShape(avatarSize / 2)),
+                                Modifier
+                                    .size(avatarSize)
+                                    .clip(RoundedCornerShape(avatarSize / 2)),
                                 url = avatar,
                                 quality = FilterQuality.Low,
                                 contentScale = ContentScale.FillBounds,
