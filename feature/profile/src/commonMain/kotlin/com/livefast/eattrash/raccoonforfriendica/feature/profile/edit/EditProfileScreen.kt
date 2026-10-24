@@ -88,10 +88,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfileScreen(modifier: Modifier = Modifier) {
-    val model: EditProfileMvi = metroViewModel<EditProfileViewModel>()
+fun EditProfileScreen(modifier: Modifier = Modifier, model: EditProfileMvi = metroViewModel<EditProfileViewModel>()) {
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -197,12 +196,12 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             this +=
                                 CustomOptions.DeleteAccount.toOption(
                                     label =
-                                        buildString {
-                                            append(LocalStrings.current.actionDeleteAccount)
-                                            append(" (")
-                                            append(LocalStrings.current.urlOpeningModeExternal)
-                                            append(")")
-                                        },
+                                    buildString {
+                                        append(LocalStrings.current.actionDeleteAccount)
+                                        append(" (")
+                                        append(LocalStrings.current.urlOpeningModeExternal)
+                                        append(")")
+                                    },
                                 )
                         }
                     if (options.isNotEmpty()) {
@@ -211,9 +210,9 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                             var optionsMenuOpen by remember { mutableStateOf(false) }
                             IconButton(
                                 modifier =
-                                    Modifier.onGloballyPositioned {
-                                        optionsOffset = it.positionInParent()
-                                    },
+                                Modifier.onGloballyPositioned {
+                                    optionsOffset = it.positionInParent()
+                                },
                                 onClick = {
                                     optionsMenuOpen = true
                                 },
@@ -230,12 +229,12 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                                     optionsMenuOpen = false
                                 },
                                 offset =
-                                    with(LocalDensity.current) {
-                                        DpOffset(
-                                            x = optionsOffset.x.toDp(),
-                                            y = optionsOffset.y.toDp(),
-                                        )
-                                    },
+                                with(LocalDensity.current) {
+                                    DpOffset(
+                                        x = optionsOffset.x.toDp(),
+                                        y = optionsOffset.y.toDp(),
+                                    )
+                                },
                             ) {
                                 for (option in options) {
                                     DropdownMenuItem(
@@ -288,16 +287,16 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
     ) { padding ->
         LazyColumn(
             modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
-                    .then(
-                        if (uiState.hideNavigationBarWhileScrolling) {
-                            Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                        } else {
-                            Modifier
-                        },
-                    ),
+            Modifier
+                .padding(padding)
+                .fillMaxWidth()
+                .then(
+                    if (uiState.hideNavigationBarWhileScrolling) {
+                        Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    } else {
+                        Modifier
+                    },
+                ),
             state = lazyListState,
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
@@ -310,28 +309,28 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             item {
                 OutlinedTextField(
                     modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.s)
-                            .fillMaxWidth()
-                            .onFocusChanged {
-                                hasDisplayNameFocus = it.hasFocus
-                            },
+                    Modifier
+                        .padding(horizontal = Spacing.s)
+                        .fillMaxWidth()
+                        .onFocusChanged {
+                            hasDisplayNameFocus = it.hasFocus
+                        },
                     label = {
                         Text(text = LocalStrings.current.editProfileItemDisplayName)
                     },
                     value = uiState.displayName,
                     maxLines = 1,
                     keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Text,
-                        ),
+                    KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Text,
+                    ),
                     keyboardActions =
-                        KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(FocusDirection.Down)
-                            },
-                        ),
+                    KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                    ),
                     onValueChange = {
                         model.reduce(EditProfileMvi.Intent.ChangeDisplayName(it))
                     },
@@ -340,28 +339,28 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
             item {
                 OutlinedTextField(
                     modifier =
-                        Modifier
-                            .padding(horizontal = Spacing.s)
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .onFocusChanged {
-                                hasBioFocus = it.hasFocus
-                            },
+                    Modifier
+                        .padding(horizontal = Spacing.s)
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .onFocusChanged {
+                            hasBioFocus = it.hasFocus
+                        },
                     label = {
                         Text(text = LocalStrings.current.editProfileItemBio)
                     },
                     value = uiState.bio,
                     keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Text,
-                        ),
+                    KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Text,
+                    ),
                     keyboardActions =
-                        KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(FocusDirection.Down)
-                            },
-                        ),
+                    KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                    ),
                     onValueChange = {
                         model.reduce(EditProfileMvi.Intent.ChangeBio(it))
                     },
@@ -379,9 +378,9 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                 SettingsImageInfo(
                     title = LocalStrings.current.editProfileItemAvatar,
                     imageModifier =
-                        Modifier
-                            .size(avatarSize)
-                            .clip(RoundedCornerShape(avatarSize / 2)),
+                    Modifier
+                        .size(avatarSize)
+                        .clip(RoundedCornerShape(avatarSize / 2)),
                     url = uiState.avatar,
                     autoloadImages = uiState.autoloadImages,
                     bytes = uiState.avatarBytes,
@@ -499,7 +498,7 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                         value = uiState.quotePolicy?.toReadableName().orEmpty(),
                         onTap = {
                             quotePolicyBottomSheetOpen = true
-                        }
+                        },
                     )
                 }
             }
@@ -541,10 +540,10 @@ fun EditProfileScreen(modifier: Modifier = Modifier) {
                 model.reduce(
                     EditProfileMvi.Intent.InsertCustomEmoji(
                         fieldType =
-                            when {
-                                hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
-                                else -> EditProfilerFieldType.Bio
-                            },
+                        when {
+                            hasDisplayNameFocus -> EditProfilerFieldType.DisplayName
+                            else -> EditProfilerFieldType.Bio
+                        },
                         emoji = emoji,
                     ),
                 )

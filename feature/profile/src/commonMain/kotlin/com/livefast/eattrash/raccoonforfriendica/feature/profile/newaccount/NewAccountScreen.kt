@@ -60,9 +60,9 @@ fun NewAccountScreen(modifier: Modifier = Modifier) {
     ) { padding ->
         Box(
             modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxWidth(),
+            Modifier
+                .padding(padding)
+                .fillMaxWidth(),
         ) {
             LoginIntroScreen()
         }

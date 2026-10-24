@@ -58,7 +58,7 @@ interface EditProfileMvi : Mvi<EditProfileMvi.Intent, EditProfileMvi.State, Edit
 
         data object DeleteAccount : Intent
 
-        data class ChangeQuotePolicy(val policy: QuotePolicy)  : Intent
+        data class ChangeQuotePolicy(val policy: QuotePolicy) : Intent
 
         data object Submit : Intent
     }
@@ -138,7 +138,6 @@ interface EditProfileMvi : Mvi<EditProfileMvi.Intent, EditProfileMvi.State, Edit
             result = 31 * result + availableEmojis.hashCode()
             return result
         }
-
     }
 
     sealed interface Effect {

@@ -18,9 +18,8 @@ import kotlinx.coroutines.launch
     binding = binding<@ViewModelKey ViewModel>(),
 )
 @Inject
-class DeleteAccountViewModel(
-    private val deleteAccountUseCase: DeleteAccountUseCase,
-) : ViewModel(),
+class DeleteAccountViewModel(private val deleteAccountUseCase: DeleteAccountUseCase) :
+    ViewModel(),
     MviDelegate<DeleteAccountMvi.Intent, DeleteAccountMvi.State, DeleteAccountMvi.Effect>
     by DefaultMviDelegate(initialState = DeleteAccountMvi.State()),
     DeleteAccountMvi {

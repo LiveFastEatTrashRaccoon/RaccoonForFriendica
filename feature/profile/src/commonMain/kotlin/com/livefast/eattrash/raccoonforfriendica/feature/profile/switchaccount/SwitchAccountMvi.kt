@@ -11,10 +11,7 @@ interface SwitchAccountMvi : Mvi<SwitchAccountMvi.Intent, SwitchAccountMvi.State
         data object AddAccount : Intent
     }
 
-    data class State(
-        val currentUserId: String? = null,
-        val availableAccounts: List<AccountModel> = emptyList(),
-    )
+    data class State(val currentUserId: String? = null, val availableAccounts: List<AccountModel> = emptyList())
 
     sealed interface Effect {
         data object AccountChangeSuccess : Effect
