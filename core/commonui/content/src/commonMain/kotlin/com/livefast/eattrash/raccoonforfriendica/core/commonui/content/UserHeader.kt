@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,12 +27,14 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.isWidthSizeClassEqualOrAbove
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
@@ -62,6 +65,8 @@ fun UserHeader(
     val relationshipStatus = user?.relationshipStatus
     val notificationStatus = user?.notificationStatus
     val isDesktop = isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)
+    val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -71,22 +76,34 @@ fun UserHeader(
             modifier = Modifier.widthIn(max = 1000.dp),
         ) {
             Box {
-                CustomImage(
-                    modifier =
-                    Modifier
-                        .padding(bottom = avatarSize * 0.8f)
-                        .aspectRatio(if (isDesktop) 4f else 16 / 9f)
-                        .then(
-                            if (banner.isNotBlank() && onOpenImage != null) {
-                                Modifier.clickable { onOpenImage(banner) }
-                            } else {
-                                Modifier
-                            },
-                        ),
-                    url = banner,
-                    autoload = autoloadImages,
-                    contentScale = ContentScale.Crop,
-                )
+                with(sharedTransitionScope) {
+                    CustomImage(
+                        modifier =
+                        Modifier
+                            .padding(bottom = avatarSize * 0.8f)
+                            .aspectRatio(if (isDesktop) 4f else 16 / 9f)
+                            .then(
+                                if (banner.isNotBlank()) {
+                                    Modifier.sharedElement(
+                                        sharedContentState = rememberSharedContentState(key = banner),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    )
+                                } else {
+                                    Modifier
+                                },
+                            )
+                            .then(
+                                if (banner.isNotBlank() && onOpenImage != null) {
+                                    Modifier.clickable { onOpenImage(banner) }
+                                } else {
+                                    Modifier
+                                },
+                            ),
+                        url = banner,
+                        autoload = autoloadImages,
+                        contentScale = ContentScale.Crop,
+                    )
+                }
 
                 Row(
                     modifier =
@@ -98,22 +115,25 @@ fun UserHeader(
                     verticalAlignment = Alignment.Bottom,
                 ) {
                     if (avatar.isNotEmpty() && autoloadImages) {
-                        CustomImage(
-                            modifier =
-                            Modifier
-                                .size(avatarSize)
-                                .clip(RoundedCornerShape(avatarSize / 2))
-                                .then(
-                                    if (onOpenImage != null) {
-                                        Modifier.clickable { onOpenImage(avatar) }
-                                    } else {
-                                        Modifier
-                                    },
-                                ),
-                            url = avatar,
-                            quality = FilterQuality.Low,
-                            contentScale = ContentScale.Crop,
-                        )
+                        with(sharedTransitionScope) {
+                            CustomImage(
+                                modifier =
+                                Modifier
+                                    .size(avatarSize)
+                                    .sharedBounds(
+                                        sharedContentState = rememberSharedContentState(key = avatar),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                                    )
+                                    .clip(RoundedCornerShape(avatarSize / 2))
+                                    .then(
+                                        onOpenImage?.let { Modifier.clickable { it(avatar) } } ?: Modifier,
+                                    ),
+                                url = avatar,
+                                quality = FilterQuality.Low,
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
                     } else {
                         PlaceholderImage(
                             size = avatarSize,
@@ -139,7 +159,7 @@ fun UserHeader(
                                     .clip(RoundedCornerShape(CornerSize.xl))
                                     .then(
                                         if (followers > 0 && onOpenFollowers != null) {
-                                            Modifier.clickable { onOpenFollowers() }
+                                            Modifier.clickable(onClick = onOpenFollowers)
                                         } else {
                                             Modifier
                                         },
@@ -159,7 +179,7 @@ fun UserHeader(
                                     .clip(RoundedCornerShape(CornerSize.xl))
                                     .then(
                                         if (following > 0 && onOpenFollowing != null) {
-                                            Modifier.clickable { onOpenFollowing() }
+                                            Modifier.clickable(onClick = onOpenFollowing)
                                         } else {
                                             Modifier
                                         },

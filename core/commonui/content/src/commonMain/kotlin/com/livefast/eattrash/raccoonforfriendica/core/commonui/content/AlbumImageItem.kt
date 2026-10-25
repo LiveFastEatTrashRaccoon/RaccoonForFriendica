@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,12 +45,14 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AttachmentModel
@@ -62,7 +65,7 @@ fun AlbumImageItem(
     autoload: Boolean = true,
     minHeight: Dp = 50.dp,
     maxHeight: Dp = Dp.Unspecified,
-    onClick: (() -> Unit)? = null,
+    onOpen: (() -> Unit)? = null,
     options: List<Option> = emptyList(),
     onSelectOption: ((OptionId) -> Unit)? = null,
 ) {
@@ -71,6 +74,8 @@ fun AlbumImageItem(
     val additionalOffset = with(LocalDensity.current) { Spacing.xl.toPx().roundToInt() }
     var optionsOffset by remember { mutableStateOf(Offset.Zero) }
     var optionsMenuOpen by remember { mutableStateOf(false) }
+    val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
     val iconModifier =
         Modifier
             .border(
@@ -86,20 +91,27 @@ fun AlbumImageItem(
             .fillMaxWidth()
             .heightIn(min = minHeight, max = maxHeight),
     ) {
-        CustomImage(
-            modifier =
-            Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(CornerSize.xl))
-                .clickable {
-                    onClick?.invoke()
-                },
-            url = attachment.thumbnail ?: attachment.url,
-            autoload = autoload,
-            contentDescription = attachment.description,
-            quality = FilterQuality.Low,
-            contentScale = ContentScale.FillWidth,
-        )
+        with(sharedTransitionScope) {
+            CustomImage(
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .sharedBounds(
+                        sharedContentState = rememberSharedContentState(
+                            key = attachment.thumbnail ?: attachment.url,
+                        ),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                    )
+                    .clip(RoundedCornerShape(CornerSize.xl))
+                    .then(onOpen?.let { Modifier.clickable(onClick = it) } ?: Modifier),
+                url = attachment.thumbnail ?: attachment.url,
+                autoload = autoload,
+                contentDescription = attachment.description,
+                quality = FilterQuality.Low,
+                contentScale = ContentScale.FillWidth,
+            )
+        }
 
         if (options.isNotEmpty()) {
             Box(
