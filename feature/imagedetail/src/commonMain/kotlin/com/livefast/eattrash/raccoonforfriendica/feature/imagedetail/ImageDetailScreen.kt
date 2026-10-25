@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.imagedetail
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheet
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomModalBottomSheetItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.ProgressHud
@@ -61,6 +63,8 @@ fun ImageDetailScreen(
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val canPopState by navigationCoordinator.canPop.collectAsState()
     val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
+    val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
     val pagerState =
         rememberPagerState(
             initialPage = initialIndex,
@@ -199,10 +203,23 @@ fun ImageDetailScreen(
                                 muted = false,
                             )
                         } else {
-                            ZoomableImage(
-                                url = url,
-                                contentScale = uiState.contentScale,
-                            )
+                            with(sharedTransitionScope) {
+                                ZoomableImage(
+                                    modifier = Modifier.then(
+                                        if (urls.size == 1) {
+                                            Modifier.sharedBounds(
+                                                sharedContentState = rememberSharedContentState(key = urls.first()),
+                                                animatedVisibilityScope = animatedVisibilityScope,
+                                                resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                                            )
+                                        } else {
+                                            Modifier
+                                        },
+                                    ),
+                                    url = url,
+                                    contentScale = uiState.contentScale,
+                                )
+                            }
                         }
                     }
                 }
