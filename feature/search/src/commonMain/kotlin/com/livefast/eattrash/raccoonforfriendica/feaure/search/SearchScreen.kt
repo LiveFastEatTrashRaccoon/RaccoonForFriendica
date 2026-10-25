@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -93,12 +95,15 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
     val uriHandler = LocalUriHandler.current
     val mainRouter = LocalUiDeps.current.mainRouter
     val lazyListState = rememberLazyListState()
+    val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
     val searchFieldFocusRequester = remember { FocusRequester() }
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
     val clipboardHelper = LocalUiDeps.current.getClipboardHelper(LocalClipboard.current)
+    val isScrollInProgress = lazyListState.isScrollInProgress
+    var firstOpening by rememberSaveable { mutableStateOf(true) }
     var confirmUnfollowDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeleteFollowRequestDialogUserId by remember { mutableStateOf<String?>(null) }
     var confirmDeletePostId by remember { mutableStateOf<String?>(null) }
@@ -135,8 +140,16 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                 }
             }.launchIn(this)
     }
-    LaunchedEffect(Unit) {
-        searchFieldFocusRequester.requestFocus()
+    LaunchedEffect(firstOpening) {
+        if (firstOpening) {
+            searchFieldFocusRequester.requestFocus()
+            firstOpening = false
+        }
+    }
+    LaunchedEffect(isScrollInProgress) {
+        if (isScrollInProgress) {
+            focusManager.clearFocus()
+        }
     }
 
     Scaffold(
