@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -19,6 +20,10 @@ interface NavigationCoordinator {
     fun setupRootNavigationAdapter(backStack: NavBackStack<NavKey>)
 
     fun setupBottomNavigationAdapter(backStack: NavBackStack<NavKey>)
+
+    fun getSharedTransitionScope(): SharedTransitionScope
+
+    fun setSharedTransitionScope(scope: SharedTransitionScope)
 
     fun setCurrentSection(section: BottomNavigationSection)
 

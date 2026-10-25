@@ -406,10 +406,8 @@ private fun ContactUserItem(
     ) {
         Row(
             modifier =
-            Modifier
-                .clickable {
-                    onClick?.invoke()
-                }.padding(
+            Modifier.then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
+                .padding(
                     start = Spacing.m,
                     end = Spacing.s,
                     top = Spacing.s,

@@ -49,25 +49,25 @@ fun ContentVideo(
                     .blur(radius = if (sensitive) 60.dp else 0.dp),
                 url = url,
             )
-            FilledIconButton(
-                colors =
-                IconButtonDefaults.filledIconButtonColors().copy(
-                    containerColor = MaterialTheme.colorScheme.onBackground,
-                ),
-                modifier =
-                Modifier
-                    .align(Alignment.Center)
-                    .padding(
-                        start = Spacing.xs,
+            if (onClick != null) {
+                FilledIconButton(
+                    colors =
+                    IconButtonDefaults.filledIconButtonColors().copy(
+                        containerColor = MaterialTheme.colorScheme.onBackground,
                     ),
-                onClick = {
-                    onClick?.invoke()
-                },
-            ) {
-                Icon(
-                    imageVector = LocalResources.current.playCircle,
-                    contentDescription = LocalStrings.current.actionOpenFullScreen,
-                )
+                    modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(
+                            start = Spacing.xs,
+                        ),
+                    onClick = onClick,
+                ) {
+                    Icon(
+                        imageVector = LocalResources.current.playCircle,
+                        contentDescription = LocalStrings.current.actionOpenFullScreen,
+                    )
+                }
             }
         } else {
             Box(

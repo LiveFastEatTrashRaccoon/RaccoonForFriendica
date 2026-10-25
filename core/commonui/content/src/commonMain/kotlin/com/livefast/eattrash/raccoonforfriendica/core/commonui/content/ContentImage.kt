@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,9 +36,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import kotlin.math.roundToInt
@@ -56,13 +59,15 @@ fun ContentImage(
     maxHeight: Dp = 200.dp,
     cornerSize: Dp = CornerSize.xl,
     contentScale: ContentScale = ContentScale.FillWidth,
-    onClick: (() -> Unit)? = null,
+    onOpen: (() -> Unit)? = null,
     centerComposable: (@Composable () -> Unit) = {},
 ) {
     var revealing by remember { mutableStateOf(!sensitive) }
     var showingAltText by remember { mutableStateOf(false) }
     var popupOffset by remember { mutableStateOf(Offset.Zero) }
     val additionalOffset = with(LocalDensity.current) { Spacing.xl.toPx().roundToInt() }
+    val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
     var hasFinishedLoadingSuccessfully by remember { mutableStateOf(false) }
 
     Box(
@@ -75,9 +80,7 @@ fun ContentImage(
                 Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(cornerSize))
-                    .clickable {
-                        onClick?.invoke()
-                    },
+                    .then(onOpen?.let { Modifier.clickable(onClick = it) } ?: Modifier),
                 originalWidth = originalWidth,
                 originalHeight = originalHeight,
                 blurHash = blurHash,
@@ -85,24 +88,28 @@ fun ContentImage(
             )
         }
 
-        CustomImage(
-            modifier =
-            Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(cornerSize))
-                .clickable {
-                    onClick?.invoke()
+        with(sharedTransitionScope) {
+            CustomImage(
+                modifier =
+                Modifier
+                    .fillMaxSize()
+                    .sharedBounds(
+                        sharedContentState = rememberSharedContentState(key = url),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                    ).clip(RoundedCornerShape(cornerSize))
+                    .then(onOpen?.let { Modifier.clickable(onClick = it) } ?: Modifier),
+                url = url,
+                autoload = autoload,
+                contentDescription = contentDescription,
+                quality = FilterQuality.None,
+                blurred = !revealing,
+                contentScale = contentScale,
+                onSuccess = {
+                    hasFinishedLoadingSuccessfully = true
                 },
-            url = url,
-            autoload = autoload,
-            contentDescription = contentDescription,
-            quality = FilterQuality.None,
-            blurred = !revealing,
-            contentScale = contentScale,
-            onSuccess = {
-                hasFinishedLoadingSuccessfully = true
-            },
-        )
+            )
+        }
 
         Box(
             modifier = Modifier.align(Alignment.Center),

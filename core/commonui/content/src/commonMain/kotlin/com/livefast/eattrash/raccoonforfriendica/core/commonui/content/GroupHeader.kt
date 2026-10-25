@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +22,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
@@ -49,7 +52,8 @@ fun GroupHeader(
     val fullColor = MaterialTheme.colorScheme.onBackground
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
     val relationshipStatus = user?.relationshipStatus
-    val notificationStatus = user?.notificationStatus
+    val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
 
     Column(
         modifier = modifier
@@ -63,22 +67,23 @@ fun GroupHeader(
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         ) {
             if (avatar.isNotEmpty() && autoloadImages) {
-                CustomImage(
-                    modifier =
-                    Modifier
-                        .size(avatarSize)
-                        .clip(RoundedCornerShape(avatarSize / 2))
-                        .then(
-                            if (onOpenImage != null) {
-                                Modifier.clickable { onOpenImage(avatar) }
-                            } else {
-                                Modifier
-                            },
-                        ),
-                    url = avatar,
-                    quality = FilterQuality.Low,
-                    contentScale = ContentScale.Crop,
-                )
+                with(sharedTransitionScope) {
+                    CustomImage(
+                        modifier =
+                        Modifier
+                            .size(avatarSize)
+                            .sharedBounds(
+                                sharedContentState = rememberSharedContentState(key = avatar),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                            )
+                            .clip(RoundedCornerShape(avatarSize / 2))
+                            .then(onOpenImage?.let { Modifier.clickable(onClick = { it(avatar) }) } ?: Modifier),
+                        url = avatar,
+                        quality = FilterQuality.Low,
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             } else {
                 PlaceholderImage(
                     size = avatarSize,
@@ -114,7 +119,7 @@ fun GroupHeader(
                         .clip(RoundedCornerShape(CornerSize.s))
                         .then(
                             if (followers > 0 && onOpenFollowers != null) {
-                                Modifier.clickable { onOpenFollowers() }
+                                Modifier.clickable(onClick = onOpenFollowers)
                             } else {
                                 Modifier
                             },

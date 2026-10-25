@@ -37,15 +37,8 @@ internal fun AcknowledgementItem(
         modifier
             .clip(
                 shape = RoundedCornerShape(CornerSize.xl),
-            ).then(
-                if (onClick != null) {
-                    Modifier.clickable {
-                        onClick()
-                    }
-                } else {
-                    Modifier
-                },
-            ).padding(
+            ).then(onClick?.let { Modifier.clickable(onClick = onClick) } ?: Modifier)
+            .padding(
                 vertical = Spacing.xs,
                 horizontal = Spacing.s,
             ),

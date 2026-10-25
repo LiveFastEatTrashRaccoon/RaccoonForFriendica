@@ -45,13 +45,7 @@ fun SettingsImageInfo(
             .clip(
                 shape = RoundedCornerShape(CornerSize.xl),
             ).then(
-                if (onEdit != null) {
-                    Modifier.clickable {
-                        onEdit.invoke()
-                    }
-                } else {
-                    Modifier
-                },
+                onEdit?.let { Modifier.clickable(onClick = onEdit) } ?: Modifier,
             ).padding(
                 vertical = Spacing.xs,
                 horizontal = Spacing.m,

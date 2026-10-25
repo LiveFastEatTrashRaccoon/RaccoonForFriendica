@@ -62,13 +62,15 @@ fun UserItem(
 
     Row(
         modifier =
-        modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick?.invoke()
-            }.padding(Spacing.s),
+        modifier.then(
+            onClick?.let {
+                Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = it,
+                )
+            } ?: Modifier,
+        ),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -100,9 +102,7 @@ fun UserItem(
                 overflow = TextOverflow.Ellipsis,
                 emojis = user.emojis,
                 autoloadImages = autoloadImages,
-                onClick = {
-                    onClick?.invoke()
-                },
+                onClick = onClick,
             )
             if (withSubtitle) {
                 Text(

@@ -187,15 +187,18 @@ private fun UserResultItem(
         modifier
             .clip(
                 shape = RoundedCornerShape(CornerSize.xxl),
-            ).clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication =
-                ripple(
-                    color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
-                ),
-            ) {
-                onClick?.invoke()
-            }.padding(Spacing.s),
+            ).then(
+                onClick?.let {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication =
+                        ripple(
+                            color = MaterialTheme.colorScheme.onBackground.copy(0.5f),
+                        ),
+                        onClick = it,
+                    )
+                } ?: Modifier,
+            ).padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -228,9 +231,7 @@ private fun UserResultItem(
                 overflow = TextOverflow.Ellipsis,
                 emojis = user.emojis,
                 autoloadImages = autoloadImages,
-                onClick = {
-                    onClick?.invoke()
-                },
+                onClick = onClick,
             )
             Text(
                 text = user.handle ?: "",

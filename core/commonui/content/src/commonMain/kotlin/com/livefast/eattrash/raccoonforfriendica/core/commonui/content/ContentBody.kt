@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.EmojiModel
 
@@ -38,6 +41,8 @@ fun ContentBody(
     onOpenUrl: ((String) -> Unit)? = null,
 ) {
     val chunks = remember(content) { content.splitTextAndImages() }
+    val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
     // track the line count and truncation state for each chunk, using chunk indices as keys
     val lineCounts = remember(content, maxLines) { mutableStateMapOf<Int, Int>() }
     val isTruncated = remember(content, maxLines) { mutableStateMapOf<Int, Boolean>() }
@@ -49,18 +54,27 @@ fun ContentBody(
                 if (IMAGE_REGEX.matches(chunk)) {
                     if (maxLines == Int.MAX_VALUE || linesUsedSoFar < maxLines) {
                         extractImageData(chunk)?.also { data ->
-                            CustomImage(
-                                modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(vertical = Spacing.s)
-                                    .clip(RoundedCornerShape(CornerSize.xl))
-                                    .clickable {
-                                        onOpenImage?.invoke(data.url)
-                                    },
-                                url = data.url,
-                                contentDescription = data.description,
-                            )
+                            with(sharedTransitionScope) {
+                                CustomImage(
+                                    modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(vertical = Spacing.s)
+                                        .sharedBounds(
+                                            sharedContentState = rememberSharedContentState(key = data.url),
+                                            animatedVisibilityScope = animatedVisibilityScope,
+                                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                                        )
+                                        .clip(RoundedCornerShape(CornerSize.xl))
+                                        .then(
+                                            onOpenImage?.let {
+                                                Modifier.clickable { it(data.url) }
+                                            } ?: Modifier,
+                                        ),
+                                    url = data.url,
+                                    contentDescription = data.description,
+                                )
+                            }
                         }
                     } else {
                         return@forEachIndexed
@@ -91,9 +105,7 @@ fun ContentBody(
                             onOpenUrl = { url ->
                                 onOpenUrl?.invoke(url)
                             },
-                            onClick = {
-                                onClick?.invoke()
-                            },
+                            onClick = onClick,
                         )
 
                         val usedInThisChunk = lineCounts[index] ?: 0

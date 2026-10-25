@@ -251,9 +251,7 @@ private fun PlatformHeader(
                 Modifier
                     .padding(end = Spacing.xs)
                     .clip(CircleShape)
-                    .clickable {
-                        onClickInfo()
-                    },
+                    .clickable(onClick = onClickInfo),
                 imageVector = LocalResources.current.info,
                 contentDescription = LocalStrings.current.moreInfo,
             )

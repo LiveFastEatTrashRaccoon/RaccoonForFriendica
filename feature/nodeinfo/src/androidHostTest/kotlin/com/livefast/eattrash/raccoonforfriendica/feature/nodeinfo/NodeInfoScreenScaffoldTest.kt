@@ -1,5 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
@@ -8,6 +11,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.DummyUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.ProvideAppCompositionLocals
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.UiDeps
@@ -35,6 +39,7 @@ class NodeInfoScreenScaffoldTest {
     private val navigationCoordinator =
         mock<NavigationCoordinator> {
             every { canPop } returns MutableStateFlow(true)
+            every { getSharedTransitionScope() } returns mock(mode = MockMode.autoUnit)
         }
     private val mainRouter = mock<MainRouter>(MockMode.autoUnit)
     private val uiDeps: UiDeps =
@@ -149,7 +154,15 @@ class NodeInfoScreenScaffoldTest {
                 uiDeps = uiDeps,
                 uriHandler = uriHandler,
             ) {
-                NodeInfoScreenScaffold(state)
+                AnimatedContent(targetState = true, label = "test_animated_content_scope") { visible ->
+                    if (visible) {
+                        CompositionLocalProvider(
+                            LocalNavAnimatedContentScope provides this,
+                        ) {
+                            NodeInfoScreenScaffold(state)
+                        }
+                    }
+                }
             }
         }
     }

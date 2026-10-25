@@ -52,12 +52,15 @@ fun CalendarRow(
         modifier =
         modifier
             .padding(bottom = Spacing.xxs)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick?.invoke()
-            },
+            .then(
+                onClick?.let {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = it,
+                    )
+                } ?: Modifier,
+            ),
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         Row(
@@ -68,9 +71,7 @@ fun CalendarRow(
                 content = event.title,
                 onOpenUrl = onOpenUrl?.let { block -> { url -> block(url, true) } },
                 maxLines = 5,
-                onClick = {
-                    onClick?.invoke()
-                },
+                onClick = onClick,
             )
 
             if (options.isNotEmpty()) {

@@ -47,9 +47,8 @@ internal fun FollowedHashtagsInfo(
                 modifier =
                 Modifier
                     .clip(RoundedCornerShape(CornerSize.l))
-                    .clickable {
-                        onOpenTag?.invoke(tag)
-                    }.padding(vertical = Spacing.xxs, horizontal = Spacing.xs),
+                    .then(onOpenTag?.let { Modifier.clickable { it(tag) } } ?: Modifier)
+                    .padding(vertical = Spacing.xxs, horizontal = Spacing.xs),
                 text =
                 buildString {
                     append(tag.name)

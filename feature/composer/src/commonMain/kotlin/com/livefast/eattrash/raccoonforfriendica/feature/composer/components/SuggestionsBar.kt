@@ -53,9 +53,8 @@ internal fun SuggestionsBar(
                 Text(
                     modifier =
                     Modifier
-                        .clickable {
-                            onSelect?.invoke(idx)
-                        }.padding(Spacing.s),
+                        .then(onSelect?.let { Modifier.clickable { it(idx) } } ?: Modifier)
+                        .padding(Spacing.s),
                     text = title,
                     style = MaterialTheme.typography.labelMedium,
                     color = fullColor,

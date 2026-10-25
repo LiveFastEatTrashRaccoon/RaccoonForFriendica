@@ -321,9 +321,9 @@ internal fun CompactTimelineItem(
                                 color = ancillaryColor,
                                 shape = RoundedCornerShape(CornerSize.xl),
                             ).padding(vertical = Spacing.xxs)
-                            .clickable {
-                                onOpenQuote?.invoke(post)
-                            },
+                            .then(
+                                onOpenQuote?.let { Modifier.clickable { it(post) } } ?: Modifier,
+                            ),
                         post = post,
                         actionsEnabled = false,
                         autoloadImages = autoloadImages,

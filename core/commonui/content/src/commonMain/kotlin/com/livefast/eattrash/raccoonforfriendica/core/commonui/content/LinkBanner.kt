@@ -30,9 +30,8 @@ fun LinkBanner(url: String, modifier: Modifier = Modifier, onClick: (() -> Unit)
                     shape = RoundedCornerShape(CornerSize.l),
                 ).clip(
                     RoundedCornerShape(CornerSize.l),
-                ).clickable {
-                    onClick?.invoke()
-                }.padding(
+                ).then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
+                .padding(
                     horizontal = Spacing.m,
                     vertical = Spacing.s,
                 ),

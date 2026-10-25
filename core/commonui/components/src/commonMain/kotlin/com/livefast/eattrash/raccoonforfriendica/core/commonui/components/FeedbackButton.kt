@@ -24,8 +24,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 @Composable
 fun FeedbackButton(
     imageVector: ImageVector,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     tintColor: Color = MaterialTheme.colorScheme.onBackground,
     contentDescription: String? = null,
@@ -49,7 +49,7 @@ fun FeedbackButton(
                                 zoomed = false
                             },
                             onTap = {
-                                onClick()
+                                onClick?.invoke()
                             },
                         )
                     }

@@ -52,12 +52,15 @@ fun FollowRequestItem(
     Column(
         modifier =
         modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick?.invoke()
-            }.padding(Spacing.s),
+            .then(
+                onClick?.let {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = it,
+                    )
+                } ?: Modifier,
+            ).padding(Spacing.s),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Row(

@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,11 +27,13 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
+import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
@@ -58,6 +61,8 @@ fun ContentPreview(
     val cornerSize = CornerSize.xl
     val contentPadding = 12.dp
     val isDesktop = isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)
+    val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
+    val animatedVisibilityScope = LocalNavAnimatedContentScope.current
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         if (hasMediaInfo || hasTextualInfo) {
@@ -90,23 +95,27 @@ fun ContentPreview(
                             max = if (isDesktop) 400.dp else 200.dp,
                         ),
                     ) {
-                        CustomImage(
-                            modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .clip(
-                                    RoundedCornerShape(
-                                        topStart = cornerSize,
-                                        topEnd = cornerSize,
-                                    ),
-                                ).clickable {
-                                    onOpenImage?.invoke(image)
-                                },
-                            url = image,
-                            contentDescription = LocalStrings.current.previewImage,
-                            quality = FilterQuality.Low,
-                            contentScale = if (isDesktop) ContentScale.Crop else ContentScale.FillWidth,
-                        )
+                        with(sharedTransitionScope) {
+                            CustomImage(
+                                modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .sharedBounds(
+                                        sharedContentState = rememberSharedContentState(key = image),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                        resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(),
+                                    ).clip(
+                                        RoundedCornerShape(
+                                            topStart = cornerSize,
+                                            topEnd = cornerSize,
+                                        ),
+                                    ).then(onOpenImage?.let { Modifier.clickable { it(image) } } ?: Modifier),
+                                url = image,
+                                contentDescription = LocalStrings.current.previewImage,
+                                quality = FilterQuality.Low,
+                                contentScale = if (isDesktop) ContentScale.Crop else ContentScale.FillWidth,
+                            )
+                        }
                     }
                 } else if (type == PreviewType.Video && url.isNotBlank() && autoloadImages) {
                     Box(

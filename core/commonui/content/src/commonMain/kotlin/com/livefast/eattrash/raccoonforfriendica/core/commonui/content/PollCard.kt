@@ -176,12 +176,8 @@ private fun PollCardOption(
                 },
             ).clip(shape)
             .then(
-                if (enabled) {
-                    Modifier.clickable {
-                        if (reactToClickEnabled) {
-                            onVote?.invoke()
-                        }
-                    }
+                if (enabled && reactToClickEnabled && onVote != null) {
+                    Modifier.clickable(onClick = onVote)
                 } else {
                     Modifier
                 },
