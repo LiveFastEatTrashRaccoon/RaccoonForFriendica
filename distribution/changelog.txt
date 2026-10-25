@@ -1,9 +1,10 @@
 ## What's Changed
 
-- fix(post-detail): missing actions in ancestors when opening from inbox
-- fix(timeline, post-detail): incorrect reblog count when toggling boost
-- refactor(data): rename timeline entries to posts
-- refactor(di): remove assisted parameter wrappers
-- chore(deps): update dependencies (Sentry, kotlinx-serialization-json)
+- fix(search): close keyboard on scroll and do not reopen it when navigating back to search
+- fix(image-detail): enable pan to zoom by default
+- feat(navigation): add shared element transitions for image opening
+- enhancement(ui): remove empty click handlers for better accessibility
+- refactor(ui): remove use of composition locals for font scaling and profile top bar state
+- chore: adopt a single video player icon and switch to filled variant for better visibility
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.5...1.1.6
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.6...1.1.7

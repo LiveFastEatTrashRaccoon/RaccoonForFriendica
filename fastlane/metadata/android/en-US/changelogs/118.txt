@@ -1,0 +1,6 @@
+- fix: close keyboard on scroll in search screen and do not reopen it when navigating back to search
+- fix: enable pan to zoom by default
+- feat: add shared element transitions for image opening
+- enhancement: remove empty click handlers for better accessibility
+- refactor: remove use of composition locals (e.g. for custom font scaling)
+- chore: adopt a single video player icon and switch to filled variant for better visibility

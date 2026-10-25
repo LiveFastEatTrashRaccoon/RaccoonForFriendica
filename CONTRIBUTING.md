@@ -75,6 +75,7 @@ In order to create version `α.β.γ`
     - to update the version comparison for GitHub diff view
 - [ ] create a file called `ε.txt` under `fastlane/metadata/android/en-US/changelogs/` with the
   changes you want to display on the stores (remember: 500-character limit)
+- [ ] update "Play Store badge" in `README.md`
 - [ ] add everything to stage and create a commit with the message "version α.β.γ"
 - [ ] tag the commit with the label "α.β.γ"
 - [ ] push both the commit and tag to `origin` and wait for the workflows to finish
