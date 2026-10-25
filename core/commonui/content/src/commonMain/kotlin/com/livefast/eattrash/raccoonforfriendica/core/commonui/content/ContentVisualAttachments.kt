@@ -177,7 +177,7 @@ private fun AttachmentElement(
                 sensitive = blurNsfw && sensitive,
                 autoload = autoload,
                 contentScale = contentScale,
-                onClick = onClick,
+                onOpen = onClick,
             )
         }
 

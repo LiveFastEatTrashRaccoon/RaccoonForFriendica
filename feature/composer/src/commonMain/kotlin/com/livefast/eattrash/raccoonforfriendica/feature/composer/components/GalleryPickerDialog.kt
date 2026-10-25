@@ -244,7 +244,7 @@ fun GalleryPickerDialog(
                             AlbumImageItem(
                                 attachment = attachment,
                                 autoload = autoloadImages,
-                                onClick = {
+                                onOpen = {
                                     if (selectionIndex >= 0) {
                                         selection -= attachment
                                     } else {

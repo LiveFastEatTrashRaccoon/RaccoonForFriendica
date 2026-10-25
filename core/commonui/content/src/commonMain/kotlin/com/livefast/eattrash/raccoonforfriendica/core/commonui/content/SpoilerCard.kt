@@ -55,12 +55,15 @@ fun SpoilerCard(
                 color = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
                 shape = RoundedCornerShape(CornerSize.l),
             ).clip(RoundedCornerShape(CornerSize.l))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick?.invoke()
-            },
+            .then(
+                onClick?.let {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = it,
+                    )
+                } ?: Modifier,
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
@@ -83,9 +86,7 @@ fun SpoilerCard(
                 style = MaterialTheme.typography.titleMedium.copy(color = fullColor),
                 text = annotatedContent,
                 autoloadImages = autoloadImages,
-                onClick = {
-                    onClick?.invoke()
-                },
+                onClick = onClick,
             )
             Text(
                 text =

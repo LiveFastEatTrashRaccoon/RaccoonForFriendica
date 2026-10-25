@@ -239,12 +239,16 @@ private fun AboutItem(
             .padding(
                 horizontal = Spacing.xs,
                 vertical = Spacing.s,
-            ).clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick?.invoke()
-            },
+            )
+            .then(
+                onClick?.let {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = it,
+                    )
+                } ?: Modifier,
+            ),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {

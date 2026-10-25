@@ -24,14 +24,12 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 internal fun RowScope.BottomNavigationItem(
     section: BottomNavigationSection,
     selected: Boolean = false,
-    onClick: (() -> Unit)? = null,
+    onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     NavigationBarItem(
-        onClick = {
-            onClick?.invoke()
-        },
+        onClick = onClick,
         selected = selected,
         interactionSource = interactionSource,
         icon = {

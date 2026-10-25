@@ -53,13 +53,15 @@ internal fun MediaAlbumItem(
 
     Row(
         modifier =
-        modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-            ) {
-                onClick?.invoke()
-            }.padding(Spacing.s),
+        modifier.then(
+            onClick?.let {
+                Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = it,
+                )
+            } ?: Modifier,
+        ).padding(Spacing.s),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {

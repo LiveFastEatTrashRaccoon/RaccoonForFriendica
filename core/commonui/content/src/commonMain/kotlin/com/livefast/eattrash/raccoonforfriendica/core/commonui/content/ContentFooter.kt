@@ -224,10 +224,7 @@ private fun FooterItem(
     ) {
         Row(
             modifier =
-            Modifier
-                .clickable {
-                    onClick?.invoke()
-                },
+            Modifier.then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -251,9 +248,7 @@ private fun FooterItem(
                     contentDescription = contentDescription,
                     tintColor = toggledColor.takeIf { toggled } ?: fullColor,
                     enabled = onClick != null,
-                    onClick = {
-                        onClick?.invoke()
-                    },
+                    onClick = onClick,
                 )
             }
             Text(

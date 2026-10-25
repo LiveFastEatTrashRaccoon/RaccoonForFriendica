@@ -133,9 +133,7 @@ fun InsertEmojiBottomSheet(
                             Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(CornerSize.l))
-                                .clickable {
-                                    onInsert?.invoke(emoji)
-                                },
+                                .then(onInsert?.let { Modifier.clickable { it(emoji) } } ?: Modifier),
                         ) {
                             CustomImage(
                                 modifier =

@@ -37,9 +37,7 @@ fun ContentTitle(
             onOpenUrl = { url ->
                 onOpenUrl?.invoke(url)
             },
-            onClick = {
-                onClick?.invoke()
-            },
+            onClick = onClick,
         )
     }
 }

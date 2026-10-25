@@ -41,11 +41,13 @@ fun ContentExtendedSocialInfo(
             modifier =
             Modifier
                 .clip(RoundedCornerShape(CornerSize.xl))
-                .clickable {
-                    if (reblogCount > 0) {
-                        onOpenUsersReblog?.invoke()
-                    }
-                }.padding(horizontal = Spacing.s),
+                .then(
+                    if (reblogCount > 0 && onOpenUsersReblog != null) {
+                        Modifier.clickable(onClick = onOpenUsersReblog)
+                    } else {
+                        Modifier
+                    },
+                ).padding(horizontal = Spacing.s),
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -70,11 +72,13 @@ fun ContentExtendedSocialInfo(
             modifier =
             Modifier
                 .clip(RoundedCornerShape(CornerSize.xl))
-                .clickable {
-                    if (favoriteCount > 0) {
-                        onOpenUsersFavorite?.invoke()
-                    }
-                }.padding(horizontal = Spacing.s),
+                .then(
+                    if (favoriteCount > 0 && onOpenUsersFavorite != null) {
+                        Modifier.clickable(onClick = onOpenUsersFavorite)
+                    } else {
+                        Modifier
+                    },
+                ).padding(horizontal = Spacing.s),
             horizontalArrangement = Arrangement.spacedBy(Spacing.s),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -100,11 +104,13 @@ fun ContentExtendedSocialInfo(
                 modifier =
                 Modifier
                     .clip(RoundedCornerShape(CornerSize.xl))
-                    .clickable {
-                        if (quoteCount > 0) {
-                            onOpenPostsQuoting?.invoke()
-                        }
-                    }.padding(horizontal = Spacing.s),
+                    .then(
+                        if (quoteCount > 0 && onOpenPostsQuoting != null) {
+                            Modifier.clickable(onClick = onOpenPostsQuoting)
+                        } else {
+                            Modifier
+                        },
+                    ).padding(horizontal = Spacing.s),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

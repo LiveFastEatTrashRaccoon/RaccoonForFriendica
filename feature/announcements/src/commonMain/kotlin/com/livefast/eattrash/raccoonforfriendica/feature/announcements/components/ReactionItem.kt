@@ -34,13 +34,13 @@ internal fun ReactionItem(
         modifier =
         modifier
             .clip(shape)
-            .clickable {
-                if (reaction.isMe) {
-                    onRemove?.invoke(reaction.name)
-                } else {
-                    onAdd?.invoke(reaction.name)
-                }
-            }.then(
+            .then(
+                when {
+                    reaction.isMe && onRemove != null -> Modifier.clickable { onRemove(reaction.name) }
+                    !reaction.isMe && onAdd != null -> Modifier.clickable { onAdd(reaction.name) }
+                    else -> Modifier
+                },
+            ).then(
                 if (reaction.isMe) {
                     Modifier.background(
                         color = MaterialTheme.colorScheme.primary.copy(alpha = 0.66f),

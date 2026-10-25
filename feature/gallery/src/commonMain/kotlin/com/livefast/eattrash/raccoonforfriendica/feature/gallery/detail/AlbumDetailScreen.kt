@@ -259,7 +259,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                     AlbumImageItem(
                         attachment = attachment,
                         autoload = uiState.autoloadImages,
-                        onClick = {
+                        onOpen = {
                             val url = attachment.thumbnail ?: attachment.url
                             if (url.isNotEmpty()) {
                                 mainRouter.openImageDetail(url)

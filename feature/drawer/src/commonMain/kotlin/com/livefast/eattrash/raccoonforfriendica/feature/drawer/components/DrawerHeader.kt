@@ -58,9 +58,7 @@ internal fun DrawerHeader(
         if (user != null) {
             val username = user.displayName ?: user.username ?: ""
             val userAvatar = user.avatar.orEmpty()
-            val baseAvatarModifier = Modifier.clickable {
-                onOpenProfile?.invoke()
-            }
+            val baseAvatarModifier = onOpenProfile?.let { Modifier.clickable(onClick = it) } ?: Modifier
             if (userAvatar.isNotEmpty() && autoloadImages) {
                 CustomImage(
                     modifier =
