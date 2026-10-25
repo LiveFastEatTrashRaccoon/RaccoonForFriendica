@@ -121,7 +121,6 @@ interface CoreResources {
     val palette: ImageVector @Composable get
     val personAdd: ImageVector @Composable get
     val playArrow: ImageVector @Composable get
-    val playCircle: ImageVector @Composable get
     val postAdd: ImageVector @Composable get
     val public: ImageVector @Composable get
     val radioButtonChecked: ImageVector @Composable get

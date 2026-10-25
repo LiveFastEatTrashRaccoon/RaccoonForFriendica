@@ -64,7 +64,7 @@ fun ContentVideo(
                     onClick = onClick,
                 ) {
                     Icon(
-                        imageVector = LocalResources.current.playCircle,
+                        imageVector = LocalResources.current.playArrow,
                         contentDescription = LocalStrings.current.actionOpenFullScreen,
                     )
                 }
@@ -96,6 +96,7 @@ private fun ContentVideoPreview() {
     PreviewWrapper {
         ContentVideo(
             url = "fake-url",
+            onClick = {},
         )
     }
 }

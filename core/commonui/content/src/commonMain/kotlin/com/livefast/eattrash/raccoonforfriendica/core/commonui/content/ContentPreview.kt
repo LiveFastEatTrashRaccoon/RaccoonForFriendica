@@ -143,7 +143,7 @@ fun ContentPreview(
                             },
                         ) {
                             Icon(
-                                imageVector = LocalResources.current.playCircle,
+                                imageVector = LocalResources.current.playArrow,
                                 contentDescription = LocalStrings.current.actionOpenFullScreen,
                             )
                         }

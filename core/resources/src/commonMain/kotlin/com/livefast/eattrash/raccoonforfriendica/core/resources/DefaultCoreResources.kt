@@ -120,8 +120,7 @@ import raccoonforfriendica.core.resources.generated.resources.palette
 import raccoonforfriendica.core.resources.generated.resources.peertube_small
 import raccoonforfriendica.core.resources.generated.resources.person_add
 import raccoonforfriendica.core.resources.generated.resources.pixelfed_small
-import raccoonforfriendica.core.resources.generated.resources.play_arrow
-import raccoonforfriendica.core.resources.generated.resources.play_circle
+import raccoonforfriendica.core.resources.generated.resources.play_arrow_fill
 import raccoonforfriendica.core.resources.generated.resources.pleroma_small
 import raccoonforfriendica.core.resources.generated.resources.post_add
 import raccoonforfriendica.core.resources.generated.resources.public
@@ -487,10 +486,7 @@ class DefaultCoreResources : CoreResources {
         @Composable get() = vectorResource(Res.drawable.person_add)
 
     override val playArrow: ImageVector
-        @Composable get() = vectorResource(Res.drawable.play_arrow)
-
-    override val playCircle: ImageVector
-        @Composable get() = vectorResource(Res.drawable.play_circle)
+        @Composable get() = vectorResource(Res.drawable.play_arrow_fill)
 
     override val postAdd: ImageVector
         @Composable get() = vectorResource(Res.drawable.post_add)
