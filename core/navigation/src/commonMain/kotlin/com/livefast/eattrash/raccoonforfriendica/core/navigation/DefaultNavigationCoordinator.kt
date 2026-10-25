@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -39,6 +40,7 @@ class DefaultNavigationCoordinator(
 
     private var rootNavAdapter: NavigationAdapter? = null
     private var bottomNavAdapter: BottomNavigationAdapter? = null
+    private var sharedTransitionScope: SharedTransitionScope? = null
     private var bottomBarScrollConnection: NestedScrollConnection? = null
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
     private var updateBottomNavigationSectionJob: Job? = null
@@ -60,6 +62,13 @@ class DefaultNavigationCoordinator(
         updateBottomNavigationSectionJob = adapter.currentSection.onEach { newValue ->
             currentBottomNavSection.update { newValue }
         }.launchIn(scope)
+    }
+
+    override fun getSharedTransitionScope(): SharedTransitionScope =
+        sharedTransitionScope ?: error("sharedTransitionScope not set")
+
+    override fun setSharedTransitionScope(scope: SharedTransitionScope) {
+        sharedTransitionScope = scope
     }
 
     override fun setCurrentSection(section: BottomNavigationSection) {

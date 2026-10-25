@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.navigation
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.navigation3.runtime.NavBackStack
 import app.cash.turbine.test
@@ -225,6 +226,16 @@ class DefaultNavigationCoordinatorTest {
             val item = awaitItem()
             assertEquals(url, item)
         }
+    }
+
+    @Test
+    fun `given shared transition scope set when getSharedTransitionScope then the result matches`() = runTest {
+        val scope = mock<SharedTransitionScope>()
+        sut.setSharedTransitionScope(scope)
+
+        val res = sut.getSharedTransitionScope()
+
+        assertEquals(scope, res)
     }
 
     companion object {
