@@ -77,8 +77,8 @@ fun UserListScreen(
     val model: UserListMvi = assistedMetroViewModel<UserListViewModel>(
         extras = UserListViewModel.getExtras(
             type = type.toUserListType(),
-            userId = userId.orEmpty(),
-            postId = postId.orEmpty(),
+            userId = userId,
+            postId = postId,
         ),
     )
     val uiState by model.uiState.collectAsState()

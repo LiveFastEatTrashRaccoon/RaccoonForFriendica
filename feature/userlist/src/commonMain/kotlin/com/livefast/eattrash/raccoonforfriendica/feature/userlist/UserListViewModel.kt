@@ -37,8 +37,8 @@ import kotlinx.coroutines.launch
 @AssistedInject
 class UserListViewModel(
     @Assisted private val type: UserListType,
-    @Assisted private val userId: String,
-    @Assisted private val postId: String,
+    @Assisted private val userId: String?,
+    @Assisted private val postId: String?,
     private val paginationManager: UserPaginationManager,
     private val userRepository: UserRepository,
     private val identityRepository: IdentityRepository,
@@ -99,8 +99,8 @@ class UserListViewModel(
     private suspend fun loadUser() {
         val userId =
             when (type) {
-                is UserListType.Follower -> userId.takeIf { it.isNotEmpty() }
-                is UserListType.Following -> userId.takeIf { it.isNotEmpty() }
+                is UserListType.Follower -> userId
+                is UserListType.Following -> userId
                 else -> null
             }
         if (userId != null) {
@@ -139,14 +139,17 @@ class UserListViewModel(
         }
         paginationManager.reset(
             when (type) {
-                is UserListType.Follower -> UserPaginationSpecification.Follower(userId)
+                is UserListType.Follower if !userId.isNullOrEmpty() -> UserPaginationSpecification.Follower(userId)
 
-                is UserListType.Following -> UserPaginationSpecification.Following(userId)
+                is UserListType.Following if !userId.isNullOrEmpty() -> UserPaginationSpecification.Following(userId)
 
-                is UserListType.UsersFavorite ->
+                is UserListType.UsersFavorite if !postId.isNullOrEmpty() ->
                     UserPaginationSpecification.PostUsersFavorite(postId)
 
-                is UserListType.UsersReblog -> UserPaginationSpecification.PostUsersReblog(postId)
+                is UserListType.UsersReblog if !postId.isNullOrEmpty() ->
+                    UserPaginationSpecification.PostUsersReblog(postId)
+
+                else -> error("Invalid configuration")
             },
         )
         loadNextPage()
@@ -260,10 +263,11 @@ class UserListViewModel(
     private fun handleExport() {
         val specification =
             when (type) {
-                UserListType.Follower -> ExportUserSpecification.Follower(userId)
-                UserListType.Following -> ExportUserSpecification.Following(userId)
+                UserListType.Follower if !userId.isNullOrEmpty() -> ExportUserSpecification.Follower(userId)
+                UserListType.Following  if !userId.isNullOrEmpty() -> ExportUserSpecification.Following(userId)
                 UserListType.UsersFavorite -> null
                 UserListType.UsersReblog -> null
+                else -> error("Invalid configuration")
             } ?: return
         viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
@@ -274,7 +278,7 @@ class UserListViewModel(
     }
 
     companion object {
-        fun getExtras(type: UserListType, userId: String, postId: String) = CreationExtras {
+        fun getExtras(type: UserListType, userId: String?, postId: String?) = CreationExtras {
             this[KEY_TYPE] = type
             this[KEY_USER_ID] = userId
             this[KEY_POST_ID] = postId
@@ -283,8 +287,8 @@ class UserListViewModel(
 }
 
 private val KEY_TYPE = CreationExtras.Key<UserListType>()
-private val KEY_USER_ID = CreationExtras.Key<String>()
-private val KEY_POST_ID = CreationExtras.Key<String>()
+private val KEY_USER_ID = CreationExtras.Key<String?>()
+private val KEY_POST_ID = CreationExtras.Key<String?>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(UserListViewModel::class)
@@ -292,9 +296,9 @@ private val KEY_POST_ID = CreationExtras.Key<String>()
 fun interface Factory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): UserListViewModel = create(
         type = extras[KEY_TYPE] ?: error("type argument not found"),
-        userId = extras[KEY_USER_ID] ?: error("userId argument not found"),
-        postId = extras[KEY_POST_ID] ?: error("postId argument not found"),
+        userId = extras[KEY_USER_ID],
+        postId = extras[KEY_POST_ID],
     )
 
-    fun create(@Assisted type: UserListType, @Assisted userId: String, @Assisted postId: String): UserListViewModel
+    fun create(@Assisted type: UserListType, @Assisted userId: String?, @Assisted postId: String?): UserListViewModel
 }

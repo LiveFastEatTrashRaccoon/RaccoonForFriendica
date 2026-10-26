@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 @AssistedInject
 class CreateReportViewModel(
     @Assisted private val userId: String,
-    @Assisted private val postId: String,
+    @Assisted private val postId: String?,
     private val nodeInfoRepository: NodeInfoRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
     private val reportRepository: ReportRepository,
@@ -115,7 +115,7 @@ class CreateReportViewModel(
             val successful =
                 reportRepository.create(
                     userId = userId,
-                    postIds = postId.takeIf { it.isNotEmpty() }?.let { listOf(it) },
+                    postIds = postId?.let { listOf(it) },
                     category = category,
                     comment = currentState.commentValue.text,
                     forward = currentState.forward,
@@ -131,7 +131,7 @@ class CreateReportViewModel(
     }
 
     companion object {
-        fun getExtras(userId: String, postId: String) = CreationExtras {
+        fun getExtras(userId: String, postId: String?) = CreationExtras {
             this[KEY_USER_ID] = userId
             this[KEY_POST_ID] = postId
         }
@@ -139,7 +139,7 @@ class CreateReportViewModel(
 }
 
 private val KEY_USER_ID = CreationExtras.Key<String>()
-private val KEY_POST_ID = CreationExtras.Key<String>()
+private val KEY_POST_ID = CreationExtras.Key<String?>()
 
 @AssistedFactory
 @ViewModelAssistedFactoryKey(CreateReportViewModel::class)
@@ -147,8 +147,8 @@ private val KEY_POST_ID = CreationExtras.Key<String>()
 interface CreateReportViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): CreateReportViewModel = create(
         userId = extras[KEY_USER_ID] ?: error("userId argument not found"),
-        postId = extras[KEY_POST_ID] ?: error("postId argument not found"),
+        postId = extras[KEY_POST_ID],
     )
 
-    fun create(@Assisted userId: String, @Assisted postId: String): CreateReportViewModel
+    fun create(@Assisted userId: String, @Assisted postId: String?): CreateReportViewModel
 }

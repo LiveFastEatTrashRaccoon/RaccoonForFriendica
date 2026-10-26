@@ -58,7 +58,7 @@ import kotlinx.coroutines.flow.onEach
 @Composable
 fun CreateReportScreen(userId: String, postId: String?, modifier: Modifier = Modifier) {
     val model: CreateReportMvi = assistedMetroViewModel<CreateReportViewModel>(
-        extras = CreateReportViewModel.getExtras(userId = userId, postId = postId.orEmpty()),
+        extras = CreateReportViewModel.getExtras(userId = userId, postId = postId),
     )
     val uiState by model.uiState.collectAsState()
     val topAppBarState = rememberTopAppBarState()

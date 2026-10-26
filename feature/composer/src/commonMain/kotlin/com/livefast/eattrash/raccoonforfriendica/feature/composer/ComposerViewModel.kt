@@ -1836,8 +1836,8 @@ private val KEY_QUOTED_ID = CreationExtras.Key<String?>()
 @ContributesIntoMap(AppScope::class)
 fun interface ComposerViewModelFactory : ViewModelAssistedFactory {
     override fun create(extras: CreationExtras): ComposerViewModel = create(
-        inReplyToId = extras[KEY_IN_REPLY_TO_ID] ?: error("inReplyToId argument not found"),
-        quotedId = extras[KEY_QUOTED_ID] ?: error("quotedId argument not found"),
+        inReplyToId = extras[KEY_IN_REPLY_TO_ID],
+        quotedId = extras[KEY_QUOTED_ID],
     )
 
     fun create(@Assisted inReplyToId: String?, @Assisted quotedId: String?): ComposerViewModel
