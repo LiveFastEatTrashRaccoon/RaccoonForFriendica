@@ -1,0 +1,2 @@
+- fix: composer not opening
+- refactor: clarify optionality of assisted parameters

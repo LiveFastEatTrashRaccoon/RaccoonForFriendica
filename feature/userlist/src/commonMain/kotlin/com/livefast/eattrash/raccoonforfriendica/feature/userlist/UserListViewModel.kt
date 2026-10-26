@@ -264,7 +264,7 @@ class UserListViewModel(
         val specification =
             when (type) {
                 UserListType.Follower if !userId.isNullOrEmpty() -> ExportUserSpecification.Follower(userId)
-                UserListType.Following  if !userId.isNullOrEmpty() -> ExportUserSpecification.Following(userId)
+                UserListType.Following if !userId.isNullOrEmpty() -> ExportUserSpecification.Following(userId)
                 UserListType.UsersFavorite -> null
                 UserListType.UsersReblog -> null
                 else -> error("Invalid configuration")

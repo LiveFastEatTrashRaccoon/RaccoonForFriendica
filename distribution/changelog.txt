@@ -1,10 +1,6 @@
 ## What's Changed
 
-- fix(search): close keyboard on scroll and do not reopen it when navigating back to search
-- fix(image-detail): enable pan to zoom by default
-- feat(navigation): add shared element transitions for image opening
-- enhancement(ui): remove empty click handlers for better accessibility
-- refactor(ui): remove use of composition locals for font scaling and profile top bar state
-- chore: adopt a single video player icon and switch to filled variant for better visibility
+- fix(composer): resolve crash when opening post creation
+- refactor(feats): clarify optionality of assisted parameters in ViewModels
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.6...1.1.7
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.7...1.1.8
