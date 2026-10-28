@@ -18,9 +18,8 @@ class DefaultInboxManagerTest {
     private val notificationRepository = mock<NotificationRepository>()
     private val markerRepository =
         mock<MarkerRepository> {
-            everySuspend {
-                get(any(), any())
-            } returns MarkerModel(type = MarkerType.Notifications, lastReadId = "0")
+            everySuspend { get(type = any(), refresh = any()) } returns
+                MarkerModel(type = MarkerType.Notifications, lastReadId = "0")
         }
     private val sut =
         DefaultInboxManager(
@@ -30,14 +29,20 @@ class DefaultInboxManagerTest {
 
     @Test
     fun `given no results when refreshUnreadCount then count is as expected`() = runTest {
-        val list = emptyList<NotificationModel>()
-        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns PagedList(list)
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
+            )
+        } returns PagedList(emptyList())
 
         sut.refreshUnreadCount()
         val res = sut.unreadCount.value
 
         assertEquals(0, res)
         verifySuspend {
+            markerRepository.get(MarkerType.Notifications)
             notificationRepository.getAll(
                 refresh = true,
                 pageCursor = null,
@@ -53,13 +58,20 @@ class DefaultInboxManagerTest {
                 NotificationModel(id = "1", post = null),
                 NotificationModel(id = "2", post = null),
             )
-        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns PagedList(list)
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
+            )
+        } returns PagedList(list)
 
         sut.refreshUnreadCount()
         val res = sut.unreadCount.value
 
         assertEquals(2, res)
         verifySuspend {
+            markerRepository.get(MarkerType.Notifications)
             notificationRepository.getAll(
                 refresh = true,
                 pageCursor = null,
@@ -69,13 +81,19 @@ class DefaultInboxManagerTest {
     }
 
     @Test
-    fun `when refreshUnreadCount then count is as expected`() = runTest {
+    fun `when clearUnreadCount then count is as expected`() = runTest {
         val list =
             listOf(
                 NotificationModel(id = "1", post = null),
                 NotificationModel(id = "2", post = null),
             )
-        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns PagedList(list)
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
+            )
+        } returns PagedList(list)
         sut.refreshUnreadCount()
         val resBefore = sut.unreadCount.value
         assertEquals(2, resBefore)
@@ -83,6 +101,15 @@ class DefaultInboxManagerTest {
         sut.clearUnreadCount()
         val res = sut.unreadCount.value
         assertEquals(0, res)
+
+        verifySuspend {
+            markerRepository.get(MarkerType.Notifications)
+            notificationRepository.getAll(
+                refresh = true,
+                pageCursor = null,
+                types = NotificationType.ALL,
+            )
+        }
     }
 
     @Test
@@ -92,7 +119,13 @@ class DefaultInboxManagerTest {
                 NotificationModel(id = "1", post = null),
                 NotificationModel(id = "2", post = null),
             )
-        everySuspend { notificationRepository.getAll(any(), any(), any()) } returns PagedList(list)
+        everySuspend {
+            notificationRepository.getAll(
+                types = any(),
+                pageCursor = any(),
+                refresh = any(),
+            )
+        } returns PagedList(list)
         sut.refreshUnreadCount()
         val resBefore = sut.unreadCount.value
         assertEquals(2, resBefore)
@@ -100,5 +133,13 @@ class DefaultInboxManagerTest {
         sut.decrementUnreadCount()
         val res = sut.unreadCount.value
         assertEquals(1, res)
+        verifySuspend {
+            markerRepository.get(MarkerType.Notifications)
+            notificationRepository.getAll(
+                refresh = true,
+                pageCursor = null,
+                types = NotificationType.ALL,
+            )
+        }
     }
 }

@@ -25,9 +25,10 @@ class DefaultInboxManager(
 
     override suspend fun refreshUnreadCount() {
         val lastReadId = markerRepository.get(MarkerType.Notifications)?.lastReadId
-        val response = notificationRepository.getAll(refresh = true)
+        val pagedList = notificationRepository.getAll(refresh = true)
+        val notifications = pagedList?.list.orEmpty()
         unreadCount.update {
-            response?.list?.count { it.hasLaterIdThan(lastReadId) } ?: 0
+            notifications.count { it.hasLaterIdThan(lastReadId) }
         }
     }
 
