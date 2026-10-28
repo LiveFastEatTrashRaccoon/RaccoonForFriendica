@@ -20,11 +20,7 @@ actual fun IntArray.toComposeImageBitmap(width: Int, height: Int): ImageBitmap =
     Bitmap.createBitmap(this, width, height, Bitmap.Config.ARGB_8888).asImageBitmap()
 
 actual fun getNativeDecoders(): List<Decoder.Factory> = buildList {
-    if (Build.VERSION.SDK_INT >= 28) {
-        add(AnimatedImageDecoder.Factory())
-    } else {
-        add(GifDecoder.Factory())
-    }
+    add(AnimatedImageDecoder.Factory())
 }
 
 @OptIn(ExperimentalCoilApi::class)

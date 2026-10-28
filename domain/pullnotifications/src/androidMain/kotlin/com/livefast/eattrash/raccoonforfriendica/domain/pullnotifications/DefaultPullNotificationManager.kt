@@ -26,12 +26,7 @@ import java.util.concurrent.TimeUnit
 class DefaultPullNotificationManager(private val context: Context) : PullNotificationManager {
     override val isSupported = true
     override val isBackgroundRestricted: Boolean
-        get() =
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-                activityManager.isBackgroundRestricted
-            } else {
-                false
-            }
+        get() = activityManager.isBackgroundRestricted
 
     private var intervalMinutes = 15L
     private val notificationManager: NotificationManager

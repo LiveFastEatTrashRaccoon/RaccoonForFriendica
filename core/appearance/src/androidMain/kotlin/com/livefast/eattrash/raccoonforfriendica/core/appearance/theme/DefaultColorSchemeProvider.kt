@@ -20,10 +20,8 @@ import dev.zacsweers.metro.Inject
 class DefaultColorSchemeProvider(private val context: Context) : ColorSchemeProvider {
 
     override val supportsDynamicColors: Boolean
-        @ChecksSdkIntAtLeast(31)
-        get() {
-            return Build.VERSION.SDK_INT >= 31
-        }
+        @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     @SuppressLint("NewApi")
     override fun getColorScheme(

@@ -16,7 +16,7 @@ class DefaultHapticFeedback(private val context: Context) : HapticFeedback {
     override fun vibrate() {
         val vibrator = context.getSystemService(Vibrator::class.java)
         val effect =
-            if (Build.VERSION.SDK_INT >= 29) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK)
             } else {
                 VibrationEffect.createOneShot(
