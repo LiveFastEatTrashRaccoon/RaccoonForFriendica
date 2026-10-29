@@ -54,9 +54,8 @@ import platform.Security.kSecValueData
 import platform.posix.memcpy
 import platform.posix.size_tVar
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
-@OptIn(ExperimentalForeignApi::class, ExperimentalEncodingApi::class, BetaInteropApi::class)
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
