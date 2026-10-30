@@ -1,15 +1,23 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import com.livefast.eattrash.raccoonforfriendica.core.l10n.Strings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.LogFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationPolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.InboxManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NodeInfoRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.NotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PushNotificationRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.R
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.crypto.WebPushCryptoUtil
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -27,9 +35,12 @@ import org.unifiedpush.android.connector.UnifiedPush
 @Inject
 class DefaultPushNotificationManager(
     private val context: Context,
+    private val cryptoUtil: WebPushCryptoUtil,
     private val pushNotificationRepository: PushNotificationRepository,
     private val nodeInfoRepository: NodeInfoRepository,
     private val accountRepository: AccountRepository,
+    private val notificationRepository: NotificationRepository,
+    private val strings: Strings,
     logFactory: LogFactory,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : PushNotificationManager {
@@ -133,27 +144,30 @@ class DefaultPushNotificationManager(
         }
 
         unregisterForPushNotifications(account)
+        unregisterEndpoint(account)
         state.update { PushNotificationManagerState.Initializing }
     }
 
-    override suspend fun registerEndpoint(account: AccountModel, endpointUrl: String, pubKey: String, auth: String) {
-        log.d { "registerEndpoint" }
-        val types = NotificationType.ALL.filter { it.isEnabled(account) }
+    override suspend fun registerEndpoint(account: AccountModel, endpointUrl: String) {
+        log.d { "registerEndpoint with endpointUrl=$endpointUrl" }
+        val keys = cryptoUtil.generateKeys()
+        val types = NotificationType.ALL.filter { isEnabled(type = it, account = account) }
         val policy = NotificationPolicy.Followed
         val serverKey =
             pushNotificationRepository.create(
                 endpoint = endpointUrl,
-                pubKey = pubKey,
-                auth = auth,
+                pubKey = keys.publicKey,
+                auth = keys.authSecret,
                 types = types,
                 policy = policy,
             )
+
         val updateAccount =
             account.copy(
-                pushAuth = auth,
+                pushAuth = keys.authSecret,
                 pushServerKey = serverKey,
-                pushPubKey = pubKey,
-                pushPrivKey = "",
+                pushPubKey = keys.publicKey,
+                pushPrivKey = keys.privateKey,
                 unifiedPushUrl = endpointUrl,
             )
         accountRepository.update(updateAccount)
@@ -174,6 +188,52 @@ class DefaultPushNotificationManager(
         accountRepository.update(updateAccount)
     }
 
+    override suspend fun handleMessage(payload: ByteArray) {
+        val account = accountRepository.getActive() ?: return
+        val decodedPayload = cryptoUtil.decryptPayload(
+            encryptedPayload = payload,
+            publicKey = account.pushPubKey.orEmpty(),
+            privateKey = account.pushPrivKey.orEmpty(),
+            authSecret = account.pushAuth.orEmpty(),
+        )
+        if (decodedPayload == null) {
+            log.e { "Unable to decode notification data" }
+            return
+        }
+
+        val notification = try {
+            notificationRepository.decodeWebPush(decodedPayload)
+        } catch (e: Exception) {
+            log.e(e) { "Unable to parse notification data" }
+            return
+        }
+        val channelId = getChannelId(type = notification.type, account = account)
+
+        // specific granular notification
+        val granularNotification = Notification.Builder(context, channelId)
+            .setContentTitle(notification.title)
+            .setContentText(notification.body)
+            .setSmallIcon(R.drawable.ic_monochrome)
+            .setGroup(NOTIFICATION_GROUP_NAME)
+            .setContentIntent(getPendingIntent())
+            .setAutoCancel(true)
+            .build()
+
+        // summary notification
+        val summaryNotification = Notification.Builder(context, channelId)
+            .setContentTitle(strings.unreadNotificationTitle())
+            .setSmallIcon(R.drawable.ic_monochrome)
+            .setGroup(NOTIFICATION_GROUP_NAME)
+            .setGroupSummary(true)
+            .setOnlyAlertOnce(true)
+            .setContentIntent(getPendingIntent())
+            .build()
+
+        val notificationId = notification.id.hashCode()
+        notificationManager.notify(notificationId, granularNotification)
+        notificationManager.notify(SUMMARY_NOTIFICATION_ID, summaryNotification)
+    }
+
     private suspend fun getSelectedDistributor(): String? = withContext(dispatcher) {
         UnifiedPush.getSavedDistributor(context)
     }
@@ -191,7 +251,7 @@ class DefaultPushNotificationManager(
 
     private fun createNotificationChannelsIfNeeded(account: AccountModel) {
         NotificationType.ALL.forEach { type ->
-            val channelId = type.getChannelId(account)
+            val channelId = getChannelId(type = type, account = account)
             val channel = notificationManager.getNotificationChannel(channelId)
             if (channel == null) {
                 val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -203,7 +263,7 @@ class DefaultPushNotificationManager(
 
     private suspend fun updateSubscription(account: AccountModel) {
         log.d { "updateSubscription" }
-        val types = NotificationType.ALL.filter { it.isEnabled(account) }
+        val types = NotificationType.ALL.filter { isEnabled(type = it, account = account) }
         val policy = NotificationPolicy.Followed
         val serverKey =
             pushNotificationRepository.update(
@@ -222,20 +282,14 @@ class DefaultPushNotificationManager(
         )
     }
 
-    private fun NotificationType.isEnabled(account: AccountModel): Boolean {
-        val channelId = getChannelId(account) ?: return false
+    private fun isEnabled(type: NotificationType, account: AccountModel): Boolean {
+        val channelId = getChannelId(type = type, account = account)
         val channel = notificationManager.getNotificationChannel(channelId) ?: return false
         return channel.importance > NotificationManager.IMPORTANCE_NONE
     }
-}
 
-private val AccountModel.channelId: String get() = id.toString()
-
-private val AccountModel.notificationEnabled: Boolean get() = !unifiedPushUrl.isNullOrEmpty()
-
-private val NotificationType.channelIdSegment: String?
-    get() =
-        when (this) {
+    private fun getChannelId(type: NotificationType, account: AccountModel): String = buildString {
+        val typeSegment = when (type) {
             NotificationType.Post -> "post"
             NotificationType.Favorite -> "favorite"
             NotificationType.Follow -> "follow"
@@ -248,9 +302,35 @@ private val NotificationType.channelIdSegment: String?
             NotificationType.Quote -> "quote"
             NotificationType.QuotedUpdate -> "quoted_update"
         }
+        append(typeSegment)
+        append(account.channelId)
+    }
 
-private fun NotificationType.getChannelId(account: AccountModel): String? = buildString {
-    val typeSegment = channelIdSegment ?: return null
-    append(typeSegment)
-    append(account.channelId)
+    private fun getPendingIntent(): PendingIntent {
+        val intent =
+            Intent(
+                context,
+                Class.forName(ACTIVITY_NAME),
+            ).apply {
+                putExtra(InboxManager.OPEN_INBOX_AT_STARTUP, true)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
+    companion object {
+        private const val NOTIFICATION_GROUP_NAME = "raccoon_push_notifications"
+        private const val SUMMARY_NOTIFICATION_ID = 1042
+
+        private const val ACTIVITY_NAME = "com.livefast.eattrash.raccoonforfriendica.MainActivity"
+    }
 }
+
+private val AccountModel.channelId: String get() = id.toString()
+
+private val AccountModel.notificationEnabled: Boolean get() = !unifiedPushUrl.isNullOrEmpty()

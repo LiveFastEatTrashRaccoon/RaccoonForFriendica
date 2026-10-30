@@ -41,11 +41,15 @@ class DefaultPushNotificationManager : PushNotificationManager {
         // no-op
     }
 
-    override suspend fun registerEndpoint(account: AccountModel, endpointUrl: String, pubKey: String, auth: String) {
+    override suspend fun registerEndpoint(account: AccountModel, endpointUrl: String) {
         // no-op
     }
 
     override suspend fun unregisterEndpoint(account: AccountModel) {
+        // no-op
+    }
+
+    override suspend fun handleMessage(payload: ByteArray) {
         // no-op
     }
 }
