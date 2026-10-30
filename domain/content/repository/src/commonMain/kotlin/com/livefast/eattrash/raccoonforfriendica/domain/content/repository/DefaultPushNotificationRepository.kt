@@ -30,6 +30,7 @@ class DefaultPushNotificationRepository(private val provider: ServiceProvider) :
                     append("subscription[endpoint]", endpoint)
                     append("subscription[keys][p256dh]", pubKey)
                     append("subscription[keys][auth]", auth)
+                    append("subscription[standard]", "true")
                     for (type in NotificationType.ALL) {
                         type.toDto()?.also { typeDto ->
                             append(
