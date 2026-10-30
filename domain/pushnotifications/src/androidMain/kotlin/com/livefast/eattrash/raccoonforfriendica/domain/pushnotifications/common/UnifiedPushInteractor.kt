@@ -28,7 +28,6 @@ interface UnifiedPushInteractor {
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultUnifiedPushInteractor(
-    private val pullNotificationManager: PullNotificationManager,
     private val pushNotificationManager: PushNotificationManager,
     private val accountRepository: AccountRepository,
     logFactory: LogFactory,
@@ -39,7 +38,9 @@ class DefaultUnifiedPushInteractor(
 
     override fun onMessage(context: Context, message: PushMessage, instance: String) {
         log.d { "onMessage" }
-        pullNotificationManager.oneshotCheck()
+        scope.launch {
+            pushNotificationManager.handleMessage(payload = message.content)
+        }
     }
 
     override fun onNewEndpoint(context: Context, endpoint: PushEndpoint, instance: String) {
@@ -51,8 +52,6 @@ class DefaultUnifiedPushInteractor(
             pushNotificationManager.registerEndpoint(
                 account = account,
                 endpointUrl = endpoint.url,
-                pubKey = endpoint.pubKeySet?.pubKey.orEmpty(),
-                auth = endpoint.pubKeySet?.auth.orEmpty(),
             )
         }
     }
