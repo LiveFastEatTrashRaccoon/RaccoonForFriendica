@@ -1,8 +1,10 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.WebPush
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PushNotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toDto
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
@@ -13,11 +15,13 @@ import dev.zacsweers.metro.SingleIn
 import io.ktor.utils.io.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.Json
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
-class DefaultNotificationRepository(private val provider: ServiceProvider) : NotificationRepository {
+class DefaultNotificationRepository(private val provider: ServiceProvider, private val json: Json) :
+    NotificationRepository {
     private val mutex = Mutex()
     private val cachedValues: MutableList<NotificationModel> = mutableListOf()
 
@@ -57,6 +61,11 @@ class DefaultNotificationRepository(private val provider: ServiceProvider) : Not
     override suspend fun dismiss(id: String): Boolean = provider.notification.dismiss(id)
 
     override suspend fun dismissAll(): Boolean = provider.notification.clear()
+
+    override fun decodeWebPush(data: String): PushNotificationModel {
+        val dto: WebPush = json.decodeFromString(data)
+        return dto.toModel()
+    }
 
     companion object {
         const val DEFAULT_PAGE_SIZE = 20

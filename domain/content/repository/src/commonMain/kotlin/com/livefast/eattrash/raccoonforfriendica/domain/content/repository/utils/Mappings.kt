@@ -41,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Tag
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.TrendsLink
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserList
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.UserListReplyPolicy
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.WebPush
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.extractDatePart
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.parseDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.toEpochMillis
@@ -68,6 +69,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PollOptionM
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewCardModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PreviewType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PushNotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePermission
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuotePolicy
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.QuoteStatus
@@ -394,6 +396,13 @@ internal fun Notification.toModel() = NotificationModel(
     read = dismissed,
     type = type.toModel(),
     user = account?.toModel(),
+)
+
+internal fun WebPush.toModel() = PushNotificationModel(
+    id = id.toString(),
+    type = type.toModel(),
+    title = title,
+    body = body,
 )
 
 internal fun Relationship.toModel() = RelationshipModel(

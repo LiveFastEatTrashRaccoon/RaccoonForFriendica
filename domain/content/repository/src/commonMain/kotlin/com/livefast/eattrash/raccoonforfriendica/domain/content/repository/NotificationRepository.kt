@@ -2,6 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PushNotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 
 interface NotificationRepository {
@@ -14,4 +15,6 @@ interface NotificationRepository {
     suspend fun dismiss(id: String): Boolean
 
     suspend fun dismissAll(): Boolean
+
+    fun decodeWebPush(data: String): PushNotificationModel
 }
