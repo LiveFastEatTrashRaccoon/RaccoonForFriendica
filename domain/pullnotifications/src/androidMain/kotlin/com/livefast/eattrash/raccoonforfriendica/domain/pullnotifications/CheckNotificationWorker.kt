@@ -30,7 +30,7 @@ internal class CheckNotificationWorker(private val context: Context, parameters:
         getNextNotificationId(),
         Notification
             .Builder(context, NotificationConstants.CHANNEL_ID)
-            .setContentTitle("RaccoonForFriendica")
+            .setContentTitle("Raccoon")
             .setSmallIcon(R.drawable.ic_monochrome)
             .setContentIntent(getPendingIntent())
             .build(),

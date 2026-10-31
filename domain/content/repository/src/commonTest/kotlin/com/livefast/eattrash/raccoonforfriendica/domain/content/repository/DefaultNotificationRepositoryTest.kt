@@ -2,9 +2,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.repository
 
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Notification
 import com.livefast.eattrash.raccoonforfriendica.core.api.dto.Page
+import com.livefast.eattrash.raccoonforfriendica.core.api.dto.WebPush
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.service.NotificationService
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PushNotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.PagedList
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.toModel
 import dev.mokkery.answering.returns
@@ -16,6 +18,7 @@ import dev.mokkery.mock
 import dev.mokkery.verify.VerifyMode
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -26,8 +29,9 @@ class DefaultNotificationRepositoryTest {
     private val notificationService = mock<NotificationService>()
     private val serviceProvider =
         mock<ServiceProvider> { every { notification } returns notificationService }
-    private val sut = DefaultNotificationRepository(provider = serviceProvider)
+    private val sut = DefaultNotificationRepository(provider = serviceProvider, json = Json)
 
+    // region getAll
     @Test
     fun `given no results when getAll then result is as expected`() = runTest {
         everySuspend {
@@ -173,7 +177,9 @@ class DefaultNotificationRepositoryTest {
             )
         }
     }
+    // endregion
 
+    // region dismiss
     @Test
     fun `when dismiss then result is as expected`() = runTest {
         everySuspend { notificationService.dismiss(any()) } returns true
@@ -197,7 +203,9 @@ class DefaultNotificationRepositoryTest {
             notificationService.dismiss("1")
         }
     }
+    // endregion
 
+    // region dismissAll
     @Test
     fun `when dismissAll then result is as expected`() = runTest {
         everySuspend { notificationService.clear() } returns true
@@ -220,5 +228,29 @@ class DefaultNotificationRepositoryTest {
         verifySuspend {
             notificationService.clear()
         }
+    }
+    // endregion
+
+    // region decodeWebPush
+    fun `given valid data when decodeWebPush then result is as expected`() {
+        val data = """
+        {
+            "notification_id": 1,
+            "notification_type": "mention",
+            "preferred_locale": "en",
+            "title": "You were mentioned"
+            "body": "FooBar mentioned you"
+        }
+        """.trimIndent()
+        val expected = PushNotificationModel(
+            id = "1",
+            type = NotificationType.Mention,
+            title = "You were mentioned",
+            body = "FooBar mentioned you",
+        )
+
+        val res = sut.decodeWebPush(data)
+
+        assertEquals(expected, res)
     }
 }
