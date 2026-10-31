@@ -24,7 +24,7 @@ class DefaultEncryptionHelper : EncryptionHelper {
 
     override fun encrypt(input: String): ByteArray? = try {
         val secretKey = getOrCreateMasterKey() ?: return null
-        val cipher = Cipher.getInstance(CIPHER)
+        val cipher = Cipher.getInstance(CIPHER_ALGORITHM)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
 
         val data = cipher.doFinal(input.toByteArray(Charsets.UTF_8))
@@ -41,8 +41,8 @@ class DefaultEncryptionHelper : EncryptionHelper {
 
         val iv = input.sliceArray(0 until IV_SIZE)
         val data = input.sliceArray(IV_SIZE until input.size)
-        val cipher = Cipher.getInstance(CIPHER)
-        val spec = GCMParameterSpec(128, iv)
+        val cipher = Cipher.getInstance(CIPHER_ALGORITHM)
+        val spec = GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, spec)
 
         cipher.doFinal(data).toString(Charsets.UTF_8)
@@ -86,7 +86,9 @@ class DefaultEncryptionHelper : EncryptionHelper {
     companion object {
         private const val STORE_NAME = "AndroidKeyStore"
         private const val ALIAS_NAME = "r4f"
-        private const val CIPHER = "AES/GCM/NoPadding"
+        private const val CIPHER_ALGORITHM = "AES/GCM/NoPadding"
+
+        private const val GCM_TAG_LENGTH_BITS = 128
         private const val IV_SIZE = 12
     }
 }
