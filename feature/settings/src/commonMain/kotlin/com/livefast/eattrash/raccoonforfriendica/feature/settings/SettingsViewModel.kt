@@ -37,6 +37,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toTimelineT
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toVisibility
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTimelineTypesUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.ImageLoadingMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.MarkupMode
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.NotificationMode
@@ -82,6 +83,7 @@ class SettingsViewModel(
     private val barColorProvider: BarColorProvider,
     private val customTabsHelper: CustomTabsHelper,
     private val translationProviderConfigStore: TranslationProviderConfigStore,
+    private val getTimelineTypes: GetTimelineTypesUseCase,
 ) : ViewModel(),
     MviDelegate<SettingsMvi.Intent, SettingsMvi.State, SettingsMvi.Effect>
     by DefaultMviDelegate(initialState = SettingsMvi.State()),
@@ -129,28 +131,19 @@ class SettingsViewModel(
 
             identityRepository.currentUser
                 .onEach { currentUser ->
-                    val circles = circlesRepository.getAll().orEmpty()
-                    val isLogged = currentUser != null
-                    val defaultTimelineTypes =
-                        buildList {
-                            this += TimelineType.All
-                            if (isLogged) {
-                                this += TimelineType.Subscriptions
-                            }
-                            this += TimelineType.Local
-                        }
-                    val timelineTypes =
-                        defaultTimelineTypes + circles.map { TimelineType.Circle(circle = it) }
-
                     updateState {
                         it.copy(
-                            availableTimelineTypes = timelineTypes,
-                            isLogged = isLogged,
+                            isLogged = currentUser != null,
                             pullNotificationsRestricted = pullNotificationManager.isBackgroundRestricted,
                         )
                     }
                 }.launchIn(this)
-
+            getTimelineTypes()
+                .onEach { newTimelineTypes ->
+                    updateState {
+                        it.copy(availableTimelineTypes = newTimelineTypes)
+                    }
+                }.launchIn(this)
             l10nManager.lang
                 .onEach { lang ->
                     updateState {
