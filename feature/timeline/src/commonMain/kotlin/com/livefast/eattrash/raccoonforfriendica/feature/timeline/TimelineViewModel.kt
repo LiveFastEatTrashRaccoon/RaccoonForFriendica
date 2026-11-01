@@ -26,6 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.Follo
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PostRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetInnerUrlUseCase
+import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.GetTimelineTypesUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleDislikeUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleFavoriteUseCase
 import com.livefast.eattrash.raccoonforfriendica.domain.content.usecase.ToggleTranslationUseCase

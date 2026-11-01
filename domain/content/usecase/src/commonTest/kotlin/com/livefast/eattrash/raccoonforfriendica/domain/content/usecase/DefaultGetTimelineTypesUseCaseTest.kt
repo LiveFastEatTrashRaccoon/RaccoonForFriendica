@@ -1,4 +1,4 @@
-package com.livefast.eattrash.raccoonforfriendica.feature.timeline
+package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import app.cash.turbine.test
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
