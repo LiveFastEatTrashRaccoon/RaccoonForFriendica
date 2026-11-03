@@ -48,6 +48,7 @@ import raccoonforfriendica.core.l10n.generated.resources.action_edit
 import raccoonforfriendica.core.l10n.generated.resources.action_edit_members
 import raccoonforfriendica.core.l10n.generated.resources.action_edit_personal_note
 import raccoonforfriendica.core.l10n.generated.resources.action_enable_notifications
+import raccoonforfriendica.core.l10n.generated.resources.action_enter_reorder_mode
 import raccoonforfriendica.core.l10n.generated.resources.action_export
 import raccoonforfriendica.core.l10n.generated.resources.action_filter
 import raccoonforfriendica.core.l10n.generated.resources.action_follow
@@ -145,6 +146,7 @@ import raccoonforfriendica.core.l10n.generated.resources.comment_bar_theme_blue
 import raccoonforfriendica.core.l10n.generated.resources.comment_bar_theme_green
 import raccoonforfriendica.core.l10n.generated.resources.comment_bar_theme_rainbow
 import raccoonforfriendica.core.l10n.generated.resources.comment_bar_theme_red
+import raccoonforfriendica.core.l10n.generated.resources.configure_timeline_types_title
 import raccoonforfriendica.core.l10n.generated.resources.confirm_change_markup_mode
 import raccoonforfriendica.core.l10n.generated.resources.content_scale_fill_height
 import raccoonforfriendica.core.l10n.generated.resources.content_scale_fill_width
@@ -570,6 +572,8 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.action_edit_personal_note)
     override val actionEnableNotifications: String
         @Composable get() = stringResource(Res.string.action_enable_notifications)
+    override val actionEnterReorderMode: String
+        @Composable get() = stringResource(Res.string.action_enter_reorder_mode)
     override val actionExport: String
         @Composable get() = stringResource(Res.string.action_export)
     override val actionFilter: String
@@ -762,6 +766,8 @@ class DefaultStrings : Strings {
         @Composable get() = stringResource(Res.string.comment_bar_theme_red)
     override val confirmChangeMarkupMode: String
         @Composable get() = stringResource(Res.string.confirm_change_markup_mode)
+    override val configureTimelineTypesTitle: String
+        @Composable get() = stringResource(Res.string.configure_timeline_types_title)
     override val contentScaleFillHeight: String
         @Composable get() = stringResource(Res.string.content_scale_fill_height)
     override val contentScaleFillWidth: String
