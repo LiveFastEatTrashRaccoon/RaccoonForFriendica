@@ -21,6 +21,7 @@ internal object LicenceUrls {
     const val MOKO_PERMISSIONS = "https://github.com/icerockdev/moko-permissions/blob/master/LICENSE.md"
     const val OFL = "https://openfontlicense.org/"
     const val SETTINGS = "https://github.com/russhwolf/multiplatform-settings/blob/main/LICENSE.txt"
+    const val REORDER = "https://github.com/Calvin-LL/Reorderable/blob/main/LICENSE"
     const val SENTRY = "https://github.com/getsentry/sentry-kotlin-multiplatform/blob/main/LICENSE"
     const val UNIFIED_PUSH = "https://github.com/UnifiedPush/android-connector/blob/main/LICENSE"
 }

@@ -12,6 +12,6 @@ sealed interface LicenceItemType {
 
 @Composable
 internal fun LicenceItemType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    LicenceItemType.Library -> coreResources.api
+    LicenceItemType.Library -> coreResources.sdk
     LicenceItemType.Resource -> coreResources.palette
 }
