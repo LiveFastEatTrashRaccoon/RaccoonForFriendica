@@ -37,7 +37,7 @@ class RootViewModel(
     private val themeRepository: ThemeRepository,
     private val l10nManager: L10nManager,
     private val activeAccountMonitor: ActiveAccountMonitor,
-    private val setupAccountUseCase: SetupAccountUseCase,
+    private val setupAccount: SetupAccountUseCase,
     crashReportManager: CrashReportManager,
     appInfoRepository: AppInfoRepository,
     logInitializer: LogInitializer,
@@ -58,7 +58,7 @@ class RootViewModel(
                 logInitializer.initialize(isDebug)
 
                 activeAccountMonitor.start()
-                setupAccountUseCase()
+                setupAccount()
 
                 launch {
                     // set a timeout on the initialization
