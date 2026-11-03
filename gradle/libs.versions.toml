@@ -41,6 +41,7 @@ metro = "1.5.1"
 mokkery = "3.6.0"
 moko = "0.20.1"
 multiplatform-settings = "1.3.0"
+reorderable = "3.1.0"
 robolectric = "4.17"
 room = "2.8.5"
 sentry = "0.29.0"
@@ -115,6 +116,7 @@ metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-comp
 moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 moko-permissions-notifications = { module = "dev.icerock.moko:permissions-notifications", version.ref = "moko" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 room-ksp = { module = "androidx.room:room-compiler", version.ref = "room" }
