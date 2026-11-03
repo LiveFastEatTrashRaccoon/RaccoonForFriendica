@@ -168,6 +168,9 @@ sealed interface Destination : NavKey {
     @Serializable
     data object Profile : Destination
 
+    @Serializable
+    data object ConfigureTimelineTypes : Destination
+
     companion object {
 
         val SavedStateConfiguration = SavedStateConfiguration {
@@ -216,6 +219,7 @@ sealed interface Destination : NavKey {
                     subclass(Explore::class, Explore.serializer())
                     subclass(Inbox::class, Inbox.serializer())
                     subclass(Profile::class, Profile.serializer())
+                    subclass(ConfigureTimelineTypes::class, ConfigureTimelineTypes.serializer())
                 }
             }
         }
