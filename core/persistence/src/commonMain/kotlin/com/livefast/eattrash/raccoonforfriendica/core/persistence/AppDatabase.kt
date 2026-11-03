@@ -6,10 +6,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.FeedTypeDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLimitDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.AccountEntity
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.DraftEntity
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.FeedTypeEntity
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.SettingsEntity
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserRateLimitEntity
 
@@ -18,9 +20,10 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserR
         AccountEntity::class,
         SettingsEntity::class,
         DraftEntity::class,
+        FeedTypeEntity::class,
         UserRateLimitEntity::class,
     ],
-    version = 24,
+    version = 25,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -45,6 +48,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.UserR
         AutoMigration(from = 21, to = 22),
         AutoMigration(from = 22, to = 23),
         AutoMigration(from = 23, to = 24),
+        AutoMigration(from = 24, to = 25),
     ],
     exportSchema = true,
 )
@@ -57,4 +61,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun getDraftDao(): DraftDao
 
     abstract fun getUserRateLimitDao(): UserRateLimitDao
+
+    abstract fun getFeedTypeDao(): FeedTypeDao
 }

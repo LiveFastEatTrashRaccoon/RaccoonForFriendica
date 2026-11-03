@@ -9,4 +9,6 @@ interface DaoFactory {
     fun getDraftDao(): DraftDao
 
     fun getUserRateLimitDao(): UserRateLimitDao
+
+    fun getFeedTypeDao(): FeedTypeDao
 }

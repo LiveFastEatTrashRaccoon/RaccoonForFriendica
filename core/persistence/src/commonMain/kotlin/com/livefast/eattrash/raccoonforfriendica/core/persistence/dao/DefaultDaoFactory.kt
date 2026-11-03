@@ -19,4 +19,6 @@ class DefaultDaoFactory(provider: DatabaseProvider) : DaoFactory {
     override fun getDraftDao(): DraftDao = appDb.getDraftDao()
 
     override fun getUserRateLimitDao(): UserRateLimitDao = appDb.getUserRateLimitDao()
+
+    override fun getFeedTypeDao(): FeedTypeDao = appDb.getFeedTypeDao()
 }
