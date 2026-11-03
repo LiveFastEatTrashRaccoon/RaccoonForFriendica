@@ -251,6 +251,13 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         },
                     )
                     SettingsRow(
+                        title = LocalStrings.current.configureTimelineTypesTitle,
+                        disclosureIndicator = true,
+                        onTap = {
+                            mainRouter.openConfigureTimelineTypes()
+                        },
+                    )
+                    SettingsRow(
                         title = LocalStrings.current.settingsItemDefaultPostVisibility,
                         value = uiState.defaultPostVisibility.toReadableName(),
                         onTap = {
