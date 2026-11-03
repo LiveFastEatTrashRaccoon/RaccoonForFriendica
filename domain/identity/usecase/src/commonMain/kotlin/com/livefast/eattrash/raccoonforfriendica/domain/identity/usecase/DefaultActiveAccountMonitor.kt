@@ -3,8 +3,11 @@ package com.livefast.eattrash.raccoonforfriendica.domain.identity.usecase
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvider
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProviderEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.nodeName
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FeedTypeModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FeedTypeRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
@@ -42,6 +45,7 @@ class DefaultActiveAccountMonitor(
     private val accountCredentialsCache: AccountCredentialsCache,
     private val settingsRepository: SettingsRepository,
     private val supportedFeatureRepository: SupportedFeatureRepository,
+    private val feedTypeRepository: FeedTypeRepository,
     private val contentPreloadManager: ContentPreloadManager,
     private val markerRepository: MarkerRepository,
     private val notificationCoordinator: NotificationCoordinator,
@@ -156,6 +160,34 @@ class DefaultActiveAccountMonitor(
             try {
                 followedHashtagCache.refresh()
             } catch (_: Exception) {}
+
+            configureFeedTypes(account)
+        }
+    }
+
+    private suspend fun configureFeedTypes(account: AccountModel) {
+        try {
+            val types = feedTypeRepository.getAll(account.id)
+            if (types.isNotEmpty()) {
+                return
+            }
+
+            val defaultTypes = buildList {
+                this += TimelineType.All
+                if (account.handle.isNotEmpty()) {
+                    this += TimelineType.Subscriptions
+                }
+                this += TimelineType.Local
+            }
+            val items = defaultTypes.mapIndexed { index, type ->
+                FeedTypeModel(
+                    accountId = account.id,
+                    type = type,
+                    index = index,
+                )
+            }
+            feedTypeRepository.create(items)
+        } catch (_: Exception) {
         }
     }
 
