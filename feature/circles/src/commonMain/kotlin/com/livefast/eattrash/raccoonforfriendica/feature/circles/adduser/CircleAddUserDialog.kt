@@ -62,7 +62,7 @@ internal fun CircleAddUserDialog(
     autoloadImages: Boolean = true,
     loading: Boolean = false,
     canFetchMore: Boolean = false,
-    onLoadMoreUsers: (() -> Unit)? = null,
+    onLoadMore: (() -> Unit)? = null,
     onSearch: ((String) -> Unit)? = null,
     onClose: ((List<UserModel>?) -> Unit)? = null,
 ) {
@@ -158,7 +158,7 @@ internal fun CircleAddUserDialog(
 
                     val isNearTheEnd = idx.isNearTheEnd(users)
                     if (isNearTheEnd && !loading && canFetchMore) {
-                        onLoadMoreUsers?.invoke()
+                        onLoadMore?.invoke()
                     }
                 }
 

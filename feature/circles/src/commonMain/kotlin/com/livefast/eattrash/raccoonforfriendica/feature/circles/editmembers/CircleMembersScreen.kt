@@ -306,7 +306,7 @@ fun CircleMembersScreen(circleId: String, modifier: Modifier = Modifier, customB
             autoloadImages = uiState.autoloadImages,
             loading = dialogUiState.loading,
             canFetchMore = dialogUiState.canFetchMore,
-            onLoadMoreUsers = {
+            onLoadMore = {
                 addUsersViewModel.reduce(CircleAddUserMvi.Intent.LoadNextPage)
             },
             onSearch = {
