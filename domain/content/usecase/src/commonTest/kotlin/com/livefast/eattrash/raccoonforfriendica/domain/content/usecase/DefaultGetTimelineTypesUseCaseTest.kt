@@ -2,126 +2,178 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.usecase
 
 import app.cash.turbine.test
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.FeedTypeModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.IdentityRepository
-import dev.mokkery.answering.calls
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FeedTypeRepository
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
 import dev.mokkery.mock
-import kotlinx.coroutines.flow.MutableStateFlow
+import dev.mokkery.verify.VerifyMode
+import dev.mokkery.verifySuspend
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultGetTimelineTypesUseCaseTest {
-    private val circlesRepository = mock<CirclesRepository>()
-    private val identityRepository = mock<IdentityRepository>()
+    private val accountFlow = MutableSharedFlow<AccountModel?>()
+    private val accountRepository = mock<AccountRepository> {
+        every { getActiveAsFlow() } returns accountFlow
+    }
+    private val feedTypeFlow = MutableSharedFlow<List<FeedTypeModel>>()
+    private val feedTypeRepository = mock<FeedTypeRepository> {
+        every { getAllAsFlow(any()) } returns feedTypeFlow
+    }
+    private val circlesRepository = mock<CirclesRepository> {
+        everySuspend { getAll() } returns null
+    }
 
     private val sut = DefaultGetTimelineTypesUseCase(
+        accountRepository = accountRepository,
+        feedTypeRepository = feedTypeRepository,
         circlesRepository = circlesRepository,
-        identityRepository = identityRepository,
+        dispatcher = UnconfinedTestDispatcher(),
     )
 
     @Test
-    fun `given not logged when it is invoked it returns the data`() = runTest {
-        every { identityRepository.currentUser } returns MutableStateFlow(null)
-        everySuspend { circlesRepository.getAll() } returns emptyList()
+    fun `given no active account when invoked it returns nothing`() = runTest {
+        accountFlow.emit(null)
 
         sut.invoke().test {
             val types = awaitItem()
-            assertTrue(types.contains(TimelineType.Local))
-            assertTrue(types.contains(TimelineType.All))
-            assertFalse(types.contains(TimelineType.Subscriptions))
+            assertTrue(types.isEmpty())
         }
     }
 
     @Test
-    fun `given logged when it is invoked it returns the data`() = runTest {
-        every { identityRepository.currentUser } returns MutableStateFlow(UserModel(id = "1"))
-        everySuspend { circlesRepository.getAll() } returns emptyList()
-
-        sut.invoke().test {
-            val types = awaitItem()
-            assertTrue(types.contains(TimelineType.Local))
-            assertTrue(types.contains(TimelineType.All))
-            assertTrue(types.contains(TimelineType.Subscriptions))
-        }
-    }
-
-    @Test
-    fun `given circles when it is invoked it returns the data`() = runTest {
-        every { identityRepository.currentUser } returns MutableStateFlow(UserModel(id = "1"))
-        val circles = listOf(
-            CircleModel(id = "1", name = "Circle 1"),
-            CircleModel(id = "2", name = "Circle 2"),
+    fun `given active anonymous account when invoked it returns the default types`() = runTest {
+        accountFlow.emit(AccountModel())
+        feedTypeFlow.emit(
+            listOf(
+                FeedTypeModel(id = 1, type = TimelineType.All),
+                FeedTypeModel(id = 0, type = TimelineType.Local),
+            ),
         )
-        everySuspend { circlesRepository.getAll() } returns circles
+        val expected = listOf(
+            TimelineType.All,
+            TimelineType.Local,
+        )
 
         sut.invoke().test {
             val types = awaitItem()
-            assertTrue(types.contains(TimelineType.Local))
-            assertTrue(types.contains(TimelineType.All))
-            assertTrue(types.contains(TimelineType.Subscriptions))
-            assertEquals(2, types.count { it is TimelineType.Circle })
-            assertTrue(types.contains(TimelineType.Circle(circles[0])))
-            assertTrue(types.contains(TimelineType.Circle(circles[1])))
+            assertEquals(expected, types)
         }
     }
 
     @Test
-    fun `given null circles from repository when invoked then returns defaults without crashing`() = runTest {
-        every { identityRepository.currentUser } returns MutableStateFlow(UserModel(id = "1"))
-        everySuspend { circlesRepository.getAll() } returns null
+    fun `given active logged account when invoked it returns the default types`() = runTest {
+        accountFlow.emit(AccountModel())
+        feedTypeFlow.emit(
+            listOf(
+                FeedTypeModel(id = 1, type = TimelineType.All),
+                FeedTypeModel(id = 0, type = TimelineType.Local),
+            ),
+        )
+        accountFlow.emit(AccountModel(id = 1, handle = "example.com"))
+        feedTypeFlow.emit(
+            listOf(
+                FeedTypeModel(id = 1, type = TimelineType.All),
+                FeedTypeModel(id = 2, type = TimelineType.Subscriptions),
+                FeedTypeModel(id = 0, type = TimelineType.Local),
+            ),
+        )
+        val expected = listOf(
+            TimelineType.All,
+            TimelineType.Subscriptions,
+            TimelineType.Local,
+        )
 
         sut.invoke().test {
             val types = awaitItem()
-            assertTrue(types.contains(TimelineType.Local))
-            assertTrue(types.contains(TimelineType.All))
-            assertTrue(types.contains(TimelineType.Subscriptions))
-            assertEquals(0, types.count { it is TimelineType.Circle })
+            assertEquals(expected, types)
         }
     }
 
     @Test
-    fun `when user identity changes then flow emits updated list`() = runTest {
-        val userFlow = MutableStateFlow<UserModel?>(null)
-        every { identityRepository.currentUser } returns userFlow
-        everySuspend { circlesRepository.getAll() } returns emptyList()
+    fun `given circles account when invoked it returns the default types`() = runTest {
+        accountFlow.emit(AccountModel())
+        feedTypeFlow.emit(
+            listOf(
+                FeedTypeModel(id = 1, type = TimelineType.All),
+                FeedTypeModel(id = 0, type = TimelineType.Local),
+            ),
+        )
+        accountFlow.emit(AccountModel(id = 1, handle = "example.com"))
+        val circle = CircleModel(name = "test", id = "0")
+        everySuspend { circlesRepository.getAll() } returns listOf(circle)
+        feedTypeFlow.emit(
+            listOf(
+                FeedTypeModel(id = 1, type = TimelineType.All),
+                FeedTypeModel(id = 2, type = TimelineType.Subscriptions),
+                FeedTypeModel(id = 0, type = TimelineType.Local),
+                FeedTypeModel(id = 0, type = TimelineType.Circle(), info = circle.id),
+            ),
+        )
+        val expected = listOf(
+            TimelineType.All,
+            TimelineType.Subscriptions,
+            TimelineType.Local,
+            TimelineType.Circle(circle),
+        )
 
         sut.invoke().test {
-            val initialTypes = awaitItem()
-            assertFalse(initialTypes.contains(TimelineType.Subscriptions))
-
-            userFlow.value = UserModel(id = "1")
-
-            val updatedTypes = awaitItem()
-            assertTrue(updatedTypes.contains(TimelineType.Subscriptions))
+            val types = awaitItem()
+            assertEquals(expected, types)
         }
     }
 
     @Test
-    fun `when refresh is called then flow emits updated list with new circles`() = runTest {
-        every { identityRepository.currentUser } returns MutableStateFlow(UserModel(id = "1"))
-
-        var circleList = emptyList<CircleModel>()
-        everySuspend { circlesRepository.getAll() } calls { circleList }
+    fun `when refresh then result is as expected`() = runTest {
+        accountFlow.emit(AccountModel(id = 1, handle = "example.com"))
+        val circle1 = CircleModel(name = "test 1", id = "0")
+        val circle2 = CircleModel(name = "test 2", id = "0")
+        everySuspend { circlesRepository.getAll() } returns listOf(circle1)
+        feedTypeFlow.emit(
+            listOf(
+                FeedTypeModel(id = 1, type = TimelineType.All),
+                FeedTypeModel(id = 0, type = TimelineType.Circle(), info = circle1.id),
+            ),
+        )
 
         sut.invoke().test {
             val initialTypes = awaitItem()
-            assertEquals(0, initialTypes.count { it is TimelineType.Circle })
+            assertEquals(
+                listOf(
+                    TimelineType.All,
+                    TimelineType.Circle(circle1),
+                ),
+                initialTypes,
+            )
 
-            val circle = CircleModel(id = "1", name = "New Circle")
-            circleList = listOf(circle)
+            everySuspend { circlesRepository.getAll() } returns listOf(circle2)
             sut.refresh()
 
             val updatedTypes = awaitItem()
-            assertEquals(1, updatedTypes.count { it is TimelineType.Circle })
-            assertTrue(updatedTypes.contains(TimelineType.Circle(circle)))
+            assertEquals(
+                listOf(
+                    TimelineType.All,
+                    TimelineType.Circle(circle2),
+                ),
+                updatedTypes,
+            )
+        }
+
+        verifySuspend(VerifyMode.exactly(2)) {
+            circlesRepository.getAll()
         }
     }
 }

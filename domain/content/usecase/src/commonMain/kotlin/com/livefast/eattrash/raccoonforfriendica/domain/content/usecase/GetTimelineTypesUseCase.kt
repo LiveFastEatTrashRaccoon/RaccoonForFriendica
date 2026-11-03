@@ -8,11 +8,9 @@ import kotlinx.coroutines.flow.Flow
  *
  * This includes built-in timeline types (e.g., All, Local, Subscriptions) as well as
  * user-defined circles. The stream will automatically emit a new list
- * when the underlying configuration (such as the active account) changes, or when
- * [refresh] is called manually.
+ * when the underlying configuration (such as the active account) changes.
  */
 interface GetTimelineTypesUseCase {
-
     /**
      * Returns a [Flow] that emits the list of available [TimelineType]s.
      */
@@ -20,8 +18,6 @@ interface GetTimelineTypesUseCase {
 
     /**
      * Forces a re-evaluation of the available timeline types.
-     *
-     * Calling this will cause the [Flow] returned by [invoke] to emit a new list.
      */
     suspend fun refresh()
 }
