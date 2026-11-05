@@ -90,7 +90,6 @@ import raccoonforfriendica.core.resources.generated.resources.handyman_fill
 import raccoonforfriendica.core.resources.generated.resources.home_fill
 import raccoonforfriendica.core.resources.generated.resources.ic_alt
 import raccoonforfriendica.core.resources.generated.resources.ic_default
-import raccoonforfriendica.core.resources.generated.resources.ic_loading
 import raccoonforfriendica.core.resources.generated.resources.image
 import raccoonforfriendica.core.resources.generated.resources.inbox_fill
 import raccoonforfriendica.core.resources.generated.resources.info
@@ -197,9 +196,6 @@ class DefaultCoreResources : CoreResources {
 
     override val appIconAlt: Painter
         @Composable get() = painterResource(Res.drawable.ic_alt)
-
-    override val loadingIcon: ImageVector
-        @Composable get() = vectorResource(Res.drawable.ic_loading)
     // endregion
 
     // region Media player config

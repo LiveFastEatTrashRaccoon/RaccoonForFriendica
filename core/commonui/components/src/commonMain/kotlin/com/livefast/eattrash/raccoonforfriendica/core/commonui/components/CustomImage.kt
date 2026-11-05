@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,10 +63,11 @@ fun CustomImage(
             ),
             contentAlignment = Alignment.Center,
         ) {
-            Image(
+            Icon(
                 modifier = Modifier.fillMaxSize(),
-                imageVector = LocalResources.current.loadingIcon,
+                imageVector = LocalResources.current.image,
                 contentDescription = null,
+                tint = Color.White,
             )
         }
         return
