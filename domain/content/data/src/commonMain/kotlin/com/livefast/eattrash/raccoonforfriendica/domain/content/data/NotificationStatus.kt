@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 sealed interface NotificationStatus {
     data object Enabled : NotificationStatus
@@ -17,7 +17,7 @@ fun RelationshipModel.toNotificationStatus(): NotificationStatus? = when {
 }
 
 @Composable
-fun NotificationStatus.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    NotificationStatus.Disabled -> coreResources.notifications
-    NotificationStatus.Enabled -> coreResources.notificationsActive
+fun NotificationStatus.toIcon(): ImageVector = when (this) {
+    NotificationStatus.Disabled -> LocalResources.current.notifications
+    NotificationStatus.Enabled -> LocalResources.current.notificationsActive
 }

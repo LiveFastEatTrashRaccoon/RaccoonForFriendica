@@ -126,7 +126,7 @@ internal fun CreatePostHeader(
             ) {
                 Icon(
                     modifier = Modifier.size(IconSize.s),
-                    imageVector = visibility.toIcon(LocalResources.current),
+                    imageVector = visibility.toIcon(),
                     contentDescription = visibility.toReadableName(),
                 )
                 Text(
@@ -164,7 +164,7 @@ internal fun CreatePostHeader(
                         },
                         leadingIcon = {
                             Icon(
-                                imageVector = value.toIcon(LocalResources.current),
+                                imageVector = value.toIcon(),
                                 contentDescription = null,
                             )
                         },

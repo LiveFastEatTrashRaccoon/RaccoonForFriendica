@@ -31,7 +31,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.toOption
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
@@ -68,7 +67,7 @@ internal fun NotificationItem(
         ) {
             Icon(
                 modifier = Modifier.size(IconSize.s).padding(1.dp),
-                imageVector = notification.type.toIcon(LocalResources.current),
+                imageVector = notification.type.toIcon(),
                 contentDescription = null,
                 tint = ancillaryColor,
             )
@@ -199,16 +198,16 @@ private fun NotificationType.toReadableName(): String = when (this) {
 }
 
 @Composable
-private fun NotificationType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    NotificationType.Post -> coreResources.postAdd
-    NotificationType.Favorite -> coreResources.favoriteFill
-    NotificationType.Follow -> coreResources.personAdd
-    NotificationType.FollowRequest -> coreResources.personAdd
-    NotificationType.Mention -> coreResources.alternateEmail
-    NotificationType.Poll -> coreResources.barChart
-    NotificationType.Reblog -> coreResources.rocketLaunchFill
-    NotificationType.Update -> coreResources.edit
-    NotificationType.Quote -> coreResources.formatQuoteFill
-    NotificationType.QuotedUpdate -> coreResources.edit
-    NotificationType.Unknown -> coreResources.notifications
+private fun NotificationType.toIcon(): ImageVector = when (this) {
+    NotificationType.Post -> LocalResources.current.postAdd
+    NotificationType.Favorite -> LocalResources.current.favoriteFill
+    NotificationType.Follow -> LocalResources.current.personAdd
+    NotificationType.FollowRequest -> LocalResources.current.personAdd
+    NotificationType.Mention -> LocalResources.current.alternateEmail
+    NotificationType.Poll -> LocalResources.current.barChart
+    NotificationType.Reblog -> LocalResources.current.rocketLaunchFill
+    NotificationType.Update -> LocalResources.current.edit
+    NotificationType.Quote -> LocalResources.current.formatQuoteFill
+    NotificationType.QuotedUpdate -> LocalResources.current.edit
+    NotificationType.Unknown -> LocalResources.current.notifications
 }

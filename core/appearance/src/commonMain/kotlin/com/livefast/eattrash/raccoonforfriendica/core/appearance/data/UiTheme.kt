@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.data
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 sealed interface UiTheme {
     data object Light : UiTheme
@@ -38,9 +38,9 @@ fun UiTheme?.toReadableName(): String = when (this) {
 }
 
 @Composable
-fun UiTheme.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    UiTheme.Black -> coreResources.darkModeFill
-    UiTheme.Dark -> coreResources.darkMode
-    UiTheme.Light -> coreResources.lightMode
-    else -> coreResources.computer
+fun UiTheme.toIcon(): ImageVector = when (this) {
+    UiTheme.Black -> LocalResources.current.darkModeFill
+    UiTheme.Dark -> LocalResources.current.darkMode
+    UiTheme.Light -> LocalResources.current.lightMode
+    else -> LocalResources.current.computer
 }

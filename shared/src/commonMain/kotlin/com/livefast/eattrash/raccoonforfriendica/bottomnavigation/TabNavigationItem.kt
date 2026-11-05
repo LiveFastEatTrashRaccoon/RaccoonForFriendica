@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.BottomNavigationSection
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 @Composable
@@ -49,7 +48,7 @@ internal fun RowScope.BottomNavigationItem(
                 },
             ) {
                 Icon(
-                    imageVector = section.toIcon(LocalResources.current),
+                    imageVector = section.toIcon(),
                     contentDescription = null,
                 )
             }
@@ -66,11 +65,11 @@ internal fun RowScope.BottomNavigationItem(
 }
 
 @Composable
-private fun BottomNavigationSection.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    BottomNavigationSection.Explore -> coreResources.exploreFill
-    BottomNavigationSection.Home -> coreResources.homeFill
-    is BottomNavigationSection.Inbox -> coreResources.inboxFill
-    BottomNavigationSection.Profile -> coreResources.accountCircleFill
+private fun BottomNavigationSection.toIcon(): ImageVector = when (this) {
+    BottomNavigationSection.Explore -> LocalResources.current.exploreFill
+    BottomNavigationSection.Home -> LocalResources.current.homeFill
+    is BottomNavigationSection.Inbox -> LocalResources.current.inboxFill
+    BottomNavigationSection.Profile -> LocalResources.current.accountCircleFill
 }
 
 @Composable

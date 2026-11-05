@@ -623,7 +623,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = theme.toIcon(LocalResources.current),
+                            imageVector = theme.toIcon(),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -795,7 +795,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(LocalResources.current),
+                            imageVector = it.toIcon(),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -838,7 +838,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(LocalResources.current),
+                            imageVector = it.toIcon(),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -866,7 +866,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(LocalResources.current),
+                            imageVector = it.toIcon(),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )

@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 sealed interface TimelineType {
     data object All : TimelineType
@@ -43,10 +43,10 @@ fun Int.toTimelineType(): TimelineType = when (this) {
 }
 
 @Composable
-fun TimelineType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    TimelineType.All -> coreResources.public
-    TimelineType.Local -> coreResources.cottage
-    TimelineType.Subscriptions -> coreResources.book
-    is TimelineType.Circle -> (circle?.type ?: CircleType.Other).toIcon(coreResources)
-    is TimelineType.Foreign -> coreResources.exploreFill
+fun TimelineType.toIcon(): ImageVector = when (this) {
+    TimelineType.All -> LocalResources.current.public
+    TimelineType.Local -> LocalResources.current.cottage
+    TimelineType.Subscriptions -> LocalResources.current.book
+    is TimelineType.Circle -> (circle?.type ?: CircleType.Other).toIcon()
+    is TimelineType.Foreign -> LocalResources.current.exploreFill
 }

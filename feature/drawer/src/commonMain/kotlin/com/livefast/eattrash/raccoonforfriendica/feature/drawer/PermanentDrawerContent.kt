@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.navigation.Destination
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 
@@ -115,7 +114,7 @@ fun PermanentDrawerContent(
                             .then(
                                 if (uiState.isExpanded) Modifier else Modifier.padding(start = Spacing.s),
                             ),
-                        imageVector = destination.toIcon(LocalResources.current),
+                        imageVector = destination.toIcon(),
                         contentDescription = null,
                     )
                 },
@@ -142,25 +141,25 @@ fun PermanentDrawerContent(
 }
 
 @Composable
-private fun Destination.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    Destination.Main -> coreResources.homeFill
-    Destination.Explore -> coreResources.exploreFill
-    Destination.Inbox -> coreResources.inboxFill
-    Destination.Favorites -> coreResources.favoriteFill
-    Destination.Bookmarks -> coreResources.bookmarksFill
-    Destination.FollowedHashtags -> coreResources.tag
-    Destination.FollowRequests -> coreResources.flaky
-    Destination.Circles -> coreResources.workspacesFill
-    Destination.Announcements -> coreResources.campaign
-    Destination.ConversationList -> coreResources.chatFill
-    Destination.Gallery -> coreResources.dashboard
-    Destination.Unpublished -> coreResources.stylusFountainPenFill
-    Destination.Calendar -> coreResources.calendarMonthFill
-    Destination.ShortcutList -> coreResources.exploreFill
-    Destination.Profile -> coreResources.accountCircleFill
-    Destination.NodeInfo -> coreResources.dnsFill
-    Destination.Settings -> coreResources.settingsFill
-    else -> coreResources.homeFill
+private fun Destination.toIcon(): ImageVector = when (this) {
+    Destination.Main -> LocalResources.current.homeFill
+    Destination.Explore -> LocalResources.current.exploreFill
+    Destination.Inbox -> LocalResources.current.inboxFill
+    Destination.Favorites -> LocalResources.current.favoriteFill
+    Destination.Bookmarks -> LocalResources.current.bookmarksFill
+    Destination.FollowedHashtags -> LocalResources.current.tag
+    Destination.FollowRequests -> LocalResources.current.flaky
+    Destination.Circles -> LocalResources.current.workspacesFill
+    Destination.Announcements -> LocalResources.current.campaign
+    Destination.ConversationList -> LocalResources.current.chatFill
+    Destination.Gallery -> LocalResources.current.dashboard
+    Destination.Unpublished -> LocalResources.current.stylusFountainPenFill
+    Destination.Calendar -> LocalResources.current.calendarMonthFill
+    Destination.ShortcutList -> LocalResources.current.exploreFill
+    Destination.Profile -> LocalResources.current.accountCircleFill
+    Destination.NodeInfo -> LocalResources.current.dnsFill
+    Destination.Settings -> LocalResources.current.settingsFill
+    else -> LocalResources.current.homeFill
 }
 
 @Composable

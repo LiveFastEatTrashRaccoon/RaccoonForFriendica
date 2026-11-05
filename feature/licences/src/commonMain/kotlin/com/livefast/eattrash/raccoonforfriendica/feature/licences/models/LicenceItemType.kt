@@ -2,7 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.feature.licences.models
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 sealed interface LicenceItemType {
     data object Library : LicenceItemType
@@ -11,7 +11,7 @@ sealed interface LicenceItemType {
 }
 
 @Composable
-internal fun LicenceItemType.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    LicenceItemType.Library -> coreResources.sdk
-    LicenceItemType.Resource -> coreResources.palette
+internal fun LicenceItemType.toIcon(): ImageVector = when (this) {
+    LicenceItemType.Library -> LocalResources.current.sdk
+    LicenceItemType.Resource -> LocalResources.current.palette
 }

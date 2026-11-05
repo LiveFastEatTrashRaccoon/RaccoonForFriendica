@@ -100,7 +100,7 @@ fun PostDetailDialog(post: PostModel, modifier: Modifier = Modifier, onClose: ((
                             )
                             Icon(
                                 modifier = Modifier.size(IconSize.s),
-                                imageVector = post.visibility.toIcon(LocalResources.current),
+                                imageVector = post.visibility.toIcon(),
                                 contentDescription = post.visibility.toReadableName(),
                                 tint = fullColor,
                             )

@@ -613,7 +613,7 @@ fun TimelineScreen(
                     trailingContent = {
                         Icon(
                             modifier = Modifier.size(IconSize.m),
-                            imageVector = it.toIcon(LocalResources.current),
+                            imageVector = it.toIcon(),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
