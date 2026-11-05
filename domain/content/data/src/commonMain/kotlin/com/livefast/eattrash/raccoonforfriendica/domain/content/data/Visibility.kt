@@ -3,7 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.domain.content.data
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.CoreResources
+import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
 sealed interface Visibility {
     // broadest visibility
@@ -41,14 +41,14 @@ private fun Visibility.toSortKey() = when (this) {
 }
 
 @Composable
-fun Visibility.toIcon(coreResources: CoreResources): ImageVector = when (this) {
-    Visibility.Direct -> coreResources.alternateEmail
-    Visibility.Private -> coreResources.lock
-    Visibility.Public -> coreResources.public
-    Visibility.LocalPublic -> coreResources.cottage
-    Visibility.Unlisted -> coreResources.lockOpen
-    Visibility.LocalUnlisted -> coreResources.cottage
-    is Visibility.Circle -> coreResources.workspacesFill
+fun Visibility.toIcon(): ImageVector = when (this) {
+    Visibility.Direct -> LocalResources.current.alternateEmail
+    Visibility.Private -> LocalResources.current.lock
+    Visibility.Public -> LocalResources.current.public
+    Visibility.LocalPublic -> LocalResources.current.cottage
+    Visibility.Unlisted -> LocalResources.current.lockOpen
+    Visibility.LocalUnlisted -> LocalResources.current.cottage
+    is Visibility.Circle -> LocalResources.current.workspacesFill
 }
 
 @Composable

@@ -38,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
@@ -967,7 +966,7 @@ fun ComposerScreen(
                         trailingContent = {
                             Icon(
                                 modifier = Modifier.size(IconSize.m),
-                                imageVector = value.type.toIcon(LocalResources.current),
+                                imageVector = value.type.toIcon(),
                                 contentDescription = value.type.toReadableName(),
                                 tint = MaterialTheme.colorScheme.onBackground,
                             )

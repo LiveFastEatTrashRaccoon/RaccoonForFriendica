@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
-import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.getNextAction
@@ -38,7 +37,7 @@ fun UserNotificationButton(
                 },
             ) {
                 Icon(
-                    imageVector = status.toIcon(LocalResources.current),
+                    imageVector = status.toIcon(),
                     contentDescription =
                     when (status) {
                         NotificationStatus.Disabled -> LocalStrings.current.actionEnableNotifications

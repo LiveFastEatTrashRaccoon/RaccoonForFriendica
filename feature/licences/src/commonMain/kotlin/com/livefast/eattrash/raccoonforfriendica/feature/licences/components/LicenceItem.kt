@@ -18,7 +18,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
-import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItem
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItemType
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.toIcon
@@ -45,7 +44,7 @@ internal fun LicenceItem(item: LicenceItem, modifier: Modifier = Modifier, onCli
         item.type?.also { type ->
             Icon(
                 modifier = Modifier.size(IconSize.m),
-                imageVector = type.toIcon(LocalResources.current),
+                imageVector = type.toIcon(),
                 contentDescription =
                 when (type) {
                     LicenceItemType.Library -> "Library"

@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toIcon
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableName
@@ -23,7 +22,7 @@ internal fun CircleHeader(type: CircleType, modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Icon(
-            imageVector = type.toIcon(LocalResources.current),
+            imageVector = type.toIcon(),
             contentDescription = type.toReadableName(),
             tint = MaterialTheme.colorScheme.onBackground,
         )

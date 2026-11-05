@@ -64,7 +64,7 @@ internal fun TimelineTypeItem(
     ) {
         Image(
             modifier = Modifier.size(IconSize.m),
-            imageVector = type.toIcon(LocalResources.current),
+            imageVector = type.toIcon(),
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
         )
