@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.withLink
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerValue
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
@@ -289,7 +289,7 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (uiState.loading) {
-                        CircularProgressIndicator(
+                        CustomProgressIndicator(
                             modifier = Modifier.size(IconSize.s),
                             color = MaterialTheme.colorScheme.onPrimary,
                         )

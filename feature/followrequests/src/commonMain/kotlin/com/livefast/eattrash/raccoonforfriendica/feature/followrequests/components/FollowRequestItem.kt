@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -27,6 +26,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TextWithCustomEmojis
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -115,7 +115,7 @@ fun FollowRequestItem(
                 },
             ) {
                 if (pending) {
-                    CircularProgressIndicator(
+                    CustomProgressIndicator(
                         modifier = Modifier.size(IconSize.s),
                         color = rejectColor,
                     )
@@ -133,7 +133,7 @@ fun FollowRequestItem(
                 },
             ) {
                 if (pending) {
-                    CircularProgressIndicator(
+                    CustomProgressIndicator(
                         modifier = Modifier.size(IconSize.s),
                         color = acceptColor,
                     )

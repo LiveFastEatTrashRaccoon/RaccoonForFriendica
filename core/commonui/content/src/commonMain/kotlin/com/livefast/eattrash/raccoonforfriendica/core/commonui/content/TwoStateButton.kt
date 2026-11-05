@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 
 @Composable
 fun TwoStateButton(
@@ -36,7 +36,7 @@ fun TwoStateButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (pending) {
-                CircularProgressIndicator(
+                CustomProgressIndicator(
                     modifier = Modifier.size(IconSize.s),
                     color =
                     if (isProminent) {

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -51,6 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -173,7 +173,7 @@ fun AlbumImageItem(
             Box(
                 modifier = Modifier.fillMaxWidth().aspectRatio(3.5f),
             ) {
-                CircularProgressIndicator(
+                CustomProgressIndicator(
                     modifier =
                     Modifier
                         .size(IconSize.l)

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +32,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -234,7 +234,7 @@ private fun FooterItem(
                         modifier = Modifier.size(IconSize.s),
                         contentAlignment = Alignment.Center,
                     ) {
-                        CircularProgressIndicator(
+                        CustomProgressIndicator(
                             color =
                             MaterialTheme.colorScheme.onBackground.copy(
                                 ancillaryTextAlpha,
