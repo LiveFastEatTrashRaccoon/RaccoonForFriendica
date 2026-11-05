@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSiz
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.ReactionModel
 
 @Composable
@@ -64,7 +64,7 @@ internal fun ReactionItem(
         ) {
             when {
                 reaction.loading -> {
-                    CircularProgressIndicator(
+                    CustomProgressIndicator(
                         modifier = Modifier.size(IconSize.s),
                         color =
                         if (reaction.isMe) {

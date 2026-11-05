@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerField
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.SpinnerValue
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -117,7 +117,7 @@ fun ChangeInstanceDialog(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (validationInProgress) {
-                        CircularProgressIndicator(
+                        CustomProgressIndicator(
                             modifier = Modifier.size(IconSize.s),
                             color = MaterialTheme.colorScheme.onPrimary,
                         )

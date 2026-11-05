@@ -13,8 +13,6 @@ import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,7 +32,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import kotlinx.coroutines.delay
-import kotlin.math.abs
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val LOADING_ANIMATION_DURATION = 1000
@@ -151,9 +148,8 @@ fun ZoomableImage(url: String, modifier: Modifier = Modifier, contentScale: Cont
                             )
                             res
                         }
-                    CircularProgressIndicator(
+                    CustomProgressIndicator(
                         progress = { prog },
-                        color = MaterialTheme.colorScheme.primary,
                     )
                 },
             )

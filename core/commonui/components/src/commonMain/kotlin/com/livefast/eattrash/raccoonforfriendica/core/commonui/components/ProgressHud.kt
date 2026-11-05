@@ -2,7 +2,6 @@ package com.livefast.eattrash.raccoonforfriendica.core.commonui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.Pre
 fun ProgressHud(
     modifier: Modifier = Modifier,
     overlayColor: Color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.65f),
-    color: Color = MaterialTheme.colorScheme.primary,
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -27,9 +25,7 @@ fun ProgressHud(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            CircularProgressIndicator(
-                color = color,
-            )
+            CustomShapeLoader()
         }
     }
 }
