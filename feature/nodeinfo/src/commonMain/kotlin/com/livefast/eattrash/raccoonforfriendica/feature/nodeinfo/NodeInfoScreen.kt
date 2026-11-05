@@ -323,7 +323,7 @@ fun NodeInfoScreenScaffold(
                     item {
                         SettingsHeader(
                             title = LocalStrings.current.itemOther,
-                            icon = LocalResources.current.api,
+                            icon = LocalResources.current.sdk,
                         )
                     }
 

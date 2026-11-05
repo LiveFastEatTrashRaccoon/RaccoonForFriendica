@@ -24,7 +24,6 @@ import raccoonforfriendica.core.resources.generated.resources.add
 import raccoonforfriendica.core.resources.generated.resources.add_circle
 import raccoonforfriendica.core.resources.generated.resources.add_photo_alternate
 import raccoonforfriendica.core.resources.generated.resources.alternate_email
-import raccoonforfriendica.core.resources.generated.resources.api
 import raccoonforfriendica.core.resources.generated.resources.arrow_back
 import raccoonforfriendica.core.resources.generated.resources.arrow_circle_down
 import raccoonforfriendica.core.resources.generated.resources.arrow_circle_up
@@ -62,6 +61,7 @@ import raccoonforfriendica.core.resources.generated.resources.diaspora_small
 import raccoonforfriendica.core.resources.generated.resources.dns_fill
 import raccoonforfriendica.core.resources.generated.resources.done_all
 import raccoonforfriendica.core.resources.generated.resources.download
+import raccoonforfriendica.core.resources.generated.resources.drag_handle
 import raccoonforfriendica.core.resources.generated.resources.edit
 import raccoonforfriendica.core.resources.generated.resources.exo_bold
 import raccoonforfriendica.core.resources.generated.resources.exo_italic
@@ -133,11 +133,13 @@ import raccoonforfriendica.core.resources.generated.resources.rss_feed
 import raccoonforfriendica.core.resources.generated.resources.save
 import raccoonforfriendica.core.resources.generated.resources.schedule
 import raccoonforfriendica.core.resources.generated.resources.schedule_send
+import raccoonforfriendica.core.resources.generated.resources.sdk
 import raccoonforfriendica.core.resources.generated.resources.search
 import raccoonforfriendica.core.resources.generated.resources.send
 import raccoonforfriendica.core.resources.generated.resources.settings_fill
 import raccoonforfriendica.core.resources.generated.resources.share
 import raccoonforfriendica.core.resources.generated.resources.shield
+import raccoonforfriendica.core.resources.generated.resources.sort
 import raccoonforfriendica.core.resources.generated.resources.strikethrough_s
 import raccoonforfriendica.core.resources.generated.resources.style_fill
 import raccoonforfriendica.core.resources.generated.resources.stylus_fountain_pen_fill
@@ -287,9 +289,6 @@ class DefaultCoreResources : CoreResources {
     override val alternateEmail: ImageVector
         @Composable get() = vectorResource(Res.drawable.alternate_email)
 
-    override val api: ImageVector
-        @Composable get() = vectorResource(Res.drawable.api)
-
     override val arrowBack: ImageVector
         @Composable get() = vectorResource(Res.drawable.arrow_back)
 
@@ -385,6 +384,9 @@ class DefaultCoreResources : CoreResources {
 
     override val download: ImageVector
         @Composable get() = vectorResource(Res.drawable.download)
+
+    override val dragHandle: ImageVector
+        @Composable get() = vectorResource(Res.drawable.drag_handle)
 
     override val edit: ImageVector
         @Composable get() = vectorResource(Res.drawable.edit)
@@ -521,6 +523,9 @@ class DefaultCoreResources : CoreResources {
     override val scheduleSend: ImageVector
         @Composable get() = vectorResource(Res.drawable.schedule_send)
 
+    override val sdk: ImageVector
+        @Composable get() = vectorResource(Res.drawable.sdk)
+
     override val share: ImageVector
         @Composable get() = vectorResource(Res.drawable.share)
 
@@ -535,6 +540,9 @@ class DefaultCoreResources : CoreResources {
 
     override val shield: ImageVector
         @Composable get() = vectorResource(Res.drawable.shield)
+
+    override val sort: ImageVector
+        @Composable get() = vectorResource(Res.drawable.sort)
 
     override val strikethroughS: ImageVector
         @Composable get() = vectorResource(Res.drawable.strikethrough_s)

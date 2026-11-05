@@ -3,6 +3,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.persistence.di
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.AccountDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DaoFactory
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.DraftDao
+import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.FeedTypeDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.SettingsDao
 import com.livefast.eattrash.raccoonforfriendica.core.persistence.dao.UserRateLimitDao
 import dev.zacsweers.metro.AppScope
@@ -30,4 +31,8 @@ class PersistenceModule {
     @Provides
     @SingleIn(AppScope::class)
     fun provideUserRateLimitDao(factory: DaoFactory): UserRateLimitDao = factory.getUserRateLimitDao()
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideFeedTypeDao(factory: DaoFactory): FeedTypeDao = factory.getFeedTypeDao()
 }

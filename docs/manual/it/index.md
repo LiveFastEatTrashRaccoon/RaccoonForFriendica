@@ -562,6 +562,7 @@ costituita dalle seguenti sezioni:
 - **Generali**
   - **Lingua** configura la lingua dell'interfaccia utente;
   - **Tipo di feed predefinito** configura il tipo di elenco predefinito della schermata Timeline;
+  - **Configura tipi feed** configura i tipi di feed disponibili nella schermata Timeline;
   - **Visibilità predefinita post** configura la visibilità predefinita (Pubblica, Non in lista,
     Solo seguaci o Solo menzioni) usata per i nuovi post;
   - **Visibilità predefinita risposte** configura la visibilità predefinita delle risposte;

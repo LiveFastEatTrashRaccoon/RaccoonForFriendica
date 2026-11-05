@@ -179,6 +179,15 @@ class LicencesViewModel(private val settingsRepository: SettingsRepository) :
                     this +=
                         LicenceItem(
                             type = LicenceItemType.Library,
+                            title = "Reorderable",
+                            subtitle = """
+                                    Reorder items in Lists and Grids in Jetpack Compose and Compose Multiplatform with drag and drop.
+                            """.trimIndent(),
+                            url = LicenceUrls.REORDER,
+                        )
+                    this +=
+                        LicenceItem(
+                            type = LicenceItemType.Library,
                             title = "Multiplatform Settings",
                             subtitle = """
                                     A Kotlin library for Multiplatform apps, so that common code can persist key-value

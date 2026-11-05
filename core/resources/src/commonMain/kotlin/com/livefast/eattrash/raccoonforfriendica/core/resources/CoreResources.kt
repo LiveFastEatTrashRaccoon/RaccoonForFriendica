@@ -54,7 +54,7 @@ interface CoreResources {
     val addCircle: ImageVector @Composable get
     val addPhotoAlternate: ImageVector @Composable get
     val alternateEmail: ImageVector @Composable get
-    val api: ImageVector @Composable get
+    val sdk: ImageVector @Composable get
     val arrowBack: ImageVector @Composable get
     val arrowCircleDown: ImageVector @Composable get
     val arrowCircleUp: ImageVector @Composable get
@@ -87,6 +87,7 @@ interface CoreResources {
     val dnsFill: ImageVector @Composable get
     val doneAll: ImageVector @Composable get
     val download: ImageVector @Composable get
+    val dragHandle: ImageVector @Composable get
     val edit: ImageVector @Composable get
     val explicitFill: ImageVector @Composable get
     val exploreFill: ImageVector @Composable get
@@ -137,6 +138,7 @@ interface CoreResources {
     val send: ImageVector @Composable get
     val settingsFill: ImageVector @Composable get
     val shield: ImageVector @Composable get
+    val sort: ImageVector @Composable get
     val strikethroughS: ImageVector @Composable get
     val styleFill: ImageVector @Composable get
     val stylusFountainPenFill: ImageVector @Composable get

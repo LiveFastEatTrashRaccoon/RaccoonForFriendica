@@ -521,7 +521,8 @@ sections:
 
 - **General**
   - **Language**  configures the language for the user interface;
-  - **Default timeline type** configures the timeline type used by default in the Timeline screen
+  - **Default timeline type** sets the timeline type used by default in the Timeline screen;
+  - **Configure timeline types** configures the available feed types for the Timeline screen;
   - **Default visibility for posts** configures the visibility (`public`, `unlisted`, `private` -
     i.e. only followers — or `direct` — i.e. ony mentions) used for posts by default;
   - **Default visibility for replies** configures the visibility used for replies by default;

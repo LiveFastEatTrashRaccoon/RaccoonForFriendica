@@ -60,6 +60,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.profile.newaccount.NewA
 import com.livefast.eattrash.raccoonforfriendica.feature.report.CreateReportScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.SettingsScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.settings.feedback.UserFeedbackScreen
+import com.livefast.eattrash.raccoonforfriendica.feature.settings.timelinetypes.ConfigureTimelineTypesScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListMvi
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListScreen
 import com.livefast.eattrash.raccoonforfriendica.feature.shortcuts.list.ShortcutListViewModel
@@ -363,5 +364,8 @@ internal fun getEntryProvider(
             myAccountLazyListState = myAccountLazyListState,
             lockedSection = BottomNavigationSection.Profile,
         )
+    }
+    entry<Destination.ConfigureTimelineTypes> {
+        ConfigureTimelineTypesScreen()
     }
 }

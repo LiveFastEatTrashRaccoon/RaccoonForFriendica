@@ -36,6 +36,7 @@
     <string name="action_edit_members">Edit members</string>
     <string name="action_edit_personal_note">Edit note</string>
     <string name="action_enable_notifications">Enable notifications</string>
+    <string name="action_enter_reorder_mode">Enter reorder mode</string>
     <string name="action_export">Export</string>
     <string name="action_filter">Filter</string>
     <string name="action_follow">Follow</string>
@@ -128,6 +129,7 @@
     <string name="comment_bar_theme_green">Grumpy Gecko</string>
     <string name="comment_bar_theme_rainbow">Radiant Rain-boa</string>
     <string name="comment_bar_theme_red">Sassy Shrimp</string>
+    <string name="configure_timeline_types_title">Configure timeline types</string>
     <string name="confirm_change_markup_mode">If you change the markup type, all the formatting will be lost. Proceed anyway?</string>
     <string name="content_scale_fill_height">Fill height</string>
     <string name="content_scale_fill_width">Fill width</string>

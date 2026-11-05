@@ -4,6 +4,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProvid
 import com.livefast.eattrash.raccoonforfriendica.core.api.provider.ServiceProviderEvent
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NodeFeatures
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
+import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FeedTypeRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.MarkerRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.SupportedFeatureRepository
@@ -48,6 +49,7 @@ class DefaultActiveAccountMonitorTest {
         mock<SupportedFeatureRepository>(MockMode.autoUnit) {
             every { features } returns MutableStateFlow(NodeFeatures())
         }
+    private val feedTypeRepository = mock<FeedTypeRepository>()
     private val notificationCoordinator = mock<NotificationCoordinator>(MockMode.autoUnit)
     private val contentPreloadManager = mock<ContentPreloadManager>(MockMode.autoUnit)
     private val markerRepository =
@@ -71,6 +73,7 @@ class DefaultActiveAccountMonitorTest {
             accountCredentialsCache = accountCredentialsCache,
             settingsRepository = settingsRepository,
             supportedFeatureRepository = supportedFeatureRepository,
+            feedTypeRepository = feedTypeRepository,
             contentPreloadManager = contentPreloadManager,
             markerRepository = markerRepository,
             notificationCoordinator = notificationCoordinator,
@@ -84,7 +87,8 @@ class DefaultActiveAccountMonitorTest {
     @Test
     fun `given no active account when started then interactions are as expected`() = runTest {
         val account: AccountModel? = null
-        everySuspend { accountRepository.getBy(handle = any()) } returns AccountModel(id = 1)
+        val accountId = 1L
+        everySuspend { accountRepository.getBy(handle = any()) } returns AccountModel(id = accountId)
         everySuspend { accountRepository.getActive() } returns account
         val settings = SettingsModel()
         everySuspend { settingsRepository.get(any()) } returns settings
@@ -99,7 +103,6 @@ class DefaultActiveAccountMonitorTest {
             supportedFeatureRepository.refresh()
             contentPreloadManager.preload()
             accountRepository.getBy(handle = "")
-            settingsRepository.get(accountId = 1)
             settingsRepository.changeCurrent(settings)
             notificationCoordinator.setupAnonymousUser()
             announcementsManager.clearUnreadCount()
@@ -110,7 +113,8 @@ class DefaultActiveAccountMonitorTest {
     @Test
     fun `given active account and valid credentials when started then interactions are as expected`() = runTest {
         val userId = "fake-user-id"
-        val account = AccountModel(id = 1L, handle = "user@example.com", remoteId = userId)
+        val accountId = 1L
+        val account = AccountModel(id = accountId, handle = "user@example.com", remoteId = userId)
         everySuspend { accountRepository.getActive() } returns account
         val credentials = ApiCredentials.OAuth2("fake-access-token", "")
         everySuspend { accountCredentialsCache.get(any()) } returns credentials
@@ -125,10 +129,12 @@ class DefaultActiveAccountMonitorTest {
             supportedFeatureRepository.refresh()
             identityRepository.refreshCurrentUser(userId)
             contentPreloadManager.preload(userId)
+            settingsRepository.get(accountId = accountId)
             settingsRepository.changeCurrent(settings)
             notificationCoordinator.setupLoggedUser()
             announcementsManager.refreshUnreadCount()
             followedHashtagCache.refresh()
+            feedTypeRepository.getAll(accountId = accountId)
         }
     }
 

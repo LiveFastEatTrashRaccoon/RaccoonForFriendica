@@ -104,4 +104,6 @@ interface MainRouter {
     fun openShortcut(node: String)
 
     fun openManageCircles(user: UserModel)
+
+    fun openConfigureTimelineTypes()
 }

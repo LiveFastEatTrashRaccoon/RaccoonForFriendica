@@ -40,6 +40,7 @@ interface Strings {
     val actionEditMembers: String @Composable get
     val actionEditPersonalNote: String @Composable get
     val actionEnableNotifications: String @Composable get
+    val actionEnterReorderMode: String @Composable get
     val actionExport: String @Composable get
     val actionFilter: String @Composable get
     val actionFollow: String @Composable get
@@ -136,6 +137,7 @@ interface Strings {
     val commentBarThemeRainbow: String @Composable get
     val commentBarThemeRed: String @Composable get
     val confirmChangeMarkupMode: String @Composable get
+    val configureTimelineTypesTitle: String @Composable get
     val contentScaleFillHeight: String @Composable get
     val contentScaleFillWidth: String @Composable get
     val contentScaleFit: String @Composable get

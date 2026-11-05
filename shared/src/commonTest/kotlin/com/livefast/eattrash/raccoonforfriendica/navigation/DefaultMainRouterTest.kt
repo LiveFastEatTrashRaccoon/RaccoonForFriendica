@@ -546,4 +546,13 @@ class DefaultMainRouterTest {
             navigationCoordinator.push(Destination.ShortcutTimeline("node"))
         }
     }
+
+    @Test
+    fun `when openConfigureTimelineTypes then interactions are as expected`() {
+        sut.openConfigureTimelineTypes()
+
+        verify {
+            navigationCoordinator.push(Destination.ConfigureTimelineTypes)
+        }
+    }
 }

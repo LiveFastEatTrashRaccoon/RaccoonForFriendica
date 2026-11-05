@@ -368,4 +368,8 @@ class DefaultMainRouter(
         }
         navigationCoordinator.push(Destination.ManageUserCircles(user.id))
     }
+
+    override fun openConfigureTimelineTypes() {
+        navigationCoordinator.push(Destination.ConfigureTimelineTypes)
+    }
 }

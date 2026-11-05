@@ -1,5 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,14 +22,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -35,6 +41,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 fun GenericListItem(
     title: String,
     modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
     subtitle: String? = null,
     options: List<Option> = emptyList(),
     onClick: (() -> Unit)? = null,
@@ -53,6 +60,14 @@ fun GenericListItem(
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (leadingIcon != null) {
+            Image(
+                modifier = Modifier.size(IconSize.m),
+                imageVector = leadingIcon,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground),
+            )
+        }
         Column(
             modifier = Modifier.weight(1f).padding(start = Spacing.xs),
             verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
@@ -116,6 +131,19 @@ fun GenericListItem(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun GenericListItemPreview() {
+    PreviewWrapper {
+        Surface {
+            GenericListItem(
+                leadingIcon = LocalResources.current.styleFill,
+                title = "Style",
+            )
         }
     }
 }

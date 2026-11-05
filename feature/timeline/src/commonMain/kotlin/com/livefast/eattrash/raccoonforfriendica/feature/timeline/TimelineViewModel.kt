@@ -296,8 +296,8 @@ class TimelineViewModel(
 
         if (!initial) {
             followedHashtagCache.refresh()
-            getTimelineTypes.refresh()
         }
+        getTimelineTypes.refresh()
 
         val settings = settingsRepository.current.value ?: SettingsModel()
         paginationManager.reset(
