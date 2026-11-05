@@ -523,4 +523,6 @@
     <string name="action_disable_notifications">Disabilita notifiche</string>
     <string name="action_enable_notifications">Abilita notifiche</string>
     <string name="settings_about_read_blog">Blog</string>
+    <string name="action_enter_reorder_mode">Entra in modalità riordino</string>
+    <string name="configure_timeline_types_title">Configura tipi feed</string>
 </resources>
