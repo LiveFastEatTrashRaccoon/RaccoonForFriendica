@@ -523,4 +523,6 @@
     <string name="action_disable_notifications">Desactivar notificaciones</string>
     <string name="action_enable_notifications">Activar notificaciones</string>
     <string name="settings_about_read_blog">Blog</string>
+    <string name="action_enter_reorder_mode">Iniciar modo reordenamiento</string>
+    <string name="configure_timeline_types_title">Configurar tipos línea temporal</string>
 </resources>
