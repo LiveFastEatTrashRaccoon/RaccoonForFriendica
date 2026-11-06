@@ -220,8 +220,8 @@ fun CalendarScreen(model: CalendarMvi, modifier: Modifier = Modifier) {
                     }
                 }
 
-                item {
-                    if (uiState.loading && !uiState.refreshing) {
+                if (uiState.loading && !uiState.refreshing) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

@@ -290,8 +290,8 @@ fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAc
                     }
                 }
 
-                item {
-                    if (uiState.loading && !uiState.refreshing) {
+                if (uiState.loading && !uiState.refreshing) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

@@ -248,8 +248,8 @@ fun CircleMembersScreen(circleId: String, modifier: Modifier = Modifier, customB
                     Spacer(modifier = Modifier.height(Spacing.interItem))
                 }
 
-                item {
-                    if (uiState.loading && !uiState.refreshing) {
+                if (uiState.loading && !uiState.refreshing) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

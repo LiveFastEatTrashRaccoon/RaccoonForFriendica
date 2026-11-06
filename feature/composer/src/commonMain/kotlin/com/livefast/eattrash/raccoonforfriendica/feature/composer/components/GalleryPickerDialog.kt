@@ -282,8 +282,8 @@ fun GalleryPickerDialog(
                         }
                     }
 
-                    item(span = StaggeredGridItemSpan.FullLine) {
-                        if (loading && canFetchMore) {
+                    if (loading && canFetchMore) {
+                        item(span = StaggeredGridItemSpan.FullLine) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),
                                 contentAlignment = Alignment.Center,

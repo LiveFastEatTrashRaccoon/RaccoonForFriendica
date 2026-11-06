@@ -298,8 +298,8 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
                     }
                 }
 
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                    item(span = StaggeredGridItemSpan.FullLine) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

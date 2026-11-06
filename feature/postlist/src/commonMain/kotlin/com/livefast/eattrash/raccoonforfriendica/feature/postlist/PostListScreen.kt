@@ -459,8 +459,8 @@ fun PostListScreen(title: String, model: PostListMvi, modifier: Modifier = Modif
                     }
                 }
 
-                item {
-                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

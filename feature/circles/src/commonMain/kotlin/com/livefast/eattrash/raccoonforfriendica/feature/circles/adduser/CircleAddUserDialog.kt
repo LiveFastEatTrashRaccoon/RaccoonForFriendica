@@ -111,8 +111,8 @@ internal fun CircleAddUserDialog(
                 modifier = Modifier.fillMaxWidth().height(300.dp),
             ) {
                 if (!loading && users.isEmpty() && selectedUsers.isEmpty()) {
-                    item {
-                        if (query.isEmpty()) {
+                    if (query.isEmpty()) {
+                        item {
                             val animatingPart = getAnimatedDots()
                             Text(
                                 modifier =
@@ -129,7 +129,9 @@ internal fun CircleAddUserDialog(
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
-                        } else if (noUsersDebounced) {
+                        }
+                    } else if (noUsersDebounced) {
+                        item {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
                                 text = LocalStrings.current.messageEmptyList,
@@ -174,8 +176,8 @@ internal fun CircleAddUserDialog(
                     }
                 }
 
-                item {
-                    if (loading && canFetchMore) {
+                if (loading && canFetchMore) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,
