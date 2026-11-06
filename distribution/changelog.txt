@@ -1,6 +1,11 @@
 ## What's Changed
 
-- fix(composer): resolve crash when opening post creation
-- refactor(feats): clarify optionality of assisted parameters in ViewModels
+- fix: crash in back navigation on Android <= 14 in #1465
+- feat: add possibility to configure feed types in #1457
+- enhancement: granular push notifications in #1450
+- enhancement: reimplement loading indicators in #1458
+- chore: avoid empty items in lazy lists in #1464
+- chore: code cleanup and add unit tests
+- chore: update dependencies
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.7...1.1.8
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.8...1.2.0

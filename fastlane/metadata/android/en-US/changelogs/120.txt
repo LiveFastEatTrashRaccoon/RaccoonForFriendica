@@ -1,0 +1,6 @@
+- fix: crash in back navigation on Android <= 14
+- feat: add possibility to configure feed types
+- enh: granular push notifications
+- enh: reimplement loading indicators
+- chore: avoid empty items in lazy lists
+- chore: code cleanup, new unit tests, dependency updates
