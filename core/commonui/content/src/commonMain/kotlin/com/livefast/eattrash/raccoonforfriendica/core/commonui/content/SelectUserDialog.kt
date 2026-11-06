@@ -110,8 +110,8 @@ fun SelectUserDialog(
                 modifier = Modifier.fillMaxWidth().height(200.dp),
             ) {
                 if (!loading && users.isEmpty()) {
-                    item {
-                        if (query.isEmpty()) {
+                    if (query.isEmpty()) {
+                        item {
                             val animatingPart = getAnimatedDots()
                             Text(
                                 modifier =
@@ -128,7 +128,9 @@ fun SelectUserDialog(
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
-                        } else if (noUsersDebounced) {
+                        }
+                    } else if (noUsersDebounced) {
+                        item {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.s),
                                 text = LocalStrings.current.messageEmptyList,
@@ -155,8 +157,8 @@ fun SelectUserDialog(
                     }
                 }
 
-                item {
-                    if (loading && canFetchMore) {
+                if (loading && canFetchMore) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

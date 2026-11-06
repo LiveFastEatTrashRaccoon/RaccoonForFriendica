@@ -262,43 +262,43 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
                     }
                 }
 
-                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty()) {
+                if (!uiState.initial && !uiState.refreshing && !uiState.loading && uiState.items.isEmpty() &&
+                    otherUserName.isNotEmpty()
+                ) {
                     item {
-                        if (otherUserName.isNotEmpty()) {
-                            Box(
-                                modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        top = Spacing.m,
-                                        start = Spacing.s,
-                                        end = Spacing.s,
-                                    ).border(
-                                        width = Dp.Hairline,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        shape = RoundedCornerShape(CornerSize.xl),
-                                    ).background(
-                                        color =
-                                        MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                            5.dp,
-                                        ),
-                                        shape = RoundedCornerShape(CornerSize.xl),
-                                    ).padding(Spacing.m),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                TextWithCustomEmojis(
-                                    text =
-                                    buildString {
-                                        append(LocalStrings.current.messageEmptyConversation)
-                                        append(" ")
-                                        append(otherUserName)
-                                    },
-                                    style = MaterialTheme.typography.bodyMedium,
+                        Box(
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = Spacing.m,
+                                    start = Spacing.s,
+                                    end = Spacing.s,
+                                ).border(
+                                    width = Dp.Hairline,
                                     color = MaterialTheme.colorScheme.onBackground,
-                                    emojis = uiState.otherUser?.emojis.orEmpty(),
-                                    autoloadImages = uiState.autoloadImages,
-                                )
-                            }
+                                    shape = RoundedCornerShape(CornerSize.xl),
+                                ).background(
+                                    color =
+                                    MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                        5.dp,
+                                    ),
+                                    shape = RoundedCornerShape(CornerSize.xl),
+                                ).padding(Spacing.m),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            TextWithCustomEmojis(
+                                text =
+                                buildString {
+                                    append(LocalStrings.current.messageEmptyConversation)
+                                    append(" ")
+                                    append(otherUserName)
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                emojis = uiState.otherUser?.emojis.orEmpty(),
+                                autoloadImages = uiState.autoloadImages,
+                            )
                         }
                     }
                 }

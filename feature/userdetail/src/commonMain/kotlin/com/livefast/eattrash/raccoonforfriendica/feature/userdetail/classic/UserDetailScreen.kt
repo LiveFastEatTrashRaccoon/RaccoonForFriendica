@@ -149,6 +149,23 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
     var changeRateLimitBottomSheetOpen by remember { mutableStateOf(false) }
     val isHomeInstance = otherInstance.isNullOrEmpty()
 
+    val accountAgeLabel = LocalStrings.current.accountAge
+    val creationDate = uiState.user?.created?.prettifyDate()
+    val fields =
+        remember(creationDate, uiState.user?.fields, accountAgeLabel) {
+            buildList {
+                if (creationDate != null) {
+                    add(
+                        FieldModel(
+                            key = accountAgeLabel,
+                            value = creationDate,
+                        ),
+                    )
+                }
+                addAll(uiState.user?.fields.orEmpty())
+            }
+        }
+
     suspend fun goBackToTop() {
         try {
             if (lazyListState.firstVisibleItemIndex > 0) {
@@ -540,9 +557,10 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                 item {
                     Spacer(modifier = Modifier.height(Spacing.xs))
                 }
-                item {
-                    val note = uiState.personalNote.orEmpty()
-                    if (note.isNotEmpty() || uiState.personalNoteEditEnabled) {
+
+                val note = uiState.personalNote.orEmpty()
+                if (note.isNotEmpty() || uiState.personalNoteEditEnabled) {
+                    item {
                         UserNoteField(
                             modifier =
                             Modifier.fillMaxWidth().padding(
@@ -563,20 +581,9 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         )
                     }
                 }
-                item {
-                    val fields =
-                        buildList {
-                            uiState.user?.created?.also { date ->
-                                add(
-                                    FieldModel(
-                                        key = LocalStrings.current.accountAge,
-                                        value = date.prettifyDate(),
-                                    ),
-                                )
-                            }
-                            addAll(uiState.user?.fields.orEmpty())
-                        }
-                    if (fields.isNotEmpty()) {
+
+                if (fields.isNotEmpty()) {
+                    item {
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = Spacing.s),
                         )
@@ -843,8 +850,8 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                     }
                 }
 
-                item {
-                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

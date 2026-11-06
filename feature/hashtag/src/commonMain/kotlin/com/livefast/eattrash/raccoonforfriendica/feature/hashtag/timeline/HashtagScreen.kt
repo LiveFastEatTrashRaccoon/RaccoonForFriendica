@@ -481,8 +481,8 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                     }
                 }
 
-                item {
-                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,

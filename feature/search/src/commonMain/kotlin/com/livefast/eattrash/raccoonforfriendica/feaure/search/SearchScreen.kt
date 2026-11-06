@@ -277,8 +277,8 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                     !uiState.earlyLoading &&
                     uiState.items.isEmpty()
                 ) {
-                    item {
-                        if (uiState.query.isEmpty()) {
+                    if (uiState.query.isEmpty()) {
+                        item {
                             val animatingPart = getAnimatedDots()
                             Text(
                                 modifier =
@@ -297,7 +297,9 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                 },
                                 style = MaterialTheme.typography.bodyLarge,
                             )
-                        } else {
+                        }
+                    } else {
+                        item {
                             Text(
                                 modifier = Modifier.fillMaxWidth().padding(top = Spacing.m),
                                 text = LocalStrings.current.messageEmptyList,
@@ -622,8 +624,8 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                     }
                 }
 
-                item {
-                    if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                if (uiState.loading && !uiState.refreshing && uiState.canFetchMore) {
+                    item {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center,
