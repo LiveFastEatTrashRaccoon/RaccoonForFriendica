@@ -7,8 +7,6 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
-import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -31,8 +29,8 @@ class DefaultNavigationAdapter(@Assisted private val backStack: NavBackStack<Nav
     }
 
     override fun pop() {
-        if (canPop.value) {
-            backStack.removeLast()
+        if (canPop.value && backStack.isNotEmpty()) {
+            backStack.removeAt(backStack.lastIndex)
         }
         updateCanPop()
     }
