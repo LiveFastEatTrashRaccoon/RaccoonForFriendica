@@ -198,17 +198,16 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                 useDynamicColors = uiState.currentSettings?.dynamicColors == true,
                 barTheme = uiState.currentSettings?.barTheme ?: UiBarTheme.Transparent,
             ) {
-                SharedTransitionLayout {
-                    navigationCoordinator.setSharedTransitionScope(this)
-
-                    if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-                        ModalNavigationDrawer(
-                            drawerState = drawerState,
-                            gesturesEnabled = drawerGesturesEnabled,
-                            drawerContent = {
-                                DrawerContent()
-                            },
-                        ) {
+                if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    ModalNavigationDrawer(
+                        drawerState = drawerState,
+                        gesturesEnabled = drawerGesturesEnabled,
+                        drawerContent = {
+                            DrawerContent()
+                        },
+                    ) {
+                        SharedTransitionLayout {
+                            navigationCoordinator.setSharedTransitionScope(this)
                             val canPop by drawerCoordinator.drawerOpened.collectAsState()
                             val navState = rememberNavigationEventState(NavigationEventInfo.None)
                             NavigationBackHandler(
@@ -251,28 +250,31 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                 ),
                             )
                         }
-                    } else {
-                        Scaffold(
-                            content = { paddingValues ->
-                                var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
-                                    mutableStateOf(Destination.Main)
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(paddingValues),
+                    }
+                } else {
+                    Scaffold(
+                        content = { paddingValues ->
+                            var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
+                                mutableStateOf(Destination.Main)
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(paddingValues),
+                            ) {
+                                PermanentNavigationDrawer(
+                                    drawerContent = {
+                                        PermanentDrawerContent(
+                                            currentDestination = selectedDestination,
+                                            onSelectDestination = { destination ->
+                                                selectedDestination = destination
+                                                backStack[backStack.lastIndex] = destination
+                                            },
+                                        )
+                                    },
                                 ) {
-                                    PermanentNavigationDrawer(
-                                        drawerContent = {
-                                            PermanentDrawerContent(
-                                                currentDestination = selectedDestination,
-                                                onSelectDestination = { destination ->
-                                                    selectedDestination = destination
-                                                    backStack[backStack.lastIndex] = destination
-                                                },
-                                            )
-                                        },
-                                    ) {
+                                    SharedTransitionLayout {
+                                        navigationCoordinator.setSharedTransitionScope(this)
                                         // preload ViewModels for all top-level sections
                                         val timelineViewModel: TimelineMvi = metroViewModel<TimelineViewModel>()
                                         val exploreViewModel: ExploreMvi = metroViewModel<ExploreViewModel>()
@@ -338,9 +340,9 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                         )
                                     }
                                 }
-                            },
-                        )
-                    }
+                            }
+                        },
+                    )
                 }
             }
         }
