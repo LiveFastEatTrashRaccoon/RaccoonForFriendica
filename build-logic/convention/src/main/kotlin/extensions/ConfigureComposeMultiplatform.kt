@@ -16,7 +16,6 @@ internal fun Project.configureComposeMultiplatform(extension: KotlinMultiplatfor
                     implementation(libs.getBundle("compose-ui"))
                     implementation(libs.getBundle("compose-adaptive"))
                     implementation(libs.getBundle("compose-navigation"))
-                    implementation(libs.getLibrary("androidx-lifecycle-viewmodel-nav3"))
                     implementation(libs.getLibrary("compose-ui-tooling-preview"))
                 }
             }
