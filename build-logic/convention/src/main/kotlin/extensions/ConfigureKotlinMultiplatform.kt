@@ -62,8 +62,8 @@ internal fun Project.configureKotlinMultiplatformAndroidLibrary(target: KotlinMu
         val moduleName = path.split(":").drop(1).joinToString(".")
         namespace = if (moduleName.isNotEmpty()) "$PACKAGE_PREFIX.$moduleName" else PACKAGE_PREFIX
 
-        compileSdk = libs.getVersion("android-compileSdk").toIntOrNull()
-        minSdk = libs.getVersion("android-minSdk").toIntOrNull()
+        compileSdk = (project.findProperty("android.compileSdk") as? String)?.toInt()
+        minSdk = (project.findProperty("android.minSdk") as? String)?.toInt()
 
         packaging {
             resources {
