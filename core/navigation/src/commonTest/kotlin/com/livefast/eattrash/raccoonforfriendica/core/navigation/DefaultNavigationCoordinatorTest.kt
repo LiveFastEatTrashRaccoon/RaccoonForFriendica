@@ -238,6 +238,13 @@ class DefaultNavigationCoordinatorTest {
         assertEquals(scope, res)
     }
 
+    @Test
+    fun `given shared transition scope not set when getSharedTransitionScope then returns fallback`() = runTest {
+        val res = sut.getSharedTransitionScope()
+
+        assertEquals(NoOpSharedTransitionScope, res)
+    }
+
     companion object {
         val DELAY = 250.milliseconds
     }

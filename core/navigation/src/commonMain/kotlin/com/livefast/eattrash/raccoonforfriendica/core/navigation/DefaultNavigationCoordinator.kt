@@ -64,8 +64,7 @@ class DefaultNavigationCoordinator(
         }.launchIn(scope)
     }
 
-    override fun getSharedTransitionScope(): SharedTransitionScope =
-        sharedTransitionScope ?: error("sharedTransitionScope not set")
+    override fun getSharedTransitionScope(): SharedTransitionScope = sharedTransitionScope ?: NoOpSharedTransitionScope
 
     override fun setSharedTransitionScope(scope: SharedTransitionScope) {
         sharedTransitionScope = scope
