@@ -87,7 +87,9 @@ import com.livefast.eattrash.raccoonforfriendica.navigation.isDetailDestination
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -124,24 +126,29 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
             drawerCoordinator.changeDrawerOpened(isDrawerOpen)
         }.launchIn(this)
 
+        var drawerJob: Job? = null
         val effectScope = this
         drawerCoordinator.events.collect { evt ->
-            // create a new scope to avoid cancelling the parent effectScope
-            effectScope.launch {
-                when (evt) {
-                    DrawerEvent.Toggle -> {
-                        if (drawerState.isClosed) {
-                            drawerState.open()
-                        } else {
-                            drawerState.close()
+            drawerJob?.cancel()
+            drawerJob = effectScope.launch {
+                try {
+                    when (evt) {
+                        DrawerEvent.Toggle -> {
+                            if (drawerState.targetValue == DrawerValue.Closed) {
+                                drawerState.open()
+                            } else {
+                                drawerState.close()
+                            }
                         }
-                    }
 
-                    DrawerEvent.Close -> {
-                        if (drawerState.isOpen) {
-                            drawerState.close()
+                        DrawerEvent.Close -> {
+                            if (drawerState.targetValue == DrawerValue.Open) {
+                                drawerState.close()
+                            }
                         }
                     }
+                } catch (_: CancellationException) {
+                    // ignored: animation was canceled by another event / gesture
                 }
             }
         }
