@@ -18,7 +18,8 @@ compose-m3 = "1.13.0-alpha01"
 compose-m3-adaptive = "1.3.0"
 compose-multiplatform-media-player = "1.0.53"
 compose-navigationevent = "1.1.0"
-compose-plugin = "1.12.1"
+compose-plugin = "1.12.2"
+compose-test = "1.12.1"
 connectivity = "2.5.3"
 espresso = "3.7.0"
 kermit = "2.2.0"
@@ -76,8 +77,8 @@ compose-multiplatform-media-player = { module = "network.chaintech:compose-multi
 compose-navigationevent = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "compose-navigationevent" }
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-plugin" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-plugin" }
-compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-plugin" }
-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-plugin" }
+compose-ui-test = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-test" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-test" }
 compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-plugin" }
 compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-plugin" }
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
