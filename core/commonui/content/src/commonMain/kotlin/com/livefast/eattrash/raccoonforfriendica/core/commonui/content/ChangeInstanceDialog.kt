@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -33,6 +34,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.Validatio
 import com.livefast.eattrash.raccoonforfriendica.core.utils.validation.toReadableMessage
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DefaultFriendicaInstances
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangeInstanceDialog(
     nodeName: String,
