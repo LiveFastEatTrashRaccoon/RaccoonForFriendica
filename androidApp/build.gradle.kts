@@ -8,21 +8,12 @@ plugins {
 
 android {
     namespace = "com.livefast.eattrash.raccoonforfriendica"
-    compileSdk =
-        libs.versions.android.compileSdk
-            .get()
-            .toInt()
+    compileSdk = (project.findProperty("android.compileSdk") as? String)?.toInt()
 
     defaultConfig {
         applicationId = "com.livefast.eattrash.raccoonforfriendica"
-        minSdk =
-            libs.versions.android.minSdk
-                .get()
-                .toInt()
-        targetSdk =
-            libs.versions.android.targetSdk
-                .get()
-                .toInt()
+        minSdk = (project.findProperty("android.minSdk") as? String)?.toInt()
+        targetSdk = (project.findProperty("android.targetSdk") as? String)?.toInt()
         versionCode = (project.findProperty("buildNumber") as? String)?.toInt() ?: 1
         versionName = project.findProperty("versionName") as? String ?: "1.0.0"
     }

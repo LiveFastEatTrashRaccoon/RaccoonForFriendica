@@ -87,7 +87,9 @@ import com.livefast.eattrash.raccoonforfriendica.navigation.isDetailDestination
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import dev.zacsweers.metrox.viewmodel.metroViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -124,24 +126,29 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
             drawerCoordinator.changeDrawerOpened(isDrawerOpen)
         }.launchIn(this)
 
+        var drawerJob: Job? = null
         val effectScope = this
         drawerCoordinator.events.collect { evt ->
-            // create a new scope to avoid cancelling the parent effectScope
-            effectScope.launch {
-                when (evt) {
-                    DrawerEvent.Toggle -> {
-                        if (drawerState.isClosed) {
-                            drawerState.open()
-                        } else {
-                            drawerState.close()
+            drawerJob?.cancel()
+            drawerJob = effectScope.launch {
+                try {
+                    when (evt) {
+                        DrawerEvent.Toggle -> {
+                            if (drawerState.targetValue == DrawerValue.Closed) {
+                                drawerState.open()
+                            } else {
+                                drawerState.close()
+                            }
                         }
-                    }
 
-                    DrawerEvent.Close -> {
-                        if (drawerState.isOpen) {
-                            drawerState.close()
+                        DrawerEvent.Close -> {
+                            if (drawerState.targetValue == DrawerValue.Open) {
+                                drawerState.close()
+                            }
                         }
                     }
+                } catch (_: CancellationException) {
+                    // ignored: animation was canceled by another event / gesture
                 }
             }
         }
@@ -191,17 +198,16 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                 useDynamicColors = uiState.currentSettings?.dynamicColors == true,
                 barTheme = uiState.currentSettings?.barTheme ?: UiBarTheme.Transparent,
             ) {
-                SharedTransitionLayout {
-                    navigationCoordinator.setSharedTransitionScope(this)
-
-                    if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
-                        ModalNavigationDrawer(
-                            drawerState = drawerState,
-                            gesturesEnabled = drawerGesturesEnabled,
-                            drawerContent = {
-                                DrawerContent()
-                            },
-                        ) {
+                if (isWidthSizeClassBelow(WindowWidthSizeClass.Expanded)) {
+                    ModalNavigationDrawer(
+                        drawerState = drawerState,
+                        gesturesEnabled = drawerGesturesEnabled,
+                        drawerContent = {
+                            DrawerContent()
+                        },
+                    ) {
+                        SharedTransitionLayout {
+                            navigationCoordinator.setSharedTransitionScope(this)
                             val canPop by drawerCoordinator.drawerOpened.collectAsState()
                             val navState = rememberNavigationEventState(NavigationEventInfo.None)
                             NavigationBackHandler(
@@ -244,28 +250,31 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                 ),
                             )
                         }
-                    } else {
-                        Scaffold(
-                            content = { paddingValues ->
-                                var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
-                                    mutableStateOf(Destination.Main)
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(paddingValues),
+                    }
+                } else {
+                    Scaffold(
+                        content = { paddingValues ->
+                            var selectedDestination by rememberSaveable(stateSaver = Destination.Saver) {
+                                mutableStateOf(Destination.Main)
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(paddingValues),
+                            ) {
+                                PermanentNavigationDrawer(
+                                    drawerContent = {
+                                        PermanentDrawerContent(
+                                            currentDestination = selectedDestination,
+                                            onSelectDestination = { destination ->
+                                                selectedDestination = destination
+                                                backStack[backStack.lastIndex] = destination
+                                            },
+                                        )
+                                    },
                                 ) {
-                                    PermanentNavigationDrawer(
-                                        drawerContent = {
-                                            PermanentDrawerContent(
-                                                currentDestination = selectedDestination,
-                                                onSelectDestination = { destination ->
-                                                    selectedDestination = destination
-                                                    backStack[backStack.lastIndex] = destination
-                                                },
-                                            )
-                                        },
-                                    ) {
+                                    SharedTransitionLayout {
+                                        navigationCoordinator.setSharedTransitionScope(this)
                                         // preload ViewModels for all top-level sections
                                         val timelineViewModel: TimelineMvi = metroViewModel<TimelineViewModel>()
                                         val exploreViewModel: ExploreMvi = metroViewModel<ExploreViewModel>()
@@ -331,9 +340,9 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                                         )
                                     }
                                 }
-                            },
-                        )
-                    }
+                            }
+                        },
+                    )
                 }
             }
         }

@@ -15,14 +15,12 @@ internal fun Project.configureUiTest(extension: KotlinMultiplatformExtension) =
                     "androidHostTest" -> {
                         dependencies {
                             implementation(libs.getBundle("compose-test"))
-                            implementation(libs.getLibrary("robolectric"))
                         }
                     }
                     "androidDeviceTest" -> {
                         dependencies {
                             implementation(kotlin("test"))
                             implementation(libs.getBundle("androidx-device-test"))
-                            implementation(libs.getLibrary("espresso"))
                         }
                     }
                 }
