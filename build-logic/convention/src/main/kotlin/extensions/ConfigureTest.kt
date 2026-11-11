@@ -3,7 +3,7 @@ package extensions
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import utils.getLibrary
+import utils.getBundle
 import utils.libs
 
 internal fun Project.configureTest(extension: KotlinMultiplatformExtension) =
@@ -12,8 +12,7 @@ internal fun Project.configureTest(extension: KotlinMultiplatformExtension) =
             commonTest {
                 dependencies {
                     implementation(kotlin("test"))
-                    implementation(libs.getLibrary("kotlinx-coroutines-test"))
-                    implementation(libs.getLibrary("turbine"))
+                    implementation(libs.getBundle("coroutines-test"))
                 }
             }
         }
