@@ -84,12 +84,6 @@ kotlin {
                 api(projects.feature.userlist)
             }
         }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.kotlinx.coroutines.test)
-            }
-        }
         jvmMain {
             dependencies {
                 implementation(libs.ktor.server.core)
