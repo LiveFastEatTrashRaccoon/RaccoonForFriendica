@@ -84,12 +84,6 @@ kotlin {
                 api(projects.feature.userlist)
             }
         }
-        commonTest {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.kotlinx.coroutines.test)
-            }
-        }
         jvmMain {
             dependencies {
                 implementation(libs.ktor.server.core)
@@ -163,8 +157,10 @@ kover {
                     "*.core.utils.uuid",
                     "*.core.utils.validation",
                     "*.core.utils.vibrate",
-                    "*.pushnotifications.receiver",
-                    "*.pushnotifications.utils",
+                    "*.pushnotifications.common",
+                    "*.pushnotifications.crypto",
+                    "*.pushnotifications.manager",
+                    "*.pushnotifications.service",
                 )
             }
         }
