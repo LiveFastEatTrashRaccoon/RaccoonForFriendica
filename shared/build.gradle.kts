@@ -157,8 +157,10 @@ kover {
                     "*.core.utils.uuid",
                     "*.core.utils.validation",
                     "*.core.utils.vibrate",
-                    "*.pushnotifications.receiver",
-                    "*.pushnotifications.utils",
+                    "*.pushnotifications.common",
+                    "*.pushnotifications.crypto",
+                    "*.pushnotifications.manager",
+                    "*.pushnotifications.service",
                 )
             }
         }
