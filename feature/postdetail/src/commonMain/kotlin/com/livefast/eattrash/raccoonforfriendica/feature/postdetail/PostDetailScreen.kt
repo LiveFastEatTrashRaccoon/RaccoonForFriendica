@@ -308,13 +308,14 @@ fun PostDetailScreen(
                 PullToRefreshBox(
                     modifier =
                     Modifier
+                        .nestedScroll(fabNestedScrollConnection)
                         .then(
                             if (uiState.hideNavigationBarWhileScrolling) {
                                 Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                             } else {
                                 Modifier
                             },
-                        ).nestedScroll(fabNestedScrollConnection),
+                        ),
                     isRefreshing = uiState.refreshing,
                     onRefresh = {
                         model.reduce(PostDetailMvi.Intent.Refresh)

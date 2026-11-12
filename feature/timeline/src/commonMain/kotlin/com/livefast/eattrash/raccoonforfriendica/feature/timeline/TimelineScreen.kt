@@ -298,6 +298,7 @@ fun TimelineScreen(
             Modifier
                 .padding(padding)
                 .fillMaxWidth()
+                .nestedScroll(fabNestedScrollConnection)
                 .then(
                     if (connection != null && uiState.hideNavigationBarWhileScrolling) {
                         Modifier.nestedScroll(connection)
@@ -310,7 +311,7 @@ fun TimelineScreen(
                     } else {
                         Modifier
                     },
-                ).nestedScroll(fabNestedScrollConnection),
+                ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
                 model.reduce(TimelineMvi.Intent.Refresh)

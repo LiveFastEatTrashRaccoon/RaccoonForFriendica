@@ -199,13 +199,14 @@ fun CircleMembersScreen(circleId: String, modifier: Modifier = Modifier, customB
             Modifier
                 .padding(padding)
                 .fillMaxWidth()
+                .nestedScroll(fabNestedScrollConnection)
                 .then(
                     if (uiState.hideNavigationBarWhileScrolling) {
                         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                     } else {
                         Modifier
                     },
-                ).nestedScroll(fabNestedScrollConnection),
+                ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
                 model.reduce(CircleMembersMvi.Intent.Refresh)

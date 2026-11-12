@@ -371,13 +371,14 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
             Modifier
                 .padding(padding)
                 .fillMaxWidth()
+                .nestedScroll(fabNestedScrollConnection)
                 .then(
                     if (uiState.hideNavigationBarWhileScrolling) {
                         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                     } else {
                         Modifier
                     },
-                ).nestedScroll(fabNestedScrollConnection),
+                ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
                 model.reduce(ForumListMvi.Intent.Refresh)

@@ -471,13 +471,14 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
             Modifier
                 .padding(padding)
                 .fillMaxWidth()
+                .nestedScroll(fabNestedScrollConnection)
                 .then(
                     if (uiState.hideNavigationBarWhileScrolling) {
                         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                     } else {
                         Modifier
                     },
-                ).nestedScroll(fabNestedScrollConnection),
+                ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
                 model.reduce(UserDetailMvi.Intent.Refresh)
