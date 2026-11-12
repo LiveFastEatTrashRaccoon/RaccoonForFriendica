@@ -5,10 +5,8 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,7 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -108,10 +105,6 @@ fun TimelineScreen(
     val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
     val fabNestedScrollConnection = LocalUiDeps.current.fabNestedScrollConnection
     val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
-    val bottomNavigationInset =
-        with(LocalDensity.current) {
-            WindowInsets.navigationBars.getBottom(this).toDp()
-        }
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
@@ -265,10 +258,7 @@ fun TimelineScreen(
                     ),
                 ) {
                     FloatingActionButton(
-                        modifier =
-                        Modifier.padding(
-                            bottom = Dimensions.floatingActionButtonBottomInset + bottomNavigationInset,
-                        ),
+                        modifier = Modifier.padding(bottom = Dimensions.floatingActionButtonBottomInset),
                         onClick = {
                             mainRouter.openComposer()
                         },
