@@ -1,11 +1,9 @@
 ## What's Changed
 
-- fix: crash in back navigation on Android <= 14 in #1465
-- feat: add possibility to configure feed types in #1457
-- enhancement: granular push notifications in #1450
-- enhancement: reimplement loading indicators in #1458
-- chore: avoid empty items in lazy lists in #1464
-- chore: code cleanup and add unit tests
-- chore: update dependencies
+- fix: bottom bar and FAB nested scroll by @AkesiSeli in #1474
+- fix: navigation drawer transitions by @AkesiSeli in #1471
+- refactor: build script simplification by @AkesiSeli in #1473
+- chore: update dependencies by @dependabot in #1467, #1469, #1472
+- chore: update l10n by @weblate in #1466
 
-**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.1.8...1.2.0
+**Full Changelog**: https://github.com/LiveFastEatTrashRaccoon/RaccoonForFriendica/compare/1.2.0...1.2.1

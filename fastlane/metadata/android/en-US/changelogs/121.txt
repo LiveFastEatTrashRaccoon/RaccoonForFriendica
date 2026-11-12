@@ -1,0 +1,5 @@
+- fix: bottom bar and FAB nested scroll
+- fix: navigation drawer transitions
+- refactor: build script simplification
+- chore: update dependencies
+- chore: update l10n
