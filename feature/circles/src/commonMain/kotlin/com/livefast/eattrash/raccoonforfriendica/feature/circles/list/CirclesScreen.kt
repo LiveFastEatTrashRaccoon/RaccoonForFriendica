@@ -205,13 +205,14 @@ fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAc
             Modifier
                 .padding(padding)
                 .fillMaxWidth()
+                .nestedScroll(fabNestedScrollConnection)
                 .then(
                     if (uiState.hideNavigationBarWhileScrolling) {
                         Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                     } else {
                         Modifier
                     },
-                ).nestedScroll(fabNestedScrollConnection),
+                ),
             isRefreshing = uiState.refreshing,
             onRefresh = {
                 model.reduce(CirclesMvi.Intent.Refresh)

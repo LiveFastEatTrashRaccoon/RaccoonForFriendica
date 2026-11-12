@@ -27,7 +27,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
@@ -82,10 +81,10 @@ fun MainScreen(
                     val delta = available.y
                     val newOffset =
                         (uiState.bottomBarOffsetHeightPx + delta).coerceIn(
-                            // 2 times:
+                            // bottomNavigationInsetPx 2 times:
                             // - once for the actual offset due to the translation amount
                             // - once for the bottom inset artificially applied to NavigationBar
-                            -(bottomBarHeightPx + bottomNavigationInsetPx) * 2,
+                            -(bottomBarHeightPx + (bottomNavigationInsetPx * 2)),
                             0f,
                         )
                     model.reduce(MainMvi.Intent.SetBottomBarOffsetHeightPx(newOffset))
@@ -150,8 +149,10 @@ fun MainScreen(
                     modifier =
                         Modifier
                             .onGloballyPositioned {
-                                if (bottomBarHeightPx == 0f) {
-                                    bottomBarHeightPx = it.size.toSize().height
+                                val height = it.size.height.toFloat()
+                                // wait for the first non-null height
+                                if (height > 0f && bottomBarHeightPx != height) {
+                                    bottomBarHeightPx = height
                                 }
                             }.offset {
                                 IntOffset(
