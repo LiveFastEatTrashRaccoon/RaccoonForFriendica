@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.DraftDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostCreatedEvent
@@ -1302,31 +1304,6 @@ class ComposerViewModel(
         }
     }
 
-    private suspend fun updateAttachmentInState(attachmentId: String, block: (AttachmentModel) -> AttachmentModel) {
-        updateState {
-            it.copy(
-                attachments =
-                it.attachments.map { attachment ->
-                    if (attachment.id == attachmentId) {
-                        attachment.let(block)
-                    } else {
-                        attachment
-                    }
-                },
-                hasUnsavedChanges = true,
-            )
-        }
-    }
-
-    private suspend fun removeAttachmentFromState(attachmentId: String) {
-        updateState {
-            it.copy(
-                attachments = it.attachments.filter { attachment -> attachment.id != attachmentId },
-                hasUnsavedChanges = true,
-            )
-        }
-    }
-
     private fun handleEditAttachmentDescription(attachment: AttachmentModel, description: String) {
         viewModelScope.launch {
             val successful =
@@ -1354,8 +1331,13 @@ class ComposerViewModel(
                 }
 
             if (successful) {
-                updateAttachmentInState(attachment.id) {
-                    it.copy(description = description)
+                updateState { state ->
+                    state.copy(
+                        attachments = state.attachments.updateMatching(matcher = { it.id == attachment.id }) {
+                            it.copy(description = description)
+                        },
+                        hasUnsavedChanges = true,
+                    )
                 }
             }
         }
@@ -1363,7 +1345,12 @@ class ComposerViewModel(
 
     private fun handleRemoveAttachment(attachment: AttachmentModel) {
         viewModelScope.launch {
-            removeAttachmentFromState(attachment.id)
+            updateState { state ->
+                state.copy(
+                    attachments = state.attachments.removeMatching { it.id == attachment.id },
+                    hasUnsavedChanges = true,
+                )
+            }
         }
     }
 

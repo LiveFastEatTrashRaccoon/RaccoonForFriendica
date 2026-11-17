@@ -17,8 +17,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.removeMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -109,7 +111,9 @@ class ForumListViewModel(
             notificationCenter
                 .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updatePostInState(event.post.id) { event.post }
+                    updateState { state ->
+                        state.copy(posts = state.posts.updateMatching(event.post.id) { event.post })
+                    }
                 }.launchIn(this)
 
             apiConfigurationRepository.node
@@ -262,44 +266,11 @@ class ForumListViewModel(
         }
     }
 
-    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
-        updateState {
-            it.copy(
-                posts =
-                it.posts.map { post ->
-                    when {
-                        post.id == postId -> {
-                            post.let(block)
-                        }
-
-                        post.reblog?.id == postId -> {
-                            post.copy(reblog = post.reblog?.let(block))
-                        }
-
-                        else -> {
-                            post
-                        }
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun removePostFromState(postId: String) {
-        updateState {
-            it.copy(
-                posts = it.posts.filter { post -> post.id != postId && post.reblog?.id != postId },
-            )
-        }
-    }
-
     private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    reblogLoading = true,
-                )
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(reblogLoading = true) })
             }
             val newPost =
                 if (post.reblogged) {
@@ -308,21 +279,22 @@ class ForumListViewModel(
                     postRepository.reblog(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            reblogged = newPost.reblogged,
-                            reblogCount = newPost.reblogCount,
-                            reblogLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(
+                                reblogged = newPost.reblogged,
+                                reblogCount = newPost.reblogCount,
+                                reblogLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        reblogLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(reblogLoading = false) })
                 }
             }
         }
@@ -331,24 +303,20 @@ class ForumListViewModel(
     private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    favoriteLoading = true,
-                )
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(favoriteLoading = true) })
             }
             val newPost =
                 toggleFavorite(post)?.also { post ->
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { newPost })
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        favoriteLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(favoriteLoading = false) })
                 }
             }
         }
@@ -357,24 +325,20 @@ class ForumListViewModel(
     private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    dislikeLoading = true,
-                )
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(dislikeLoading = true) })
             }
             val newPost =
                 toggleDislike(post)?.also { post ->
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { newPost })
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        dislikeLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(dislikeLoading = false) })
                 }
             }
         }
@@ -383,10 +347,8 @@ class ForumListViewModel(
     private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    bookmarkLoading = true,
-                )
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(bookmarkLoading = true) })
             }
             val newPost =
                 if (post.bookmarked) {
@@ -395,20 +357,21 @@ class ForumListViewModel(
                     postRepository.bookmark(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            bookmarked = newPost.bookmarked,
-                            bookmarkLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(
+                                bookmarked = newPost.bookmarked,
+                                bookmarkLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        bookmarkLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(bookmarkLoading = false) })
                 }
             }
         }
@@ -419,7 +382,7 @@ class ForumListViewModel(
             val success = postRepository.delete(postId)
             if (success) {
                 notificationCenter.send(PostDeletedEvent(postId))
-                removePostFromState(postId)
+                updateState { state -> state.copy(posts = state.posts.removeMatching(postId)) }
             }
         }
     }
@@ -433,7 +396,7 @@ class ForumListViewModel(
                     notifications = disableNotifications,
                 )
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state -> state.copy(posts = state.posts.removeMatching(postId)) }
             }
         }
     }
@@ -442,7 +405,7 @@ class ForumListViewModel(
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state -> state.copy(posts = state.posts.removeMatching(postId)) }
             }
         }
     }
@@ -450,20 +413,32 @@ class ForumListViewModel(
     private fun handleSubmitPollVote(post: PostModel, choices: List<Int>) {
         val poll = post.poll ?: return
         viewModelScope.launch {
-            updatePostInState(post.id) { it.copy(poll = poll.copy(loading = true)) }
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(poll = poll.copy(loading = true)) })
+            }
             val newPoll =
                 postRepository.submitPoll(
                     pollId = poll.id,
                     choices = choices,
                 )
             if (newPoll != null) {
-                updatePostInState(post.id) {
-                    it.copy(poll = newPoll).also { post ->
-                        notificationCenter.send(PostUpdatedEvent(post))
-                    }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(poll = newPoll).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) { it.copy(poll = poll.copy(loading = false)) }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(poll = poll.copy(loading = false))
+                        },
+                    )
+                }
                 emitEffect(ForumListMvi.Effect.PollVoteFailure)
             }
         }
@@ -493,9 +468,13 @@ class ForumListViewModel(
         }
 
         viewModelScope.launch {
-            updatePostInState(post.id) { post.copy(translationLoading = true) }
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(translationLoading = true) })
+            }
             val newPost = toggleTranslation(post = post, targetLang = targetLang)
-            updatePostInState(post.id) { newPost }
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { newPost })
+            }
         }
     }
 

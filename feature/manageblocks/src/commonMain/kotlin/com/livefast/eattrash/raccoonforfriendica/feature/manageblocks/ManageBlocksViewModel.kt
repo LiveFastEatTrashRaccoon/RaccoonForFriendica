@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -196,25 +197,17 @@ class ManageBlocksViewModel(
         }
     }
 
-    private suspend fun removeUserFromState(userId: String) {
-        updateState {
-            it.copy(
-                items =
-                it.items.filter { item ->
-                    when (item) {
-                        is ManageBlocksItem.User -> item.user.id != userId
-                        else -> false
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleToggleMute(userId: String) {
         viewModelScope.launch {
             val res = userRepository.unmute(userId)
             if (res != null) {
-                removeUserFromState(userId)
+                updateState { state ->
+                    state.copy(
+                        items = state.items.removeMatching {
+                            (it as? ManageBlocksItem.User)?.user?.id == userId
+                        },
+                    )
+                }
             }
         }
     }
@@ -223,7 +216,13 @@ class ManageBlocksViewModel(
         viewModelScope.launch {
             val res = userRepository.unblock(userId)
             if (res != null) {
-                removeUserFromState(userId)
+                updateState { state ->
+                    state.copy(
+                        items = state.items.removeMatching {
+                            (it as? ManageBlocksItem.User)?.user?.id == userId
+                        },
+                    )
+                }
             }
         }
     }

@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowRequestPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.ImageAutoloadObserver
@@ -111,38 +112,28 @@ class FollowRequestsViewModel(
         }
     }
 
-    private suspend fun updateItemInState(id: String, block: (UserModel) -> UserModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { user ->
-                    if (user.id == id) {
-                        user.let(block)
-                    } else {
-                        user
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun removeItemFromState(id: String) {
-        updateState {
-            it.copy(
-                items =
-                it.items.filter { item -> item.id != id },
-            )
-        }
-    }
-
     private fun handleAccept(id: String) {
         viewModelScope.launch {
-            updateItemInState(id) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(matcher = { it.id == id }) {
+                        it.copy(relationshipStatusPending = true)
+                    },
+                )
+            }
             val success = userRepository.acceptFollowRequest(id)
             if (success) {
-                removeItemFromState(id)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching { it.id == id })
+                }
             } else {
-                updateItemInState(id) { it.copy(relationshipStatusPending = false) }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.id == id }) {
+                            it.copy(relationshipStatusPending = false)
+                        },
+                    )
+                }
                 emitEffect(FollowRequestsMvi.Effect.Failure)
             }
         }
@@ -150,12 +141,26 @@ class FollowRequestsViewModel(
 
     private fun handleReject(id: String) {
         viewModelScope.launch {
-            updateItemInState(id) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(matcher = { it.id == id }) {
+                        it.copy(relationshipStatusPending = true)
+                    },
+                )
+            }
             val success = userRepository.rejectFollowRequest(id)
             if (success) {
-                removeItemFromState(id)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching { it.id == id })
+                }
             } else {
-                updateItemInState(id) { it.copy(relationshipStatusPending = false) }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.id == id }) {
+                            it.copy(relationshipStatusPending = false)
+                        },
+                    )
+                }
                 emitEffect(FollowRequestsMvi.Effect.Failure)
             }
         }

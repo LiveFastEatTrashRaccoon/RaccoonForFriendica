@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.UserUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
@@ -91,7 +92,13 @@ class UserListViewModel(
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->
-                    updateUserInState(event.user.id) { event.user }
+                    updateState { state ->
+                        state.copy(
+                            users = state.users.updateMatching(matcher = { it.id == event.user.id }) {
+                                event.user
+                            },
+                        )
+                    }
                 }.launchIn(this)
         }
     }
@@ -201,39 +208,33 @@ class UserListViewModel(
         }
     }
 
-    private suspend fun updateUserInState(userId: String, block: (UserModel) -> UserModel) {
-        updateState {
-            it.copy(
-                users =
-                it.users.map { user ->
-                    if (user.id == userId) {
-                        user.let(block)
-                    } else {
-                        user
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleFollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    users = state.users.updateMatching(matcher = { it.id == userId }) {
+                        it.copy(relationshipStatusPending = true)
+                    },
+                )
+            }
             val currentUser = uiState.value.users.firstOrNull { it.id == userId }
             val newRelationship = userRepository.follow(userId)
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it
-                    .copy(
-                        relationshipStatus = newStatus,
-                        notificationStatus = newNotificationStatus,
-                        relationshipStatusPending = false,
-                    ).also { user ->
-                        notificationCenter.send(UserUpdatedEvent(user = user))
-                    }
+            updateState { state ->
+                state.copy(
+                    users = state.users.updateMatching(matcher = { it.id == userId }) {
+                        it.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        ).also { user ->
+                            notificationCenter.send(UserUpdatedEvent(user = user))
+                        }
+                    },
+                )
             }
         }
     }
@@ -241,21 +242,30 @@ class UserListViewModel(
     private fun handleUnfollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    users = state.users.updateMatching(matcher = { it.id == userId }) {
+                        it.copy(relationshipStatusPending = true)
+                    },
+                )
+            }
             val currentUser = uiState.value.users.firstOrNull { it.id == userId }
             val newRelationship = userRepository.unfollow(userId)
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it
-                    .copy(
-                        relationshipStatus = newStatus,
-                        notificationStatus = newNotificationStatus,
-                        relationshipStatusPending = false,
-                    ).also { user ->
-                        notificationCenter.send(UserUpdatedEvent(user = user))
-                    }
+            updateState { state ->
+                state.copy(
+                    users = state.users.updateMatching(matcher = { it.id == userId }) {
+                        it.copy(
+                            relationshipStatus = newStatus,
+                            notificationStatus = newNotificationStatus,
+                            relationshipStatusPending = false,
+                        ).also { user ->
+                            notificationCenter.send(UserUpdatedEvent(user = user))
+                        }
+                    },
+                )
             }
         }
     }

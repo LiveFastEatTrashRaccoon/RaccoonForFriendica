@@ -4,9 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MediaAlbumModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.PhotoAlbumRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.SettingsRepository
 import dev.zacsweers.metro.AppScope
@@ -112,25 +113,6 @@ class GalleryViewModel(
         }
     }
 
-    private suspend fun removeItemFromState(name: String) {
-        updateState { it.copy(items = it.items.filter { album -> album.name != name }) }
-    }
-
-    private suspend fun updateItemInState(name: String, block: (MediaAlbumModel) -> MediaAlbumModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { album ->
-                    if (album.name == name) {
-                        album.let(block)
-                    } else {
-                        album
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleUpdateAlbum(oldName: String, newName: String) {
         viewModelScope.launch {
             updateState { it.copy(operationInProgress = true) }
@@ -141,7 +123,13 @@ class GalleryViewModel(
                 )
             updateState { it.copy(operationInProgress = false) }
             if (res) {
-                updateItemInState(oldName) { it.copy(name = newName) }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.name == oldName }) {
+                            it.copy(name = newName)
+                        },
+                    )
+                }
             } else {
                 emitEffect(GalleryMvi.Effect.Failure)
             }
@@ -154,7 +142,9 @@ class GalleryViewModel(
             val res = albumRepository.delete(name)
             updateState { it.copy(operationInProgress = false) }
             if (res) {
-                removeItemFromState(name)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching { it.name == name })
+                }
             } else {
                 emitEffect(GalleryMvi.Effect.Failure)
             }

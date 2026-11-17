@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostDeletedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.PostUpdatedEvent
@@ -17,8 +18,10 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.removeMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toStatus
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.SearchPaginationSpecification
@@ -123,12 +126,23 @@ class SearchViewModel(
             notificationCenter
                 .subscribe(UserUpdatedEvent::class)
                 .onEach { event ->
-                    updateUserInState(event.user.id) { event.user }
+                    updateState { state ->
+                        state.copy(
+                            items = state.items.updateMatching(
+                                matcher = { (it as? ExploreItemModel.User)?.user?.id == event.user.id },
+                            ) {
+                                val item = it as ExploreItemModel.User
+                                item.copy(user = event.user)
+                            },
+                        )
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updatePostInState(event.post.id) { event.post }
+                    updateState { state ->
+                        state.copy(items = state.items.updateMatching(event.post.id) { event.post })
+                    }
                 }.launchIn(this)
 
             apiConfigurationRepository.node
@@ -294,27 +308,19 @@ class SearchViewModel(
         }
     }
 
-    private suspend fun updateUserInState(userId: String, block: (UserModel) -> UserModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { item ->
-                    if (item is ExploreItemModel.User && item.user.id == userId) {
-                        item.copy(
-                            user = item.user.let(block),
-                        )
-                    } else {
-                        item
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleFollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(
+                        matcher = { (it as? ExploreItemModel.User)?.user?.id == userId },
+                    ) {
+                        val item = it as ExploreItemModel.User
+                        item.copy(user = item.user.copy(relationshipStatusPending = true))
+                    },
+                )
+            }
             val currentUser =
                 uiState.value.items
                     .firstOrNull { it is ExploreItemModel.User && it.user.id == userId }
@@ -323,15 +329,23 @@ class SearchViewModel(
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it
-                    .copy(
-                        relationshipStatus = newStatus,
-                        notificationStatus = newNotificationStatus,
-                        relationshipStatusPending = false,
-                    ).also { user ->
-                        notificationCenter.send(UserUpdatedEvent(user = user))
-                    }
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(
+                        matcher = { (it as? ExploreItemModel.User)?.user?.id == userId },
+                    ) {
+                        val item = it as ExploreItemModel.User
+                        item.copy(
+                            user = item.user.copy(
+                                relationshipStatus = newStatus,
+                                notificationStatus = newNotificationStatus,
+                                relationshipStatusPending = false,
+                            ).also { user ->
+                                notificationCenter.send(UserUpdatedEvent(user = user))
+                            },
+                        )
+                    },
+                )
             }
         }
     }
@@ -339,7 +353,16 @@ class SearchViewModel(
     private fun handleUnfollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(
+                        matcher = { (it as? ExploreItemModel.User)?.user?.id == userId },
+                    ) {
+                        val item = it as ExploreItemModel.User
+                        item.copy(user = item.user.copy(relationshipStatusPending = true))
+                    },
+                )
+            }
             val currentUser =
                 uiState.value.items
                     .firstOrNull { it is ExploreItemModel.User && it.user.id == userId }
@@ -348,71 +371,32 @@ class SearchViewModel(
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it
-                    .copy(
-                        relationshipStatus = newStatus,
-                        notificationStatus = newNotificationStatus,
-                        relationshipStatusPending = false,
-                    ).also { user ->
-                        notificationCenter.send(UserUpdatedEvent(user = user))
-                    }
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(
+                        matcher = { (it as? ExploreItemModel.User)?.user?.id == userId },
+                    ) {
+                        val item = it as ExploreItemModel.User
+                        item.copy(
+                            user = item.user.copy(
+                                relationshipStatus = newStatus,
+                                notificationStatus = newNotificationStatus,
+                                relationshipStatusPending = false,
+                            ).also { user ->
+                                notificationCenter.send(UserUpdatedEvent(user = user))
+                            },
+                        )
+                    },
+                )
             }
-        }
-    }
-
-    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { item ->
-                    when {
-                        item is ExploreItemModel.Post && item.post.id == postId -> {
-                            item.copy(
-                                post = item.post.let(block),
-                            )
-                        }
-
-                        item is ExploreItemModel.Post && item.post.reblog?.id == postId -> {
-                            item.copy(
-                                post =
-                                item.post.copy(
-                                    reblog = item.post.reblog?.let(block),
-                                ),
-                            )
-                        }
-
-                        else -> {
-                            item
-                        }
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun removePostFromState(postId: String) {
-        updateState {
-            it.copy(
-                items =
-                it.items.filter { item ->
-                    when {
-                        item is ExploreItemModel.Post && item.post.id == postId -> false
-                        item is ExploreItemModel.Post && item.post.reblog?.id == postId -> false
-                        else -> true
-                    }
-                },
-            )
         }
     }
 
     private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    reblogLoading = true,
-                )
+            updateState { state ->
+                state.copy(items = state.items.updateMatching(post.id) { it.copy(reblogLoading = true) })
             }
             val newPost =
                 if (post.reblogged) {
@@ -421,21 +405,22 @@ class SearchViewModel(
                     postRepository.reblog(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            reblogged = newPost.reblogged,
-                            reblogCount = newPost.reblogCount,
-                            reblogLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(post.id) {
+                            it.copy(
+                                reblogged = newPost.reblogged,
+                                reblogCount = newPost.reblogCount,
+                                reblogLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        reblogLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(items = state.items.updateMatching(post.id) { it.copy(reblogLoading = false) })
                 }
             }
         }
@@ -444,24 +429,20 @@ class SearchViewModel(
     private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    favoriteLoading = true,
-                )
+            updateState { state ->
+                state.copy(items = state.items.updateMatching(post.id) { it.copy(favoriteLoading = true) })
             }
             val newPost =
                 toggleFavorite(post)?.also { post ->
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(items = state.items.updateMatching(post.id) { newPost })
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        favoriteLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(items = state.items.updateMatching(post.id) { it.copy(favoriteLoading = false) })
                 }
             }
         }
@@ -470,24 +451,20 @@ class SearchViewModel(
     private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    dislikeLoading = true,
-                )
+            updateState { state ->
+                state.copy(items = state.items.updateMatching(post.id) { it.copy(dislikeLoading = true) })
             }
             val newPost =
                 toggleDislike(post)?.also { post ->
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(items = state.items.updateMatching(post.id) { newPost })
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        dislikeLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(items = state.items.updateMatching(post.id) { it.copy(dislikeLoading = false) })
                 }
             }
         }
@@ -496,10 +473,8 @@ class SearchViewModel(
     private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    bookmarkLoading = true,
-                )
+            updateState { state ->
+                state.copy(items = state.items.updateMatching(post.id) { it.copy(bookmarkLoading = true) })
             }
             val newPost =
                 if (post.bookmarked) {
@@ -508,20 +483,21 @@ class SearchViewModel(
                     postRepository.bookmark(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            bookmarked = newPost.bookmarked,
-                            bookmarkLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(post.id) {
+                            it.copy(
+                                bookmarked = newPost.bookmarked,
+                                bookmarkLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        bookmarkLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(items = state.items.updateMatching(post.id) { it.copy(bookmarkLoading = false) })
                 }
             }
         }
@@ -532,7 +508,9 @@ class SearchViewModel(
             val success = postRepository.delete(postId)
             if (success) {
                 notificationCenter.send(PostDeletedEvent(postId))
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching(postId))
+                }
             }
         }
     }
@@ -546,7 +524,9 @@ class SearchViewModel(
                     notifications = disableNotifications,
                 )
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching(postId))
+                }
             }
         }
     }
@@ -555,7 +535,9 @@ class SearchViewModel(
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching(postId))
+                }
             }
         }
     }
@@ -569,10 +551,8 @@ class SearchViewModel(
                     postRepository.pin(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it.copy(
-                        pinned = newPost.pinned,
-                    )
+                updateState { state ->
+                    state.copy(items = state.items.updateMatching(post.id) { it.copy(pinned = newPost.pinned) })
                 }
             }
         }
@@ -581,20 +561,32 @@ class SearchViewModel(
     private fun handleSubmitPollVote(post: PostModel, choices: List<Int>) {
         val poll = post.poll ?: return
         viewModelScope.launch {
-            updatePostInState(post.id) { it.copy(poll = poll.copy(loading = true)) }
+            updateState { state ->
+                state.copy(items = state.items.updateMatching(post.id) { it.copy(poll = poll.copy(loading = true)) })
+            }
             val newPoll =
                 postRepository.submitPoll(
                     pollId = poll.id,
                     choices = choices,
                 )
             if (newPoll != null) {
-                updatePostInState(post.id) {
-                    it.copy(poll = newPoll).also { post ->
-                        notificationCenter.send(PostUpdatedEvent(post))
-                    }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(post.id) {
+                            it.copy(poll = newPoll).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) { it.copy(poll = poll.copy(loading = false)) }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(post.id) {
+                            it.copy(poll = poll.copy(loading = false))
+                        },
+                    )
+                }
                 emitEffect(SearchMvi.Effect.PollVoteFailure)
             }
         }
@@ -624,9 +616,13 @@ class SearchViewModel(
         }
 
         viewModelScope.launch {
-            updatePostInState(post.id) { post.copy(translationLoading = true) }
+            updateState { state ->
+                state.copy(items = state.items.updateMatching(post.id) { post.copy(translationLoading = true) })
+            }
             val newPost = toggleTranslation(post = post, targetLang = targetLang)
-            updatePostInState(post.id) { newPost }
+            updateState { state ->
+                state.copy(items = state.items.updateMatching(post.id) { newPost })
+            }
         }
     }
 

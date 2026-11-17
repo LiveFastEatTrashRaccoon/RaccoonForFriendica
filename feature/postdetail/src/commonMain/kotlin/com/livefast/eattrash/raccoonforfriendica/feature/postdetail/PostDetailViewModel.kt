@@ -17,7 +17,9 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.removeMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.safeKey
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.PostActionHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -109,17 +111,28 @@ class PostDetailViewModel(
             notificationCenter
                 .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updatePostInState(event.post.id) { event.post }
+                    updateState { state ->
+                        state.copy(
+                            posts = state.posts.updateMatching(
+                                index = state.currentIndex,
+                                id = event.post.id,
+                            ) { event.post },
+                        )
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(PostDeletedEvent::class)
                 .onEach { event ->
-                    removePostFromState(event.id)
+                    updateState { state ->
+                        state.copy(
+                            posts = state.posts.removeMatching(index = state.currentIndex, id = event.id),
+                        )
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(PostCreatedEvent::class)
                 .onEach { event ->
-                    addPostInState(event.post)
+                    handlePostCreated(event.post)
                 }.launchIn(this)
 
             apiConfigurationRepository.node
@@ -326,7 +339,13 @@ class PostDetailViewModel(
         viewModelScope.launch {
             val currentState = uiState.value
             val currentReplies = currentState.posts.getOrNull(currentState.currentIndex).orEmpty()
-            updatePostInState(post.id) { it.copy(loadMoreButtonLoading = true) }
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                        it.copy(loadMoreButtonLoading = true)
+                    },
+                )
+            }
             val result = populateThread(post = post.original).map { post ->
                 post.let {
                     with(emojiHelper) { it.withEmojisIfMissing() }
@@ -339,10 +358,14 @@ class PostDetailViewModel(
             val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
             if (newReplies.isEmpty()) {
                 // abort and disable load more button
-                updatePostInState(post.id) {
-                    it.copy(
-                        loadMoreButtonVisible = false,
-                        loadMoreButtonLoading = false,
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(
+                                loadMoreButtonVisible = false,
+                                loadMoreButtonLoading = false,
+                            )
+                        },
                     )
                 }
             } else {
@@ -398,56 +421,14 @@ class PostDetailViewModel(
         }
     }
 
-    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
-        updateState {
-            it.copy(
-                posts =
-                it.posts.mapIndexed { idx, postList ->
-                    if (idx == uiState.value.currentIndex) {
-                        postList.map { post ->
-                            when {
-                                post.id == postId -> {
-                                    post.let(block)
-                                }
-
-                                post.reblog?.id == postId -> {
-                                    post.copy(reblog = post.reblog?.let(block))
-                                }
-
-                                else -> {
-                                    post
-                                }
-                            }
-                        }
-                    } else {
-                        postList
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun removePostFromState(postId: String) {
-        updateState {
-            it.copy(
-                posts =
-                it.posts.mapIndexed { idx, postList ->
-                    if (idx == it.currentIndex) {
-                        postList.filter { post -> post.id != postId && post.reblog?.id != postId }
-                    } else {
-                        postList
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    reblogLoading = true,
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                        it.copy(reblogLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -457,20 +438,25 @@ class PostDetailViewModel(
                     postRepository.reblog(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            reblogged = newPost.reblogged,
-                            reblogCount = newPost.reblogCount,
-                            reblogLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(
+                                reblogged = newPost.reblogged,
+                                reblogCount = newPost.reblogCount,
+                                reblogLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        reblogLoading = false,
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(reblogLoading = false)
+                        },
                     )
                 }
             }
@@ -480,9 +466,11 @@ class PostDetailViewModel(
     private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    favoriteLoading = true,
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                        it.copy(favoriteLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -490,13 +478,17 @@ class PostDetailViewModel(
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) { newPost },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        favoriteLoading = false,
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(favoriteLoading = false)
+                        },
                     )
                 }
             }
@@ -506,9 +498,11 @@ class PostDetailViewModel(
     private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    dislikeLoading = true,
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                        it.copy(dislikeLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -516,13 +510,17 @@ class PostDetailViewModel(
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) { newPost },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        dislikeLoading = false,
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(dislikeLoading = false)
+                        },
                     )
                 }
             }
@@ -532,9 +530,11 @@ class PostDetailViewModel(
     private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    bookmarkLoading = true,
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                        it.copy(bookmarkLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -544,19 +544,24 @@ class PostDetailViewModel(
                     postRepository.bookmark(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            bookmarked = newPost.bookmarked,
-                            bookmarkLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(
+                                bookmarked = newPost.bookmarked,
+                                bookmarkLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        bookmarkLoading = false,
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(bookmarkLoading = false)
+                        },
                     )
                 }
             }
@@ -568,7 +573,9 @@ class PostDetailViewModel(
             val success = postRepository.delete(postId)
             if (success) {
                 notificationCenter.send(PostDeletedEvent(postId))
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(posts = state.posts.removeMatching(index = state.currentIndex, id = postId))
+                }
             }
         }
     }
@@ -582,7 +589,9 @@ class PostDetailViewModel(
                     notifications = disableNotifications,
                 )
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(posts = state.posts.removeMatching(index = state.currentIndex, id = postId))
+                }
             }
         }
     }
@@ -591,7 +600,9 @@ class PostDetailViewModel(
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(posts = state.posts.removeMatching(index = state.currentIndex, id = postId))
+                }
             }
         }
     }
@@ -605,9 +616,11 @@ class PostDetailViewModel(
                     postRepository.pin(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it.copy(
-                        pinned = newPost.pinned,
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(pinned = newPost.pinned)
+                        },
                     )
                 }
             }
@@ -617,20 +630,36 @@ class PostDetailViewModel(
     private fun handleSubmitPollVote(post: PostModel, choices: List<Int>) {
         val poll = post.poll ?: return
         viewModelScope.launch {
-            updatePostInState(post.id) { it.copy(poll = poll.copy(loading = true)) }
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                        it.copy(poll = poll.copy(loading = true))
+                    },
+                )
+            }
             val newPoll =
                 postRepository.submitPoll(
                     pollId = poll.id,
                     choices = choices,
                 )
             if (newPoll != null) {
-                updatePostInState(post.id) {
-                    it.copy(poll = newPoll).also { post ->
-                        notificationCenter.send(PostUpdatedEvent(post))
-                    }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(poll = newPoll).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) { it.copy(poll = poll.copy(loading = false)) }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                            it.copy(poll = poll.copy(loading = false))
+                        },
+                    )
+                }
                 emitEffect(PostDetailMvi.Effect.PollVoteFailure)
             }
         }
@@ -660,9 +689,19 @@ class PostDetailViewModel(
         }
 
         viewModelScope.launch {
-            updatePostInState(post.id) { post.copy(translationLoading = true) }
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
+                        post.copy(translationLoading = true)
+                    },
+                )
+            }
             val newPost = toggleTranslation(post = post, targetLang = targetLang)
-            updatePostInState(post.id) { newPost }
+            updateState { state ->
+                state.copy(
+                    posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) { newPost },
+                )
+            }
         }
     }
 
@@ -721,7 +760,7 @@ class PostDetailViewModel(
         }
     }
 
-    private suspend fun addPostInState(post: PostModel) {
+    private suspend fun handlePostCreated(post: PostModel) {
         val posts = uiState.value.let { it.posts.getOrNull(it.currentIndex) }.orEmpty()
         val parentIndex =
             posts

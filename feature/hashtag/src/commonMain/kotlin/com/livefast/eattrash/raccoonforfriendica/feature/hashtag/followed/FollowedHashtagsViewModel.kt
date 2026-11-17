@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.TagUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TagModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.FollowedHashtagsPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.FollowedHashtagCache
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.TagRepository
@@ -44,7 +45,11 @@ class FollowedHashtagsViewModel(
             notificationCenter
                 .subscribe(TagUpdatedEvent::class)
                 .onEach { event ->
-                    updateItemInState(event.tag.name) { event.tag }
+                    updateState { state ->
+                        state.copy(
+                            items = state.items.updateMatching(matcher = { it.name == event.tag.name }) { event.tag },
+                        )
+                    }
                 }.launchIn(this)
 
             settingsRepository.current
@@ -127,34 +132,16 @@ class FollowedHashtagsViewModel(
         }
     }
 
-    private suspend fun updateItemInState(name: String, block: (TagModel) -> TagModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { tag ->
-                    if (tag.name == name) {
-                        tag.let(block)
-                    } else {
-                        tag
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun removeItemFromState(name: String) {
-        updateState {
-            it.copy(
-                items =
-                it.items.filter { tag -> tag.name != name },
-            )
-        }
-    }
-
     private fun handleToggleTagFollow(name: String, follow: Boolean) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateItemInState(name) { it.copy(followingPending = true) }
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(matcher = { it.name == name }) {
+                        it.copy(followingPending = true)
+                    },
+                )
+            }
             val newTag =
                 if (!follow) {
                     tagRepository.unfollow(name)
@@ -165,9 +152,15 @@ class FollowedHashtagsViewModel(
                 }
             if (newTag != null) {
                 if (!follow) {
-                    removeItemFromState(name)
+                    updateState { state ->
+                        state.copy(items = state.items.removeMatching { it.name == name })
+                    }
                 } else {
-                    updateItemInState(name) { newTag }
+                    updateState { state ->
+                        state.copy(
+                            items = state.items.updateMatching(matcher = { it.name == name }) { newTag },
+                        )
+                    }
                 }
             }
         }

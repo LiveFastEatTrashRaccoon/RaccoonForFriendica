@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.NotificationCenter
 import com.livefast.eattrash.raccoonforfriendica.core.notifications.events.AlbumsUpdatedEvent
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
@@ -140,27 +142,6 @@ class AlbumDetailViewModel(
         }
     }
 
-    private suspend fun updateItemInState(id: String, block: (AttachmentModel) -> AttachmentModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { attachment ->
-                    if (attachment.id == id) {
-                        attachment.let(block)
-                    } else {
-                        attachment
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun removeItemFromState(id: String) {
-        updateState {
-            it.copy(items = it.items.filter { attachment -> attachment.id != id })
-        }
-    }
-
     private fun handleCreate(byteArray: ByteArray) {
         viewModelScope.launch {
             val localId = getUuid()
@@ -183,9 +164,15 @@ class AlbumDetailViewModel(
                     album = name,
                 )
             if (attachment != null) {
-                updateItemInState(localId) { attachment }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.id == localId }) { attachment },
+                    )
+                }
             } else {
-                removeItemFromState(localId)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching { it.id == localId })
+                }
                 emitEffect(AlbumDetailMvi.Effect.Failure)
             }
         }
@@ -202,8 +189,12 @@ class AlbumDetailViewModel(
                 )
             updateState { it.copy(operationInProgress = false) }
             if (successful) {
-                updateItemInState(attachment.id) {
-                    it.copy(description = description)
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.id == attachment.id }) {
+                            it.copy(description = description)
+                        },
+                    )
                 }
             } else {
                 emitEffect(AlbumDetailMvi.Effect.Failure)
@@ -226,7 +217,9 @@ class AlbumDetailViewModel(
                 )
             updateState { it.copy(operationInProgress = false) }
             if (successful) {
-                removeItemFromState(attachment.id)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching { it.id == attachment.id })
+                }
                 notificationCenter.send(AlbumsUpdatedEvent)
             } else {
                 emitEffect(AlbumDetailMvi.Effect.Failure)
@@ -240,7 +233,9 @@ class AlbumDetailViewModel(
             val success = photoRepository.delete(id)
             updateState { it.copy(operationInProgress = false) }
             if (success) {
-                removeItemFromState(id)
+                updateState { state ->
+                    state.copy(items = state.items.removeMatching { it.id == id })
+                }
             } else {
                 emitEffect(AlbumDetailMvi.Effect.Failure)
             }

@@ -16,6 +16,8 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedba
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.PostActionHelper
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
@@ -117,7 +119,12 @@ class ThreadViewModel(
             notificationCenter
                 .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updatePostInState(event.post.id) { event.post }
+                    updateState { state ->
+                        state.copy(
+                            mainPosts = state.mainPosts.updateMatching(event.post.id) { event.post },
+                            replies = state.replies.updateMatching(state.currentIndex, event.post.id) { event.post },
+                        )
+                    }
                 }.launchIn(this)
 
             apiConfigurationRepository.node
@@ -264,7 +271,13 @@ class ThreadViewModel(
         }
         val currentState = uiState.value
         val currentReplies = currentState.replies[currentState.currentIndex]
-        updatePostInState(post.id) { it.copy(loadMoreButtonLoading = true) }
+        updateState { state ->
+            state.copy(
+                replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                    it.copy(loadMoreButtonLoading = true)
+                },
+            )
+        }
         val result = populateThread(post = post.original).map { post ->
             post.let {
                 with(emojiHelper) { it.withEmojisIfMissing() }
@@ -277,10 +290,14 @@ class ThreadViewModel(
         val newReplies = result.filter { e1 -> currentReplies.none { e2 -> e1.id == e2.id } }
         if (newReplies.isEmpty()) {
             // abort and disable load more button
-            updatePostInState(post.id) {
-                it.copy(
-                    loadMoreButtonVisible = false,
-                    loadMoreButtonLoading = false,
+            updateState { state ->
+                state.copy(
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                        it.copy(
+                            loadMoreButtonVisible = false,
+                            loadMoreButtonLoading = false,
+                        )
+                    },
                 )
             }
         } else {
@@ -335,86 +352,17 @@ class ThreadViewModel(
         }
     }
 
-    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
-        val mainPost = currentMainPost ?: return
-        when (postId) {
-            mainPost.id -> {
-                updateState {
-                    it.copy(
-                        mainPosts =
-                        it.mainPosts.mapIndexed { idx, post ->
-                            if (idx == it.currentIndex) {
-                                mainPost.let(block)
-                            } else {
-                                post
-                            }
-                        },
-                    )
-                }
-            }
-
-            mainPost.reblog?.id -> {
-                updateState {
-                    it.copy(
-                        mainPosts =
-                        it.mainPosts.mapIndexed { idx, post ->
-                            if (idx == it.currentIndex) {
-                                mainPost.copy(reblog = mainPost.reblog?.let(block))
-                            } else {
-                                post
-                            }
-                        },
-                    )
-                }
-            }
-
-            else -> {
-                updateState {
-                    it.copy(
-                        replies =
-                        it.replies.mapIndexed { idx, list ->
-                            if (idx == it.currentIndex) {
-                                list.map { post ->
-                                    when {
-                                        post.id == postId -> post.let(block)
-
-                                        post.reblog?.id == postId ->
-                                            post.copy(reblog = post.reblog?.let(block))
-
-                                        else -> post
-                                    }
-                                }
-                            } else {
-                                list
-                            }
-                        },
-                    )
-                }
-            }
-        }
-    }
-
-    private suspend fun removePostFromState(postId: String) {
-        updateState {
-            it.copy(
-                replies =
-                it.replies.mapIndexed { idx, list ->
-                    if (idx == it.currentIndex) {
-                        list.filter { post -> post.id != postId && post.reblog?.id != postId }
-                    } else {
-                        list
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    reblogLoading = true,
+            updateState { state ->
+                state.copy(
+                    mainPosts = state.mainPosts.updateMatching(post.id) {
+                        it.copy(reblogLoading = true)
+                    },
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                        it.copy(reblogLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -424,20 +372,37 @@ class ThreadViewModel(
                     postRepository.reblog(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            reblogged = newPost.reblogged,
-                            reblogCount = newPost.reblogCount,
-                            reblogLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) {
+                            it.copy(
+                                reblogged = newPost.reblogged,
+                                reblogCount = newPost.reblogCount,
+                                reblogLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                            it.copy(
+                                reblogged = newPost.reblogged,
+                                reblogCount = newPost.reblogCount,
+                                reblogLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        reblogLoading = false,
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) {
+                            it.copy(reblogLoading = false)
+                        },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                            it.copy(reblogLoading = false)
+                        },
                     )
                 }
             }
@@ -447,9 +412,14 @@ class ThreadViewModel(
     private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    favoriteLoading = true,
+            updateState { state ->
+                state.copy(
+                    mainPosts = state.mainPosts.updateMatching(post.id) {
+                        it.copy(favoriteLoading = true)
+                    },
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                        it.copy(favoriteLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -457,13 +427,21 @@ class ThreadViewModel(
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) { newPost },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) { newPost },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        favoriteLoading = false,
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) {
+                            it.copy(favoriteLoading = false)
+                        },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                            it.copy(favoriteLoading = false)
+                        },
                     )
                 }
             }
@@ -473,9 +451,14 @@ class ThreadViewModel(
     private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    dislikeLoading = true,
+            updateState { state ->
+                state.copy(
+                    mainPosts = state.mainPosts.updateMatching(post.id) {
+                        it.copy(dislikeLoading = true)
+                    },
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                        it.copy(dislikeLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -483,13 +466,21 @@ class ThreadViewModel(
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) { newPost },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) { newPost },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        dislikeLoading = false,
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) {
+                            it.copy(dislikeLoading = false)
+                        },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                            it.copy(dislikeLoading = false)
+                        },
                     )
                 }
             }
@@ -499,9 +490,14 @@ class ThreadViewModel(
     private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    bookmarkLoading = true,
+            updateState { state ->
+                state.copy(
+                    mainPosts = state.mainPosts.updateMatching(post.id) {
+                        it.copy(bookmarkLoading = true)
+                    },
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                        it.copy(bookmarkLoading = true)
+                    },
                 )
             }
             val newPost =
@@ -511,19 +507,35 @@ class ThreadViewModel(
                     postRepository.bookmark(post.id)
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            bookmarked = newPost.bookmarked,
-                            bookmarkLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) {
+                            it.copy(
+                                bookmarked = newPost.bookmarked,
+                                bookmarkLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                            it.copy(
+                                bookmarked = newPost.bookmarked,
+                                bookmarkLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        bookmarkLoading = false,
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) {
+                            it.copy(bookmarkLoading = false)
+                        },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                            it.copy(bookmarkLoading = false)
+                        },
                     )
                 }
             }
@@ -535,7 +547,11 @@ class ThreadViewModel(
             val success = postRepository.delete(postId)
             if (success) {
                 notificationCenter.send(PostDeletedEvent(postId))
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(
+                        replies = state.replies.removeMatching(state.currentIndex, postId),
+                    )
+                }
             }
         }
     }
@@ -549,7 +565,11 @@ class ThreadViewModel(
                     notifications = disableNotifications,
                 )
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(
+                        replies = state.replies.removeMatching(state.currentIndex, postId),
+                    )
+                }
             }
         }
     }
@@ -558,7 +578,11 @@ class ThreadViewModel(
         viewModelScope.launch {
             val res = userRepository.block(userId)
             if (res != null) {
-                removePostFromState(postId)
+                updateState { state ->
+                    state.copy(
+                        replies = state.replies.removeMatching(state.currentIndex, postId),
+                    )
+                }
             }
         }
     }
@@ -566,19 +590,42 @@ class ThreadViewModel(
     private fun handleSubmitPollVote(post: PostModel, choices: List<Int>) {
         val poll = post.poll ?: return
         viewModelScope.launch {
-            updatePostInState(post.id) { it.copy(poll = poll.copy(loading = true)) }
+            updateState { state ->
+                state.copy(
+                    mainPosts = state.mainPosts.updateMatching(post.id) {
+                        it.copy(poll = poll.copy(loading = true))
+                    },
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                        it.copy(poll = poll.copy(loading = true))
+                    },
+                )
+            }
             val newPoll =
                 postRepository.submitPoll(
                     pollId = poll.id,
                     choices = choices,
                 )
             if (newPoll != null) {
-                updatePostInState(post.id) { it.copy(poll = newPoll) }
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) { it.copy(poll = newPoll) },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) { it.copy(poll = newPoll) },
+                    )
+                }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(poll = poll.copy(loading = false)).also { post ->
-                        notificationCenter.send(PostUpdatedEvent(post))
-                    }
+                updateState { state ->
+                    state.copy(
+                        mainPosts = state.mainPosts.updateMatching(post.id) {
+                            it.copy(poll = poll.copy(loading = false)).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                        replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                            it.copy(poll = poll.copy(loading = false)).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
                 emitEffect(ThreadMvi.Effect.PollVoteFailure)
             }
@@ -609,9 +656,23 @@ class ThreadViewModel(
         }
 
         viewModelScope.launch {
-            updatePostInState(post.id) { post.copy(translationLoading = true) }
+            updateState { state ->
+                state.copy(
+                    mainPosts = state.mainPosts.updateMatching(post.id) {
+                        post.copy(translationLoading = true)
+                    },
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) {
+                        post.copy(translationLoading = true)
+                    },
+                )
+            }
             val newPost = toggleTranslation(post = post, targetLang = targetLang)
-            updatePostInState(post.id) { newPost }
+            updateState { state ->
+                state.copy(
+                    mainPosts = state.mainPosts.updateMatching(post.id) { newPost },
+                    replies = state.replies.updateMatching(state.currentIndex, post.id) { newPost },
+                )
+            }
         }
     }
 
