@@ -1,7 +1,6 @@
 package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.test.assertIsDisplayed
@@ -33,7 +32,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [36])
-class NodeInfoScreenScaffoldTest {
+class NodeInfoScreenContentTest {
     private val uriHandler = mock<UriHandler>()
 
     private val navigationCoordinator =
@@ -44,8 +43,8 @@ class NodeInfoScreenScaffoldTest {
     private val mainRouter = mock<MainRouter>(MockMode.autoUnit)
     private val uiDeps: UiDeps =
         object : DummyUiDeps() {
-            override val mainRouter = this@NodeInfoScreenScaffoldTest.mainRouter
-            override val navigationCoordinator = this@NodeInfoScreenScaffoldTest.navigationCoordinator
+            override val mainRouter = this@NodeInfoScreenContentTest.mainRouter
+            override val navigationCoordinator = this@NodeInfoScreenContentTest.navigationCoordinator
         }
 
     @get:Rule
@@ -159,7 +158,7 @@ class NodeInfoScreenScaffoldTest {
                         CompositionLocalProvider(
                             LocalNavAnimatedContentScope provides this,
                         ) {
-                            NodeInfoScreenScaffold(state)
+                            NodeInfoScreenContent(state)
                         }
                     }
                 }
