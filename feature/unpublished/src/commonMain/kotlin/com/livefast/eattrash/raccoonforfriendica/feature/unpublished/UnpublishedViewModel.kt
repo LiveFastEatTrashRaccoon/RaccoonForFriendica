@@ -16,6 +16,8 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UnpublishedType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UnpublishedPaginationSpecification
@@ -59,12 +61,16 @@ class UnpublishedViewModel(
             notificationCenter
                 .subscribe(DraftDeletedEvent::class)
                 .onEach { event ->
-                    removePostFromState(event.id)
+                    updateState { state ->
+                        state.copy(posts = state.posts.removeMatching(event.id))
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updatePostInState(event.post.id) { event.post }
+                    updateState { state ->
+                        state.copy(posts = state.posts.updateMatching(event.post.id) { event.post })
+                    }
                 }.launchIn(this)
             notificationCenter
                 .subscribe(PostCreatedEvent::class)
@@ -188,28 +194,6 @@ class UnpublishedViewModel(
         }
     }
 
-    private suspend fun removePostFromState(postId: String) {
-        updateState {
-            it.copy(
-                posts = it.posts.filter { post -> post.id != postId },
-            )
-        }
-    }
-
-    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
-        updateState {
-            it.copy(
-                posts =
-                it.posts.map { post ->
-                    when {
-                        post.id == postId -> post.let(block)
-                        else -> post
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleDelete(postId: String) {
         val currentState = uiState.value
         viewModelScope.launch {
@@ -220,7 +204,7 @@ class UnpublishedViewModel(
                 }
             if (success) {
                 notificationCenter.send(PostDeletedEvent(postId))
-                removePostFromState(postId)
+                updateState { state -> state.copy(posts = state.posts.removeMatching(postId)) }
             }
         }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.UserRepository
@@ -91,40 +92,37 @@ class ManageUserCirclesViewModel(
         }
     }
 
-    private suspend fun updateItemInState(id: String, block: (CircleBelongingUiModel) -> CircleBelongingUiModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { item ->
-                    if (item.circle.id == id) {
-                        item.let(block)
-                    } else {
-                        item
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleAdd(circleId: String) {
         viewModelScope.launch {
-            updateItemInState(id = circleId) {
-                it.copy(pending = true)
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(matcher = { it.circle.id == circleId }) {
+                        it.copy(pending = true)
+                    },
+                )
             }
             val success = circlesRepository.addMembers(
                 id = circleId,
                 userIds = listOf(userId),
             )
             if (success) {
-                updateItemInState(id = circleId) {
-                    it.copy(
-                        belonging = true,
-                        pending = false,
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.circle.id == circleId }) {
+                            it.copy(
+                                belonging = true,
+                                pending = false,
+                            )
+                        },
                     )
                 }
             } else {
-                updateItemInState(id = circleId) {
-                    it.copy(pending = false)
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.circle.id == circleId }) {
+                            it.copy(pending = false)
+                        },
+                    )
                 }
                 emitEffect(ManageUserCirclesMvi.Effect.Error)
             }
@@ -133,23 +131,35 @@ class ManageUserCirclesViewModel(
 
     private fun handleRemove(circleId: String) {
         viewModelScope.launch {
-            updateItemInState(id = circleId) {
-                it.copy(pending = true)
+            updateState { state ->
+                state.copy(
+                    items = state.items.updateMatching(matcher = { it.circle.id == circleId }) {
+                        it.copy(pending = true)
+                    },
+                )
             }
             val success = circlesRepository.removeMembers(
                 id = circleId,
                 userIds = listOf(userId),
             )
             if (success) {
-                updateItemInState(id = circleId) {
-                    it.copy(
-                        belonging = false,
-                        pending = false,
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.circle.id == circleId }) {
+                            it.copy(
+                                belonging = false,
+                                pending = false,
+                            )
+                        },
                     )
                 }
             } else {
-                updateItemInState(id = circleId) {
-                    it.copy(pending = false)
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.circle.id == circleId }) {
+                            it.copy(pending = false)
+                        },
+                    )
                 }
                 emitEffect(ManageUserCirclesMvi.Effect.Error)
             }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.BlurHashRepository
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.core.utils.vibrate.HapticFeedback
@@ -11,7 +12,6 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.MarkerType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.PostModel
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.hasPriorIdThen
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toNotificationStatus
@@ -201,42 +201,17 @@ class InboxViewModel(
         }
     }
 
-    private suspend fun updateUserInState(userId: String, block: (UserModel) -> UserModel) {
-        updateState {
-            it.copy(
-                notifications =
-                it.notifications.map { notification ->
-                    if (notification.user?.id == userId) {
-                        notification.copy(
-                            user = notification.user?.let(block),
-                        )
-                    } else {
-                        notification
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun updateItemInState(id: String, block: (NotificationModel) -> NotificationModel) {
-        updateState {
-            it.copy(
-                notifications =
-                it.notifications.map { notification ->
-                    if (notification.id == id) {
-                        notification.let(block)
-                    } else {
-                        notification
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleFollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    notifications =
+                    state.notifications.updateMatching(matcher = { it.user?.id == userId }) {
+                        it.copy(user = it.user?.copy(relationshipStatusPending = true))
+                    },
+                )
+            }
             val currentUser =
                 uiState.value.notifications
                     .firstOrNull { it.user?.id == userId }
@@ -245,11 +220,18 @@ class InboxViewModel(
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it.copy(
-                    relationshipStatus = newStatus,
-                    notificationStatus = newNotificationStatus,
-                    relationshipStatusPending = false,
+            updateState { state ->
+                state.copy(
+                    notifications =
+                    state.notifications.updateMatching(matcher = { it.user?.id == userId }) {
+                        it.copy(
+                            user = it.user?.copy(
+                                relationshipStatus = newStatus,
+                                notificationStatus = newNotificationStatus,
+                                relationshipStatusPending = false,
+                            ),
+                        )
+                    },
                 )
             }
         }
@@ -258,7 +240,14 @@ class InboxViewModel(
     private fun handleUnfollow(userId: String) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updateUserInState(userId) { it.copy(relationshipStatusPending = true) }
+            updateState { state ->
+                state.copy(
+                    notifications =
+                    state.notifications.updateMatching(matcher = { it.user?.id == userId }) {
+                        it.copy(user = it.user?.copy(relationshipStatusPending = true))
+                    },
+                )
+            }
             val currentUser =
                 uiState.value.notifications
                     .firstOrNull { it.user?.id == userId }
@@ -267,11 +256,18 @@ class InboxViewModel(
             val newStatus = newRelationship?.toStatus() ?: currentUser?.relationshipStatus
             val newNotificationStatus =
                 newRelationship?.toNotificationStatus() ?: currentUser?.notificationStatus
-            updateUserInState(userId) {
-                it.copy(
-                    relationshipStatus = newStatus,
-                    notificationStatus = newNotificationStatus,
-                    relationshipStatusPending = false,
+            updateState { state ->
+                state.copy(
+                    notifications =
+                    state.notifications.updateMatching(matcher = { it.user?.id == userId }) {
+                        it.copy(
+                            user = it.user?.copy(
+                                relationshipStatus = newStatus,
+                                notificationStatus = newNotificationStatus,
+                                relationshipStatusPending = false,
+                            ),
+                        )
+                    },
                 )
             }
         }
@@ -286,8 +282,14 @@ class InboxViewModel(
         )
         inboxManager.refreshUnreadCount()
         pullNotificationManager.cancelAll()
-        notifications.forEach { n ->
-            updateItemInState(n.id) { it.copy(read = true) }
+        notifications.forEach { notification ->
+            updateState { state ->
+                state.copy(
+                    notifications = state.notifications.updateMatching(matcher = { it.id == notification.id }) {
+                        notification.copy(read = true)
+                    },
+                )
+            }
         }
     }
 
@@ -296,7 +298,13 @@ class InboxViewModel(
             return
         }
         viewModelScope.launch {
-            updateItemInState(notification.id) { it.copy(read = true) }
+            updateState { state ->
+                state.copy(
+                    notifications = state.notifications.updateMatching(matcher = { it.id == notification.id }) {
+                        notification.copy(read = true)
+                    },
+                )
+            }
             inboxManager.decrementUnreadCount()
         }
     }
@@ -308,7 +316,13 @@ class InboxViewModel(
         viewModelScope.launch {
             val success = notificationRepository.dismiss(notification.id)
             if (success) {
-                updateItemInState(notification.id) { it.copy(read = true) }
+                updateState { state ->
+                    state.copy(
+                        notifications = state.notifications.updateMatching(matcher = { it.id == notification.id }) {
+                            notification.copy(read = true)
+                        },
+                    )
+                }
                 inboxManager.decrementUnreadCount()
             }
         }

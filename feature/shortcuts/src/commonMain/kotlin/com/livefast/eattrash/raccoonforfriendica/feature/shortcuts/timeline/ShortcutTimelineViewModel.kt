@@ -17,6 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.SearchResul
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.TimelineType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.blurHashParamsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.original
+import com.livefast.eattrash.raccoonforfriendica.domain.content.data.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.urlsForPreload
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelineNavigationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.TimelinePaginationManager
@@ -101,7 +102,9 @@ class ShortcutTimelineViewModel(
             notificationCenter
                 .subscribe(PostUpdatedEvent::class)
                 .onEach { event ->
-                    updatePostInState(event.post.id) { event.post }
+                    updateState { state ->
+                        state.copy(posts = state.posts.updateMatching(event.post.id) { event.post })
+                    }
                 }.launchIn(this)
 
             if (uiState.value.initial) {
@@ -214,24 +217,6 @@ class ShortcutTimelineViewModel(
         }
     }
 
-    private suspend fun updatePostInState(postId: String, block: (PostModel) -> PostModel) {
-        updateState {
-            it.copy(
-                posts =
-                it.posts.map { post ->
-                    when {
-                        post.id == postId -> post.let(block)
-
-                        post.reblog?.id == postId ->
-                            post.copy(reblog = post.reblog?.let(block))
-
-                        else -> post
-                    }
-                },
-            )
-        }
-    }
-
     private suspend fun resolveToLocal(post: PostModel): PostModel? = post.url?.let { url ->
         val results =
             searchRepository.search(
@@ -246,8 +231,8 @@ class ShortcutTimelineViewModel(
     private fun handleToggleReblog(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(reblogLoading = true)
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(reblogLoading = true) })
             }
             val newPost =
                 resolveToLocal(post)?.let { le ->
@@ -258,19 +243,22 @@ class ShortcutTimelineViewModel(
                     }
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            reblogged = newPost.reblogged,
-                            reblogCount = newPost.reblogCount,
-                            reblogLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(
+                                reblogged = newPost.reblogged,
+                                reblogCount = newPost.reblogCount,
+                                reblogLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(reblogLoading = false)
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(reblogLoading = false) })
                 }
                 emitEffect(ShortcutTimelineMvi.Effect.Failure)
             }
@@ -280,10 +268,8 @@ class ShortcutTimelineViewModel(
     private fun handleToggleFavorite(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(
-                    favoriteLoading = true,
-                )
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(favoriteLoading = true) })
             }
 
             val localPost =
@@ -294,18 +280,22 @@ class ShortcutTimelineViewModel(
                         notificationCenter.send(PostUpdatedEvent(post = le))
                     }
             if (localPost != null) {
-                updatePostInState(post.id) {
-                    it.copy(
-                        favorite = localPost.favorite,
-                        favoriteCount = localPost.favoriteCount,
-                        disliked = localPost.disliked,
-                        dislikesCount = localPost.dislikesCount,
-                        favoriteLoading = false,
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(
+                                favorite = localPost.favorite,
+                                favoriteCount = localPost.favoriteCount,
+                                disliked = localPost.disliked,
+                                dislikesCount = localPost.dislikesCount,
+                                favoriteLoading = false,
+                            )
+                        },
                     )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(favoriteLoading = false)
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(favoriteLoading = false) })
                 }
                 emitEffect(ShortcutTimelineMvi.Effect.Failure)
             }
@@ -315,22 +305,20 @@ class ShortcutTimelineViewModel(
     private fun handleToggleDislike(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(dislikeLoading = true)
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(dislikeLoading = true) })
             }
             val newPost =
                 toggleDislike(post)?.also { post ->
                     notificationCenter.send(PostUpdatedEvent(post))
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    newPost
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { newPost })
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(
-                        dislikeLoading = false,
-                    )
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(dislikeLoading = false) })
                 }
             }
         }
@@ -339,8 +327,8 @@ class ShortcutTimelineViewModel(
     private fun handleToggleBookmark(post: PostModel) {
         hapticFeedback.vibrate()
         viewModelScope.launch {
-            updatePostInState(post.id) {
-                it.copy(bookmarkLoading = true)
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(bookmarkLoading = true) })
             }
             val newPost =
                 resolveToLocal(post)?.let { le ->
@@ -351,18 +339,21 @@ class ShortcutTimelineViewModel(
                     }
                 }
             if (newPost != null) {
-                updatePostInState(post.id) {
-                    it
-                        .copy(
-                            bookmarked = newPost.bookmarked,
-                            bookmarkLoading = false,
-                        ).also { post ->
-                            notificationCenter.send(PostUpdatedEvent(post))
-                        }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(
+                                bookmarked = newPost.bookmarked,
+                                bookmarkLoading = false,
+                            ).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) {
-                    it.copy(bookmarkLoading = false)
+                updateState { state ->
+                    state.copy(posts = state.posts.updateMatching(post.id) { it.copy(bookmarkLoading = false) })
                 }
                 emitEffect(ShortcutTimelineMvi.Effect.Failure)
             }
@@ -372,7 +363,9 @@ class ShortcutTimelineViewModel(
     private fun handleSubmitPollVote(post: PostModel, choices: List<Int>) {
         val poll = post.poll ?: return
         viewModelScope.launch {
-            updatePostInState(post.id) { it.copy(poll = poll.copy(loading = true)) }
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(poll = poll.copy(loading = true)) })
+            }
             val newPoll =
                 resolveToLocal(post)?.poll?.let { poll ->
                     postRepository.submitPoll(
@@ -381,13 +374,23 @@ class ShortcutTimelineViewModel(
                     )
                 }
             if (newPoll != null) {
-                updatePostInState(post.id) {
-                    it.copy(poll = newPoll).also { post ->
-                        notificationCenter.send(PostUpdatedEvent(post))
-                    }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(poll = newPoll).also { post ->
+                                notificationCenter.send(PostUpdatedEvent(post))
+                            }
+                        },
+                    )
                 }
             } else {
-                updatePostInState(post.id) { it.copy(poll = poll.copy(loading = false)) }
+                updateState { state ->
+                    state.copy(
+                        posts = state.posts.updateMatching(post.id) {
+                            it.copy(poll = poll.copy(loading = false))
+                        },
+                    )
+                }
                 emitEffect(ShortcutTimelineMvi.Effect.PollVoteFailure)
             }
         }
@@ -417,9 +420,13 @@ class ShortcutTimelineViewModel(
         }
 
         viewModelScope.launch {
-            updatePostInState(post.id) { post.copy(translationLoading = true) }
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { it.copy(translationLoading = true) })
+            }
             val newPost = toggleTranslation(post = post, targetLang = targetLang)
-            updatePostInState(post.id) { newPost }
+            updateState { state ->
+                state.copy(posts = state.posts.updateMatching(post.id) { newPost })
+            }
         }
     }
 

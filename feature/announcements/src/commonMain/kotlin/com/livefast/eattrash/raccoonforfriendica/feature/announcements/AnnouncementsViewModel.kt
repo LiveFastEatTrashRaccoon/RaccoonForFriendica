@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.AnnouncementModel
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementRepository
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.AnnouncementsManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.EmojiRepository
@@ -119,27 +119,16 @@ class AnnouncementsViewModel(
         }
     }
 
-    private suspend fun updateItemInState(id: String, block: (AnnouncementModel) -> AnnouncementModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { item ->
-                    if (item.id == id) {
-                        item.let(block)
-                    } else {
-                        item
-                    }
-                },
-            )
-        }
-    }
-
     private suspend fun markAllAsRead() {
         val items = uiState.value.items.filter { !it.read }
         items.forEach { item ->
             val success = announcementRepository.markAsRead(item.id)
             if (success) {
-                updateItemInState(item.id) { it.copy(read = true) }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.id == item.id }) { it.copy(read = true) },
+                    )
+                }
                 announcementsManager.decrementUnreadCount()
             }
         }

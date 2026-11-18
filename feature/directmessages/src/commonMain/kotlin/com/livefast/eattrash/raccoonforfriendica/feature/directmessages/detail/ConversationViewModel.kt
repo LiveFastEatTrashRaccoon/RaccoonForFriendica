@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.core.utils.uuid.getUuid
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.DirectMessageModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
@@ -186,21 +187,6 @@ class ConversationViewModel(
         }
     }
 
-    private suspend fun updateMessageInState(messageId: String, block: (DirectMessageModel) -> DirectMessageModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { msg ->
-                    if (msg.id == messageId) {
-                        msg.let(block)
-                    } else {
-                        msg
-                    }
-                },
-            )
-        }
-    }
-
     private fun handleSubmit() {
         val currentState = uiState.value
         val text = currentState.newMessageValue.text
@@ -255,10 +241,14 @@ class ConversationViewModel(
                 }
             } else {
                 updateParentUriIfNeeded(remoteMessage.parentUri)
-                updateMessageInState(localId) {
-                    remoteMessage.copy(
-                        // the title is appended in a newline before the body
-                        text = remoteMessage.text?.substringAfter('\n'),
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(matcher = { it.id == localId }) {
+                            remoteMessage.copy(
+                                // the title is appended in a newline before the body
+                                text = remoteMessage.text?.substringAfter('\n'),
+                            )
+                        },
                     )
                 }
                 updateState {

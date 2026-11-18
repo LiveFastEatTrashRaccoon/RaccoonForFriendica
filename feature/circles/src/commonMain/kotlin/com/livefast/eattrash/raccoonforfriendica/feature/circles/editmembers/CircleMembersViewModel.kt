@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
 import com.livefast.eattrash.raccoonforfriendica.core.utils.imageload.ImagePreloadManager
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.pagination.UserPaginationManager
@@ -113,28 +114,14 @@ class CircleMembersViewModel(
         }
     }
 
-    private suspend fun removeItemFromState(id: String) {
-        updateState {
-            it.copy(
-                users = it.users.filter { item -> item.id != id },
-            )
-        }
-    }
-
-    private suspend fun insertItemsInState(items: List<UserModel>) {
-        updateState {
-            it.copy(
-                users = it.users + items,
-            )
-        }
-    }
-
     private fun handleAdd(users: List<UserModel>) {
         viewModelScope.launch {
             val userIds = users.map { it.id }
             val success = circlesRepository.addMembers(id = circleId, userIds = userIds)
             if (success) {
-                insertItemsInState(users)
+                updateState { state ->
+                    state.copy(users = state.users + users)
+                }
             } else {
                 emitEffect(CircleMembersMvi.Effect.Failure)
             }
@@ -145,7 +132,9 @@ class CircleMembersViewModel(
         viewModelScope.launch {
             val success = circlesRepository.removeMembers(id = circleId, userIds = listOf(userId))
             if (success) {
-                removeItemFromState(userId)
+                updateState { state ->
+                    state.copy(users = state.users.removeMatching { it.id == userId })
+                }
             } else {
                 emitEffect(CircleMembersMvi.Effect.Failure)
             }

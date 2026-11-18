@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.DefaultMviDelegate
 import com.livefast.eattrash.raccoonforfriendica.core.architecture.MviDelegate
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.removeMatching
+import com.livefast.eattrash.raccoonforfriendica.core.architecture.updateMatching
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleModel
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.CircleType
 import com.livefast.eattrash.raccoonforfriendica.domain.content.repository.CirclesRepository
@@ -69,9 +71,23 @@ class CirclesViewModel(
         viewModelScope.launch {
             val new = uiState.value.items.none { it is CircleListItem.Circle && it.circle.id == circle.id }
             if (new) {
-                insertItemInState(circle)
+                updateState { state ->
+                    val circles = state.items.mapNotNull { (it as? CircleListItem.Circle)?.circle }
+                    val newCircles = listOf(circle) + circles
+                    val groupedCircles = newCircles.groupBy { circle -> circle.type }
+                    state.copy(items = groupedCircles.toListItems())
+                }
             } else {
-                updateItemInState(circle.id) { circle }
+                updateState { state ->
+                    state.copy(
+                        items = state.items.updateMatching(
+                            matcher = { (it as? CircleListItem.Circle)?.circle?.id == circle.id },
+                        ) {
+                            val item = it as CircleListItem.Circle
+                            item.copy(circle = circle)
+                        },
+                    )
+                }
             }
         }
     }
@@ -116,59 +132,16 @@ class CirclesViewModel(
         }
     }
 
-    private suspend fun removeItemFromState(id: String) {
-        updateState {
-            val circles =
-                it.items
-                    .mapNotNull { listItem ->
-                        if (listItem is CircleListItem.Circle && listItem.circle.id != id) {
-                            listItem.circle
-                        } else {
-                            null
-                        }
-                    }
-            val groupedCircles = circles.groupBy { circle -> circle.type }
-            it.copy(items = groupedCircles.toListItems())
-        }
-    }
-
-    private suspend fun updateItemInState(id: String, block: (CircleModel) -> CircleModel) {
-        updateState {
-            it.copy(
-                items =
-                it.items.map { item ->
-                    if (item is CircleListItem.Circle && item.circle.id == id) {
-                        item.copy(circle = item.circle.let(block))
-                    } else {
-                        item
-                    }
-                },
-            )
-        }
-    }
-
-    private suspend fun insertItemInState(circle: CircleModel) {
-        updateState {
-            val circles =
-                listOf(circle) +
-                    it.items
-                        .mapNotNull { listItem ->
-                            if (listItem is CircleListItem.Circle) {
-                                listItem.circle
-                            } else {
-                                null
-                            }
-                        }
-            val groupedCircles = circles.groupBy { circle -> circle.type }
-            it.copy(items = groupedCircles.toListItems())
-        }
-    }
-
     private fun handleDelete(id: String) {
         viewModelScope.launch {
             val success = circlesRepository.delete(id)
             if (success) {
-                removeItemFromState(id)
+                updateState { state ->
+                    val circles = state.items.mapNotNull { (it as? CircleListItem.Circle)?.circle }
+                    val newCircles = circles.removeMatching { it.id == id }
+                    val groupedCircles = newCircles.groupBy { circle -> circle.type }
+                    state.copy(items = groupedCircles.toListItems())
+                }
             } else {
                 emitEffect(CirclesMvi.Effect.Failure)
             }
