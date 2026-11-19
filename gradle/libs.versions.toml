@@ -44,7 +44,7 @@ room = "2.8.5"
 sentry = "0.29.0"
 spotless = "8.11.0"
 turbine = "1.2.1"
-unifiedpush-connector = "3.3.5"
+unifiedpush-connector = "3.3.6"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
