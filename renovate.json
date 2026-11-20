@@ -22,6 +22,11 @@
         "^com\\.android\\."
       ],
       "enabled": false
+    },
+    {
+      "description": "Ignore Java JDK upgrades in GitHub Actions",
+      "matchPackageNames": ["java-jdk"],
+      "enabled": false
     }
   ]
 }
