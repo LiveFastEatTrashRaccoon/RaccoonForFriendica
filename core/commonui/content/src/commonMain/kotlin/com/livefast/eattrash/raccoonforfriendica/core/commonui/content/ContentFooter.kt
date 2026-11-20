@@ -1,6 +1,5 @@
 package com.livefast.eattrash.raccoonforfriendica.core.commonui.content
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,9 +29,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.DpOffset
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
-import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.FeedbackButton
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 
@@ -41,16 +38,12 @@ fun ContentFooter(
     modifier: Modifier = Modifier,
     reblogged: Boolean = false,
     reblogCount: Int = 0,
-    reblogLoading: Boolean = false,
     favorite: Boolean = false,
     favoriteCount: Int = 0,
-    favoriteLoading: Boolean = false,
     bookmarked: Boolean = false,
-    bookmarkLoading: Boolean = false,
     replyCount: Int = 0,
     disliked: Boolean = false,
     dislikeCount: Int = 0,
-    dislikeLoading: Boolean = false,
     options: List<Option> = emptyList(),
     optionsMenuOpen: Boolean = false,
     onSelectOption: ((OptionId) -> Unit)? = null,
@@ -91,7 +84,6 @@ fun ContentFooter(
                 contentDescription = null,
                 value = reblogCount,
                 toggled = reblogged,
-                loading = reblogLoading,
                 onClick = onReblog,
             )
         }
@@ -113,7 +105,6 @@ fun ContentFooter(
                 contentDescription = null,
                 value = favoriteCount,
                 toggled = favorite,
-                loading = favoriteLoading,
                 onClick = onFavorite,
             )
         }
@@ -125,7 +116,6 @@ fun ContentFooter(
                 contentDescription = null,
                 value = dislikeCount,
                 toggled = disliked,
-                loading = dislikeLoading,
                 onClick = onDislike,
             )
         }
@@ -136,7 +126,6 @@ fun ContentFooter(
                 toggledIcon = LocalResources.current.bookmarkFill,
                 contentDescription = null,
                 toggled = bookmarked,
-                loading = bookmarkLoading,
                 onClick = onBookmark,
             )
         }
@@ -213,7 +202,6 @@ private fun FooterItem(
     value: Int = 0,
     toggledIcon: ImageVector? = null,
     toggled: Boolean = false,
-    loading: Boolean = false,
     onClick: (() -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
@@ -228,36 +216,18 @@ private fun FooterItem(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            if (loading) {
-                AnimatedVisibility(visible = loading) {
-                    Box(
-                        modifier = Modifier.size(IconSize.s),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CustomProgressIndicator(
-                            color =
-                            MaterialTheme.colorScheme.onBackground.copy(
-                                ancillaryTextAlpha,
-                            ),
-                        )
-                    }
-                }
-            } else {
-                FeedbackButton(
-                    imageVector = toggledIcon.takeIf { toggled } ?: icon,
-                    contentDescription = contentDescription,
-                    tintColor = toggledColor.takeIf { toggled } ?: fullColor,
-                    enabled = onClick != null,
-                    onClick = onClick,
-                )
-            }
+            FeedbackButton(
+                imageVector = toggledIcon.takeIf { toggled } ?: icon,
+                contentDescription = contentDescription,
+                tintColor = toggledColor.takeIf { toggled } ?: fullColor,
+                enabled = onClick != null,
+                onClick = onClick,
+            )
             Text(
                 modifier =
                 Modifier
                     .padding(start = Spacing.xs)
-                    .alpha(
-                        if (loading || value == 0) 0f else 1f,
-                    ),
+                    .alpha(if (value == 0) 0f else 1f),
                 text = value.toString(),
                 style = MaterialTheme.typography.labelMedium,
                 color = toggledColor.takeIf { toggled } ?: fullColor,
