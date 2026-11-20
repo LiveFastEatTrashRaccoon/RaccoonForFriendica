@@ -1,0 +1,32 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "Ignore Gradle wrapper updates",
+      "matchManagers": ["gradle-wrapper"],
+      "enabled": false
+    },
+    {
+      "description": "Ignore AGP updates",
+      "matchPackageNames": [
+        "com.android.tools.build:gradle",
+        "com.android.application",
+        "com.android.library",
+        "com.android.kotlin.multiplatform.library"
+      ],
+      "matchPackagePatterns": [
+        "^com\\.android\\.tools\\.build:",
+        "^com\\.android\\."
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Ignore Java JDK upgrades in GitHub Actions",
+      "matchPackageNames": ["java-jdk"],
+      "enabled": false
+    }
+  ]
+}
