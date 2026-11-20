@@ -15,11 +15,9 @@
         "com.android.tools.build:gradle",
         "com.android.application",
         "com.android.library",
-        "com.android.kotlin.multiplatform.library"
-      ],
-      "matchPackagePatterns": [
-        "^com\\.android\\.tools\\.build:",
-        "^com\\.android\\."
+        "com.android.kotlin.multiplatform.library",
+        "/^com\\.android\\.tools\\.build:/",
+        "/^com\\.android\\./"
       ],
       "enabled": false
     },
