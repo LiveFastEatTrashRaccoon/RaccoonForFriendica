@@ -38,7 +38,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +52,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
@@ -107,15 +107,15 @@ fun PostDetailScreen(
             swipeNavigationEnabled = swipeNavigationEnabled,
         ),
     )
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val canPopState by navigationCoordinator.canPop.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
     val mainRouter = LocalUiDeps.current.mainRouter
     val fabNestedScrollConnection = LocalUiDeps.current.fabNestedScrollConnection
-    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper

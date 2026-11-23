@@ -33,7 +33,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -77,9 +77,9 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val model: AlbumDetailMvi = assistedMetroViewModel<AlbumDetailViewModel>(
         extras = AlbumDetailViewModel.getExtras(name),
     )
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val canPopState by navigationCoordinator.canPop.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -87,7 +87,7 @@ fun AlbumDetailScreen(name: String, modifier: Modifier = Modifier) {
     val fabNestedScrollConnection = LocalUiDeps.current.fabNestedScrollConnection
     val mainRouter = LocalUiDeps.current.mainRouter
     val galleryHelper = LocalUiDeps.current.galleryHelper
-    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val genericError = LocalStrings.current.messageGenericError
     var openImagePicker by remember { mutableStateOf(false) }

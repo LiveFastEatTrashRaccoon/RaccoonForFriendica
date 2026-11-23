@@ -30,7 +30,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +45,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.CommentBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
@@ -123,11 +123,11 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     val model: SettingsMvi = assistedMetroViewModel<SettingsViewModel>(
         extras = SettingsViewModel.getExtras(controller),
     )
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val canPopState by navigationCoordinator.canPop.collectAsStateWithLifecycle()
     val mainRouter = LocalUiDeps.current.mainRouter
     val scope = rememberCoroutineScope()
     val fileSystemManager = LocalUiDeps.current.fileSystemManager
@@ -1199,7 +1199,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
         val configModel: TranslationConfigMvi =
             metroViewModel<TranslationConfigViewModel>(viewModelStoreOwner)
-        val configUiState by configModel.uiState.collectAsState()
+        val configUiState by configModel.uiState.collectAsStateWithLifecycle()
 
         var translationProviderConfigToDelete by remember { mutableStateOf<TranslationProviderConfig?>(null) }
         var addTranslationProviderConfigDialogOpened by remember { mutableStateOf(false) }

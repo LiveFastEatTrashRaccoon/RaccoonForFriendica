@@ -26,7 +26,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -83,7 +83,7 @@ fun MyAccountScreen(
     lazyListState: LazyListState = rememberLazyListState(),
     topAppBarState: TopAppBarState = rememberTopAppBarState(),
 ) {
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val connection = navigationCoordinator.getBottomBarScrollConnection()
     val uriHandler = LocalUriHandler.current

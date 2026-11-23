@@ -27,7 +27,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,6 +41,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -66,12 +66,12 @@ fun LoginScreen(loginType: Int, modifier: Modifier = Modifier) {
     val model: LoginMvi = assistedMetroViewModel<LoginViewModel>(
         extras = LoginViewModel.getExtras(type = loginType.toLoginType()),
     )
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val canPopState by navigationCoordinator.canPop.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
     val focusManager = LocalFocusManager.current
     val genericError = LocalStrings.current.messageGenericError

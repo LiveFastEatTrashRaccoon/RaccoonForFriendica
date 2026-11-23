@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -55,7 +55,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMvi = metroViewModel<DrawerViewModel>()) {
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
     val mainRouter = LocalUiDeps.current.mainRouter
@@ -226,7 +226,7 @@ fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMvi = metroViewMod
         if (manageAccountsDialogOpened) {
             val viewModelStoreOwner = rememberViewModelStoreOwner()
             val switchAccountModel: SwitchAccountMvi = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
-            val dialogUiState by switchAccountModel.uiState.collectAsState()
+            val dialogUiState by switchAccountModel.uiState.collectAsStateWithLifecycle()
 
             LaunchedEffect(switchAccountModel) {
                 switchAccountModel.effects
@@ -298,7 +298,7 @@ fun DrawerContent(modifier: Modifier = Modifier, model: DrawerMvi = metroViewMod
             val viewModelStoreOwner = rememberViewModelStoreOwner()
             val switchInstanceModel: SwitchInstanceMvi =
                 metroViewModel<SwitchInstanceViewModel>(viewModelStoreOwner)
-            val dialogUiState by switchInstanceModel.uiState.collectAsState()
+            val dialogUiState by switchInstanceModel.uiState.collectAsStateWithLifecycle()
 
             LaunchedEffect(switchInstanceModel) {
                 switchInstanceModel.effects.onEach { effect ->

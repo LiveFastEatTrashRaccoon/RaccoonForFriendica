@@ -30,7 +30,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
@@ -97,17 +97,17 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
     val model: ForumListMvi = assistedMetroViewModel<ForumListViewModel>(
         extras = ForumListViewModel.getExtras(id),
     )
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val canPopState by navigationCoordinator.canPop.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
     val mainRouter = LocalUiDeps.current.mainRouter
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val fabNestedScrollConnection = LocalUiDeps.current.fabNestedScrollConnection
-    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard

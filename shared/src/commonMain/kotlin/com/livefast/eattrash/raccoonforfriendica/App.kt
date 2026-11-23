@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -105,7 +105,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
     val navigationCoordinator = uiDeps.navigationCoordinator
     val networkStateObserver = uiDeps.networkStateObserver
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsState()
+    val drawerGesturesEnabled by drawerCoordinator.gesturesEnabled.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val backStack = rememberNavBackStack(
         configuration = Destination.SavedStateConfiguration,
@@ -175,7 +175,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
         LocalMetroViewModelFactory provides graph.metroViewModelFactory,
     ) {
         val model: RootMvi = metroViewModel<RootViewModel>()
-        val uiState by model.uiState.collectAsState()
+        val uiState by model.uiState.collectAsStateWithLifecycle()
 
         LaunchedEffect(model) {
             model.effects.onEach { effect ->
@@ -207,7 +207,7 @@ fun App(graph: RootGraph, onLoadingFinished: (() -> Unit)? = null) {
                             }
                         },
                     ) {
-                        val canPop by drawerCoordinator.drawerOpened.collectAsState()
+                        val canPop by drawerCoordinator.drawerOpened.collectAsStateWithLifecycle()
                         val navState = rememberNavigationEventState(NavigationEventInfo.None)
                         NavigationBackHandler(
                             state = navState,

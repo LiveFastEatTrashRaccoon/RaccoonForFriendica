@@ -25,7 +25,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -62,15 +62,15 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @Composable
 fun ConversationListScreen(model: ConversationListMvi, modifier: Modifier = Modifier) {
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val canPopState by navigationCoordinator.canPop.collectAsStateWithLifecycle()
     val mainRouter = LocalUiDeps.current.mainRouter
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val lazyListState = rememberLazyListState()
     val fabNestedScrollConnection = LocalUiDeps.current.fabNestedScrollConnection
-    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     var selectUserToCreateConversationDialogOpen by remember { mutableStateOf(false) }
 
@@ -259,7 +259,7 @@ fun ConversationListScreen(model: ConversationListMvi, modifier: Modifier = Modi
     if (selectUserToCreateConversationDialogOpen) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
         val selectUserModel: SelectUserMvi = metroViewModel<SelectUserViewModel>(viewModelStoreOwner)
-        val dialogUiState by selectUserModel.uiState.collectAsState()
+        val dialogUiState by selectUserModel.uiState.collectAsStateWithLifecycle()
 
         SelectUserDialog(
             query = dialogUiState.query,

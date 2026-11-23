@@ -4,8 +4,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.UiBarTheme
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.repository.ThemeRepository
 
@@ -18,8 +18,8 @@ fun AppTheme(
     barTheme: UiBarTheme,
     content: @Composable () -> Unit,
     ) {
-    val themeState by repository.theme.collectAsState()
-    val customSeedColor by repository.customSeedColor.collectAsState()
+    val themeState by repository.theme.collectAsStateWithLifecycle()
+    val customSeedColor by repository.customSeedColor.collectAsStateWithLifecycle()
     val colorScheme =
         colorSchemeProvider.getColorScheme(
             theme = themeState,
@@ -28,7 +28,7 @@ fun AppTheme(
             isSystemInDarkTheme = isSystemInDarkTheme(),
         )
 
-    val fontFamily by repository.fontFamily.collectAsState()
+    val fontFamily by repository.fontFamily.collectAsStateWithLifecycle()
     val typography = fontFamily.toTypography()
 
     barColorProvider.setBarColorAccordingToTheme(

@@ -13,7 +13,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +26,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.livefast.eattrash.raccoonforfriendica.bottomnavigation.BottomNavigationItem
@@ -64,9 +64,9 @@ fun MainScreen(
     lockedSection: BottomNavigationSection = BottomNavigationSection.Home,
 ) {
     val model: MainMvi = metroViewModel<MainViewModel>()
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val currentSection by navigationCoordinator.currentBottomNavSection.collectAsState()
+    val currentSection by navigationCoordinator.currentBottomNavSection.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }

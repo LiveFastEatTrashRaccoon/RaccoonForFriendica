@@ -16,14 +16,11 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -69,7 +67,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     myAccountLazyListState: LazyListState = rememberLazyListState(),
 ) {
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val scope = rememberCoroutineScope()
@@ -163,7 +161,7 @@ fun ProfileScreen(
     if (manageAccountsDialogOpened) {
         val viewModelStoreOwner = rememberViewModelStoreOwner()
         val switchAccountModel: SwitchAccountMvi = metroViewModel<SwitchAccountViewModel>(viewModelStoreOwner)
-        val dialogUiState by switchAccountModel.uiState.collectAsState()
+        val dialogUiState by switchAccountModel.uiState.collectAsStateWithLifecycle()
 
         LaunchedEffect(switchAccountModel) {
             switchAccountModel.effects.onEach { effect ->

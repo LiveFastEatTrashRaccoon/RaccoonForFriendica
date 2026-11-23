@@ -33,7 +33,6 @@ import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +52,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.rememberViewModelStoreOwner
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
@@ -129,12 +129,12 @@ fun ComposerScreen(
             quotedId = quotedId,
         ),
     )
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
     val snackbarHostState = remember { SnackbarHostState() }
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
-    val canPopState by navigationCoordinator.canPop.collectAsState()
+    val canPopState by navigationCoordinator.canPop.collectAsStateWithLifecycle()
     val galleryHelper = LocalUiDeps.current.galleryHelper
     val focusManager = LocalFocusManager.current
     val missingDataError = LocalStrings.current.messagePostEmptyText
@@ -993,7 +993,7 @@ fun ComposerScreen(
         if (photoGalleryPickerOpen) {
             val viewModelStoreOwner = rememberViewModelStoreOwner()
             val galleryPickerModel: GalleryPickerMvi = metroViewModel<GalleryPickerViewModel>(viewModelStoreOwner)
-            val dialogUiState by galleryPickerModel.uiState.collectAsState()
+            val dialogUiState by galleryPickerModel.uiState.collectAsStateWithLifecycle()
 
             GalleryPickerDialog(
                 sheetState = rememberBottomSheetState(

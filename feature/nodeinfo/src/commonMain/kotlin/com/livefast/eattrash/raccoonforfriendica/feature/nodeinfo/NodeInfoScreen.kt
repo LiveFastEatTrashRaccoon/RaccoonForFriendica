@@ -2,12 +2,12 @@ package com.livefast.eattrash.raccoonforfriendica.feature.nodeinfo
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ChangeInstanceDialog
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun NodeInfoScreen(model: NodeInfoMvi, modifier: Modifier = Modifier) {
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     var changeInstanceDialogOpened by remember { mutableStateOf(false) }
     val successMessage = LocalStrings.current.messageSuccess

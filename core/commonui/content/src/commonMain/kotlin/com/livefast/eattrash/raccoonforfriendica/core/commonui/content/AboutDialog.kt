@@ -23,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,6 +35,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
@@ -50,7 +50,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.appinfo.AppInfo
 fun AboutDialog(modifier: Modifier = Modifier, onClose: (() -> Unit)? = null) {
     val mainRouter = LocalUiDeps.current.mainRouter
     val appInfoRepository = LocalUiDeps.current.appInfoRepository
-    val appInfo by appInfoRepository.appInfo.collectAsState()
+    val appInfo by appInfoRepository.appInfo.collectAsStateWithLifecycle()
 
     BasicAlertDialog(
         modifier = modifier.clip(RoundedCornerShape(CornerSize.xxl)),

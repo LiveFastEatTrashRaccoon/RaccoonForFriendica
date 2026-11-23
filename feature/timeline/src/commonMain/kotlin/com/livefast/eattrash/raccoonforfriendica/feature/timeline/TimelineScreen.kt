@@ -33,7 +33,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +45,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Dimensions
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -94,7 +94,7 @@ fun TimelineScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
-    val uiState by model.uiState.collectAsState()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val navigationCoordinator = LocalUiDeps.current.navigationCoordinator
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
@@ -104,7 +104,7 @@ fun TimelineScreen(
     val scope = rememberCoroutineScope()
     val drawerCoordinator = LocalUiDeps.current.drawerCoordinator
     val fabNestedScrollConnection = LocalUiDeps.current.fabNestedScrollConnection
-    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsState()
+    val isFabVisible by fabNestedScrollConnection.isFabVisible.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val shareHelper = LocalUiDeps.current.shareHelper
     val copyToClipboardSuccess = LocalStrings.current.messageTextCopiedToClipboard
