@@ -142,7 +142,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
                 if (uiState.initial) {
                     items(20) {
                         CircleItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                        Spacer(modifier = Modifier.height(Spacing.interItem))
+                        Spacer(modifier = Modifier.height(Spacing.s))
                     }
                 }
                 items(
@@ -150,7 +150,7 @@ fun ManageUserCirclesScreen(userId: String, modifier: Modifier = Modifier) {
                     key = { item -> "manage-user-circles-${item.circle.id}" },
                 ) { item ->
                     ManageCircleItem(
-                        modifier = Modifier.padding(bottom = Spacing.interItem),
+                        modifier = Modifier.padding(bottom = Spacing.s),
                         circle = item.circle,
                         belonging = item.belonging,
                         pending = item.pending,

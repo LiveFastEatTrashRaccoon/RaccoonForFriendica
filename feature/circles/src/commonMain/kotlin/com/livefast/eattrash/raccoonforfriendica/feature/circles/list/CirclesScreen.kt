@@ -224,7 +224,7 @@ fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAc
                 if (uiState.initial) {
                     items(20) {
                         CircleItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                        Spacer(modifier = Modifier.height(Spacing.interItem))
+                        Spacer(modifier = Modifier.height(Spacing.s))
                     }
                 }
 
@@ -246,7 +246,7 @@ fun CirclesScreen(model: CirclesMvi, modifier: Modifier = Modifier, customOpenAc
 
                         is CircleListItem.Circle -> {
                             CircleItem(
-                                modifier = Modifier.padding(bottom = Spacing.interItem),
+                                modifier = Modifier.padding(bottom = Spacing.s),
                                 circle = item.circle,
                                 onClick = {
                                     model.reduce(CirclesMvi.Intent.OpenDetail(item.circle))
