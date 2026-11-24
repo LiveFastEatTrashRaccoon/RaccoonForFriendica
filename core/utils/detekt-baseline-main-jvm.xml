@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DateFunctions.kt:actual fun getPrettyDate: String</ID>
+    <ID>EmptyDefaultConstructor:DefaultPermissionControllerWrapper.kt:DefaultPermissionControllerWrapper</ID>
+    <ID>InjectDispatcher:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$IO</ID>
+    <ID>InjectDispatcher:DefaultClipboardHelper.kt:DefaultClipboardHelper$IO</ID>
+    <ID>InjectDispatcher:DefaultFileSystemManager.kt:DefaultFileSystemManager$IO</ID>
+    <ID>InjectDispatcher:DefaultGalleryHelper.kt:DefaultGalleryHelper$IO</ID>
+    <ID>InjectDispatcher:GalleryHelper.kt:IO</ID>
+    <ID>LongMethod:DateUtils.kt:fun Duration.getPrettyDuration: String</ID>
+    <ID>LongParameterList:DateFunctions.kt:actual fun getPrettyDate: String</ID>
+    <ID>LongParameterList:DateFunctions.kt:expect fun getPrettyDate: String</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.0031308f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.04045f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.055f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.5f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$1.055f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$12.92f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$2.4f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$255</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$255f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$4</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$6</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$83</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$9</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$9.0f</ID>
+    <ID>MagicNumber:Extensions.kt:5</ID>
+    <ID>MagicNumber:ImageUtils.kt:0xff</ID>
+    <ID>MagicNumber:ImageUtils.kt:16</ID>
+    <ID>MagicNumber:ImageUtils.kt:24</ID>
+    <ID>MagicNumber:ImageUtils.kt:3</ID>
+    <ID>MagicNumber:ImageUtils.kt:4</ID>
+    <ID>MagicNumber:ImageUtils.kt:8</ID>
+    <ID>MagicNumber:ShimmerEffect.kt:0.5f</ID>
+    <ID>ReturnCount:Extensions.kt:fun String?.ellipsize: String</ID>
+    <ID>SwallowedException:DefaultGalleryHelper.kt:DefaultGalleryHelper$e: Exception</ID>
+    <ID>SwallowedException:UrlValidation.kt:e: URISyntaxException</ID>
+    <ID>TooGenericExceptionCaught:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultGalleryHelper.kt:DefaultGalleryHelper$e: Exception</ID>
+    <ID>TooManyFunctions:DateFunctions.kt:com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.DateFunctions.kt</ID>
+  </CurrentIssues>
+</SmellBaseline>

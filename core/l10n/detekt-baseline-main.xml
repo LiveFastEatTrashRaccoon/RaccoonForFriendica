@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:Extensions.kt:@Composable fun String?.toLanguageName: String?</ID>
+    <ID>CyclomaticComplexMethod:Extensions.kt:fun String?.toLanguageFlag: String?</ID>
+    <ID>LargeClass:DefaultStrings.kt:DefaultStrings : Strings</ID>
+    <ID>TooManyFunctions:DefaultStrings.kt:DefaultStrings : Strings</ID>
+    <ID>TooManyFunctions:Strings.kt:Strings</ID>
+  </CurrentIssues>
+</SmellBaseline>

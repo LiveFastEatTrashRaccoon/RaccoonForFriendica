@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ExploreScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.items.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:ExploreScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ExploreScreen</ID>
+    <ID>CyclomaticComplexMethod:ExploreViewModel.kt:ExploreViewModel$override fun reduce</ID>
+    <ID>LongMethod:ExploreScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ExploreScreen</ID>
+    <ID>LongParameterList:ExploreViewModel.kt:ExploreViewModel</ID>
+    <ID>TooGenericExceptionCaught:ExploreScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ExploreViewModel.kt:ExploreViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:ExploreViewModel.kt:ExploreViewModel : ViewModelExploreMviMviDelegate</ID>
+  </CurrentIssues>
+</SmellBaseline>

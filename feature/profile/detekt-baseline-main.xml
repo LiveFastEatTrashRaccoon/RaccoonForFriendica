@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:MyAccountScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty() &amp;&amp; uiState.user != null</ID>
+    <ID>CyclomaticComplexMethod:EditProfileMvi.kt:EditProfileMvi.State$override fun equals: Boolean</ID>
+    <ID>CyclomaticComplexMethod:EditProfileScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun EditProfileScreen</ID>
+    <ID>CyclomaticComplexMethod:EditProfileViewModel.kt:EditProfileViewModel$override fun reduce</ID>
+    <ID>CyclomaticComplexMethod:MyAccountScreen.kt:@Composable fun MyAccountScreen</ID>
+    <ID>CyclomaticComplexMethod:ProfileScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ProfileScreen</ID>
+    <ID>InjectDispatcher:EditProfileViewModel.kt:EditProfileViewModel$IO</ID>
+    <ID>LongMethod:EditProfileScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun EditProfileScreen</ID>
+    <ID>LongMethod:LoginIntroScreen.kt:@Composable private fun PlatformLink</ID>
+    <ID>LongMethod:LoginIntroScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun LoginIntroScreen</ID>
+    <ID>LongMethod:MyAccountScreen.kt:@Composable fun MyAccountScreen</ID>
+    <ID>LongMethod:ProfileScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ProfileScreen</ID>
+    <ID>LongParameterList:LoginIntroScreen.kt:@Composable private fun PlatformLink</ID>
+    <ID>LongParameterList:MyAccountViewModel.kt:MyAccountViewModel</ID>
+    <ID>MagicNumber:EditProfileScreen.kt:3.5f</ID>
+    <ID>MagicNumber:MyAccountScreen.kt:16</ID>
+    <ID>MagicNumber:MyAccountScreen.kt:9f</ID>
+    <ID>TooGenericExceptionCaught:EditProfileScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MyAccountScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MyAccountViewModel.kt:MyAccountViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:EditProfileViewModel.kt:EditProfileViewModel : ViewModelMviDelegateEditProfileMvi</ID>
+    <ID>TooManyFunctions:MyAccountViewModel.kt:MyAccountViewModel : ViewModelMviDelegateMyAccountMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

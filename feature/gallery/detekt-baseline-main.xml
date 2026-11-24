@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:AlbumDetailScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.items.isEmpty()</ID>
+    <ID>ComplexCondition:GalleryScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.items.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:AlbumDetailScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun AlbumDetailScreen</ID>
+    <ID>CyclomaticComplexMethod:GalleryScreen.kt:@Composable fun GalleryScreen</ID>
+    <ID>LongMethod:AlbumDetailScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun AlbumDetailScreen</ID>
+    <ID>LongMethod:GalleryScreen.kt:@Composable fun GalleryScreen</ID>
+    <ID>LongMethod:MediaAlbumItem.kt:@Composable internal fun MediaAlbumItem</ID>
+    <ID>LongParameterList:AlbumDetailViewModel.kt:AlbumDetailViewModel</ID>
+    <ID>MagicNumber:AlbumDetailScreen.kt:10</ID>
+    <ID>TooGenericExceptionCaught:AlbumDetailScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AlbumDetailViewModel.kt:AlbumDetailViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GalleryScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GalleryViewModel.kt:GalleryViewModel$e: Exception</ID>
+    <ID>UnusedPrivateProperty:AlbumDetailScreen.kt:private const val EXPORT_LIST_FILE_NAME = "user_list.txt"</ID>
+    <ID>UnusedPrivateProperty:AlbumDetailScreen.kt:private const val EXPORT_LIST_MIME_TYPE = "text/plain"</ID>
+  </CurrentIssues>
+</SmellBaseline>

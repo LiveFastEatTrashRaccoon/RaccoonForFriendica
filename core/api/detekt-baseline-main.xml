@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DefaultServiceFactory.kt:DefaultServiceFactory$override fun &lt;T : Any&gt; create: T</ID>
+    <ID>LongMethod:DefaultServiceProvider.kt:DefaultServiceProvider$private fun reinitialize</ID>
+    <ID>LongParameterList:CreateStatusForm.kt:CreateStatusForm</ID>
+    <ID>LongParameterList:DefaultServiceFactory.kt:DefaultServiceFactory</ID>
+    <ID>LongParameterList:UserService.kt:UserService$suspend fun getStatuses: List&lt;Status&gt;</ID>
+    <ID>TooManyFunctions:DefaultStatusService.kt:DefaultStatusService : StatusService</ID>
+    <ID>TooManyFunctions:DefaultUserService.kt:DefaultUserService : UserService</ID>
+    <ID>TooManyFunctions:StatusService.kt:StatusService</ID>
+    <ID>TooManyFunctions:UserService.kt:UserService</ID>
+  </CurrentIssues>
+</SmellBaseline>

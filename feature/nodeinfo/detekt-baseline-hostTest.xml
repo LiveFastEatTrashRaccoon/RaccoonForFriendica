@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>FunctionNaming:NodeInfoScreenContentTest.kt:NodeInfoScreenContentTest$@Test fun `given all data present when displayed then content is as expected`</ID>
+    <ID>FunctionNaming:NodeInfoScreenContentTest.kt:NodeInfoScreenContentTest$@Test fun `given no contact when displayed then content is as expected`</ID>
+    <ID>FunctionNaming:NodeInfoScreenContentTest.kt:NodeInfoScreenContentTest$@Test fun `given no rules when displayed then content is as expected`</ID>
+  </CurrentIssues>
+</SmellBaseline>

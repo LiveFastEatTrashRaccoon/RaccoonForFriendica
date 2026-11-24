@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:DefaultPostRepository.kt:DefaultPostRepository$pageCursor == null &amp;&amp; cachedValues.isNotEmpty() &amp;&amp; enableCache &amp;&amp; otherInstance.isNullOrEmpty()</ID>
+    <ID>CyclomaticComplexMethod:DefaultUserRepository.kt:DefaultUserRepository$override suspend fun updateProfile</ID>
+    <ID>LongMethod:DefaultFallbackTranslationRepository.kt:DefaultFallbackTranslationRepository$override suspend fun getTranslation: TranslatedPostModel?</ID>
+    <ID>LongMethod:DefaultUserRepository.kt:DefaultUserRepository$override suspend fun updateProfile</ID>
+    <ID>LongParameterList:PostRepository.kt:PostRepository$suspend fun create: PostModel?</ID>
+    <ID>LongParameterList:PostRepository.kt:PostRepository$suspend fun getByUser: List&lt;PostModel&gt;?</ID>
+    <ID>LongParameterList:PostRepository.kt:PostRepository$suspend fun update: PostModel?</ID>
+    <ID>LongParameterList:UserRepository.kt:UserRepository$suspend fun updateProfile: UserModel?</ID>
+    <ID>MagicNumber:DefaultEmojiRepository.kt:DefaultEmojiRepository$20</ID>
+    <ID>MagicNumber:DefaultReplyHelper.kt:DefaultReplyHelper$100</ID>
+    <ID>MagicNumber:Mappings.kt:1970</ID>
+    <ID>RedundantHigherOrderMapUsage:DefaultAnnouncementRepository.kt:DefaultAnnouncementRepository$map</ID>
+    <ID>ReturnCount:DefaultEmojiHelper.kt:DefaultEmojiHelper$override suspend fun UserModel.withEmojisIfMissing: UserModel</ID>
+    <ID>ReturnCount:DefaultReplyHelper.kt:DefaultReplyHelper$override suspend fun PostModel.withInReplyToIfMissing: PostModel</ID>
+    <ID>SpreadOperator:DefaultEmojiHelper.kt:DefaultEmojiHelper$(*pollOptionTexts.toTypedArray())</ID>
+    <ID>SpreadOperator:DefaultEmojiHelper.kt:DefaultEmojiHelper$(*texts)</ID>
+    <ID>SpreadOperator:DefaultFeedTypeRepository.kt:DefaultFeedTypeRepository$(*entities)</ID>
+    <ID>TooGenericExceptionCaught:DefaultAnnouncementRepository.kt:DefaultAnnouncementRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultCirclesRepository.kt:DefaultCirclesRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultDirectMessageRepository.kt:DefaultDirectMessageRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultDraftRepository.kt:DefaultDraftRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultEmojiRepository.kt:DefaultEmojiRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultEventRepository.kt:DefaultEventRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultFallbackTranslationRepository.kt:DefaultFallbackTranslationRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultMarkerRepository.kt:DefaultMarkerRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultMediaRepository.kt:DefaultMediaRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultNodeInfoRepository.kt:DefaultNodeInfoRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultNotificationRepository.kt:DefaultNotificationRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultPhotoAlbumRepository.kt:DefaultPhotoAlbumRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultPhotoRepository.kt:DefaultPhotoRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultPostRepository.kt:DefaultPostRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultPushNotificationRepository.kt:DefaultPushNotificationRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultScheduledPostRepository.kt:DefaultScheduledPostRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultSearchRepository.kt:DefaultSearchRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultTagRepository.kt:DefaultTagRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultTimelineRepository.kt:DefaultTimelineRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultTranslationRepository.kt:DefaultTranslationRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultTrendingRepository.kt:DefaultTrendingRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultUserRateLimitRepository.kt:DefaultUserRateLimitRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultUserRepository.kt:DefaultUserRepository$e: Exception</ID>
+    <ID>TooManyFunctions:DefaultPostRepository.kt:DefaultPostRepository : PostRepository</ID>
+    <ID>TooManyFunctions:DefaultUserRepository.kt:DefaultUserRepository : UserRepository</ID>
+    <ID>TooManyFunctions:Mappings.kt:com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.Mappings.kt</ID>
+    <ID>TooManyFunctions:PostRepository.kt:PostRepository</ID>
+    <ID>TooManyFunctions:UserRepository.kt:UserRepository</ID>
+    <ID>UnusedPrivateProperty:DefaultPhotoAlbumRepository.kt:DefaultPhotoAlbumRepository.Companion$private const val DEFAULT_PAGE_SIZE = 20</ID>
+  </CurrentIssues>
+</SmellBaseline>

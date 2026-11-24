@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ForumListScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty()</ID>
+    <ID>ComplexCondition:UserDetailScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:ForumListScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ForumListScreen</ID>
+    <ID>CyclomaticComplexMethod:ForumListViewModel.kt:ForumListViewModel$override fun reduce</ID>
+    <ID>CyclomaticComplexMethod:UserDetailScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun UserDetailScreen</ID>
+    <ID>CyclomaticComplexMethod:UserDetailViewModel.kt:UserDetailViewModel$override fun reduce</ID>
+    <ID>LongMethod:ForumListScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ForumListScreen</ID>
+    <ID>LongMethod:UserDetailScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun UserDetailScreen</ID>
+    <ID>LongParameterList:ForumListViewModel.kt:ForumListViewModel</ID>
+    <ID>LongParameterList:UserDetailViewModel.kt:UserDetailViewModel</ID>
+    <ID>MagicNumber:UserDetailScreen.kt:16</ID>
+    <ID>MagicNumber:UserDetailScreen.kt:9f</ID>
+    <ID>TooGenericExceptionCaught:ForumListScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ForumListViewModel.kt:ForumListViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:UserDetailScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:UserDetailViewModel.kt:UserDetailViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:ForumListViewModel.kt:ForumListViewModel : ViewModelMviDelegateForumListMvi</ID>
+    <ID>TooManyFunctions:UserDetailViewModel.kt:UserDetailViewModel : ViewModelMviDelegateUserDetailMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

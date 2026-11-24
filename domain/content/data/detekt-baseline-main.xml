@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MagicNumber:TimelineType.kt:3</ID>
+    <ID>MagicNumber:TimelineType.kt:4</ID>
+    <ID>MagicNumber:UserListType.kt:3</ID>
+    <ID>MagicNumber:Visibility.kt:200</ID>
+    <ID>MagicNumber:Visibility.kt:3</ID>
+    <ID>MagicNumber:Visibility.kt:300</ID>
+    <ID>MagicNumber:Visibility.kt:350</ID>
+    <ID>MagicNumber:Visibility.kt:4</ID>
+    <ID>MagicNumber:Visibility.kt:400</ID>
+    <ID>MagicNumber:Visibility.kt:450</ID>
+    <ID>MagicNumber:Visibility.kt:5</ID>
+    <ID>MagicNumber:Visibility.kt:500</ID>
+    <ID>MagicNumber:Visibility.kt:6</ID>
+  </CurrentIssues>
+</SmellBaseline>

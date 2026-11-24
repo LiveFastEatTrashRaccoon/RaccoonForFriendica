@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ManageBlocksScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.items.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:ManageBlocksScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ManageBlocksScreen</ID>
+    <ID>LongMethod:ManageBlocksScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ManageBlocksScreen</ID>
+    <ID>LongParameterList:ManageBlocksViewModel.kt:ManageBlocksViewModel</ID>
+    <ID>MagicNumber:ManageBlocksScreen.kt:20</ID>
+    <ID>TooGenericExceptionCaught:ManageBlocksScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ManageBlocksViewModel.kt:ManageBlocksViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:ManageBlocksViewModel.kt:ManageBlocksViewModel : ViewModelMviDelegateManageBlocksMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

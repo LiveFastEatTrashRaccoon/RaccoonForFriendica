@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongMethod:LegacyLoginScreen.kt:@Composable fun LegacyLoginScreen</ID>
+    <ID>LongMethod:LoginScreen.kt:@Composable fun LoginScreen</ID>
+    <ID>TooGenericExceptionCaught:LegacyLoginViewModel.kt:LegacyLoginViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LoginViewModel.kt:LoginViewModel$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

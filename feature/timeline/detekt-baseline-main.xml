@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:TimelineScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:TimelineScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun TimelineScreen</ID>
+    <ID>CyclomaticComplexMethod:TimelineViewModel.kt:TimelineViewModel$override fun reduce</ID>
+    <ID>LongMethod:TimelineScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun TimelineScreen</ID>
+    <ID>LongParameterList:TimelineViewModel.kt:TimelineViewModel</ID>
+    <ID>TooGenericExceptionCaught:TimelineScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:TimelineViewModel.kt:TimelineViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:TimelineViewModel.kt:TimelineViewModel : ViewModelMviDelegateTimelineMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:ImageDetailScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ImageDetailScreen</ID>
+    <ID>InjectDispatcher:ImageDetailViewModel.kt:ImageDetailViewModel$IO</ID>
+    <ID>LongMethod:ImageDetailScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ImageDetailScreen</ID>
+    <ID>TooGenericExceptionCaught:ImageDetailViewModel.kt:ImageDetailViewModel$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:FollowRequestsScreen.kt:@Composable fun FollowRequestsScreen</ID>
+    <ID>LongMethod:FollowRequestItem.kt:@Composable fun FollowRequestItem</ID>
+    <ID>LongMethod:FollowRequestsScreen.kt:@Composable fun FollowRequestsScreen</ID>
+    <ID>TooGenericExceptionCaught:FollowRequestsScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FollowRequestsViewModel.kt:FollowRequestsViewModel$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>
