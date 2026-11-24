@@ -3,7 +3,6 @@ package com.livefast.eattrash.raccoonforfriendica.feature.thread
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +16,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -34,7 +32,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,15 +43,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -64,6 +58,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostCard
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -302,186 +297,179 @@ fun ThreadScreen(
                     // original post
                     mainPost?.also { post ->
                         item {
-                            TimelineItem(
-                                modifier =
-                                Modifier
-                                    // since the main post is forced to "full", recreates card appearance
-                                    .padding(horizontal = Spacing.xs)
-                                    .padding(bottom = Spacing.xs)
-                                    .shadow(
-                                        elevation = 5.dp,
-                                        shape = RoundedCornerShape(CornerSize.l),
-                                    ).background(
-                                        color =
-                                        MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                            5.dp,
-                                        ),
-                                        shape = RoundedCornerShape(CornerSize.l),
-                                    ).padding(
-                                        vertical = Spacing.xs,
-                                        horizontal = Spacing.xxxs,
-                                    ),
-                                post = post,
-                                layout = TimelineLayout.Full,
-                                reshareAndReplyVisible = false,
-                                followedHashtagsVisible = false,
-                                extendedSocialInfoEnabled = true,
-                                blurNsfw = uiState.blurNsfw,
-                                autoloadImages = uiState.autoloadImages,
-                                pollEnabled = isHomeInstance,
-                                onOpenUrl = { url, allowOpenInternal ->
-                                    if (allowOpenInternal) {
-                                        uriHandler.openUri(url)
-                                    } else {
-                                        uriHandler.openExternally(url)
-                                    }
-                                },
-                                onOpenUser = { user ->
-                                    mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
-                                },
-                                onOpenImage = { urls, imageIdx, videoIndices ->
-                                    mainRouter.openImageDetail(
-                                        urls = urls,
-                                        initialIndex = imageIdx,
-                                        videoIndices = videoIndices,
-                                    )
-                                },
-                                onBookmark =
-                                { post: PostModel ->
-                                    model.reduce(ThreadMvi.Intent.ToggleBookmark(post))
-                                }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
-                                onFavorite =
-                                { post: PostModel ->
-                                    model.reduce(ThreadMvi.Intent.ToggleFavorite(post))
-                                }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
-                                onDislike =
-                                { post: PostModel ->
-                                    model.reduce(ThreadMvi.Intent.ToggleDislike(post))
-                                }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
-                                onOpenUsersFavorite = { post ->
-                                    mainRouter.openPostUsersFavorite(
-                                        postId = post.id,
-                                        count = post.favoriteCount,
-                                        otherInstance = otherInstance,
-                                    )
-                                },
-                                onOpenUsersReblog = { post ->
-                                    mainRouter.openPostUsersReblog(
-                                        postId = post.id,
-                                        count = post.reblogCount,
-                                        otherInstance = otherInstance,
-                                    )
-                                },
-                                onPollVote =
-                                uiState.currentUserId?.let {
-                                    { post, choices ->
-                                        model.reduce(
-                                            ThreadMvi.Intent.SubmitPollVote(
-                                                post = post,
-                                                choices = choices,
-                                            ),
+                            @Composable
+                            fun MainPostContent() {
+                                TimelineItem(
+                                    post = post,
+                                    layout = TimelineLayout.Full,
+                                    reshareAndReplyVisible = false,
+                                    followedHashtagsVisible = false,
+                                    extendedSocialInfoEnabled = true,
+                                    blurNsfw = uiState.blurNsfw,
+                                    autoloadImages = uiState.autoloadImages,
+                                    pollEnabled = isHomeInstance,
+                                    onOpenUrl = { url, allowOpenInternal ->
+                                        if (allowOpenInternal) {
+                                            uriHandler.openUri(url)
+                                        } else {
+                                            uriHandler.openExternally(url)
+                                        }
+                                    },
+                                    onOpenUser = { user ->
+                                        mainRouter.openUserDetail(user = user, otherInstance = otherInstance)
+                                    },
+                                    onOpenImage = { urls, imageIdx, videoIndices ->
+                                        mainRouter.openImageDetail(
+                                            urls = urls,
+                                            initialIndex = imageIdx,
+                                            videoIndices = videoIndices,
                                         )
-                                    }
-                                },
-                                onShowOriginal = {
-                                    model.reduce(
-                                        ThreadMvi.Intent.ToggleTranslation(post.original),
-                                    )
-                                },
-
-                                options =
-                                buildList {
-                                    if (post.original.actionPermissions.canShare) {
-                                        this += OptionId.Share.toOption()
-                                        this += OptionId.CopyUrl.toOption()
-                                    }
-                                    if (post.original.actionPermissions.canQuote) {
-                                        this += OptionId.Quote.toOption()
-                                    }
-                                    this += OptionId.ViewDetails.toOption()
-                                    this += OptionId.CopyToClipboard.toOption()
-                                    val currentLang = uiState.lang.orEmpty()
-                                    if (currentLang.isNotEmpty() &&
-                                        post.lang != currentLang &&
-                                        !post.isShowingTranslation
-                                    ) {
-                                        this +=
-                                            Option(
-                                                id = OptionId.Translate,
-                                                label =
-                                                buildString {
-                                                    append(
-                                                        LocalStrings.current.actionTranslateTo(
-                                                            currentLang,
-                                                        ),
-                                                    )
-                                                    append(" (")
-                                                    append(LocalStrings.current.experimental)
-                                                    append(")")
-                                                },
+                                    },
+                                    onBookmark =
+                                    { post: PostModel ->
+                                        model.reduce(ThreadMvi.Intent.ToggleBookmark(post))
+                                    }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
+                                    onFavorite =
+                                    { post: PostModel ->
+                                        model.reduce(ThreadMvi.Intent.ToggleFavorite(post))
+                                    }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
+                                    onDislike =
+                                    { post: PostModel ->
+                                        model.reduce(ThreadMvi.Intent.ToggleDislike(post))
+                                    }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
+                                    onOpenUsersFavorite = { post ->
+                                        mainRouter.openPostUsersFavorite(
+                                            postId = post.id,
+                                            count = post.favoriteCount,
+                                            otherInstance = otherInstance,
+                                        )
+                                    },
+                                    onOpenUsersReblog = { post ->
+                                        mainRouter.openPostUsersReblog(
+                                            postId = post.id,
+                                            count = post.reblogCount,
+                                            otherInstance = otherInstance,
+                                        )
+                                    },
+                                    onPollVote =
+                                    uiState.currentUserId?.let {
+                                        { post, choices ->
+                                            model.reduce(
+                                                ThreadMvi.Intent.SubmitPollVote(
+                                                    post = post,
+                                                    choices = choices,
+                                                ),
                                             )
-                                    }
-                                    val nodeName = post.nodeName
-                                    if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
-                                        this +=
-                                            OptionId.AddShortcut.toOption(
-                                                LocalStrings.current.actionShortcut(nodeName),
-                                            )
-                                    }
-                                    this += OptionId.OpenInBrowser.toOption()
-                                },
-                                onSelectOption = { optionId ->
-                                    when (optionId) {
-                                        OptionId.Share -> {
-                                            val urlString = post.url.orEmpty()
-                                            shareHelper.share(urlString)
                                         }
+                                    },
+                                    onShowOriginal = {
+                                        model.reduce(
+                                            ThreadMvi.Intent.ToggleTranslation(post.original),
+                                        )
+                                    },
 
-                                        OptionId.CopyUrl -> {
-                                            val urlString = post.url.orEmpty()
-                                            scope.launch {
-                                                clipboardHelper.setText(urlString)
-                                                snackbarHostState.showSnackbar(copyToClipboardSuccess)
-                                            }
+                                    options =
+                                    buildList {
+                                        if (post.original.actionPermissions.canShare) {
+                                            this += OptionId.Share.toOption()
+                                            this += OptionId.CopyUrl.toOption()
                                         }
-
-                                        OptionId.ViewDetails ->
-                                            seeDetailsPost =
-                                                post.original
-
-                                        OptionId.Quote -> {
-                                            post.original.also { toShare ->
-                                                mainRouter.openComposer(
-                                                    quoted = toShare,
-                                                    urlToShare = toShare.url,
+                                        if (post.original.actionPermissions.canQuote) {
+                                            this += OptionId.Quote.toOption()
+                                        }
+                                        this += OptionId.ViewDetails.toOption()
+                                        this += OptionId.CopyToClipboard.toOption()
+                                        val currentLang = uiState.lang.orEmpty()
+                                        if (currentLang.isNotEmpty() &&
+                                            post.lang != currentLang &&
+                                            !post.isShowingTranslation
+                                        ) {
+                                            this +=
+                                                Option(
+                                                    id = OptionId.Translate,
+                                                    label =
+                                                    buildString {
+                                                        append(
+                                                            LocalStrings.current.actionTranslateTo(
+                                                                currentLang,
+                                                            ),
+                                                        )
+                                                        append(" (")
+                                                        append(LocalStrings.current.experimental)
+                                                        append(")")
+                                                    },
                                                 )
-                                            }
                                         }
-
-                                        OptionId.CopyToClipboard ->
-                                            post.original.also { post ->
-                                                model.reduce(ThreadMvi.Intent.CopyToClipboard(post))
+                                        val nodeName = post.nodeName
+                                        if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
+                                            this +=
+                                                OptionId.AddShortcut.toOption(
+                                                    LocalStrings.current.actionShortcut(nodeName),
+                                                )
+                                        }
+                                        this += OptionId.OpenInBrowser.toOption()
+                                    },
+                                    onSelectOption = { optionId ->
+                                        when (optionId) {
+                                            OptionId.Share -> {
+                                                val urlString = post.url.orEmpty()
+                                                shareHelper.share(urlString)
                                             }
 
-                                        OptionId.Translate ->
-                                            post.original.also { post ->
-                                                model.reduce(ThreadMvi.Intent.ToggleTranslation(post))
+                                            OptionId.CopyUrl -> {
+                                                val urlString = post.url.orEmpty()
+                                                scope.launch {
+                                                    clipboardHelper.setText(urlString)
+                                                    snackbarHostState.showSnackbar(copyToClipboardSuccess)
+                                                }
                                             }
 
-                                        OptionId.AddShortcut ->
-                                            model.reduce(
-                                                ThreadMvi.Intent.AddInstanceShortcut(post.nodeName),
-                                            )
+                                            OptionId.ViewDetails ->
+                                                seeDetailsPost =
+                                                    post.original
 
-                                        OptionId.OpenInBrowser ->
-                                            model.reduce(
-                                                ThreadMvi.Intent.OpenInBrowser(post),
-                                            )
+                                            OptionId.Quote -> {
+                                                post.original.also { toShare ->
+                                                    mainRouter.openComposer(
+                                                        quoted = toShare,
+                                                        urlToShare = toShare.url,
+                                                    )
+                                                }
+                                            }
 
-                                        else -> Unit
-                                    }
-                                },
-                            )
+                                            OptionId.CopyToClipboard ->
+                                                post.original.also { post ->
+                                                    model.reduce(ThreadMvi.Intent.CopyToClipboard(post))
+                                                }
+
+                                            OptionId.Translate ->
+                                                post.original.also { post ->
+                                                    model.reduce(ThreadMvi.Intent.ToggleTranslation(post))
+                                                }
+
+                                            OptionId.AddShortcut ->
+                                                model.reduce(
+                                                    ThreadMvi.Intent.AddInstanceShortcut(post.nodeName),
+                                                )
+
+                                            OptionId.OpenInBrowser ->
+                                                model.reduce(
+                                                    ThreadMvi.Intent.OpenInBrowser(post),
+                                                )
+
+                                            else -> Unit
+                                        }
+                                    },
+                                )
+                            }
+
+                            if (uiState.layout == TimelineLayout.Card) {
+                                PostCard {
+                                    MainPostContent()
+                                }
+                            } else {
+                                MainPostContent()
+                            }
                             Spacer(modifier = Modifier.height(Spacing.s))
                         }
                     }

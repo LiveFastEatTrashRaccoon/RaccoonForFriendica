@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -46,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
@@ -54,7 +52,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.data.TimelineLayout
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.toWindowInsets
@@ -64,6 +61,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.CustomCon
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PollVoteErrorDialog
+import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostCard
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.PostDetailDialog
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineDivider
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.TimelineItem
@@ -487,34 +485,11 @@ fun PostDetailScreen(
                                 }
                             }
 
-                            if (isFirst) {
-                                // show the first post only if it is the root of the thread
-                                if (post.parentId.isNullOrEmpty()) {
+                            // show the first post only if it is the root of the thread
+                            if (isFirst && post.parentId.isNullOrEmpty()) {
+                                @Composable
+                                fun MainPostContent() {
                                     TimelineItem(
-                                        modifier =
-                                        Modifier.then(
-                                            if (uiState.layout == TimelineLayout.Card) {
-                                                Modifier
-                                                    // since the main post is forced to "full", recreates card appearance
-                                                    .padding(horizontal = Spacing.xs)
-                                                    .padding(bottom = Spacing.xs)
-                                                    .shadow(
-                                                        elevation = 5.dp,
-                                                        shape = RoundedCornerShape(CornerSize.l),
-                                                    ).background(
-                                                        color =
-                                                        MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                                            5.dp,
-                                                        ),
-                                                        shape = RoundedCornerShape(CornerSize.l),
-                                                    ).padding(
-                                                        vertical = Spacing.xs,
-                                                        horizontal = Spacing.xxxs,
-                                                    )
-                                            } else {
-                                                Modifier
-                                            },
-                                        ),
                                         post = post,
                                         reshareAndReplyVisible = false,
                                         followedHashtagsVisible = false,
@@ -638,6 +613,14 @@ fun PostDetailScreen(
                                         options = options,
                                         onSelectOption = ::onOptionSelected,
                                     )
+                                }
+
+                                if (uiState.layout == TimelineLayout.Card) {
+                                    PostCard {
+                                        MainPostContent()
+                                    }
+                                } else {
+                                    MainPostContent()
                                 }
                             } else {
                                 TimelineReplyItem(
