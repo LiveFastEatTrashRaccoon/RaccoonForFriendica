@@ -70,7 +70,7 @@ fun UserItem(
                     onClick = it,
                 )
             } ?: Modifier,
-        ),
+        ).padding(vertical = Spacing.s, horizontal = Spacing.m),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {

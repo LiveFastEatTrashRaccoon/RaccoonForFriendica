@@ -23,7 +23,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffec
 @Composable
 fun TimelineItemPlaceholder(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(horizontal = Spacing.xs),
+        modifier = modifier.padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {
         Row(

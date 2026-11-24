@@ -92,9 +92,7 @@ fun AcknowledgementsScreen(
         ) {
             LazyColumn(
                 modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = Spacing.xs),
+                Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
                 if (uiState.initial) {

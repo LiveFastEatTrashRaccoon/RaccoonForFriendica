@@ -34,6 +34,7 @@ import chaintech.videoplayer.host.MediaPlayerHost
 import chaintech.videoplayer.model.AudioFile
 import chaintech.videoplayer.model.AudioPlayerConfig
 import chaintech.videoplayer.ui.audio.AudioPlayerComposable
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
@@ -111,10 +112,10 @@ private fun FakeAudioPlayerComposable(
                         Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.7f)
-                            .clip(RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(CornerSize.l))
                             .background(
                                 color = audioPlayerConfig.coverBackground,
-                                shape = RoundedCornerShape(10.dp),
+                                shape = RoundedCornerShape(CornerSize.l),
                             ),
                         contentAlignment = Alignment.Center,
                     ) {

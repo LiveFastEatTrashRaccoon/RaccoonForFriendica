@@ -17,7 +17,7 @@ import com.livefast.eattrash.raccoonforfriendica.domain.content.data.toReadableN
 @Composable
 internal fun CircleHeader(type: CircleType, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.padding(Spacing.s),
+        modifier = modifier.padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {

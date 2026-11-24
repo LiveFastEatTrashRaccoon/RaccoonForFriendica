@@ -60,7 +60,7 @@ fun FollowRequestItem(
                         onClick = it,
                     )
                 } ?: Modifier,
-            ).padding(Spacing.s),
+            ).padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Row(

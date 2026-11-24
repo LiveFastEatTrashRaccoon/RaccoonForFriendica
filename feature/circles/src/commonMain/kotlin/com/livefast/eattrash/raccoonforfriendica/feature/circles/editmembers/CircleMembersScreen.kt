@@ -221,7 +221,7 @@ fun CircleMembersScreen(circleId: String, modifier: Modifier = Modifier, customB
                             modifier = Modifier.fillMaxWidth(),
                             withRelationshipButton = false,
                         )
-                        Spacer(modifier = Modifier.height(Spacing.interItem))
+                        Spacer(modifier = Modifier.height(Spacing.s))
                     }
                 }
 
@@ -246,7 +246,7 @@ fun CircleMembersScreen(circleId: String, modifier: Modifier = Modifier, customB
                             }
                         },
                     )
-                    Spacer(modifier = Modifier.height(Spacing.interItem))
+                    Spacer(modifier = Modifier.height(Spacing.s))
                 }
 
                 if (uiState.loading && !uiState.refreshing) {

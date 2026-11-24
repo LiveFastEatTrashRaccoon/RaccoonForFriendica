@@ -262,7 +262,7 @@ fun ManageBlocksScreen(
                             modifier = Modifier.fillMaxWidth(),
                             withRelationshipButton = false,
                         )
-                        Spacer(modifier = Modifier.height(Spacing.interItem))
+                        Spacer(modifier = Modifier.height(Spacing.s))
                     }
                 }
 

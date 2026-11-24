@@ -46,7 +46,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
@@ -234,7 +233,7 @@ private fun PlatformHeader(
             )
         } else if (painter != null) {
             Image(
-                modifier = Modifier.size(imageSize).padding(1.5.dp),
+                modifier = Modifier.size(imageSize),
                 painter = painter,
                 contentDescription = null,
             )

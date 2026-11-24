@@ -144,7 +144,7 @@ private fun CustomColorPickerDialogContent(
             Modifier
                 .fillMaxWidth()
                 .height(250.dp)
-                .padding(10.dp),
+                .padding(Spacing.m),
             controller = controller,
             initialColor = initialValue,
             onColorChanged = { colorEnvelope: ColorEnvelope ->

@@ -253,7 +253,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                         when (uiState.section) {
                             SearchSection.Hashtags -> {
                                 GenericPlaceholder(modifier = placeholderModifier)
-                                Spacer(modifier = Modifier.height(Spacing.interItem))
+                                Spacer(modifier = Modifier.height(Spacing.s))
                             }
 
                             SearchSection.Posts -> {
@@ -265,7 +265,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
 
                             SearchSection.Users, SearchSection.Groups -> {
                                 UserItemPlaceholder(modifier = placeholderModifier)
-                                Spacer(modifier = Modifier.height(Spacing.interItem))
+                                Spacer(modifier = Modifier.height(Spacing.s))
                             }
                         }
                     }
@@ -575,7 +575,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                     mainRouter.openHashtag(it)
                                 },
                             )
-                            Spacer(modifier = Modifier.height(Spacing.interItem))
+                            Spacer(modifier = Modifier.height(Spacing.s))
                         }
 
                         is ExploreItemModel.User -> {
@@ -610,7 +610,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                     }
                                 },
                             )
-                            Spacer(modifier = Modifier.height(Spacing.interItem))
+                            Spacer(modifier = Modifier.height(Spacing.s))
                         }
 
                         else -> Unit

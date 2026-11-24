@@ -224,7 +224,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     ),
             ) {
                 Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState()),
+                    modifier = Modifier.padding(horizontal = Spacing.xxs).verticalScroll(rememberScrollState()),
                 ) {
                     // General section
                     SettingsHeader(

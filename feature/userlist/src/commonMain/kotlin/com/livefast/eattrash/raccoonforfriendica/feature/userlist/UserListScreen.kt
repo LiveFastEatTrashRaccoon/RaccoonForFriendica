@@ -301,7 +301,7 @@ fun UserListScreen(
                 if (uiState.initial) {
                     items(20) {
                         UserItemPlaceholder(modifier = Modifier.fillMaxWidth())
-                        Spacer(modifier = Modifier.height(Spacing.interItem))
+                        Spacer(modifier = Modifier.height(Spacing.s))
                     }
                 }
 
@@ -352,7 +352,7 @@ fun UserListScreen(
                             }
                         }.takeIf { isHomeInstance },
                     )
-                    Spacer(modifier = Modifier.height(Spacing.interItem))
+                    Spacer(modifier = Modifier.height(Spacing.s))
 
                     val isNearTheEnd = idx.isNearTheEnd(uiState.users)
                     val canFetchMore =

@@ -24,10 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffec
 internal fun AcknowledgementItemPlaceholder(modifier: Modifier = Modifier) {
     Row(
         modifier =
-        modifier.padding(
-            vertical = Spacing.xs,
-            horizontal = Spacing.s,
-        ),
+        modifier.padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {

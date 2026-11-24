@@ -77,7 +77,6 @@ fun ContentHeader(
                 Modifier
                     .size(iconSize)
                     .then(onOpenUserModifier)
-                    .padding(Spacing.xxxs)
                     .clip(RoundedCornerShape(iconSize / 2)),
                 url = creatorAvatar,
                 autoload = autoloadImages,

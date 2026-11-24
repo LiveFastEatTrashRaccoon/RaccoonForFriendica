@@ -56,7 +56,7 @@ fun GenericListItem(
         modifier =
         modifier
             .then(onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier)
-            .padding(Spacing.s),
+            .padding(vertical = Spacing.s, horizontal = Spacing.m),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -38,7 +38,7 @@ internal fun AnnouncementCard(
         modifier =
         modifier.padding(
             vertical = Spacing.xxs,
-            horizontal = Spacing.s,
+            horizontal = Spacing.m,
         ),
         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
     ) {

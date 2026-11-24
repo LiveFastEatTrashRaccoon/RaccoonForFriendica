@@ -349,12 +349,12 @@ fun ExploreScreen(
                         when (uiState.section) {
                             ExploreSection.Hashtags -> {
                                 GenericPlaceholder(modifier = placeholderModifier)
-                                Spacer(modifier = Modifier.height(Spacing.interItem))
+                                Spacer(modifier = Modifier.height(Spacing.s))
                             }
 
                             ExploreSection.Links -> {
                                 GenericPlaceholder(modifier = placeholderModifier)
-                                Spacer(modifier = Modifier.height(Spacing.interItem))
+                                Spacer(modifier = Modifier.height(Spacing.s))
                             }
 
                             ExploreSection.Posts -> {
@@ -366,7 +366,7 @@ fun ExploreScreen(
 
                             ExploreSection.Suggestions -> {
                                 UserItemPlaceholder(modifier = placeholderModifier)
-                                Spacer(modifier = Modifier.height(Spacing.interItem))
+                                Spacer(modifier = Modifier.height(Spacing.s))
                             }
                         }
                     }
@@ -646,7 +646,7 @@ fun ExploreScreen(
                                     mainRouter.openHashtag(tag = tag, otherInstance = uiState.otherInstance)
                                 },
                             )
-                            Spacer(modifier = Modifier.height(Spacing.interItem))
+                            Spacer(modifier = Modifier.height(Spacing.s))
                         }
 
                         is ExploreItemModel.Link -> {
@@ -657,7 +657,7 @@ fun ExploreScreen(
                                     uriHandler.openExternally(url)
                                 },
                             )
-                            Spacer(modifier = Modifier.height(Spacing.interItem))
+                            Spacer(modifier = Modifier.height(Spacing.s))
                         }
 
                         is ExploreItemModel.User -> {
@@ -694,7 +694,7 @@ fun ExploreScreen(
                                     }
                                 }.takeIf { isHomeInstance },
                             )
-                            Spacer(modifier = Modifier.height(Spacing.interItem))
+                            Spacer(modifier = Modifier.height(Spacing.s))
                         }
                     }
 

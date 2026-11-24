@@ -90,8 +90,8 @@ internal fun FullTimelineItem(
     val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
 
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+        modifier = modifier.padding(Spacing.xs),
+        verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         // reshare and reply info
         if (reshareAndReplyVisible) {
@@ -334,7 +334,7 @@ internal fun FullTimelineItem(
                                 width = Dp.Hairline,
                                 color = ancillaryColor,
                                 shape = RoundedCornerShape(CornerSize.xl),
-                            ).padding(vertical = Spacing.xxs)
+                            ).padding(Spacing.xs)
                             .then(
                                 onOpenQuote?.let { Modifier.clickable { it(post) } } ?: Modifier,
                             ),

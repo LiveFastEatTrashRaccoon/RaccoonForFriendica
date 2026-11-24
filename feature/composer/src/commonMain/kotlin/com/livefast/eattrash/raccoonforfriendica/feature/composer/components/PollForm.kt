@@ -43,12 +43,7 @@ internal fun PollForm(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            modifier =
-            Modifier.padding(
-                top = Spacing.m,
-                start = 10.dp,
-                end = 10.dp,
-            ),
+            modifier = Modifier.padding(Spacing.m),
             text = LocalStrings.current.createPostPollSection,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground,

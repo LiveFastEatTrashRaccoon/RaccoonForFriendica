@@ -34,10 +34,7 @@ internal fun LicenceItem(item: LicenceItem, modifier: Modifier = Modifier, onCli
                 shape = RoundedCornerShape(CornerSize.xl),
             ).then(
                 onClick?.let { Modifier.clickable(onClick = it) } ?: Modifier,
-            ).padding(
-                vertical = Spacing.xs,
-                horizontal = Spacing.s,
-            ),
+            ).padding(vertical = Spacing.s, horizontal = Spacing.m),
         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {

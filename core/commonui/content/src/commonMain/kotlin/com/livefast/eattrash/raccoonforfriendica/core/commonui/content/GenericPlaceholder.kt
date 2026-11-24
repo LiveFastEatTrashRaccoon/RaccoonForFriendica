@@ -19,7 +19,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.shimmerEffec
 @Composable
 fun GenericPlaceholder(modifier: Modifier = Modifier, height: Dp = 100.dp) {
     Column(
-        modifier = modifier.padding(horizontal = Spacing.xs),
+        modifier = modifier.padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
         Box(

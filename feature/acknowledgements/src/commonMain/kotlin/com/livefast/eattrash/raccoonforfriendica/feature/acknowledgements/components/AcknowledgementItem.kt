@@ -39,8 +39,8 @@ internal fun AcknowledgementItem(
                 shape = RoundedCornerShape(CornerSize.xl),
             ).then(onClick?.let { Modifier.clickable(onClick = onClick) } ?: Modifier)
             .padding(
-                vertical = Spacing.xs,
-                horizontal = Spacing.s,
+                vertical = Spacing.s,
+                horizontal = Spacing.m,
             ),
         horizontalArrangement = Arrangement.spacedBy(Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
