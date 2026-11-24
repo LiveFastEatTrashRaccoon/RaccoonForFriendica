@@ -38,7 +38,7 @@ fun SettingsSwitchRow(
                 onValueChange = {
                     onValueChange(!value)
                 },
-            ).padding(horizontal = Spacing.m),
+            ).padding(vertical = Spacing.s, horizontal = Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(

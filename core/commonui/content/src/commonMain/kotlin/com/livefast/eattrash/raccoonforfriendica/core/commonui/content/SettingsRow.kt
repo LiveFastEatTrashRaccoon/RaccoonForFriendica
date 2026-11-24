@@ -48,10 +48,7 @@ fun SettingsRow(
             .clip(
                 shape = RoundedCornerShape(CornerSize.xl),
             ).then(onTap?.let { Modifier.clickable(onClick = onTap) } ?: Modifier)
-            .padding(
-                vertical = 10.dp,
-                horizontal = Spacing.m,
-            ),
+            .padding(Spacing.m),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {

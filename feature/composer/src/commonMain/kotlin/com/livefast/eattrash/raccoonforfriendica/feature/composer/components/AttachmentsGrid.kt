@@ -33,12 +33,7 @@ internal fun AttachmentsGrid(
 
     Column(modifier = modifier) {
         Text(
-            modifier =
-            Modifier.padding(
-                top = Spacing.m,
-                start = 10.dp,
-                end = 10.dp,
-            ),
+            modifier = Modifier.padding(Spacing.m),
             text = LocalStrings.current.createPostAttachmentsSection,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground,

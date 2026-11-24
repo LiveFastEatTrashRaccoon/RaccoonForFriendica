@@ -60,8 +60,8 @@ fun MessageItem(
                 } else {
                     0.dp
                 },
-                start = 10.dp,
-                end = 10.dp,
+                start = Spacing.m,
+                end = Spacing.m,
             ),
     ) {
         Box(

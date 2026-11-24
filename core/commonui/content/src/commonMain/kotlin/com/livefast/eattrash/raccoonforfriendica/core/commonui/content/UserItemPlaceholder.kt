@@ -28,7 +28,7 @@ fun UserItemPlaceholder(
     withRelationshipButton: Boolean = true,
 ) {
     Row(
-        modifier = modifier.padding(horizontal = Spacing.xs),
+        modifier = modifier.padding(vertical = Spacing.s, horizontal = Spacing.m),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {

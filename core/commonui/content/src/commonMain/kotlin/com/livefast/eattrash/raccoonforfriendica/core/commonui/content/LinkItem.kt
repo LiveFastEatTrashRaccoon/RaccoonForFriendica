@@ -63,7 +63,7 @@ fun LinkItem(
     Column(
         modifier =
         modifier
-            .padding(horizontal = Spacing.s)
+            .padding(horizontal = Spacing.m)
             .border(
                 width = Dp.Hairline,
                 color = ancillaryColor,
@@ -113,7 +113,7 @@ fun LinkItem(
                                 MaterialTheme.colorScheme
                                     .surfaceColorAtElevation(5.dp)
                                     .copy(0.45f),
-                            ).padding(10.dp),
+                            ).padding(Spacing.l),
                         url = url,
                     )
                 }
@@ -161,7 +161,7 @@ fun LinkItem(
                             bottomStart = cornerSize,
                             bottomEnd = cornerSize,
                         ),
-                    ).padding(10.dp),
+                    ).padding(Spacing.l),
             )
         } else {
             Spacer(modifier = Modifier.height(contentPadding))

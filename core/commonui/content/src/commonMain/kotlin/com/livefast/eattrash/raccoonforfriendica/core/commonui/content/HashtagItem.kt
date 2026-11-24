@@ -39,7 +39,7 @@ fun HashtagItem(hashtag: TagModel, modifier: Modifier = Modifier, onOpen: ((Stri
                 indication = null,
             ) {
                 onOpen?.invoke(hashtag.name)
-            }.padding(Spacing.s),
+            }.padding(vertical = Spacing.s, horizontal = Spacing.m),
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
         verticalAlignment = Alignment.CenterVertically,
     ) {

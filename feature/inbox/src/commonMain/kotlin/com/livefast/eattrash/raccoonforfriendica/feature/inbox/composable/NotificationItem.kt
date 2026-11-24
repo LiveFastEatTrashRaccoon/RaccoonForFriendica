@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
@@ -105,24 +108,15 @@ internal fun NotificationItem(
             }
         }
 
-        Box(
-            modifier =
-            Modifier
-                .padding(horizontal = contentHorizontalPadding)
-                .padding(bottom = Spacing.xs)
-                .shadow(
-                    elevation = 5.dp,
-                    shape = RoundedCornerShape(CornerSize.l),
-                ).background(
-                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp),
-                    shape = RoundedCornerShape(CornerSize.l),
-                ).clip(RoundedCornerShape(CornerSize.l))
-                .padding(
-                    start = Spacing.xxs,
-                    end = Spacing.xxs,
-                    top = Spacing.xs,
-                    bottom = Spacing.xs,
-                ),
+        OutlinedCard(
+            modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xxs),
+            shape = RoundedCornerShape(CornerSize.l),
+            colors = CardDefaults.outlinedCardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp),
+            ),
+            border = CardDefaults.outlinedCardBorder().copy(
+                brush = SolidColor(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
+            ),
         ) {
             if (post != null) {
                 TimelineItem(

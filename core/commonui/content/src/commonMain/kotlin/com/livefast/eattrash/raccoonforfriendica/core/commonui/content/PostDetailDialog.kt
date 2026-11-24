@@ -190,7 +190,7 @@ fun PostDetailDialog(post: PostModel, modifier: Modifier = Modifier, onClose: ((
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Icon(
-                                    modifier = Modifier.size(IconSize.m).padding(0.25.dp),
+                                    modifier = Modifier.size(IconSize.s),
                                     imageVector = LocalResources.current.update,
                                     contentDescription = LocalStrings.current.updateDate,
                                     tint = fullColor,
@@ -215,7 +215,7 @@ fun PostDetailDialog(post: PostModel, modifier: Modifier = Modifier, onClose: ((
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Icon(
-                                    modifier = Modifier.size(IconSize.m).padding(2.dp),
+                                    modifier = Modifier.size(IconSize.s),
                                     imageVector = LocalResources.current.schedule,
                                     contentDescription = LocalStrings.current.creationDate,
                                     tint = fullColor,
@@ -234,12 +234,11 @@ fun PostDetailDialog(post: PostModel, modifier: Modifier = Modifier, onClose: ((
 
                     item {
                         Row(
-                            modifier = Modifier.padding(horizontal = Spacing.xxxs),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
                         ) {
                             Icon(
-                                modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
+                                modifier = Modifier.size(IconSize.s),
                                 imageVector = LocalResources.current.arrowCircleUp,
                                 contentDescription =
                                 LocalStrings.current.extendedSocialInfoFavorites(post.favoriteCount),
@@ -252,7 +251,7 @@ fun PostDetailDialog(post: PostModel, modifier: Modifier = Modifier, onClose: ((
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Icon(
-                                modifier = Modifier.size(IconSize.m).padding(end = 3.5.dp),
+                                modifier = Modifier.size(IconSize.s),
                                 imageVector = LocalResources.current.arrowCircleDown,
                                 contentDescription =
                                 LocalStrings.current.dislikesCount(post.dislikesCount),
