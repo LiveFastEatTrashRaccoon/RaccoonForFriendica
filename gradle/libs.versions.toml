@@ -21,6 +21,7 @@ compose-navigationevent = "1.1.0"
 compose-plugin = "1.12.2"
 compose-test = "1.12.1"
 connectivity = "2.5.3"
+detekt = "2.0.0-alpha.6"
 espresso = "3.7.0"
 kermit = "2.2.0"
 kotlin = "2.4.21"
@@ -83,6 +84,7 @@ compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.r
 compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-plugin" }
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-device = { module = "dev.jordond.connectivity:connectivity-device", version.ref = "connectivity" }
+detekt-gradlePlugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
@@ -129,6 +131,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose-desktop-linux-deps = { id = "io.github.kdroidfilter.compose.linux.packagedeps", version.ref = "compose-desktop-linux-deps" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

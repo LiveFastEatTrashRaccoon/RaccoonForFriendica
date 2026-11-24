@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.metro)
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.detekt")
 }
 
 android {
@@ -84,3 +85,4 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 }
+

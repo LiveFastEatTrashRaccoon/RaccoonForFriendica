@@ -4,6 +4,7 @@ plugins {
     id("com.livefast.eattrash.di")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.detekt")
     id("com.livefast.eattrash.serialization")
     alias(libs.plugins.sentry)
     alias(libs.plugins.ksp)

@@ -16,6 +16,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.spotless.gradlePlugin)
+    compileOnly(libs.detekt.gradlePlugin)
     implementation(libs.kotlinpoet)
 }
 
@@ -54,6 +55,11 @@ gradlePlugin {
         register("spotlessPlugin") {
             id = "com.livefast.eattrash.spotless"
             implementationClass = "plugins.SpotlessPlugin"
+        }
+
+        register("detektPlugin") {
+            id = "com.livefast.eattrash.detekt"
+            implementationClass = "plugins.DetektPlugin"
         }
 
         register("testPlugin") {

@@ -13,9 +13,11 @@ plugins {
     alias(libs.plugins.sentry).apply(false)
     alias(libs.plugins.spotless).apply(false)
     alias(libs.plugins.compose.desktop.linux.deps).apply(false)
+    alias(libs.plugins.detekt).apply(false)
 }
 
 tasks.register("clean", Delete::class) {
+    description = "Remove compiler output"
     delete(rootProject.layout.buildDirectory)
 }
 
