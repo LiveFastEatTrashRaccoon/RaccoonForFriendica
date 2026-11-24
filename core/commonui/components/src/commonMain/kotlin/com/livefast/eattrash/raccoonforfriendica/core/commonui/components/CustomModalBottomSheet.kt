@@ -137,7 +137,7 @@ private fun CustomModalBottomSheetContent(
                             } else {
                                 null
                             },
-                        ).padding(10.dp),
+                        ).padding(Spacing.m),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Spacing.s),
                 ) {

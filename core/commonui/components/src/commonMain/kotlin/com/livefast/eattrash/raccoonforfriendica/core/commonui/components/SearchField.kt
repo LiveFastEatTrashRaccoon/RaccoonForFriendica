@@ -106,9 +106,8 @@ fun SearchField(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
-                val iconModifier = Modifier.size(IconSize.m).padding(2.5.dp)
                 Icon(
-                    modifier = iconModifier,
+                    modifier = Modifier.size(IconSize.s),
                     imageVector = LocalResources.current.search,
                     contentDescription = LocalStrings.current.actionSearch,
                     tint = textColor,
@@ -131,9 +130,11 @@ fun SearchField(
                 if (textFieldValue.text.isNotEmpty() && onClear != null) {
                     Icon(
                         modifier =
-                        iconModifier.clickable {
-                            textFieldValue = TextFieldValue()
-                        },
+                        Modifier
+                            .size(IconSize.s)
+                            .clickable {
+                                textFieldValue = TextFieldValue()
+                            },
                         imageVector = LocalResources.current.cancel,
                         contentDescription = LocalStrings.current.actionClear,
                         tint = textColor,
