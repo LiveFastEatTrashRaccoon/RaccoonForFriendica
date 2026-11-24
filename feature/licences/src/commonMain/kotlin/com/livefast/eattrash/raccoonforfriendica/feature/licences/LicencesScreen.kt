@@ -82,8 +82,7 @@ fun LicencesScreen(modifier: Modifier = Modifier, model: LicencesMvi = metroView
                     } else {
                         Modifier
                     },
-                ).fillMaxSize()
-                .padding(horizontal = Spacing.xs),
+                ).fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             items(uiState.items) { item ->
