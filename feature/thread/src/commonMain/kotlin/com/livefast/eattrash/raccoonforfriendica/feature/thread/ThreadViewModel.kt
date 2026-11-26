@@ -209,7 +209,7 @@ class ThreadViewModel(
                 if (swipeNavigationEnabled) {
                     timelineNavigationManager.currentList
                 } else {
-                    currentPost?.let { listOf(it) } ?: emptyList()
+                    currentPost?.let { listOf(it) }.orEmpty()
                 }
             val initialIndex = mainPosts.indexOfFirst { it.id == postId }.coerceAtLeast(0)
             val replies: List<List<PostModel>> = mainPosts.map { emptyList() }
@@ -278,8 +278,8 @@ class ThreadViewModel(
                 },
             )
         }
-        val result = populateThread(post = post.original).map { post ->
-            post.let {
+        val result = populateThread(post = post.original).map { p ->
+            p.let {
                 with(emojiHelper) { it.withEmojisIfMissing() }
             }.let {
                 with(replyHelper) { it.withInReplyToIfMissing() }
@@ -302,7 +302,7 @@ class ThreadViewModel(
             }
         } else {
             newReplies.preloadImages()
-            val index = currentReplies.indexOfFirst { post -> post.id == post.id }
+            val index = currentReplies.indexOfFirst { p -> p.id == post.id }
             val replies =
                 buildList {
                     if (index > 0) {
@@ -379,8 +379,8 @@ class ThreadViewModel(
                                 reblogged = newPost.reblogged,
                                 reblogCount = newPost.reblogCount,
                                 reblogLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                         replies = state.replies.updateMatching(state.currentIndex, post.id) {
@@ -388,8 +388,8 @@ class ThreadViewModel(
                                 reblogged = newPost.reblogged,
                                 reblogCount = newPost.reblogCount,
                                 reblogLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -423,8 +423,8 @@ class ThreadViewModel(
                 )
             }
             val newPost =
-                toggleFavorite(post)?.also { post ->
-                    notificationCenter.send(PostUpdatedEvent(post))
+                toggleFavorite(post)?.also { p ->
+                    notificationCenter.send(PostUpdatedEvent(p))
                 }
             if (newPost != null) {
                 updateState { state ->
@@ -462,8 +462,8 @@ class ThreadViewModel(
                 )
             }
             val newPost =
-                toggleDislike(post)?.also { post ->
-                    notificationCenter.send(PostUpdatedEvent(post))
+                toggleDislike(post)?.also { p ->
+                    notificationCenter.send(PostUpdatedEvent(p))
                 }
             if (newPost != null) {
                 updateState { state ->
@@ -513,16 +513,16 @@ class ThreadViewModel(
                             it.copy(
                                 bookmarked = newPost.bookmarked,
                                 bookmarkLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                         replies = state.replies.updateMatching(state.currentIndex, post.id) {
                             it.copy(
                                 bookmarked = newPost.bookmarked,
                                 bookmarkLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -616,13 +616,13 @@ class ThreadViewModel(
                 updateState { state ->
                     state.copy(
                         mainPosts = state.mainPosts.updateMatching(post.id) {
-                            it.copy(poll = poll.copy(loading = false)).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            it.copy(poll = poll.copy(loading = false)).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                         replies = state.replies.updateMatching(state.currentIndex, post.id) {
-                            it.copy(poll = poll.copy(loading = false)).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            it.copy(poll = poll.copy(loading = false)).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )

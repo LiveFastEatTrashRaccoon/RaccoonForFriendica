@@ -96,7 +96,7 @@ fun GroupHeader(
                 verticalArrangement = Arrangement.spacedBy(Spacing.xxs),
             ) {
                 TextWithCustomEmojis(
-                    text = user?.displayName ?: user?.username ?: "",
+                    text = (user?.displayName ?: user?.username).orEmpty(),
                     emojis = user?.emojis.orEmpty(),
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
@@ -105,7 +105,7 @@ fun GroupHeader(
                 )
 
                 Text(
-                    text = user?.handle ?: user?.username ?: "",
+                    text = (user?.handle ?: user?.username).orEmpty(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = ancillaryColor,
                     maxLines = 1,

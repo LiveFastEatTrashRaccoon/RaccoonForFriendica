@@ -326,7 +326,7 @@ private fun HeaderItem(
         }
 
         Text(
-            text = (uri ?: "").uppercase(),
+            text = uri.orEmpty().uppercase(),
             style = MaterialTheme.typography.bodyLarge,
             color = fullColor,
             maxLines = 1,
@@ -385,8 +385,8 @@ private fun ContactUserItem(
                 modifier = Modifier.weight(1f).padding(vertical = Spacing.s),
                 verticalArrangement = Arrangement.spacedBy(Spacing.xs),
             ) {
-                val title = user.displayName ?: user.username ?: ""
-                val subtitle = user.handle ?: ""
+                val title = (user.displayName ?: user.username).orEmpty()
+                val subtitle = user.handle.orEmpty()
                 if (title.isNotBlank()) {
                     TextWithCustomEmojis(
                         text = title,
@@ -400,7 +400,7 @@ private fun ContactUserItem(
                 }
                 if (subtitle.isNotBlank()) {
                     Text(
-                        text = user.handle ?: "",
+                        text = user.handle.orEmpty(),
                         style = MaterialTheme.typography.bodySmall,
                         color = ancillaryColor,
                         maxLines = 1,

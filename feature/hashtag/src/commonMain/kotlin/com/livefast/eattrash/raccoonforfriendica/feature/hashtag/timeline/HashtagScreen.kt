@@ -247,8 +247,8 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onClick = { post ->
-                            model.reduce(HashtagMvi.Intent.WillOpenDetail(post))
+                        onClick = { p ->
+                            model.reduce(HashtagMvi.Intent.WillOpenDetail(p))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -268,46 +268,46 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                             )
                         },
                         onReblog =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             val timeSinceCreation =
-                                post.created?.run {
+                                p.created?.run {
                                     getDurationFromDateToNow(this)
                                 } ?: Duration.ZERO
                             when {
-                                !post.reblogged && timeSinceCreation.isOldPost ->
-                                    confirmReblogPost = post
+                                !p.reblogged && timeSinceCreation.isOldPost ->
+                                    confirmReblogPost = p
 
                                 else ->
                                     model.reduce(
-                                        HashtagMvi.Intent.ToggleReblog(post),
+                                        HashtagMvi.Intent.ToggleReblog(p),
                                     )
                             }
                         }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                         onBookmark =
-                        { post: PostModel ->
-                            model.reduce(HashtagMvi.Intent.ToggleBookmark(post))
+                        { p: PostModel ->
+                            model.reduce(HashtagMvi.Intent.ToggleBookmark(p))
                         }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                         onFavorite =
-                        { post: PostModel ->
-                            model.reduce(HashtagMvi.Intent.ToggleFavorite(post))
+                        { p: PostModel ->
+                            model.reduce(HashtagMvi.Intent.ToggleFavorite(p))
                         }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                         onDislike =
-                        { post: PostModel ->
-                            model.reduce(HashtagMvi.Intent.ToggleDislike(post))
+                        { p: PostModel ->
+                            model.reduce(HashtagMvi.Intent.ToggleDislike(p))
                         }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
                         onReply =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             mainRouter.openComposer(
-                                inReplyTo = post,
-                                inReplyToUser = post.creator,
+                                inReplyTo = p,
+                                inReplyToUser = p.creator,
                             )
                         }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
-                            { post, choices ->
+                            { p, choices ->
                                 model.reduce(
                                     HashtagMvi.Intent.SubmitPollVote(
-                                        post = post,
+                                        post = p,
                                         choices = choices,
                                     ),
                                 )
@@ -318,8 +318,8 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
                                 HashtagMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { post ->
-                            mainRouter.openPostDetail(post)
+                        onOpenQuote = { p ->
+                            mainRouter.openPostDetail(p)
                         },
                         options =
                         buildList {
@@ -555,7 +555,7 @@ fun HashtagScreen(tag: String, modifier: Modifier = Modifier, otherInstance: Str
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = creator?.handle ?: ""
+                val handle = creator?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }

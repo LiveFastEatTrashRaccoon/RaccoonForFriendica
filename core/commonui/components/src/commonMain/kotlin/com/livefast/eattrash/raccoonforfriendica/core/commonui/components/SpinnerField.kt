@@ -101,12 +101,12 @@ fun SpinnerField(
                     expanded = false
                 },
             ) {
-                values.forEach { value ->
+                values.forEach { v ->
                     DropdownMenuItem(
                         onClick = {
-                            onValueChange?.invoke(value.value)
+                            onValueChange?.invoke(v.value)
                             expanded = false
-                            val isCustom = value.value.isBlank()
+                            val isCustom = v.value.isBlank()
                             if (isCustom) {
                                 focusRequester.requestFocus()
                             }
@@ -114,7 +114,7 @@ fun SpinnerField(
                         },
                         text = {
                             Text(
-                                text = value.title,
+                                text = v.title,
                                 modifier = Modifier.wrapContentWidth().align(Alignment.Start),
                             )
                         },

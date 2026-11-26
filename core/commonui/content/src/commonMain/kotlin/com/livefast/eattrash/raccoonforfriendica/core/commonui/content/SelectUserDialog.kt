@@ -226,7 +226,7 @@ private fun UserResultItem(
             verticalArrangement = Arrangement.spacedBy(Spacing.xs),
         ) {
             TextWithCustomEmojis(
-                text = user.displayName ?: user.username ?: "",
+                text = (user.displayName ?: user.username).orEmpty(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = fullColor,
                 maxLines = 1,
@@ -236,7 +236,7 @@ private fun UserResultItem(
                 onClick = onClick,
             )
             Text(
-                text = user.handle ?: "",
+                text = user.handle.orEmpty(),
                 style = MaterialTheme.typography.bodySmall,
                 color = ancillaryColor,
                 maxLines = 1,

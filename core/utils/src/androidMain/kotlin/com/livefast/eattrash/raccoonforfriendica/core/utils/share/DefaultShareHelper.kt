@@ -28,7 +28,7 @@ class DefaultShareHelper(private val context: Context) : ShareHelper {
     }
 
     override fun shareImage(path: Any?, mimeType: String) {
-        val uri = path as? Uri ?: throw Exception("Path must be an Uri")
+        val uri = path as? Uri ?: throw IllegalArgumentException("Path must be an Uri")
         val sendIntent: Intent =
             Intent().apply {
                 action = Intent.ACTION_SEND

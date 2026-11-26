@@ -22,7 +22,7 @@ class DefaultAnnouncementsManager(private val announcementRepository: Announceme
     override suspend fun refreshUnreadCount() {
         val announcements = announcementRepository.getAll(refresh = true)
         unreadCount.update {
-            announcements?.count { !it.read } ?: 0
+            announcements?.count { a -> !a.read } ?: 0
         }
     }
 

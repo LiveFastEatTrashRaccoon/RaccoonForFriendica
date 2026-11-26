@@ -330,13 +330,13 @@ fun ExploreScreen(
                                 bottom = Spacing.s,
                             ),
                         titles =
-                        uiState.availableSections.map {
-                            it.toReadableName()
+                        uiState.availableSections.map { section ->
+                            section.toReadableName()
                         },
                         currentSection = uiState.availableSections.indexOf(uiState.section),
-                        onSelectSection = {
+                        onSelectSection = { idx ->
                             model.reduce(
-                                ExploreMvi.Intent.ChangeSection(uiState.availableSections[it]),
+                                ExploreMvi.Intent.ChangeSection(uiState.availableSections[idx]),
                             )
                         },
                     )
@@ -793,7 +793,7 @@ fun ExploreScreen(
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = creator?.handle ?: ""
+                val handle = creator?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }

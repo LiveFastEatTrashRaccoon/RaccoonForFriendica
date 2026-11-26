@@ -115,7 +115,7 @@ fun NotificationUserInfo(
                     verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                 ) {
                     TextWithCustomEmojis(
-                        text = user.displayName ?: user.username ?: "",
+                        text = (user.displayName ?: user.username).orEmpty(),
                         emojis = user.emojis,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
@@ -134,7 +134,7 @@ fun NotificationUserInfo(
                                     linkInteractionListener = { onOpenUser?.invoke() },
                                 ),
                             )
-                            append(user.handle ?: user.username ?: "")
+                            append((user.handle ?: user.username).orEmpty())
                             pop()
                         },
                         style = MaterialTheme.typography.titleMedium,

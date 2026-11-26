@@ -95,7 +95,7 @@ fun UserItem(
             modifier = Modifier.weight(1f),
         ) {
             TextWithCustomEmojis(
-                text = user.displayName ?: user.username ?: "",
+                text = (user.displayName ?: user.username).orEmpty(),
                 style = MaterialTheme.typography.titleMedium,
                 color = fullColor,
                 maxLines = 1,
@@ -106,7 +106,7 @@ fun UserItem(
             )
             if (withSubtitle) {
                 Text(
-                    text = user.handle ?: user.username ?: "",
+                    text = (user.handle ?: user.username).orEmpty(),
                     style = MaterialTheme.typography.titleMedium,
                     color = ancillaryColor,
                     maxLines = 1,

@@ -48,11 +48,11 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
                 displayName = user.displayName,
                 postCount = user.statusesCount,
                 fields =
-                user.fields.map {
+                user.fields.map { field ->
                     FieldModel(
-                        key = it.name,
-                        value = it.value,
-                        verified = it.verifiedAt != null,
+                        key = field.name,
+                        value = field.value,
+                        verified = field.verifiedAt != null,
                     )
                 },
                 followers = user.followersCount,
@@ -76,11 +76,11 @@ class DefaultIdentityRepository(private val provider: ServiceProvider) : Identit
                 displayName = user.displayName,
                 postCount = user.statusesCount,
                 fields =
-                user.fields.map {
+                user.fields.map { field ->
                     FieldModel(
-                        key = it.name,
-                        value = it.value,
-                        verified = it.verifiedAt != null,
+                        key = field.name,
+                        value = field.value,
+                        verified = field.verifiedAt != null,
                     )
                 },
                 followers = user.followersCount,

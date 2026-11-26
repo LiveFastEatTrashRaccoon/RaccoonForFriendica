@@ -171,7 +171,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                         text =
                         buildString {
                             append(LocalStrings.current.topicTitle)
-                            val name = (uiState.user?.displayName ?: uiState.user?.username ?: "").ellipsize(30)
+                            val name = (uiState.user?.displayName ?: uiState.user?.username).orEmpty().ellipsize(30)
                             if (name.isNotBlank()) {
                                 append(": ")
                                 append(name)
@@ -487,46 +487,46 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                             )
                         },
                         onReblog =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             val timeSinceCreation =
-                                post.created?.run {
+                                p.created?.run {
                                     getDurationFromDateToNow(this)
                                 } ?: Duration.ZERO
                             when {
-                                !post.reblogged && timeSinceCreation.isOldPost ->
-                                    confirmReblogPost = post
+                                !p.reblogged && timeSinceCreation.isOldPost ->
+                                    confirmReblogPost = p
 
                                 else ->
                                     model.reduce(
-                                        ForumListMvi.Intent.ToggleReblog(post),
+                                        ForumListMvi.Intent.ToggleReblog(p),
                                     )
                             }
                         }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                         onBookmark =
-                        { post: PostModel ->
-                            model.reduce(ForumListMvi.Intent.ToggleBookmark(post))
+                        { p: PostModel ->
+                            model.reduce(ForumListMvi.Intent.ToggleBookmark(p))
                         }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                         onFavorite =
-                        { post: PostModel ->
-                            model.reduce(ForumListMvi.Intent.ToggleFavorite(post))
+                        { p: PostModel ->
+                            model.reduce(ForumListMvi.Intent.ToggleFavorite(p))
                         }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                         onDislike =
-                        { post: PostModel ->
-                            model.reduce(ForumListMvi.Intent.ToggleDislike(post))
+                        { p: PostModel ->
+                            model.reduce(ForumListMvi.Intent.ToggleDislike(p))
                         }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
                         onReply =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             mainRouter.openComposer(
-                                inReplyTo = post,
-                                inReplyToUser = post.creator,
+                                inReplyTo = p,
+                                inReplyToUser = p.creator,
                             )
                         }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
-                            { post, choices ->
+                            { p, choices ->
                                 model.reduce(
                                     ForumListMvi.Intent.SubmitPollVote(
-                                        post = post,
+                                        post = p,
                                         choices = choices,
                                     ),
                                 )
@@ -537,8 +537,8 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
                                 ForumListMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { post ->
-                            mainRouter.openPostDetail(post)
+                        onOpenQuote = { p ->
+                            mainRouter.openPostDetail(p)
                         },
                         options =
                         buildList {
@@ -795,7 +795,7 @@ fun ForumListScreen(id: String, modifier: Modifier = Modifier, otherInstance: St
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = creator?.handle ?: ""
+                val handle = creator?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }

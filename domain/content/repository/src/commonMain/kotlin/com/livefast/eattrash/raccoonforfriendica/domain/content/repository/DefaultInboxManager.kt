@@ -28,7 +28,7 @@ class DefaultInboxManager(
         val pagedList = notificationRepository.getAll(refresh = true)
         val notifications = pagedList?.list.orEmpty()
         unreadCount.update {
-            notifications.count { it.hasLaterIdThan(lastReadId) }
+            notifications.count { n -> n.hasLaterIdThan(lastReadId) }
         }
     }
 

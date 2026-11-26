@@ -234,7 +234,7 @@ fun UserHeader(
                         verticalArrangement = Arrangement.spacedBy(Spacing.xs),
                     ) {
                         TextWithCustomEmojis(
-                            text = user?.displayName ?: user?.username ?: "",
+                            text = (user?.displayName ?: user?.username).orEmpty(),
                             emojis = user?.emojis.orEmpty(),
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
@@ -242,7 +242,7 @@ fun UserHeader(
                             color = fullColor,
                         )
                         Text(
-                            text = user?.handle ?: user?.username ?: "",
+                            text = (user?.handle ?: user?.username).orEmpty(),
                             style = MaterialTheme.typography.titleMedium,
                             color = ancillaryColor,
                         )

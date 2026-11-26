@@ -246,12 +246,10 @@ fun ManageBlocksScreen(
                                 top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
                                 bottom = Spacing.s,
                             ),
-                        titles = sections.map { it.toReadableName() },
+                        titles = sections.map { t -> t.toReadableName() },
                         currentSection = sections.indexOf(uiState.section),
-                        onSelectSection = {
-                            model.reduce(
-                                ManageBlocksMvi.Intent.ChangeSection(sections[it]),
-                            )
+                        onSelectSection = { idx ->
+                            model.reduce(ManageBlocksMvi.Intent.ChangeSection(sections[idx]))
                         },
                     )
                 }

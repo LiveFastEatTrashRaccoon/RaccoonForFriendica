@@ -307,9 +307,9 @@ class PostDetailViewModel(
     }
 
     private suspend fun reconstructAncestors(post: PostModel, rootId: String): List<PostModel> {
-        suspend fun buildAncestorsRec(post: PostModel, list: List<PostModel>): List<PostModel> {
-            val parentId = post.parentId
-            if (parentId.isNullOrEmpty() || post.id == rootId) {
+        suspend fun buildAncestorsRec(innerPost: PostModel, list: List<PostModel>): List<PostModel> {
+            val parentId = innerPost.parentId
+            if (parentId.isNullOrEmpty() || innerPost.id == rootId) {
                 return list
             }
             val parent = postRepository.getById(parentId) ?: return list
@@ -318,13 +318,13 @@ class PostDetailViewModel(
 
         val res = buildAncestorsRec(post, listOf(post))
         return res
-            .mapIndexed { idx, post ->
+            .mapIndexed { idx, p ->
                 val hasMoreReplies =
                     when {
-                        idx == res.lastIndex -> post.replyCount > 0
-                        else -> post.replyCount > 1
+                        idx == res.lastIndex -> p.replyCount > 0
+                        else -> p.replyCount > 1
                     }
-                post.copy(
+                p.copy(
                     depth = idx,
                     loadMoreButtonVisible = hasMoreReplies,
                 )
@@ -346,8 +346,8 @@ class PostDetailViewModel(
                     },
                 )
             }
-            val result = populateThread(post = post.original).map { post ->
-                post.let {
+            val result = populateThread(post = post.original).map { p ->
+                p.let {
                     with(emojiHelper) { it.withEmojisIfMissing() }
                 }.let {
                     with(replyHelper) { it.withInReplyToIfMissing() }
@@ -445,8 +445,8 @@ class PostDetailViewModel(
                                 reblogged = newPost.reblogged,
                                 reblogCount = newPost.reblogCount,
                                 reblogLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -474,8 +474,8 @@ class PostDetailViewModel(
                 )
             }
             val newPost =
-                toggleFavorite(post)?.also { post ->
-                    notificationCenter.send(PostUpdatedEvent(post))
+                toggleFavorite(post)?.also { p ->
+                    notificationCenter.send(PostUpdatedEvent(p))
                 }
             if (newPost != null) {
                 updateState { state ->
@@ -506,8 +506,8 @@ class PostDetailViewModel(
                 )
             }
             val newPost =
-                newPost(post)?.also { post ->
-                    notificationCenter.send(PostUpdatedEvent(post))
+                newPost(post)?.also { p ->
+                    notificationCenter.send(PostUpdatedEvent(p))
                 }
             if (newPost != null) {
                 updateState { state ->
@@ -550,8 +550,8 @@ class PostDetailViewModel(
                             it.copy(
                                 bookmarked = newPost.bookmarked,
                                 bookmarkLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -646,8 +646,8 @@ class PostDetailViewModel(
                 updateState { state ->
                     state.copy(
                         posts = state.posts.updateMatching(index = state.currentIndex, id = post.id) {
-                            it.copy(poll = newPoll).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            it.copy(poll = newPoll).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -719,7 +719,7 @@ class PostDetailViewModel(
             }
             val currentState = uiState.value
             val hasReplies = (currentState.mainPost?.replyCount ?: 0) > 0
-            val currentPosts = currentState.posts.getOrNull(newIndex) ?: emptyList()
+            val currentPosts = currentState.posts.getOrNull(newIndex).orEmpty()
             if (currentPosts.isEmpty() || (currentPosts.size == 1 && hasReplies)) {
                 loadContext()
             }

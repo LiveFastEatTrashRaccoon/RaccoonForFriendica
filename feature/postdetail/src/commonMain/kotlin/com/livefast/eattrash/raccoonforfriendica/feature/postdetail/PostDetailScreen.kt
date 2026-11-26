@@ -505,12 +505,12 @@ fun PostDetailScreen(
                                                 uriHandler.openExternally(url)
                                             }
                                         },
-                                        onClick = { post ->
-                                            if (post.id != uiState.mainPost?.id &&
-                                                post.id != uiState.mainPost?.original?.id
+                                        onClick = { p ->
+                                            if (p.id != uiState.mainPost?.id &&
+                                                p.id != uiState.mainPost?.original?.id
                                             ) {
                                                 mainRouter.openPostDetail(
-                                                    post = post,
+                                                    post = p,
                                                     replaceTop = true,
                                                     otherInstance = otherInstance,
                                                 )
@@ -527,74 +527,74 @@ fun PostDetailScreen(
                                             )
                                         },
                                         onReblog =
-                                        { post: PostModel ->
+                                        { p: PostModel ->
                                             val timeSinceCreation =
-                                                post.created?.run {
+                                                p.created?.run {
                                                     getDurationFromDateToNow(this)
                                                 } ?: Duration.ZERO
                                             when {
-                                                !post.reblogged && timeSinceCreation.isOldPost ->
-                                                    confirmReblogPost = post
+                                                !p.reblogged && timeSinceCreation.isOldPost ->
+                                                    confirmReblogPost = p
 
                                                 else ->
                                                     model.reduce(
                                                         PostDetailMvi.Intent.ToggleReblog(
-                                                            post,
+                                                            p,
                                                         ),
                                                     )
                                             }
                                         }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                                         onBookmark =
-                                        { post: PostModel ->
+                                        { p: PostModel ->
                                             model.reduce(
                                                 PostDetailMvi.Intent.ToggleBookmark(
-                                                    post,
+                                                    p,
                                                 ),
                                             )
                                         }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                                         onFavorite =
-                                        { post: PostModel ->
+                                        { p: PostModel ->
                                             model.reduce(
                                                 PostDetailMvi.Intent.ToggleFavorite(
-                                                    post,
+                                                    p,
                                                 ),
                                             )
                                         }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                                         onDislike =
-                                        { post: PostModel ->
+                                        { p: PostModel ->
                                             model.reduce(
                                                 PostDetailMvi.Intent.ToggleDislike(
-                                                    post,
+                                                    p,
                                                 ),
                                             )
                                         }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
-                                        onOpenUsersFavorite = { post ->
+                                        onOpenUsersFavorite = { p ->
                                             mainRouter.openPostUsersFavorite(
-                                                postId = post.id,
-                                                count = post.favoriteCount,
+                                                postId = p.id,
+                                                count = p.favoriteCount,
                                                 otherInstance = otherInstance,
                                             )
                                         },
-                                        onOpenUsersReblog = { post ->
+                                        onOpenUsersReblog = { p ->
                                             mainRouter.openPostUsersReblog(
-                                                postId = post.id,
-                                                count = post.reblogCount,
+                                                postId = p.id,
+                                                count = p.reblogCount,
                                                 otherInstance = otherInstance,
                                             )
                                         },
                                         onReply =
-                                        { post: PostModel ->
+                                        { p: PostModel ->
                                             mainRouter.openComposer(
-                                                inReplyTo = post,
-                                                inReplyToUser = post.creator,
+                                                inReplyTo = p,
+                                                inReplyToUser = p.creator,
                                             )
                                         }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                                         onPollVote =
                                         uiState.currentUserId?.let {
-                                            { post, choices ->
+                                            { p, choices ->
                                                 model.reduce(
                                                     PostDetailMvi.Intent.SubmitPollVote(
-                                                        post = post,
+                                                        post = p,
                                                         choices = choices,
                                                     ),
                                                 )
@@ -607,8 +607,8 @@ fun PostDetailScreen(
                                                 ),
                                             )
                                         },
-                                        onOpenQuote = { post ->
-                                            mainRouter.openPostDetail(post)
+                                        onOpenQuote = { p ->
+                                            mainRouter.openPostDetail(p)
                                         },
                                         options = options,
                                         onSelectOption = ::onOptionSelected,
@@ -649,12 +649,12 @@ fun PostDetailScreen(
                                             uriHandler.openExternally(url)
                                         }
                                     },
-                                    onClick = { post ->
-                                        if (post.id != uiState.mainPost?.id &&
-                                            post.id != uiState.mainPost?.original?.id
+                                    onClick = { p ->
+                                        if (p.id != uiState.mainPost?.id &&
+                                            p.id != uiState.mainPost?.original?.id
                                         ) {
                                             mainRouter.openPostDetail(
-                                                post = post,
+                                                post = p,
                                                 replaceTop = true,
                                                 otherInstance = otherInstance,
                                             )
@@ -671,60 +671,60 @@ fun PostDetailScreen(
                                         )
                                     },
                                     onReblog =
-                                    { post: PostModel ->
+                                    { p: PostModel ->
                                         val timeSinceCreation =
-                                            post.created?.run {
+                                            p.created?.run {
                                                 getDurationFromDateToNow(this)
                                             } ?: Duration.ZERO
                                         when {
-                                            !post.reblogged && timeSinceCreation.isOldPost ->
-                                                confirmReblogPost = post
+                                            !p.reblogged && timeSinceCreation.isOldPost ->
+                                                confirmReblogPost = p
 
                                             else ->
                                                 model.reduce(
-                                                    PostDetailMvi.Intent.ToggleReblog(post),
+                                                    PostDetailMvi.Intent.ToggleReblog(p),
                                                 )
                                         }
                                     }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                                     onBookmark =
-                                    { post: PostModel ->
-                                        model.reduce(PostDetailMvi.Intent.ToggleBookmark(post))
+                                    { p: PostModel ->
+                                        model.reduce(PostDetailMvi.Intent.ToggleBookmark(p))
                                     }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                                     onFavorite =
-                                    { post: PostModel ->
-                                        model.reduce(PostDetailMvi.Intent.ToggleFavorite(post))
+                                    { p: PostModel ->
+                                        model.reduce(PostDetailMvi.Intent.ToggleFavorite(p))
                                     }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                                     onDislike =
-                                    { post: PostModel ->
-                                        model.reduce(PostDetailMvi.Intent.ToggleDislike(post))
+                                    { p: PostModel ->
+                                        model.reduce(PostDetailMvi.Intent.ToggleDislike(p))
                                     }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
-                                    onOpenUsersFavorite = { post ->
+                                    onOpenUsersFavorite = { p ->
                                         mainRouter.openPostUsersFavorite(
-                                            postId = post.id,
-                                            count = post.favoriteCount,
+                                            postId = p.id,
+                                            count = p.favoriteCount,
                                             otherInstance = otherInstance,
                                         )
                                     },
-                                    onOpenUsersReblog = { post ->
+                                    onOpenUsersReblog = { p ->
                                         mainRouter.openPostUsersReblog(
-                                            postId = post.id,
-                                            count = post.reblogCount,
+                                            postId = p.id,
+                                            count = p.reblogCount,
                                             otherInstance = otherInstance,
                                         )
                                     },
                                     onReply =
-                                    { post: PostModel ->
+                                    { p: PostModel ->
                                         mainRouter.openComposer(
-                                            inReplyTo = post,
-                                            inReplyToUser = post.creator,
+                                            inReplyTo = p,
+                                            inReplyToUser = p.creator,
                                         )
                                     }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                                     onPollVote =
                                     uiState.currentUserId?.let {
-                                        { post, choices ->
+                                        { p, choices ->
                                             model.reduce(
                                                 PostDetailMvi.Intent.SubmitPollVote(
-                                                    post = post,
+                                                    post = p,
                                                     choices = choices,
                                                 ),
                                             )
@@ -735,8 +735,8 @@ fun PostDetailScreen(
                                             PostDetailMvi.Intent.ToggleTranslation(post.original),
                                         )
                                     },
-                                    onOpenQuote = { post ->
-                                        mainRouter.openPostDetail(post)
+                                    onOpenQuote = { p ->
+                                        mainRouter.openPostDetail(p)
                                     },
                                     options = options,
                                     onSelectOption = ::onOptionSelected,
@@ -828,7 +828,7 @@ fun PostDetailScreen(
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
             onClose = { confirm ->
-                val postId = confirmDeletePostId ?: ""
+                val postId = confirmDeletePostId.orEmpty()
                 confirmDeletePostId = null
                 if (confirm && postId.isNotEmpty()) {
                     model.reduce(PostDetailMvi.Intent.Delete(postId))
@@ -868,7 +868,7 @@ fun PostDetailScreen(
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = creator?.handle ?: ""
+                val handle = creator?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }

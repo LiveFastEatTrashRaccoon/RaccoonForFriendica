@@ -235,8 +235,8 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onClick = { post ->
-                            model.reduce(CircleTimelineMvi.Intent.WillOpenDetail(post))
+                        onClick = { p ->
+                            model.reduce(CircleTimelineMvi.Intent.WillOpenDetail(p))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -256,46 +256,46 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                             )
                         },
                         onReblog =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             val timeSinceCreation =
-                                post.created?.run {
+                                p.created?.run {
                                     getDurationFromDateToNow(this)
                                 } ?: Duration.ZERO
                             when {
-                                !post.reblogged && timeSinceCreation.isOldPost ->
-                                    confirmReblogPost = post
+                                !p.reblogged && timeSinceCreation.isOldPost ->
+                                    confirmReblogPost = p
 
                                 else ->
                                     model.reduce(
-                                        CircleTimelineMvi.Intent.ToggleReblog(post),
+                                        CircleTimelineMvi.Intent.ToggleReblog(p),
                                     )
                             }
                         }.takeIf { post.original.actionPermissions.canReblog },
                         onBookmark =
-                        { post: PostModel ->
-                            model.reduce(CircleTimelineMvi.Intent.ToggleBookmark(post))
+                        { p: PostModel ->
+                            model.reduce(CircleTimelineMvi.Intent.ToggleBookmark(p))
                         }.takeIf { post.original.actionPermissions.canBookmark },
                         onFavorite =
-                        { post: PostModel ->
-                            model.reduce(CircleTimelineMvi.Intent.ToggleFavorite(post))
+                        { p: PostModel ->
+                            model.reduce(CircleTimelineMvi.Intent.ToggleFavorite(p))
                         }.takeIf { post.original.actionPermissions.canFavorite },
                         onDislike =
-                        { post: PostModel ->
-                            model.reduce(CircleTimelineMvi.Intent.ToggleDislike(post))
+                        { p: PostModel ->
+                            model.reduce(CircleTimelineMvi.Intent.ToggleDislike(p))
                         }.takeIf { post.original.actionPermissions.canDislike },
                         onReply =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             mainRouter.openComposer(
-                                inReplyTo = post,
-                                inReplyToUser = post.creator,
+                                inReplyTo = p,
+                                inReplyToUser = p.creator,
                             )
                         }.takeIf { post.original.actionPermissions.canReply },
                         onPollVote =
                         uiState.currentUserId?.let {
-                            { post, choices ->
+                            { p, choices ->
                                 model.reduce(
                                     CircleTimelineMvi.Intent.SubmitPollVote(
-                                        post = post,
+                                        post = p,
                                         choices = choices,
                                     ),
                                 )
@@ -306,8 +306,8 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
                                 CircleTimelineMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { post ->
-                            mainRouter.openPostDetail(post)
+                        onOpenQuote = { p ->
+                            mainRouter.openPostDetail(p)
                         },
                         options =
                         buildList {
@@ -496,7 +496,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
         CustomConfirmDialog(
             title = LocalStrings.current.actionDelete,
             onClose = { confirm ->
-                val postId = confirmDeletePostId ?: ""
+                val postId = confirmDeletePostId.orEmpty()
                 confirmDeletePostId = null
                 if (confirm && postId.isNotEmpty()) {
                     model.reduce(CircleTimelineMvi.Intent.Delete(postId))
@@ -536,7 +536,7 @@ fun CircleTimelineScreen(id: String, modifier: Modifier = Modifier) {
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = creator?.handle ?: ""
+                val handle = creator?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }
