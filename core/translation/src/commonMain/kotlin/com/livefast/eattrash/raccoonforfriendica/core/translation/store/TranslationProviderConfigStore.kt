@@ -19,7 +19,7 @@ interface TranslationProviderConfigStore {
      *
      * @return a [Flow] emitting a list of all [TranslationProviderConfig] objects
      */
-    suspend fun observe(): Flow<List<TranslationProviderConfig>>
+    fun observe(): Flow<List<TranslationProviderConfig>>
 
     /**
      * Retrieves a specific translation provider configuration by its unique identifier.

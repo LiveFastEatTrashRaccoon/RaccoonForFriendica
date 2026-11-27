@@ -5,7 +5,6 @@
     <ID>ComplexCondition:UnpublishedScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty()</ID>
     <ID>CyclomaticComplexMethod:UnpublishedScreen.kt:@Composable fun UnpublishedScreen</ID>
     <ID>LongMethod:UnpublishedScreen.kt:@Composable fun UnpublishedScreen</ID>
-    <ID>LongParameterList:UnpublishedViewModel.kt:UnpublishedViewModel</ID>
     <ID>TooGenericExceptionCaught:UnpublishedScreen.kt:e: Exception</ID>
     <ID>TooGenericExceptionCaught:UnpublishedViewModel.kt:UnpublishedViewModel$e: Exception</ID>
   </CurrentIssues>

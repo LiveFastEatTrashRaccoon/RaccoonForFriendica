@@ -8,8 +8,6 @@
     <ID>LargeClass:PostDetailViewModel.kt:PostDetailViewModel : ViewModelMviDelegatePostDetailMvi</ID>
     <ID>LongMethod:PostDetailScreen.kt:@Composable fun MainPostContent</ID>
     <ID>LongMethod:PostDetailScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PostDetailScreen</ID>
-    <ID>LongMethod:PostDetailScreen.kt:fun onOptionSelected</ID>
-    <ID>LongMethod:PostDetailViewModel.kt:PostDetailViewModel$private fun handleLoadMoreReplies</ID>
     <ID>LongParameterList:PostDetailViewModel.kt:PostDetailViewModel</ID>
     <ID>ReturnCount:PostDetailViewModel.kt:PostDetailViewModel$suspend fun buildAncestorsRec: List&lt;PostModel&gt;</ID>
     <ID>TooGenericExceptionCaught:PostDetailScreen.kt:e: Exception</ID>

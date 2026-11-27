@@ -7,7 +7,6 @@
     <ID>LargeClass:ThreadViewModel.kt:ThreadViewModel : ViewModelMviDelegateThreadMvi</ID>
     <ID>LongMethod:ThreadScreen.kt:@Composable fun MainPostContent</ID>
     <ID>LongMethod:ThreadScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ThreadScreen</ID>
-    <ID>LongMethod:ThreadViewModel.kt:ThreadViewModel$private suspend fun loadMoreReplies</ID>
     <ID>LongParameterList:ThreadViewModel.kt:ThreadViewModel</ID>
     <ID>TooGenericExceptionCaught:ThreadScreen.kt:e: Exception</ID>
     <ID>TooManyFunctions:ThreadViewModel.kt:ThreadViewModel : ViewModelMviDelegateThreadMvi</ID>

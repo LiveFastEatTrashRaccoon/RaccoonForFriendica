@@ -12,7 +12,7 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 
@@ -78,7 +78,7 @@ internal fun TranslationFooter(
             Text(
                 text = translationFooterContent,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                color = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA),
             )
         }
     }

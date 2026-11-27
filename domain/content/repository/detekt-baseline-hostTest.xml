@@ -3,7 +3,5 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>IgnoredReturnValue:DefaultFeedTypeRepositoryTest.kt:DefaultFeedTypeRepositoryTest$getAllAsFlow(accountId = accountId)</ID>
-    <ID>LongMethod:DefaultFallbackTranslationRepositoryTest.kt:DefaultFallbackTranslationRepositoryTest$@Test fun `given post with title card and spoiler when getTranslation then result and interactions are as expected`</ID>
-    <ID>LongMethod:DefaultTranslationRepositoryTest.kt:DefaultTranslationRepositoryTest$@Test fun `given post with poll when getTranslation then result and interactions are as expected`</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -10,40 +10,40 @@ import com.livefast.eattrash.raccoonforfriendica.core.persistence.entities.Accou
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class AccountDao {
+interface AccountDao {
     @Insert
-    abstract suspend fun insert(item: AccountEntity)
+    suspend fun insert(item: AccountEntity)
 
     @Query("SELECT * FROM AccountEntity")
-    abstract suspend fun getAll(): List<AccountEntity>
+    suspend fun getAll(): List<AccountEntity>
 
     @Query("SELECT * FROM AccountEntity")
-    abstract fun getAllAsFlow(): Flow<List<AccountEntity>>
+    fun getAllAsFlow(): Flow<List<AccountEntity>>
 
     @Query("SELECT * FROM AccountEntity WHERE id = :id")
-    abstract suspend fun getBy(id: Long): AccountEntity?
+    suspend fun getBy(id: Long): AccountEntity?
 
     @Query("SELECT * FROM AccountEntity WHERE handle = :handle")
-    abstract suspend fun getBy(handle: String): AccountEntity?
+    suspend fun getBy(handle: String): AccountEntity?
 
     @Query("SELECT * FROM AccountEntity WHERE active = 1")
-    abstract suspend fun getActive(): AccountEntity?
+    suspend fun getActive(): AccountEntity?
 
     @Query("SELECT * FROM AccountEntity WHERE active = 1")
-    abstract fun getActiveAsFlow(): Flow<List<AccountEntity>>
+    fun getActiveAsFlow(): Flow<List<AccountEntity>>
 
     @Query("UPDATE AccountEntity SET active = 0")
-    abstract suspend fun clearActive()
+    suspend fun clearActive()
 
     @Update
-    abstract suspend fun update(item: AccountEntity)
+    suspend fun update(item: AccountEntity)
 
     @Transaction
-    open suspend fun replaceActive(new: AccountEntity) {
+    suspend fun replaceActive(new: AccountEntity) {
         clearActive()
         update(new.copy(active = true))
     }
 
     @Delete
-    abstract suspend fun delete(item: AccountEntity)
+    suspend fun delete(item: AccountEntity)
 }

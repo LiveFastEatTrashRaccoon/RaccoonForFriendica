@@ -11,13 +11,10 @@
     <ID>CyclomaticComplexMethod:CirclesScreen.kt:@Composable fun CirclesScreen</ID>
     <ID>CyclomaticComplexMethod:ManageUserCirclesScreen.kt:@Composable fun ManageUserCirclesScreen</ID>
     <ID>LongMethod:CircleAddUserDialog.kt:@OptIn(FlowPreview::class, ExperimentalMaterial3Api::class) @Composable internal fun CircleAddUserDialog</ID>
-    <ID>LongMethod:CircleEditorDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun CircleEditorDialog</ID>
-    <ID>LongMethod:CircleItem.kt:@Composable internal fun CircleItem</ID>
     <ID>LongMethod:CircleMembersScreen.kt:@Composable fun CircleMembersScreen</ID>
     <ID>LongMethod:CircleTimelineScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CircleTimelineScreen</ID>
     <ID>LongMethod:CirclesScreen.kt:@Composable fun CirclesScreen</ID>
     <ID>LongMethod:ManageUserCirclesScreen.kt:@Composable fun ManageUserCirclesScreen</ID>
-    <ID>LongParameterList:CircleAddUserDialog.kt:@OptIn(FlowPreview::class, ExperimentalMaterial3Api::class) @Composable internal fun CircleAddUserDialog</ID>
     <ID>LongParameterList:CircleTimelineViewModel.kt:CircleTimelineViewModel</ID>
     <ID>MagicNumber:CircleMembersScreen.kt:20</ID>
     <ID>MagicNumber:CirclesScreen.kt:20</ID>

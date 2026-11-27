@@ -4,12 +4,9 @@
   <CurrentIssues>
     <ID>ComplexCondition:InboxScreen.kt:!uiState.initial &amp;&amp; !uiState.loading &amp;&amp; !uiState.refreshing &amp;&amp; uiState.notifications.isEmpty()</ID>
     <ID>CyclomaticComplexMethod:InboxScreen.kt:@Composable fun InboxScreen</ID>
-    <ID>LongMethod:ConfigureNotificationTypeDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun ConfigureNotificationTypeDialog</ID>
     <ID>LongMethod:InboxScreen.kt:@Composable fun InboxScreen</ID>
     <ID>LongMethod:NotificationItem.kt:@Composable internal fun NotificationItem</ID>
     <ID>LongMethod:NotificationUserInfo.kt:@Composable fun NotificationUserInfo</ID>
-    <ID>LongParameterList:InboxViewModel.kt:InboxViewModel</ID>
-    <ID>LongParameterList:NotificationItem.kt:@Composable internal fun NotificationItem</ID>
     <ID>MagicNumber:NotificationUserInfo.kt:16</ID>
     <ID>MagicNumber:NotificationUserInfo.kt:5f</ID>
     <ID>TooGenericExceptionCaught:InboxScreen.kt:e: Exception</ID>

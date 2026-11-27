@@ -3,7 +3,6 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>LongParameterList:MainRouter.kt:MainRouter$fun openComposer</ID>
-    <ID>TooManyFunctions:DefaultNavigationCoordinator.kt:DefaultNavigationCoordinator : NavigationCoordinator</ID>
     <ID>TooManyFunctions:MainRouter.kt:MainRouter</ID>
     <ID>TooManyFunctions:NavigationCoordinator.kt:NavigationCoordinator</ID>
   </CurrentIssues>

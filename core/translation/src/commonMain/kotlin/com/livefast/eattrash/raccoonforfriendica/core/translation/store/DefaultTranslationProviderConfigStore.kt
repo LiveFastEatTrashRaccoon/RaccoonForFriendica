@@ -26,7 +26,7 @@ class DefaultTranslationProviderConfigStore(private val keyStore: TemporaryKeySt
             getById(id)
         }
 
-    override suspend fun observe(): Flow<List<TranslationProviderConfig>> = valuesFlow.asSharedFlow().onStart {
+    override fun observe(): Flow<List<TranslationProviderConfig>> = valuesFlow.asSharedFlow().onStart {
         emitUpdate()
     }
 

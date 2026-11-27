@@ -3,7 +3,6 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>LongMethod:DefaultPopulateThreadUseCaseTest.kt:DefaultPopulateThreadUseCaseTest$@Test fun `given further invocation on partial tree when invoke then result is as expected`</ID>
-    <ID>LongMethod:DefaultPopulateThreadUseCaseTest.kt:DefaultPopulateThreadUseCaseTest$@Test fun `given max depth less than actual depth when invoke then result is as expected`</ID>
     <ID>LongMethod:DefaultPopulateThreadUseCaseTest.kt:DefaultPopulateThreadUseCaseTest$@Test fun `given structure with reblogs when invoke then result is as expected`</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -22,9 +22,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.ContentBody
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.getFormattedDate
 import com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.isToday
@@ -139,7 +139,7 @@ fun MessageItem(
                                 modifier = Modifier.align(Alignment.End),
                                 text = dateString,
                                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.5.sp),
-                                color = textColor.copy(ancillaryTextAlpha),
+                                color = textColor.copy(ANCILLARY_TEXT_ALPHA),
                             )
                         }
                     }

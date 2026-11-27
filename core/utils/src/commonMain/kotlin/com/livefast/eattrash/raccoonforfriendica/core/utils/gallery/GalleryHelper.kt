@@ -8,6 +8,7 @@ import io.ktor.client.request.prepareGet
 import io.ktor.http.contentLength
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.readBuffer
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -30,8 +31,8 @@ interface GalleryHelper {
 /*
  * This is implemented as an extension because it is common to all platforms.
  */
-suspend fun GalleryHelper.download(url: String): ByteArray =
-    withContext(Dispatchers.IO) {
+suspend fun GalleryHelper.download(url: String, dispatcher: CoroutineDispatcher = Dispatchers.IO): ByteArray =
+    withContext(dispatcher) {
         println("Downloading $url")
         val engine = provideHttpClientEngine()
         val client = HttpClient(engine)

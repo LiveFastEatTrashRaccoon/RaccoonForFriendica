@@ -10,9 +10,7 @@
     <ID>LongMethod:ConversationItem.kt:@Composable internal fun ConversationItem</ID>
     <ID>LongMethod:ConversationListScreen.kt:@Composable fun ConversationListScreen</ID>
     <ID>LongMethod:ConversationScreen.kt:@Composable fun ConversationScreen</ID>
-    <ID>LongMethod:ConversationViewModel.kt:ConversationViewModel$private fun handleSubmit</ID>
     <ID>LongMethod:MessageItem.kt:@Composable fun MessageItem</ID>
-    <ID>LongMethod:MessageItemPlaceholder.kt:@Composable fun MessageItemPlaceholder</ID>
     <ID>LongParameterList:ConversationViewModel.kt:ConversationViewModel</ID>
     <ID>MagicNumber:ConversationScreen.kt:10</ID>
     <ID>ReturnCount:ConversationScreen.kt:private fun isTimeBetweenMessagesAboveThreshold: Boolean</ID>

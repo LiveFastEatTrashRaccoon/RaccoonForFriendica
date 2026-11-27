@@ -10,12 +10,9 @@
     <ID>CyclomaticComplexMethod:ProfileScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ProfileScreen</ID>
     <ID>InjectDispatcher:EditProfileViewModel.kt:EditProfileViewModel$IO</ID>
     <ID>LongMethod:EditProfileScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun EditProfileScreen</ID>
-    <ID>LongMethod:LoginIntroScreen.kt:@Composable private fun PlatformLink</ID>
     <ID>LongMethod:LoginIntroScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun LoginIntroScreen</ID>
     <ID>LongMethod:MyAccountScreen.kt:@Composable fun MyAccountScreen</ID>
     <ID>LongMethod:ProfileScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ProfileScreen</ID>
-    <ID>LongParameterList:LoginIntroScreen.kt:@Composable private fun PlatformLink</ID>
-    <ID>LongParameterList:MyAccountViewModel.kt:MyAccountViewModel</ID>
     <ID>MagicNumber:EditProfileScreen.kt:3.5f</ID>
     <ID>MagicNumber:MyAccountScreen.kt:16</ID>
     <ID>MagicNumber:MyAccountScreen.kt:9f</ID>

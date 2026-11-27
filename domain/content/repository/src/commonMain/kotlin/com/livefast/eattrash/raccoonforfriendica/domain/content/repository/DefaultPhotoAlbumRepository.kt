@@ -65,8 +65,4 @@ class DefaultPhotoAlbumRepository(private val provider: ServiceProvider) : Photo
             if (e is CancellationException) throw e
             null
         }
-
-    companion object {
-        private const val DEFAULT_PAGE_SIZE = 20
-    }
 }

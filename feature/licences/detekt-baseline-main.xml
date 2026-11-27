@@ -2,7 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>LongMethod:LicencesScreen.kt:@Composable fun LicencesScreen</ID>
     <ID>LongMethod:LicencesViewModel.kt:LicencesViewModel$private suspend fun populate</ID>
   </CurrentIssues>
 </SmellBaseline>

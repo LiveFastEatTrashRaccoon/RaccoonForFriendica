@@ -3,12 +3,12 @@ package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.commo
 import android.content.Context
 import com.livefast.eattrash.raccoonforfriendica.core.utils.debug.LogFactory
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.repository.AccountRepository
-import com.livefast.eattrash.raccoonforfriendica.domain.pullnotifications.PullNotificationManager
 import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,9 +31,10 @@ class DefaultUnifiedPushInteractor(
     private val pushNotificationManager: PushNotificationManager,
     private val accountRepository: AccountRepository,
     logFactory: LogFactory,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UnifiedPushInteractor {
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private val log = logFactory.create("UnifiedPushInteractor")
 
     override fun onMessage(context: Context, message: PushMessage, instance: String) {

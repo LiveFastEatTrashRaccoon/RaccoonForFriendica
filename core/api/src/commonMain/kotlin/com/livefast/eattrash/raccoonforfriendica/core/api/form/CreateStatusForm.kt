@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class CreateStatusForm(
+data class CreateStatusForm(
     @SerialName("friendica") val addons: StatusAddons? = null,
     @SerialName("in_reply_to_id") val inReplyTo: String? = null,
     @SerialName("language") val lang: String? = null,

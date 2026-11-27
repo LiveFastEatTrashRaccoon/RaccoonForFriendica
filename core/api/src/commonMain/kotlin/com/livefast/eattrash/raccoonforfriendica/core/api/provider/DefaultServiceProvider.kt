@@ -116,92 +116,7 @@ class DefaultServiceProvider(
 
         lastCredentials = credentials
         val cachedClient = clientCache[key]
-
-        val currentClient =
-            if (cachedClient != null) {
-                cachedClient
-            } else {
-                val newClient =
-                    HttpClient(engine) {
-                        defaultRequest {
-                            url {
-                                protocol = URLProtocol.HTTPS
-                                host = currentNode
-                            }
-                            header(
-                                HttpHeaders.UserAgent,
-                                "$CLIENT_NAME/${appInfoRepository.appInfo.value?.versionCode ?: "1.0"}",
-                            )
-                        }
-                        if (requestTimeout > 0 && connectTimeout > 0) {
-                            install(HttpTimeout) {
-                                requestTimeoutMillis = requestTimeout
-                                connectTimeoutMillis = connectTimeout
-                                socketTimeoutMillis = connectTimeout
-                            }
-                        }
-                        install(HttpRequestRetry) {
-                            retryOnServerErrors(maxRetries = 3)
-                            exponentialDelay()
-                        }
-                        install(Auth) {
-                            when (credentials) {
-                                is ServiceCredentials.Basic -> {
-                                    basic {
-                                        credentials {
-                                            BasicAuthCredentials(
-                                                username = credentials.user,
-                                                password = credentials.pass,
-                                            )
-                                        }
-                                        realm = REAM_NAME
-                                        sendWithoutRequest { true }
-                                    }
-                                }
-
-                                is ServiceCredentials.OAuth2 -> {
-                                    bearer {
-                                        loadTokens {
-                                            BearerTokens(
-                                                accessToken = credentials.accessToken,
-                                                refreshToken = credentials.refreshToken,
-                                            )
-                                        }
-                                        sendWithoutRequest { true }
-                                    }
-                                }
-
-                                else -> Unit
-                            }
-                        }
-                        if (appInfoRepository.appInfo.value?.isDebug == true) {
-                            install(Logging) {
-                                logger = defaultLogger
-                                level = LogLevel.ALL
-                            }
-                        }
-                        install(ContentNegotiation) {
-                            json(
-                                Json {
-                                    isLenient = true
-                                    ignoreUnknownKeys = true
-                                },
-                            )
-                        }
-
-                        HttpResponseValidator {
-                            handleResponseExceptionWithRequest { exception, _ ->
-                                if (exception is ClientRequestException &&
-                                    exception.response.status == HttpStatusCode.Unauthorized
-                                ) {
-                                    events.tryEmit(ServiceProviderEvent.Unauthorized)
-                                }
-                            }
-                        }
-                    }
-                clientCache[key] = newClient
-                newClient
-            }
+        val currentClient = cachedClient ?: createClient(credentials).also { clientCache[key] = it }
 
         announcement = factory.create(clazz = AnnouncementService::class, baseUrl = baseUrl, client = currentClient)
         app = factory.create(clazz = AppService::class, baseUrl = baseUrl, client = currentClient)
@@ -225,6 +140,88 @@ class DefaultServiceProvider(
         timeline = factory.create(clazz = TimelineService::class, baseUrl = baseUrl, client = currentClient)
         trend = factory.create(clazz = TrendsService::class, baseUrl = baseUrl, client = currentClient)
         user = factory.create(clazz = UserService::class, baseUrl = baseUrl, client = currentClient)
+    }
+
+    private fun createClient(credentials: ServiceCredentials?): HttpClient {
+        val newClient =
+            HttpClient(engine) {
+                defaultRequest {
+                    url {
+                        protocol = URLProtocol.HTTPS
+                        host = currentNode
+                    }
+                    header(
+                        key = HttpHeaders.UserAgent,
+                        value = "$CLIENT_NAME/${appInfoRepository.appInfo.value?.versionCode ?: "1.0"}",
+                    )
+                }
+                if (requestTimeout > 0 && connectTimeout > 0) {
+                    install(HttpTimeout) {
+                        requestTimeoutMillis = requestTimeout
+                        connectTimeoutMillis = connectTimeout
+                        socketTimeoutMillis = connectTimeout
+                    }
+                }
+                install(HttpRequestRetry) {
+                    retryOnServerErrors(maxRetries = 3)
+                    exponentialDelay()
+                }
+                install(Auth) {
+                    when (credentials) {
+                        is ServiceCredentials.Basic -> {
+                            basic {
+                                credentials {
+                                    BasicAuthCredentials(
+                                        username = credentials.user,
+                                        password = credentials.pass,
+                                    )
+                                }
+                                realm = REAM_NAME
+                                sendWithoutRequest { true }
+                            }
+                        }
+
+                        is ServiceCredentials.OAuth2 -> {
+                            bearer {
+                                loadTokens {
+                                    BearerTokens(
+                                        accessToken = credentials.accessToken,
+                                        refreshToken = credentials.refreshToken,
+                                    )
+                                }
+                                sendWithoutRequest { true }
+                            }
+                        }
+
+                        else -> Unit
+                    }
+                }
+                if (appInfoRepository.appInfo.value?.isDebug == true) {
+                    install(Logging) {
+                        logger = defaultLogger
+                        level = LogLevel.ALL
+                    }
+                }
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                        },
+                    )
+                }
+
+                HttpResponseValidator {
+                    handleResponseExceptionWithRequest { exception, _ ->
+                        if (exception is ClientRequestException &&
+                            exception.response.status == HttpStatusCode.Unauthorized
+                        ) {
+                            events.tryEmit(ServiceProviderEvent.Unauthorized)
+                        }
+                    }
+                }
+            }
+        return newClient
     }
 
     companion object {

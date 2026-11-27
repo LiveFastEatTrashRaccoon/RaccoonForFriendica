@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DefaultColorSchemeProvider.kt:DefaultColorSchemeProvider$@SuppressLint("NewApi") override fun getColorScheme: ColorScheme</ID>
+    <ID>LongMethod:Fonts.kt:@Composable fun UiFontFamily.toTypography: Typography</ID>
+  </CurrentIssues>
+</SmellBaseline>

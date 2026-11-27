@@ -15,15 +15,20 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val DEFAULT_BASE_PATH = "RaccoonForFriendica"
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
-class DefaultGalleryHelper(private val context: Context) : GalleryHelper {
+class DefaultGalleryHelper(
+    private val context: Context,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : GalleryHelper {
     override val supportsCustomPath: Boolean = true
 
     override fun saveToGallery(bytes: ByteArray, name: String, additionalPathSegment: String?): Any? {
@@ -68,12 +73,10 @@ class DefaultGalleryHelper(private val context: Context) : GalleryHelper {
         val pickMedia =
             rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
-                    scope.launch(Dispatchers.IO) {
+                    scope.launch(dispatcher) {
                         resolver.openInputStream(uri)?.use { stream ->
                             val bytes = stream.readBytes()
-                            launch(Dispatchers.Main) {
-                                result(bytes)
-                            }
+                            result(bytes)
                         }
                     }
                 } else {

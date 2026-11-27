@@ -17,17 +17,11 @@
     <ID>LongMethod:ComposerScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ComposerScreen</ID>
     <ID>LongMethod:ComposerViewModel.kt:ComposerViewModel$private fun handleSubmit</ID>
     <ID>LongMethod:CreatePostHeader.kt:@Composable internal fun CreatePostHeader</ID>
-    <ID>LongMethod:DateTimeSelectionFlow.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable internal fun DateTimeSelectionFlow</ID>
     <ID>LongMethod:GalleryPickerDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun GalleryPickerDialog</ID>
     <ID>LongMethod:InsertLinkDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun InsertLinkDialog</ID>
     <ID>LongMethod:PollForm.kt:@Composable internal fun PollForm</ID>
     <ID>LongMethod:UtilsBar.kt:@Composable internal fun UtilsBar</ID>
-    <ID>LongParameterList:ComposerScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ComposerScreen</ID>
     <ID>LongParameterList:ComposerViewModel.kt:ComposerViewModel</ID>
-    <ID>LongParameterList:CreatePostHeader.kt:@Composable internal fun CreatePostHeader</ID>
-    <ID>LongParameterList:GalleryPickerDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun GalleryPickerDialog</ID>
-    <ID>LongParameterList:PollForm.kt:@Composable internal fun PollForm</ID>
-    <ID>LongParameterList:UtilsBar.kt:@Composable internal fun UtilsBar</ID>
     <ID>MagicNumber:AttachmentsGrid.kt:0.5f</ID>
     <ID>MatchingDeclarationName:InsertLinkDialog.kt:LinkInfo</ID>
     <ID>ReturnCount:ComposerViewModel.kt:ComposerViewModel$private suspend fun validate: Boolean</ID>

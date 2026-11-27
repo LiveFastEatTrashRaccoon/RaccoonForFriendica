@@ -12,6 +12,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.PI
 import kotlin.math.cos
@@ -33,6 +34,7 @@ private const val MAX_CACHE_SIZE = 10
 class DefaultBlurHashDecoder(
     private val cacheCosinesX: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),
     private val cacheCosinesY: LruCache<Int, DoubleArray> = LruCache.factory(MAX_CACHE_SIZE),
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BlurHashDecoder {
     override suspend fun clearCache() {
         cacheCosinesX.clear()
@@ -45,7 +47,7 @@ class DefaultBlurHashDecoder(
         height: Int,
         punch: Float,
         useCache: Boolean,
-    ): ImageBitmap? = withContext(Dispatchers.IO) {
+    ): ImageBitmap? = withContext(dispatcher) {
         if (blurHash == null || blurHash.length < 6) return@withContext null
         val numCompEnc = decode83(blurHash, 0, 1)
         val numCompX = (numCompEnc % 9) + 1

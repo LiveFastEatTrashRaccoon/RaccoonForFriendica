@@ -7,6 +7,5 @@
     <ID>TooGenericExceptionCaught:DefaultCredentialsRepository.kt:DefaultCredentialsRepository$e: Exception</ID>
     <ID>TooGenericExceptionCaught:DefaultIdentityRepository.kt:DefaultIdentityRepository$e2: Exception</ID>
     <ID>TooGenericExceptionCaught:DefaultIdentityRepository.kt:DefaultIdentityRepository$e: Exception</ID>
-    <ID>UnusedPrivateProperty:DefaultApiConfigurationRepository.kt:DefaultApiConfigurationRepository$private val credentialsRepository: CredentialsRepository</ID>
   </CurrentIssues>
 </SmellBaseline>

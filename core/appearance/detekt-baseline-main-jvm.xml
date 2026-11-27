@@ -2,6 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>LongParameterList:DefaultUiDeps.kt:DefaultUiDeps</ID>
+    <ID>LongMethod:Fonts.kt:@Composable fun UiFontFamily.toTypography: Typography</ID>
   </CurrentIssues>
 </SmellBaseline>

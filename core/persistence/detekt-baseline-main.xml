@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<SmellBaseline>
-  <ManuallySuppressedIssues/>
-  <CurrentIssues>
-    <ID>AbstractClassCanBeInterface:AccountDao.kt:AccountDao$AccountDao</ID>
-    <ID>InjectDispatcher:DefaultDatabaseProvider.kt:DefaultDatabaseProvider$IO</ID>
-    <ID>OptionalAbstractKeyword:FeedTypeDao.kt:FeedTypeDao$abstract</ID>
-  </CurrentIssues>
-</SmellBaseline>

@@ -9,13 +9,14 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineDispatcher
 import java.awt.FileDialog
 import java.io.File
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
-class DefaultGalleryHelper : GalleryHelper {
+class DefaultGalleryHelper(private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : GalleryHelper {
     override val supportsCustomPath = false
 
     override fun saveToGallery(
@@ -47,10 +48,10 @@ class DefaultGalleryHelper : GalleryHelper {
     @Composable
     override fun getImageFromGallery(result: (ByteArray) -> Unit) {
         LaunchedEffect(Unit) {
-            val file = withContext(Dispatchers.IO) {
+            val file = withContext(dispatcher) {
                 FileDialogHelper.chooseFile(mode = FileDialog.LOAD, mimeTypes = arrayOf("image/*"))
             }
-            val bytes = withContext(Dispatchers.IO) {
+            val bytes = withContext(dispatcher) {
                 file?.readBytes()
             }
             if (bytes != null) {

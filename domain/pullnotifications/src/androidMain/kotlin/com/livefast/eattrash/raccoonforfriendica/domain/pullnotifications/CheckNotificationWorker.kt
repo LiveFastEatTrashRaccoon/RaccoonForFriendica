@@ -23,6 +23,8 @@ internal class CheckNotificationWorker(private val context: Context, parameters:
     private val inboxManager: InboxManager by lazy { component.inboxManager }
     private val strings: Strings by lazy { component.strings }
 
+    private val logger by lazy { component.logFactory.create("CheckNotificationWorker") }
+
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -63,7 +65,7 @@ internal class CheckNotificationWorker(private val context: Context, parameters:
                 notification,
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.e(e) { "Error while sending notification" }
         }
     }
 

@@ -3,8 +3,6 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>LongMethod:NodeInfoScreenContent.kt:@Composable @VisibleForTesting internal fun NodeInfoScreenContent</ID>
-    <ID>LongMethod:NodeInfoScreenContent.kt:@Composable private fun ContactUserItem</ID>
-    <ID>LongParameterList:NodeInfoViewModel.kt:NodeInfoViewModel</ID>
     <ID>MagicNumber:NodeInfoScreenContent.kt:5</ID>
     <ID>TooGenericExceptionCaught:NodeInfoScreenContent.kt:e: Exception</ID>
   </CurrentIssues>

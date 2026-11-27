@@ -24,20 +24,12 @@ class DefaultApiConfigurationRepositoryTest {
 
     private val serviceProvider = mock<ServiceProvider>(MockMode.autoUnit)
 
-    private val credentialsRepository =
-        mock<CredentialsRepository> {
-            everySuspend {
-                validateApplicationCredentials(node = any(), credentials = any())
-            } returns true
-        }
-
     private val authManager = mock<AuthManager>()
 
     private val sut =
         DefaultApiConfigurationRepository(
             provider = serviceProvider,
             keyStore = keyStore,
-            credentialsRepository = credentialsRepository,
             authManager = authManager,
         )
 

@@ -4,6 +4,7 @@ import androidx.compose.ui.platform.Clipboard
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.awt.Toolkit
@@ -21,7 +22,7 @@ class DefaultClipboardHelperFactory(
 }
 
 @ContributesBinding(AppScope::class)
-class DefaultClipboardHelper : ClipboardHelper {
+class DefaultClipboardHelper(private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : ClipboardHelper {
     override suspend fun setText(text: String) {
         val selection = StringSelection(text)
         val systemClipboard = Toolkit.getDefaultToolkit().systemClipboard
@@ -33,7 +34,7 @@ class DefaultClipboardHelper : ClipboardHelper {
         val contents = systemClipboard.getContents(null)
 
         if (contents != null && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 contents.getTransferData(DataFlavor.stringFlavor)
             } as String
         } else {

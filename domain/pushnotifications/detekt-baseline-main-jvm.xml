@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<SmellBaseline>
-  <ManuallySuppressedIssues/>
-  <CurrentIssues>
-    <ID>InvalidPackageDeclaration:DefaultPushNotificationManager.kt:package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager</ID>
-  </CurrentIssues>
-</SmellBaseline>

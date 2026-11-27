@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
@@ -32,7 +32,7 @@ fun UserFields(
     autoloadImages: Boolean = true,
     onOpenUrl: ((String, Boolean) -> Unit)? = null,
 ) {
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA)
 
     Column(
         modifier = modifier.padding(horizontal = Spacing.s),
@@ -59,7 +59,7 @@ fun UserFields(
                     val annotatedContent =
                         field.value.parseHtml(
                             linkColor = MaterialTheme.colorScheme.primary,
-                            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                            quoteColor = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA),
                         )
                     TextWithCustomEmojis(
                         style = MaterialTheme.typography.bodyMedium,

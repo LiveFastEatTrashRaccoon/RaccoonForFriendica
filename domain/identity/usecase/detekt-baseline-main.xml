@@ -3,8 +3,5 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:DefaultActiveAccountMonitor.kt:DefaultActiveAccountMonitor$private suspend fun process</ID>
-    <ID>InjectDispatcher:DefaultExportSettingsUseCase.kt:DefaultExportSettingsUseCase$IO</ID>
-    <ID>InjectDispatcher:DefaultImportSettingsUseCase.kt:DefaultImportSettingsUseCase$IO</ID>
-    <ID>LongParameterList:DefaultActiveAccountMonitor.kt:DefaultActiveAccountMonitor</ID>
   </CurrentIssues>
 </SmellBaseline>

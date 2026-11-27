@@ -21,7 +21,7 @@ interface FeedTypeDao {
     suspend fun getAll(accountId: Long): List<FeedTypeEntity>
 
     @Query("SELECT * FROM FeedTypeEntity WHERE accountId = :accountId ORDER BY `index`")
-    abstract fun getAllAsFlow(accountId: Long): Flow<List<FeedTypeEntity>>
+    fun getAllAsFlow(accountId: Long): Flow<List<FeedTypeEntity>>
 
     @Query("SELECT * FROM FeedTypeEntity WHERE accountId = :accountId AND type = :type")
     suspend fun getBy(accountId: Long, type: Int): FeedTypeEntity?

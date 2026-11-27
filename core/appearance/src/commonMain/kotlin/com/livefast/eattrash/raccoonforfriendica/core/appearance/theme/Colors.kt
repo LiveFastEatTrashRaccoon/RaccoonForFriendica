@@ -2,8 +2,7 @@ package com.livefast.eattrash.raccoonforfriendica.core.appearance.theme
 
 import androidx.compose.ui.graphics.Color
 
-const val readContentAlpha = 0.75f
-const val ancillaryTextAlpha = 0.75f
+const val ANCILLARY_TEXT_ALPHA = 0.75f
 
 val md_theme_light_primary = Color(0xFF6345CB)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)

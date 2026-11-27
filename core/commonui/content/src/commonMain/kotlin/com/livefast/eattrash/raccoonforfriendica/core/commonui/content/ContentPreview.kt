@@ -28,9 +28,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.VideoPlayerPreview
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
@@ -50,7 +50,7 @@ fun ContentPreview(
     onOpenImage: ((String) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA)
     val type = card.type
     val image = card.image.orEmpty()
     val url = card.url
@@ -165,7 +165,7 @@ fun ContentPreview(
                                 linkColor = MaterialTheme.colorScheme.primary,
                                 quoteColor =
                                 MaterialTheme.colorScheme.onBackground.copy(
-                                    ancillaryTextAlpha,
+                                    ANCILLARY_TEXT_ALPHA,
                                 ),
                             )
                         Text(
@@ -180,7 +180,7 @@ fun ContentPreview(
                                 linkColor = MaterialTheme.colorScheme.primary,
                                 quoteColor =
                                 MaterialTheme.colorScheme.onBackground.copy(
-                                    ancillaryTextAlpha,
+                                    ANCILLARY_TEXT_ALPHA,
                                 ),
                             )
                         Text(
