@@ -13,10 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.feature.acknowledgements.models.AcknowledgementModel
@@ -29,7 +29,7 @@ internal fun AcknowledgementItem(
 ) {
     val title = item.title.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ANCILLARY_TEXT_ALPHA)
     val iconSize = IconSize.xl
 
     Row(

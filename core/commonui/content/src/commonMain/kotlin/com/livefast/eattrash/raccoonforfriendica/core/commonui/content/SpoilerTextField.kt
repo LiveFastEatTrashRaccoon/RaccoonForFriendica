@@ -28,8 +28,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 
 @Composable
 fun SpoilerTextField(
@@ -81,7 +81,7 @@ fun SpoilerTextField(
                             text = hint,
                             color =
                             MaterialTheme.colorScheme.onBackground.copy(
-                                ancillaryTextAlpha,
+                                ANCILLARY_TEXT_ALPHA,
                             ),
                             style = hintTextStyle,
                         )

@@ -14,9 +14,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
@@ -24,7 +24,7 @@ import com.livefast.eattrash.raccoonforfriendica.core.resources.LocalResources
 @Composable
 internal fun QuotedInfo(username: String, modifier: Modifier = Modifier) {
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA)
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,

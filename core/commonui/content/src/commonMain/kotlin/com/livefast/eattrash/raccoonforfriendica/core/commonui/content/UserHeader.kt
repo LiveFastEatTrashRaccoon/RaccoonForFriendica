@@ -28,9 +28,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
@@ -61,7 +61,7 @@ fun UserHeader(
     val avatar = user?.avatar.orEmpty()
     val avatarSize = 110.dp
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA)
     val relationshipStatus = user?.relationshipStatus
     val notificationStatus = user?.notificationStatus
     val isDesktop = isWidthSizeClassEqualOrAbove(WindowWidthSizeClass.Expanded)

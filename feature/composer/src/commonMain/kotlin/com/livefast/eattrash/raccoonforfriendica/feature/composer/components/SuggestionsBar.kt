@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.utils.compose.getAnimatedDots
 
 @Composable
@@ -25,7 +25,7 @@ internal fun SuggestionsBar(
     onSelect: ((Int) -> Unit)? = null,
 ) {
     val fullColor = MaterialTheme.colorScheme.onSurfaceVariant
-    val ancillaryColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(ANCILLARY_TEXT_ALPHA)
     Row(
         modifier =
         modifier

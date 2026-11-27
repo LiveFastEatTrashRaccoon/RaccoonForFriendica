@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.update
 class DefaultApiConfigurationRepository(
     private val provider: ServiceProvider,
     private val keyStore: TemporaryKeyStore,
-    private val credentialsRepository: CredentialsRepository,
     private val authManager: AuthManager,
 ) : ApiConfigurationRepository {
     override val node = MutableStateFlow("")

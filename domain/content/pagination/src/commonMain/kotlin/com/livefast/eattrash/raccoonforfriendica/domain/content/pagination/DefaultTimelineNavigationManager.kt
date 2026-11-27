@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class DefaultTimelineNavigationManager(private val paginationManager: TimelinePaginationManager) :
     TimelineNavigationManager {
     override val canNavigate = MutableStateFlow(false)
-    private var states: MutableList<TimelinePaginationManagerState> = mutableListOf()
+    private val states: MutableList<TimelinePaginationManagerState> = mutableListOf()
 
     override val currentList: List<PostModel>
         get() = paginationManager.history

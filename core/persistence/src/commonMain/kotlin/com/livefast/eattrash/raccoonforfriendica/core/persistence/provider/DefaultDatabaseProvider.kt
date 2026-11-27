@@ -7,19 +7,23 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
-class DefaultDatabaseProvider(private val builderProvider: DatabaseBuilderProvider) : DatabaseProvider {
+class DefaultDatabaseProvider(
+    private val builderProvider: DatabaseBuilderProvider,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : DatabaseProvider {
     private val database: AppDatabase by lazy {
         builderProvider
             .provideDatabaseBuilder()
             .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
             .setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
+            .setQueryCoroutineContext(dispatcher)
             .build()
     }
 

@@ -16,9 +16,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.htmlparse.parseHtml
@@ -88,7 +88,7 @@ fun ContentBody(
                                 hideInlineQuotes = hideInlineQuotes,
                                 quoteColor =
                                 MaterialTheme.colorScheme.onBackground.copy(
-                                    ancillaryTextAlpha,
+                                    ANCILLARY_TEXT_ALPHA,
                                 ),
                             )
                         TextWithCustomEmojis(

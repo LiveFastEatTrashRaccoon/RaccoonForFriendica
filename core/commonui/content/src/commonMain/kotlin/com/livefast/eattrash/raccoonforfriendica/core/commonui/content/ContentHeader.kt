@@ -23,9 +23,9 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
@@ -49,7 +49,7 @@ fun ContentHeader(
     val creatorName = user?.let { it.displayName ?: it.handle }.orEmpty()
     val creatorAvatar = user?.avatar.orEmpty()
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA)
     val onOpenUserModifier =
         if (onOpenUser != null) {
             Modifier

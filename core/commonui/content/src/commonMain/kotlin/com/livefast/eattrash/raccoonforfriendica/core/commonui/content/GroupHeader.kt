@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,16 +22,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.PlaceholderImage
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.di.PreviewWrapper
 import com.livefast.eattrash.raccoonforfriendica.core.di.utils.LocalUiDeps
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
-import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatus
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.RelationshipStatusNextAction
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.UserModel
@@ -50,7 +48,7 @@ fun GroupHeader(
     val avatar = user?.avatar.orEmpty()
     val avatarSize = 50.dp
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA)
     val relationshipStatus = user?.relationshipStatus
     val sharedTransitionScope = LocalUiDeps.current.navigationCoordinator.getSharedTransitionScope()
     val animatedVisibilityScope = LocalNavAnimatedContentScope.current

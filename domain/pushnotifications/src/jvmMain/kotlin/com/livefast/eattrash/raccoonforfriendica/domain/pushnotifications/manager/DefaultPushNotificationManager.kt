@@ -1,6 +1,8 @@
 package com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager
 
 import com.livefast.eattrash.raccoonforfriendica.domain.identity.data.AccountModel
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManager
+import com.livefast.eattrash.raccoonforfriendica.domain.pushnotifications.manager.PushNotificationManagerState
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject

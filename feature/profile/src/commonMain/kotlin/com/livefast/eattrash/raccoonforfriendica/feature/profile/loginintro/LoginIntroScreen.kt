@@ -46,10 +46,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.DpOffset
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomDropDown
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.Option
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.content.OptionId
@@ -312,7 +312,7 @@ private fun PlatformLink(
                     Icon(
                         imageVector = resources.moreVert,
                         contentDescription = LocalStrings.current.itemOther,
-                        tint = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                        tint = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA),
                     )
                 }
                 if (optionsMenuOpen) {

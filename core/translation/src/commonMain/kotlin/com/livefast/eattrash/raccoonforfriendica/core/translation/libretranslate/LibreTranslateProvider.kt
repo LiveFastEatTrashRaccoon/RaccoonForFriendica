@@ -24,8 +24,8 @@ class LibreTranslateProvider(
     private val baseUrl: String,
     private val apiKey: String? = null,
     factory: HttpClientEngine = provideHttpClientEngine(),
-    private val requestTimeout: Long = 600_000,
-    private val connectTimeout: Long = 30_000,
+    requestTimeout: Long = 600_000,
+    connectTimeout: Long = 30_000,
 ) : TranslationProvider {
 
     private val client = HttpClient(factory) {

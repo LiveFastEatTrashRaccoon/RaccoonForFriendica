@@ -35,6 +35,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val LOADING_ANIMATION_DURATION = 1000
+private const val MAX_ZOOM = 16f
 
 @Composable
 fun ZoomableImage(url: String, modifier: Modifier = Modifier, contentScale: ContentScale = ContentScale.Fit) {
@@ -91,7 +92,7 @@ fun ZoomableImage(url: String, modifier: Modifier = Modifier, contentScale: Cont
                                         val maxX = extraWidth / 2
                                         val maxY = extraHeight / 2
 
-                                        scale = (scale * zoomChange).coerceIn(1f, 16f)
+                                        scale = (scale * zoomChange).coerceIn(1f, MAX_ZOOM)
 
                                         offset =
                                             if (scale > 1) {

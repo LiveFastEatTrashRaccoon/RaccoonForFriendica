@@ -14,9 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 
 @Composable
 fun SettingsSwitchRow(
@@ -47,7 +47,7 @@ fun SettingsSwitchRow(
         ) {
             val fullColor = MaterialTheme.colorScheme.onBackground
             val ancillaryColor =
-                MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
+                MaterialTheme.colorScheme.onBackground.copy(alpha = ANCILLARY_TEXT_ALPHA)
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium,

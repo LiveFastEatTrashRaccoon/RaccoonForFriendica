@@ -11,7 +11,7 @@ import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.commonui.components.CustomProgressIndicator
 import com.livefast.eattrash.raccoonforfriendica.core.l10n.LocalStrings
 import com.livefast.eattrash.raccoonforfriendica.domain.content.data.NotificationStatus
@@ -52,10 +52,10 @@ fun UserNotificationButton(
                     .size(37.dp)
                     .border(
                         width = 1.dp,
-                        color = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                        color = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA),
                         shape = CircleShape,
                     ).padding(6.dp),
-                color = MaterialTheme.colorScheme.onBackground.copy(ancillaryTextAlpha),
+                color = MaterialTheme.colorScheme.onBackground.copy(ANCILLARY_TEXT_ALPHA),
             )
         }
     }

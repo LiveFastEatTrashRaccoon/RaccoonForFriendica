@@ -14,10 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ANCILLARY_TEXT_ALPHA
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.CornerSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.IconSize
 import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.Spacing
-import com.livefast.eattrash.raccoonforfriendica.core.appearance.theme.ancillaryTextAlpha
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItem
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.LicenceItemType
 import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.toIcon
@@ -25,7 +25,7 @@ import com.livefast.eattrash.raccoonforfriendica.feature.licences.models.toIcon
 @Composable
 internal fun LicenceItem(item: LicenceItem, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
     val fullColor = MaterialTheme.colorScheme.onBackground
-    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ancillaryTextAlpha)
+    val ancillaryColor = MaterialTheme.colorScheme.onBackground.copy(alpha = ANCILLARY_TEXT_ALPHA)
 
     Row(
         modifier =
