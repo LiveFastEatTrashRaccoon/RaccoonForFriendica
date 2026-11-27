@@ -2,8 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>InjectDispatcher:UnifiedPushInteractor.kt:DefaultUnifiedPushInteractor$IO</ID>
-    <ID>LongParameterList:DefaultPushNotificationManager.kt:DefaultPushNotificationManager</ID>
     <ID>ReturnCount:DefaultPushNotificationManager.kt:DefaultPushNotificationManager$override suspend fun handleMessage</ID>
     <ID>ReturnCount:DefaultPushNotificationManager.kt:DefaultPushNotificationManager$override suspend fun refreshState</ID>
     <ID>ReturnCount:DefaultPushNotificationManager.kt:DefaultPushNotificationManager$override suspend fun startup</ID>

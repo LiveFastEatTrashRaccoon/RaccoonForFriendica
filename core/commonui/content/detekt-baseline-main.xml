@@ -17,69 +17,20 @@
     <ID>LongMethod:AboutDialog.kt:@Composable private fun AboutDialogContent</ID>
     <ID>LongMethod:AlbumImageItem.kt:@Composable fun AlbumImageItem</ID>
     <ID>LongMethod:CardTimelineItem.kt:@Composable internal fun CardTimelineItem</ID>
-    <ID>LongMethod:ChangeInstanceDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ChangeInstanceDialog</ID>
     <ID>LongMethod:CompactTimelineItem.kt:@Composable internal fun CompactTimelineItem</ID>
-    <ID>LongMethod:ConfirmMuteUserBottomSheet.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ConfirmMuteUserBottomSheet</ID>
-    <ID>LongMethod:ContentBody.kt:@Composable fun ContentBody</ID>
-    <ID>LongMethod:ContentExtendedSocialInfo.kt:@Composable fun ContentExtendedSocialInfo</ID>
     <ID>LongMethod:ContentFooter.kt:@Composable fun ContentFooter</ID>
     <ID>LongMethod:ContentHeader.kt:@Composable fun ContentHeader</ID>
     <ID>LongMethod:ContentImage.kt:@Composable fun ContentImage</ID>
     <ID>LongMethod:ContentPreview.kt:@Composable fun ContentPreview</ID>
-    <ID>LongMethod:ContentVisualAttachments.kt:@Composable fun ContentVisualAttachments</ID>
     <ID>LongMethod:DistractionFreeTimelineItem.kt:@Composable internal fun DistractionFreeTimelineItem</ID>
-    <ID>LongMethod:EditAttachmentDescriptionDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun EditAttachmentDescriptionDialog</ID>
-    <ID>LongMethod:EditFieldItem.kt:@Composable fun EditFieldItem</ID>
     <ID>LongMethod:FullTimelineItem.kt:@Composable internal fun FullTimelineItem</ID>
-    <ID>LongMethod:GenericListItem.kt:@Composable fun GenericListItem</ID>
-    <ID>LongMethod:GroupHeader.kt:@Composable fun GroupHeader</ID>
-    <ID>LongMethod:InReplyToInfo.kt:@Composable internal fun InReplyToInfo</ID>
-    <ID>LongMethod:InsertEmojiBottomSheet.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun InsertEmojiBottomSheet</ID>
     <ID>LongMethod:LinkItem.kt:@Composable fun LinkItem</ID>
-    <ID>LongMethod:PollCard.kt:@Composable fun PollCard</ID>
-    <ID>LongMethod:PollCard.kt:@Composable private fun PollCardOption</ID>
     <ID>LongMethod:PostDetailDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PostDetailDialog</ID>
-    <ID>LongMethod:ReblogInfo.kt:@Composable internal fun ReblogInfo</ID>
-    <ID>LongMethod:SelectDurationDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SelectDurationDialog</ID>
-    <ID>LongMethod:SelectUserDialog.kt:@Composable private fun UserResultItem</ID>
     <ID>LongMethod:SelectUserDialog.kt:@OptIn(ExperimentalMaterial3Api::class, FlowPreview::class) @Composable fun SelectUserDialog</ID>
-    <ID>LongMethod:SettingsRow.kt:@Composable fun SettingsRow</ID>
-    <ID>LongMethod:SpoilerCard.kt:@Composable fun SpoilerCard</ID>
-    <ID>LongMethod:TextWithCustomEmojis.kt:@Composable fun TextWithCustomEmojis</ID>
     <ID>LongMethod:TimelineItem.kt:@Composable fun TimelineItem</ID>
     <ID>LongMethod:TimelineReplyItem.kt:@Composable fun TimelineReplyItem</ID>
     <ID>LongMethod:UserHeader.kt:@Composable fun UserHeader</ID>
     <ID>LongMethod:UserItem.kt:@Composable fun UserItem</ID>
-    <ID>LongParameterList:AboutDialog.kt:@Composable private fun AboutItem</ID>
-    <ID>LongParameterList:AlbumImageItem.kt:@Composable fun AlbumImageItem</ID>
-    <ID>LongParameterList:CardTimelineItem.kt:@Composable internal fun CardTimelineItem</ID>
-    <ID>LongParameterList:ChangeInstanceDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ChangeInstanceDialog</ID>
-    <ID>LongParameterList:CompactTimelineItem.kt:@Composable internal fun CompactTimelineItem</ID>
-    <ID>LongParameterList:ContentBody.kt:@Composable fun ContentBody</ID>
-    <ID>LongParameterList:ContentExtendedSocialInfo.kt:@Composable fun ContentExtendedSocialInfo</ID>
-    <ID>LongParameterList:ContentFooter.kt:@Composable fun ContentFooter</ID>
-    <ID>LongParameterList:ContentFooter.kt:@Composable private fun FooterItem</ID>
-    <ID>LongParameterList:ContentHeader.kt:@Composable fun ContentHeader</ID>
-    <ID>LongParameterList:ContentImage.kt:@Composable fun ContentImage</ID>
-    <ID>LongParameterList:ContentTitle.kt:@Composable fun ContentTitle</ID>
-    <ID>LongParameterList:ContentVisualAttachments.kt:@Composable fun ContentVisualAttachments</ID>
-    <ID>LongParameterList:ContentVisualAttachments.kt:@Composable private fun AttachmentElement</ID>
-    <ID>LongParameterList:DistractionFreeTimelineItem.kt:@Composable internal fun DistractionFreeTimelineItem</ID>
-    <ID>LongParameterList:FullTimelineItem.kt:@Composable internal fun FullTimelineItem</ID>
-    <ID>LongParameterList:GenericListItem.kt:@Composable fun GenericListItem</ID>
-    <ID>LongParameterList:GroupHeader.kt:@Composable fun GroupHeader</ID>
-    <ID>LongParameterList:InsertEmojiBottomSheet.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun InsertEmojiBottomSheet</ID>
-    <ID>LongParameterList:PollCard.kt:@Composable private fun PollCardOption</ID>
-    <ID>LongParameterList:SelectUserDialog.kt:@OptIn(ExperimentalMaterial3Api::class, FlowPreview::class) @Composable fun SelectUserDialog</ID>
-    <ID>LongParameterList:SettingsImageInfo.kt:@Composable fun SettingsImageInfo</ID>
-    <ID>LongParameterList:SettingsRow.kt:@Composable fun SettingsRow</ID>
-    <ID>LongParameterList:SpoilerTextField.kt:@Composable fun SpoilerTextField</ID>
-    <ID>LongParameterList:TextWithCustomEmojis.kt:@Composable fun TextWithCustomEmojis</ID>
-    <ID>LongParameterList:TimelineItem.kt:@Composable fun TimelineItem</ID>
-    <ID>LongParameterList:TimelineReplyItem.kt:@Composable fun TimelineReplyItem</ID>
-    <ID>LongParameterList:TwoStateButton.kt:@Composable fun TwoStateButton</ID>
-    <ID>LongParameterList:UserHeader.kt:@Composable fun UserHeader</ID>
-    <ID>LongParameterList:UserItem.kt:@Composable fun UserItem</ID>
     <ID>MagicNumber:AlbumImageItem.kt:3.5f</ID>
     <ID>MagicNumber:ContentHeader.kt:30</ID>
     <ID>MagicNumber:ContentPreview.kt:0.9f</ID>

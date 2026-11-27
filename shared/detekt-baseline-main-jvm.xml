@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongMethod:App.kt:@OptIn(FlowPreview::class, ExperimentalMaterial3AdaptiveApi::class) @Composable fun App</ID>
+    <ID>LongMethod:GetEntryProvider.kt:@OptIn(ExperimentalMaterial3AdaptiveApi::class) internal fun getEntryProvider: (NavKey) -&gt; NavEntry&lt;NavKey&gt;</ID>
+    <ID>LongMethod:MainScreen.kt:@Composable fun MainScreen</ID>
+    <ID>LongParameterList:GetEntryProvider.kt:@OptIn(ExperimentalMaterial3AdaptiveApi::class) internal fun getEntryProvider: (NavKey) -&gt; NavEntry&lt;NavKey&gt;</ID>
+    <ID>MagicNumber:EmbeddedRedirectServer.kt:EmbeddedRedirectServer$1000</ID>
+    <ID>MagicNumber:EmbeddedRedirectServer.kt:EmbeddedRedirectServer$2000</ID>
+    <ID>MaxLineLength:DefaultMainRouter.kt:DefaultMainRouter$override</ID>
+    <ID>MaxLineLength:RootViewModelFactory.kt:RootViewModelFactory$override val manualAssistedFactoryProviders: Map&lt;KClass&lt;out ManualViewModelAssistedFactory&gt;, () -&gt; ManualViewModelAssistedFactory&gt;</ID>
+  </CurrentIssues>
+</SmellBaseline>

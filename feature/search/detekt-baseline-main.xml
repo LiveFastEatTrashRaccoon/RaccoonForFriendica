@@ -6,7 +6,6 @@
     <ID>CyclomaticComplexMethod:SearchScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SearchScreen</ID>
     <ID>CyclomaticComplexMethod:SearchViewModel.kt:SearchViewModel$override fun reduce</ID>
     <ID>LongMethod:SearchScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SearchScreen</ID>
-    <ID>LongParameterList:SearchViewModel.kt:SearchViewModel</ID>
     <ID>TooGenericExceptionCaught:SearchScreen.kt:e: Exception</ID>
     <ID>TooGenericExceptionCaught:SearchViewModel.kt:SearchViewModel$e: Exception</ID>
     <ID>TooManyFunctions:SearchViewModel.kt:SearchViewModel : ViewModelMviDelegateSearchMvi</ID>

@@ -9,6 +9,5 @@
     <ID>LongMethod:DrawerContent.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DrawerContent</ID>
     <ID>LongMethod:DrawerHeader.kt:@Composable internal fun DrawerHeader</ID>
     <ID>LongMethod:PermanentDrawerContent.kt:@Composable fun PermanentDrawerContent</ID>
-    <ID>LongParameterList:DrawerHeader.kt:@Composable internal fun DrawerHeader</ID>
   </CurrentIssues>
 </SmellBaseline>

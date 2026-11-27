@@ -2,7 +2,6 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>LongMethod:AcknowledgementsScreen.kt:@Composable fun AcknowledgementsScreen</ID>
     <ID>MagicNumber:AcknowledgementsScreen.kt:5</ID>
     <ID>TooGenericExceptionCaught:DefaultAcknowledgementsRemoteDataSource.kt:DefaultAcknowledgementsRemoteDataSource$e: Exception</ID>
   </CurrentIssues>

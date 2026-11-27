@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongMethod:AudioPlayer.kt:@Composable private fun FakeAudioPlayerComposable</ID>
+    <ID>LongMethod:ZoomableImage.kt:@Composable fun ZoomableImage</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.05f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.25f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.5f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.7f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.8f</ID>
+    <ID>MagicNumber:CustomColorPickerDialog.kt:16</ID>
+    <ID>MagicNumber:CustomColorPickerDialog.kt:6</ID>
+    <ID>MagicNumber:CustomColorPickerDialog.kt:8</ID>
+    <ID>MagicNumber:CustomImage.kt:100f</ID>
+    <ID>MagicNumber:ListLoadingIndicator.kt:0.25f</ID>
+    <ID>MagicNumber:ListLoadingIndicator.kt:0.5f</ID>
+    <ID>MagicNumber:ListLoadingIndicator.kt:0.85f</ID>
+    <ID>MatchingDeclarationName:CustomModalBottomSheet.kt:CustomModalBottomSheetItem</ID>
+    <ID>MatchingDeclarationName:SpinnerField.kt:SpinnerValue</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -7,14 +7,7 @@
     <ID>CyclomaticComplexMethod:DefaultSearchPaginationManager.kt:DefaultSearchPaginationManager$override suspend fun loadNextPage: List&lt;ExploreItemModel&gt;</ID>
     <ID>CyclomaticComplexMethod:DefaultTimelinePaginationManager.kt:DefaultTimelinePaginationManager$override suspend fun loadNextPage: List&lt;PostModel&gt;</ID>
     <ID>CyclomaticComplexMethod:DefaultUserPaginationManager.kt:DefaultUserPaginationManager$override suspend fun loadNextPage: List&lt;UserModel&gt;</ID>
-    <ID>DoubleMutabilityForCollection:DefaultTimelineNavigationManager.kt:DefaultTimelineNavigationManager$private var states: MutableList&lt;TimelinePaginationManagerState&gt; = mutableListOf()</ID>
-    <ID>LongMethod:DefaultExplorePaginationManager.kt:DefaultExplorePaginationManager$override suspend fun loadNextPage: List&lt;ExploreItemModel&gt;</ID>
-    <ID>LongMethod:DefaultSearchPaginationManager.kt:DefaultSearchPaginationManager$override suspend fun loadNextPage: List&lt;ExploreItemModel&gt;</ID>
     <ID>LongMethod:DefaultTimelinePaginationManager.kt:DefaultTimelinePaginationManager$override suspend fun loadNextPage: List&lt;PostModel&gt;</ID>
     <ID>LongMethod:DefaultUserPaginationManager.kt:DefaultUserPaginationManager$override suspend fun loadNextPage: List&lt;UserModel&gt;</ID>
-    <ID>LongParameterList:DefaultExplorePaginationManager.kt:DefaultExplorePaginationManager</ID>
-    <ID>LongParameterList:DefaultSearchPaginationManager.kt:DefaultSearchPaginationManager</ID>
-    <ID>LongParameterList:DefaultTimelinePaginationManager.kt:DefaultTimelinePaginationManager</ID>
-    <ID>LongParameterList:DefaultUserPaginationManager.kt:DefaultUserPaginationManager</ID>
   </CurrentIssues>
 </SmellBaseline>

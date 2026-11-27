@@ -4,8 +4,6 @@
   <CurrentIssues>
     <ID>ComplexCondition:DefaultPostRepository.kt:DefaultPostRepository$pageCursor == null &amp;&amp; cachedValues.isNotEmpty() &amp;&amp; enableCache &amp;&amp; otherInstance.isNullOrEmpty()</ID>
     <ID>CyclomaticComplexMethod:DefaultUserRepository.kt:DefaultUserRepository$override suspend fun updateProfile</ID>
-    <ID>LongMethod:DefaultFallbackTranslationRepository.kt:DefaultFallbackTranslationRepository$override suspend fun getTranslation: TranslatedPostModel?</ID>
-    <ID>LongMethod:DefaultUserRepository.kt:DefaultUserRepository$override suspend fun updateProfile</ID>
     <ID>LongParameterList:PostRepository.kt:PostRepository$suspend fun create: PostModel?</ID>
     <ID>LongParameterList:PostRepository.kt:PostRepository$suspend fun getByUser: List&lt;PostModel&gt;?</ID>
     <ID>LongParameterList:PostRepository.kt:PostRepository$suspend fun update: PostModel?</ID>
@@ -42,11 +40,8 @@
     <ID>TooGenericExceptionCaught:DefaultTrendingRepository.kt:DefaultTrendingRepository$e: Exception</ID>
     <ID>TooGenericExceptionCaught:DefaultUserRateLimitRepository.kt:DefaultUserRateLimitRepository$e: Exception</ID>
     <ID>TooGenericExceptionCaught:DefaultUserRepository.kt:DefaultUserRepository$e: Exception</ID>
-    <ID>TooManyFunctions:DefaultPostRepository.kt:DefaultPostRepository : PostRepository</ID>
-    <ID>TooManyFunctions:DefaultUserRepository.kt:DefaultUserRepository : UserRepository</ID>
     <ID>TooManyFunctions:Mappings.kt:com.livefast.eattrash.raccoonforfriendica.domain.content.repository.utils.Mappings.kt</ID>
     <ID>TooManyFunctions:PostRepository.kt:PostRepository</ID>
     <ID>TooManyFunctions:UserRepository.kt:UserRepository</ID>
-    <ID>UnusedPrivateProperty:DefaultPhotoAlbumRepository.kt:DefaultPhotoAlbumRepository.Companion$private const val DEFAULT_PAGE_SIZE = 20</ID>
   </CurrentIssues>
 </SmellBaseline>

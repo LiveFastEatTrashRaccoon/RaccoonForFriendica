@@ -3,6 +3,5 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>LongMethod:CreateReportScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CreateReportScreen</ID>
-    <ID>LongMethod:SelectViolatedRulesDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SelectViolatedRulesDialog</ID>
   </CurrentIssues>
 </SmellBaseline>

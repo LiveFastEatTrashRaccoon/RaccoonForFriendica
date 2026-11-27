@@ -4,8 +4,5 @@
   <CurrentIssues>
     <ID>LargeClass:DefaultTimelinePaginationManagerTest.kt:DefaultTimelinePaginationManagerTest</ID>
     <ID>LargeClass:DefaultUserPaginationManagerTest.kt:DefaultUserPaginationManagerTest</ID>
-    <ID>LongMethod:DefaultTimelinePaginationManagerTest.kt:DefaultTimelinePaginationManagerTest$@Test fun `given can fetch no more results when loadNextPage with Forum then result is as expected`</ID>
-    <ID>LongMethod:DefaultTimelinePaginationManagerTest.kt:DefaultTimelinePaginationManagerTest$@Test fun `given can fetch no more results when loadNextPage with User with includeNsfw then result is as expected`</ID>
-    <ID>LongMethod:DefaultTimelinePaginationManagerTest.kt:DefaultTimelinePaginationManagerTest$@Test fun `given can fetch no more results when loadNextPage with User with no includeNsfw then result is as expected`</ID>
   </CurrentIssues>
 </SmellBaseline>

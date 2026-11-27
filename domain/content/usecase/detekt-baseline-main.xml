@@ -3,8 +3,6 @@
   <ManuallySuppressedIssues/>
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:DefaultBBCodeConverter.kt:DefaultBBCodeConverter$override fun fromHtml: String</ID>
-    <ID>LongMethod:DefaultBBCodeConverter.kt:DefaultBBCodeConverter$override fun fromHtml: String</ID>
-    <ID>LongMethod:DefaultMarkdownConverter.kt:DefaultMarkdownConverter$override fun toHtml</ID>
     <ID>ReturnCount:DefaultGetTranslationUseCase.kt:DefaultGetTranslationUseCase$private suspend fun getFallbackTranslation: TranslatedPostModel?</ID>
   </CurrentIssues>
 </SmellBaseline>

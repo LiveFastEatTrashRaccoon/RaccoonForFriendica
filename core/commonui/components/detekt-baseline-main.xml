@@ -35,13 +35,6 @@
     <ID>MagicNumber:ListLoadingIndicator.kt:0.25f</ID>
     <ID>MagicNumber:ListLoadingIndicator.kt:0.5f</ID>
     <ID>MagicNumber:ListLoadingIndicator.kt:0.85f</ID>
-    <ID>MagicNumber:MultiColorPreview.kt:0xFF0000FF</ID>
-    <ID>MagicNumber:MultiColorPreview.kt:0xFF00FF00</ID>
-    <ID>MagicNumber:MultiColorPreview.kt:0xFF9400D3</ID>
-    <ID>MagicNumber:MultiColorPreview.kt:0xFFFF0000</ID>
-    <ID>MagicNumber:MultiColorPreview.kt:0xFFFF7F00</ID>
-    <ID>MagicNumber:MultiColorPreview.kt:0xFFFFFF00</ID>
-    <ID>MagicNumber:ZoomableImage.kt:16f</ID>
     <ID>MatchingDeclarationName:CustomModalBottomSheet.kt:CustomModalBottomSheetItem</ID>
     <ID>MatchingDeclarationName:SpinnerField.kt:SpinnerValue</ID>
   </CurrentIssues>

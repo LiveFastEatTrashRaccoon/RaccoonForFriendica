@@ -4,12 +4,6 @@
   <CurrentIssues>
     <ID>CyclomaticComplexMethod:DateFunctions.kt:actual fun getPrettyDate: String</ID>
     <ID>EmptyDefaultConstructor:DefaultPermissionControllerWrapper.kt:DefaultPermissionControllerWrapper</ID>
-    <ID>InjectDispatcher:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$IO</ID>
-    <ID>InjectDispatcher:DefaultClipboardHelper.kt:DefaultClipboardHelper$IO</ID>
-    <ID>InjectDispatcher:DefaultFileSystemManager.kt:DefaultFileSystemManager$IO</ID>
-    <ID>InjectDispatcher:DefaultGalleryHelper.kt:DefaultGalleryHelper$IO</ID>
-    <ID>InjectDispatcher:GalleryHelper.kt:IO</ID>
-    <ID>LongMethod:DateUtils.kt:fun Duration.getPrettyDuration: String</ID>
     <ID>LongParameterList:DateFunctions.kt:actual fun getPrettyDate: String</ID>
     <ID>LongParameterList:DateFunctions.kt:expect fun getPrettyDate: String</ID>
     <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.0031308f</ID>
