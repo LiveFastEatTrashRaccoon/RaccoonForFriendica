@@ -5,6 +5,7 @@ plugins {
     id("com.livefast.eattrash.sentryDsn")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.detekt")
 }
 
 // generate a properties file so the JVM can read the version at runtime

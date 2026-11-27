@@ -42,7 +42,10 @@ fun String.parseHtml(
                     "br" -> builder.appendLine()
 
                     "a" -> {
-                        builder.pushStringAnnotation("link", attributes["href"] ?: "")
+                        builder.pushStringAnnotation(
+                            tag = "link",
+                            annotation = attributes["href"].orEmpty(),
+                        )
                         builder.pushStyle(
                             SpanStyle(
                                 color = linkColor,

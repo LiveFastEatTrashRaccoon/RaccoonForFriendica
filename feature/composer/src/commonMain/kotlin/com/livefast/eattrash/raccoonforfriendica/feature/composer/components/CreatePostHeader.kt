@@ -66,7 +66,7 @@ internal fun CreatePostHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.s),
     ) {
-        val creatorName = author?.displayName ?: author?.username ?: ""
+        val creatorName = (author?.displayName ?: author?.username).orEmpty()
         val creatorAvatar = author?.avatar.orEmpty()
         val iconSize = IconSize.l
         if (creatorAvatar.isNotEmpty() && autoloadImages) {

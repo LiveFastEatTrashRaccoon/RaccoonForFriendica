@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DateFunctions.kt:actual fun getPrettyDate: String</ID>
+    <ID>InjectDispatcher:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$IO</ID>
+    <ID>InjectDispatcher:DefaultGalleryHelper.kt:DefaultGalleryHelper$IO</ID>
+    <ID>InjectDispatcher:GalleryHelper.kt:IO</ID>
+    <ID>LongMethod:DateUtils.kt:fun Duration.getPrettyDuration: String</ID>
+    <ID>LongParameterList:DateFunctions.kt:actual fun getPrettyDate: String</ID>
+    <ID>LongParameterList:DateFunctions.kt:expect fun getPrettyDate: String</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.0031308f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.04045f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.055f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$0.5f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$1.055f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$12.92f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$2.4f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$255</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$255f</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$4</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$6</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$83</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$9</ID>
+    <ID>MagicNumber:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$9.0f</ID>
+    <ID>MagicNumber:Extensions.kt:5</ID>
+    <ID>MagicNumber:SafeImePadding.kt:0.5f</ID>
+    <ID>MagicNumber:ShimmerEffect.kt:0.5f</ID>
+    <ID>ReturnCount:Extensions.kt:fun String?.ellipsize: String</ID>
+    <ID>ThrowsCount:DefaultPermissionControllerWrapper.kt:DefaultPermissionControllerWrapper$override suspend fun providePermission</ID>
+    <ID>TooGenericExceptionCaught:DefaultAppInfoRepository.kt:DefaultAppInfoRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultBlurHashDecoder.kt:DefaultBlurHashDecoder$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultCalendarHelper.kt:DefaultCalendarHelper$e: Exception</ID>
+    <ID>TooManyFunctions:DateFunctions.kt:com.livefast.eattrash.raccoonforfriendica.core.utils.datetime.DateFunctions.kt</ID>
+  </CurrentIssues>
+</SmellBaseline>

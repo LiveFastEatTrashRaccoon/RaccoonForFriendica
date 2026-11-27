@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>InjectDispatcher:UnifiedPushInteractor.kt:DefaultUnifiedPushInteractor$IO</ID>
+    <ID>LongParameterList:DefaultPushNotificationManager.kt:DefaultPushNotificationManager</ID>
+    <ID>ReturnCount:DefaultPushNotificationManager.kt:DefaultPushNotificationManager$override suspend fun handleMessage</ID>
+    <ID>ReturnCount:DefaultPushNotificationManager.kt:DefaultPushNotificationManager$override suspend fun refreshState</ID>
+    <ID>ReturnCount:DefaultPushNotificationManager.kt:DefaultPushNotificationManager$override suspend fun startup</ID>
+    <ID>ReturnCount:DefaultWebPushCryptoUtil.kt:DefaultWebPushCryptoUtil$override fun decryptPayload: String?</ID>
+    <ID>ReturnCount:WebPushPayloadParser.kt:WebPushPayloadParser$fun parse: WebPushPayload?</ID>
+    <ID>TooGenericExceptionCaught:DefaultPushNotificationManager.kt:DefaultPushNotificationManager$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DefaultWebPushCryptoUtil.kt:DefaultWebPushCryptoUtil$e: Exception</ID>
+    <ID>UseRequire:DefaultWebPushCryptoUtil.kt:DefaultWebPushCryptoUtil$throw IllegalArgumentException("BigInteger byte array is too large")</ID>
+  </CurrentIssues>
+</SmellBaseline>

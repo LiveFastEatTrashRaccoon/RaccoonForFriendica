@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:PostListScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:PostListScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PostListScreen</ID>
+    <ID>CyclomaticComplexMethod:PostListViewModel.kt:PostListViewModel$override fun reduce</ID>
+    <ID>LongMethod:PostListScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PostListScreen</ID>
+    <ID>LongParameterList:PostListViewModel.kt:PostListViewModel</ID>
+    <ID>TooGenericExceptionCaught:PostListScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PostListViewModel.kt:PostListViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:PostListViewModel.kt:PostListViewModel : ViewModelMviDelegatePostListMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

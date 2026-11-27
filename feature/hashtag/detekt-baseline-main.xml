@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:HashtagScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:FollowedHashtagsScreen.kt:@Composable fun FollowedHashtagsScreen</ID>
+    <ID>CyclomaticComplexMethod:HashtagScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun HashtagScreen</ID>
+    <ID>CyclomaticComplexMethod:HashtagViewModel.kt:HashtagViewModel$override fun reduce</ID>
+    <ID>LongMethod:FollowedHashtagsScreen.kt:@Composable fun FollowedHashtagsScreen</ID>
+    <ID>LongMethod:HashtagScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun HashtagScreen</ID>
+    <ID>LongParameterList:HashtagViewModel.kt:HashtagViewModel</ID>
+    <ID>TooGenericExceptionCaught:FollowedHashtagsScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FollowedHashtagsViewModel.kt:FollowedHashtagsViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:HashtagScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:HashtagViewModel.kt:HashtagViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:HashtagViewModel.kt:HashtagViewModel : ViewModelMviDelegateHashtagMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

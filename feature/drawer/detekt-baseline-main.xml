@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DrawerContent.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DrawerContent</ID>
+    <ID>CyclomaticComplexMethod:PermanentDrawerContent.kt:@Composable fun PermanentDrawerContent</ID>
+    <ID>CyclomaticComplexMethod:PermanentDrawerContent.kt:@Composable private fun Destination.toIcon: ImageVector</ID>
+    <ID>CyclomaticComplexMethod:PermanentDrawerContent.kt:@Composable private fun Destination.toReadableName: String</ID>
+    <ID>LongMethod:DrawerContent.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DrawerContent</ID>
+    <ID>LongMethod:DrawerHeader.kt:@Composable internal fun DrawerHeader</ID>
+    <ID>LongMethod:PermanentDrawerContent.kt:@Composable fun PermanentDrawerContent</ID>
+    <ID>LongParameterList:DrawerHeader.kt:@Composable internal fun DrawerHeader</ID>
+  </CurrentIssues>
+</SmellBaseline>

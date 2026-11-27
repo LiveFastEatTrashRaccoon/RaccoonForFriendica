@@ -87,7 +87,7 @@ fun ConversationScreen(otherUserId: String, parentUri: String, modifier: Modifie
     val snackbarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username } ?: ""
+    val otherUserName = uiState.otherUser?.let { it.displayName ?: it.username }.orEmpty()
     val genericError = LocalStrings.current.messageGenericError
     val followRequiredMessage = LocalStrings.current.followRequiredMessage
 

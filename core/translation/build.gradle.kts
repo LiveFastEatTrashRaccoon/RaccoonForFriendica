@@ -4,6 +4,7 @@ plugins {
     id("com.livefast.eattrash.serialization")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.detekt")
 }
 kotlin {
     sourceSets {

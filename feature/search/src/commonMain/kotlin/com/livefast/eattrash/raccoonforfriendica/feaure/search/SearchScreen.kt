@@ -236,11 +236,11 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
                                 top = maxInset * topAppBarState.collapsedFraction,
                                 bottom = Spacing.s,
                             ),
-                        titles = titles.map { it.toReadableName() },
+                        titles = titles.map { t -> t.toReadableName() },
                         currentSection = titles.indexOf(uiState.section),
-                        onSelectSection = {
+                        onSelectSection = { idx ->
                             model.reduce(
-                                SearchMvi.Intent.ChangeSection(titles[it]),
+                                SearchMvi.Intent.ChangeSection(titles[idx]),
                             )
                         },
                     )
@@ -712,7 +712,7 @@ fun SearchScreen(modifier: Modifier = Modifier, model: SearchMvi = metroViewMode
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = creator?.handle ?: ""
+                val handle = creator?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ReturnCount:DefaultEncryptionHelper.kt:DefaultEncryptionHelper$override fun decrypt: String?</ID>
+    <ID>TooManyFunctions:DefaultTemporaryKeyStore.kt:DefaultTemporaryKeyStore : TemporaryKeyStore</ID>
+    <ID>TooManyFunctions:EncryptingPreferencesSettings.kt:EncryptingPreferencesSettings : ObservableSettings</ID>
+    <ID>TooManyFunctions:TemporaryKeyStore.kt:TemporaryKeyStore</ID>
+    <ID>UnnecessaryApply:EncryptingPreferencesSettings.kt:EncryptingPreferencesSettings$apply { clear() }</ID>
+  </CurrentIssues>
+</SmellBaseline>

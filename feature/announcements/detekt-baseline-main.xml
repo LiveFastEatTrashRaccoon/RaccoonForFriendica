@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:AnnouncementsScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun AnnouncementsScreen</ID>
+    <ID>LongMethod:AnnouncementsScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun AnnouncementsScreen</ID>
+    <ID>LongMethod:ReactionItem.kt:@Composable internal fun ReactionItem</ID>
+    <ID>LongParameterList:AnnouncementCard.kt:@Composable internal fun AnnouncementCard</ID>
+    <ID>TooGenericExceptionCaught:AnnouncementsScreen.kt:e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

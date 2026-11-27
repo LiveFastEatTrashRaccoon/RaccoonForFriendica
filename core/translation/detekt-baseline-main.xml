@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>SuspendFunWithFlowReturnType:DefaultTranslationProviderConfigStore.kt:DefaultTranslationProviderConfigStore$suspend</ID>
+    <ID>SuspendFunWithFlowReturnType:TranslationProviderConfigStore.kt:TranslationProviderConfigStore$suspend</ID>
+    <ID>TooGenericExceptionCaught:DefaultTranslationProviderConfigStore.kt:DefaultTranslationProviderConfigStore$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LibreTranslateProvider.kt:LibreTranslateProvider$e: Exception</ID>
+    <ID>TooManyFunctions:DefaultTranslationProviderConfigStore.kt:DefaultTranslationProviderConfigStore : TranslationProviderConfigStore</ID>
+    <ID>UnusedPrivateProperty:LibreTranslateProvider.kt:LibreTranslateProvider$private val connectTimeout: Long = 30_000</ID>
+    <ID>UnusedPrivateProperty:LibreTranslateProvider.kt:LibreTranslateProvider$private val requestTimeout: Long = 600_000</ID>
+  </CurrentIssues>
+</SmellBaseline>

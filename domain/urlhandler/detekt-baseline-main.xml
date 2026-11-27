@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongParameterList:DefaultCustomUriHandler.kt:DefaultCustomUriHandler</ID>
+    <ID>PrintStackTrace:DefaultCustomUriHandler.kt:DefaultCustomUriHandler$e</ID>
+    <ID>TooGenericExceptionCaught:DefaultCustomUriHandler.kt:DefaultCustomUriHandler$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -344,13 +344,11 @@ fun MyAccountScreen(
                             top = stickyHeaderTopOffset,
                             bottom = Spacing.s,
                         ),
-                    titles = titles.map { it.toReadableName() },
+                    titles = titles.map { t -> t.toReadableName() },
                     scrollable = true,
                     currentSection = titles.indexOf(uiState.section),
-                    onSelectSection = {
-                        model.reduce(
-                            MyAccountMvi.Intent.ChangeSection(titles[it]),
-                        )
+                    onSelectSection = { idx ->
+                        model.reduce(MyAccountMvi.Intent.ChangeSection(titles[idx]))
                     },
                 )
             }
@@ -376,8 +374,8 @@ fun MyAccountScreen(
                     autoloadImages = uiState.autoloadImages,
                     pollEnabled = false,
                     maxBodyLines = uiState.maxBodyLines,
-                    onClick = { post ->
-                        mainRouter.openPostDetail(post)
+                    onClick = { p ->
+                        mainRouter.openPostDetail(p)
                     },
                     onOpenUrl = { url, allowOpenInternal ->
                         if (allowOpenInternal) {
@@ -397,22 +395,22 @@ fun MyAccountScreen(
                         )
                     },
                     onBookmark =
-                    { post: PostModel ->
-                        model.reduce(MyAccountMvi.Intent.ToggleBookmark(post))
+                    { p: PostModel ->
+                        model.reduce(MyAccountMvi.Intent.ToggleBookmark(p))
                     }.takeIf { post.original.actionPermissions.canBookmark },
                     onFavorite =
-                    { post: PostModel ->
-                        model.reduce(MyAccountMvi.Intent.ToggleFavorite(post))
+                    { p: PostModel ->
+                        model.reduce(MyAccountMvi.Intent.ToggleFavorite(p))
                     }.takeIf { post.original.actionPermissions.canFavorite },
                     onDislike =
-                    { post: PostModel ->
-                        model.reduce(MyAccountMvi.Intent.ToggleDislike(post))
+                    { p: PostModel ->
+                        model.reduce(MyAccountMvi.Intent.ToggleDislike(p))
                     }.takeIf { post.original.actionPermissions.canDislike },
                     onReply =
-                    { post: PostModel ->
+                    { p: PostModel ->
                         mainRouter.openComposer(
-                            inReplyTo = post,
-                            inReplyToUser = post.creator,
+                            inReplyTo = p,
+                            inReplyToUser = p.creator,
                         )
                     }.takeIf { post.original.actionPermissions.canReply },
                     options =

@@ -121,8 +121,8 @@ private fun EditTextualInfoDialogContent(
             KeyboardOptions(
                 keyboardType = KeyboardType.Text,
             ),
-            onValueChange = { value ->
-                textFieldValue = value
+            onValueChange = { v ->
+                textFieldValue = v
             },
         )
 

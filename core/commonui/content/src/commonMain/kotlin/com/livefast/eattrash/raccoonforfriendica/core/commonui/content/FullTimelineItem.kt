@@ -325,7 +325,7 @@ internal fun FullTimelineItem(
                 }
 
                 // quoted post
-                post.quoted?.takeIf { it.quoteStatus == QuoteStatus.Accepted }?.also { post ->
+                post.quoted?.takeIf { it.quoteStatus == QuoteStatus.Accepted }?.also { p ->
                     FullTimelineItem(
                         modifier = Modifier
                             .padding(top = Spacing.xs)
@@ -336,9 +336,9 @@ internal fun FullTimelineItem(
                                 shape = RoundedCornerShape(CornerSize.xl),
                             ).padding(Spacing.xs)
                             .then(
-                                onOpenQuote?.let { Modifier.clickable { it(post) } } ?: Modifier,
+                                onOpenQuote?.let { Modifier.clickable { it(p) } } ?: Modifier,
                             ),
-                        post = post,
+                        post = p,
                         actionsEnabled = false,
                         autoloadImages = autoloadImages,
                         blurNsfw = blurNsfw,

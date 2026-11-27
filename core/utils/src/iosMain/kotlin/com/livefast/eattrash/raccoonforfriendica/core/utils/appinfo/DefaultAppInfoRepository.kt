@@ -20,7 +20,7 @@ class DefaultAppInfoRepository : AppInfoRepository {
         val versionCode =
             buildString {
                 val dict = NSBundle.mainBundle.infoDictionary
-                val buildNumber = dict?.get("CFBundleVersion") as? String ?: ""
+                val buildNumber = (dict?.get("CFBundleVersion") as? String).orEmpty()
                 val versionName = dict?.get("CFBundleShortVersionString") as? String ?: "1.0.0"
                 if (versionName.isNotEmpty()) {
                     append(versionName)

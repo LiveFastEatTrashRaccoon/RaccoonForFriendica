@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:CalendarScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.items.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:CalendarScreen.kt:@Composable fun CalendarScreen</ID>
+    <ID>LongMethod:CalendarRow.kt:@Composable fun CalendarRow</ID>
+    <ID>LongMethod:CalendarScreen.kt:@Composable fun CalendarScreen</ID>
+    <ID>LongMethod:EventDetailScreen.kt:@Composable fun EventDetailScreen</ID>
+    <ID>TooGenericExceptionCaught:CalendarScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:CalendarViewModel.kt:CalendarViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:EventDetailScreen.kt:e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

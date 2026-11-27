@@ -3,6 +3,7 @@ plugins {
     id("com.livefast.eattrash.composeMultiplatform")
     id("com.livefast.eattrash.di")
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.detekt")
 }
 
 kotlin {

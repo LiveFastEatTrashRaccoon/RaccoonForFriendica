@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ShortcutTimelineScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.posts.isEmpty()</ID>
+    <ID>CyclomaticComplexMethod:ShortcutListScreen.kt:@Composable fun ShortcutListScreen</ID>
+    <ID>CyclomaticComplexMethod:ShortcutTimelineScreen.kt:@Composable fun ShortcutTimelineScreen</ID>
+    <ID>LongMethod:ShortcutListScreen.kt:@Composable fun ShortcutListScreen</ID>
+    <ID>LongMethod:ShortcutTimelineScreen.kt:@Composable fun ShortcutTimelineScreen</ID>
+    <ID>LongParameterList:ShortcutTimelineViewModel.kt:ShortcutTimelineViewModel</ID>
+    <ID>MagicNumber:ShortcutListScreen.kt:10</ID>
+    <ID>TooGenericExceptionCaught:ShortcutListScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ShortcutTimelineScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ShortcutTimelineViewModel.kt:ShortcutTimelineViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:ShortcutTimelineViewModel.kt:ShortcutTimelineViewModel : ViewModelMviDelegateShortcutTimelineMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

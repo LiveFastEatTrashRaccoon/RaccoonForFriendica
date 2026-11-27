@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ConversationListScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.items.isEmpty()</ID>
+    <ID>ComplexCondition:ConversationScreen.kt:!uiState.initial &amp;&amp; !uiState.refreshing &amp;&amp; !uiState.loading &amp;&amp; uiState.items.isEmpty() &amp;&amp; otherUserName.isNotEmpty()</ID>
+    <ID>CyclomaticComplexMethod:ConversationListScreen.kt:@Composable fun ConversationListScreen</ID>
+    <ID>CyclomaticComplexMethod:ConversationScreen.kt:@Composable fun ConversationScreen</ID>
+    <ID>CyclomaticComplexMethod:MessageItem.kt:@Composable fun MessageItem</ID>
+    <ID>LongMethod:ConversationItem.kt:@Composable internal fun ConversationItem</ID>
+    <ID>LongMethod:ConversationListScreen.kt:@Composable fun ConversationListScreen</ID>
+    <ID>LongMethod:ConversationScreen.kt:@Composable fun ConversationScreen</ID>
+    <ID>LongMethod:ConversationViewModel.kt:ConversationViewModel$private fun handleSubmit</ID>
+    <ID>LongMethod:MessageItem.kt:@Composable fun MessageItem</ID>
+    <ID>LongMethod:MessageItemPlaceholder.kt:@Composable fun MessageItemPlaceholder</ID>
+    <ID>LongParameterList:ConversationViewModel.kt:ConversationViewModel</ID>
+    <ID>MagicNumber:ConversationScreen.kt:10</ID>
+    <ID>ReturnCount:ConversationScreen.kt:private fun isTimeBetweenMessagesAboveThreshold: Boolean</ID>
+    <ID>TooGenericExceptionCaught:ConversationListScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ConversationListViewModel.kt:ConversationListViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ConversationScreen.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ConversationViewModel.kt:ConversationViewModel$e: Exception</ID>
+    <ID>UnusedPrivateProperty:ConversationViewModel.kt:ConversationViewModel$@Assisted private val parentUri: String</ID>
+  </CurrentIssues>
+</SmellBaseline>

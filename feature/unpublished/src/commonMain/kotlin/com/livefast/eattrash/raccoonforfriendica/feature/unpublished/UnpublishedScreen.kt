@@ -161,12 +161,10 @@ fun UnpublishedScreen(model: UnpublishedMvi, modifier: Modifier = Modifier) {
                                 top = Dimensions.maxTopBarInset * topAppBarState.collapsedFraction,
                                 bottom = Spacing.s,
                             ),
-                        titles = titles.map { it.toReadableName() },
+                        titles = titles.map { t -> t.toReadableName() },
                         currentSection = titles.indexOf(uiState.section),
-                        onSelectSection = {
-                            model.reduce(
-                                UnpublishedMvi.Intent.ChangeSection(titles[it]),
-                            )
+                        onSelectSection = { idx ->
+                            model.reduce(UnpublishedMvi.Intent.ChangeSection(titles[idx]))
                         },
                     )
                 }

@@ -269,8 +269,8 @@ class HashtagViewModel(
                                 reblogged = newPost.reblogged,
                                 reblogCount = newPost.reblogCount,
                                 reblogLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -290,8 +290,8 @@ class HashtagViewModel(
                 state.copy(posts = state.posts.updateMatching(post.id) { it.copy(favoriteLoading = true) })
             }
             val newPost =
-                toggleFavorite(post)?.also { post ->
-                    notificationCenter.send(PostUpdatedEvent(post))
+                toggleFavorite(post)?.also { p ->
+                    notificationCenter.send(PostUpdatedEvent(p))
                 }
             if (newPost != null) {
                 updateState { state ->
@@ -312,8 +312,8 @@ class HashtagViewModel(
                 state.copy(posts = state.posts.updateMatching(post.id) { it.copy(dislikeLoading = true) })
             }
             val newPost =
-                toggleDislike(post)?.also { post ->
-                    notificationCenter.send(PostUpdatedEvent(post))
+                toggleDislike(post)?.also { p ->
+                    notificationCenter.send(PostUpdatedEvent(p))
                 }
             if (newPost != null) {
                 updateState { state ->
@@ -346,8 +346,8 @@ class HashtagViewModel(
                             it.copy(
                                 bookmarked = newPost.bookmarked,
                                 bookmarkLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )

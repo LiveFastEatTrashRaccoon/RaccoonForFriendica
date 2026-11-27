@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongMethod:AudioPlayer.kt:@Composable private fun FakeAudioPlayerComposable</ID>
+    <ID>LongMethod:CustomColorPickerDialog.kt:@Composable private fun CustomColorPickerDialogContent</ID>
+    <ID>LongMethod:CustomImage.kt:@Composable fun CustomImage</ID>
+    <ID>LongMethod:CustomModalBottomSheet.kt:@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class) @Composable private fun CustomModalBottomSheetContent</ID>
+    <ID>LongMethod:EditTwoTextualInfosDialog.kt:@Composable private fun EditTwoTextualInfosDialogContent</ID>
+    <ID>LongMethod:FeedbackButton.kt:@Composable fun FeedbackButton</ID>
+    <ID>LongMethod:ListLoadingIndicator.kt:@Composable fun ListLoadingIndicator</ID>
+    <ID>LongMethod:SearchField.kt:@Composable fun SearchField</ID>
+    <ID>LongMethod:SectionSelector.kt:@Composable fun SectionSelector</ID>
+    <ID>LongMethod:SpinnerField.kt:@Composable fun SpinnerField</ID>
+    <ID>LongMethod:ZoomableImage.kt:@Composable fun ZoomableImage</ID>
+    <ID>LongParameterList:CustomColorPickerDialog.kt:@Composable private fun CustomColorPickerDialogContent</ID>
+    <ID>LongParameterList:CustomImage.kt:@Composable fun CustomImage</ID>
+    <ID>LongParameterList:CustomModalBottomSheet.kt:@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class) @Composable fun CustomModalBottomSheet</ID>
+    <ID>LongParameterList:CustomModalBottomSheet.kt:@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class) @Composable private fun CustomModalBottomSheetContent</ID>
+    <ID>LongParameterList:EditTextualInfoDialog.kt:@Composable private fun EditTextualInfoDialogContent</ID>
+    <ID>LongParameterList:EditTextualInfoDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun EditTextualInfoDialog</ID>
+    <ID>LongParameterList:EditTwoTextualInfosDialog.kt:@Composable private fun EditTwoTextualInfosDialogContent</ID>
+    <ID>LongParameterList:EditTwoTextualInfosDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun EditTwoTextualInfosDialog</ID>
+    <ID>LongParameterList:SearchField.kt:@Composable fun SearchField</ID>
+    <ID>LongParameterList:SpinnerField.kt:@Composable fun SpinnerField</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.05f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.25f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.5f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.7f</ID>
+    <ID>MagicNumber:AudioPlayer.kt:0.8f</ID>
+    <ID>MagicNumber:CustomColorPickerDialog.kt:16</ID>
+    <ID>MagicNumber:CustomColorPickerDialog.kt:6</ID>
+    <ID>MagicNumber:CustomColorPickerDialog.kt:8</ID>
+    <ID>MagicNumber:CustomImage.kt:100f</ID>
+    <ID>MagicNumber:ListLoadingIndicator.kt:0.25f</ID>
+    <ID>MagicNumber:ListLoadingIndicator.kt:0.5f</ID>
+    <ID>MagicNumber:ListLoadingIndicator.kt:0.85f</ID>
+    <ID>MagicNumber:MultiColorPreview.kt:0xFF0000FF</ID>
+    <ID>MagicNumber:MultiColorPreview.kt:0xFF00FF00</ID>
+    <ID>MagicNumber:MultiColorPreview.kt:0xFF9400D3</ID>
+    <ID>MagicNumber:MultiColorPreview.kt:0xFFFF0000</ID>
+    <ID>MagicNumber:MultiColorPreview.kt:0xFFFF7F00</ID>
+    <ID>MagicNumber:MultiColorPreview.kt:0xFFFFFF00</ID>
+    <ID>MagicNumber:ZoomableImage.kt:16f</ID>
+    <ID>MatchingDeclarationName:CustomModalBottomSheet.kt:CustomModalBottomSheetItem</ID>
+    <ID>MatchingDeclarationName:SpinnerField.kt:SpinnerValue</ID>
+  </CurrentIssues>
+</SmellBaseline>

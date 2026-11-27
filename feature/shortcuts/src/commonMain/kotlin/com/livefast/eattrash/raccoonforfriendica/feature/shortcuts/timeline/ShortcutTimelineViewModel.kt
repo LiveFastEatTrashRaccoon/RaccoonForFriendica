@@ -250,8 +250,8 @@ class ShortcutTimelineViewModel(
                                 reblogged = newPost.reblogged,
                                 reblogCount = newPost.reblogCount,
                                 reblogLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -309,8 +309,8 @@ class ShortcutTimelineViewModel(
                 state.copy(posts = state.posts.updateMatching(post.id) { it.copy(dislikeLoading = true) })
             }
             val newPost =
-                toggleDislike(post)?.also { post ->
-                    notificationCenter.send(PostUpdatedEvent(post))
+                toggleDislike(post)?.also { p ->
+                    notificationCenter.send(PostUpdatedEvent(p))
                 }
             if (newPost != null) {
                 updateState { state ->
@@ -345,8 +345,8 @@ class ShortcutTimelineViewModel(
                             it.copy(
                                 bookmarked = newPost.bookmarked,
                                 bookmarkLoading = false,
-                            ).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            ).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )
@@ -377,8 +377,8 @@ class ShortcutTimelineViewModel(
                 updateState { state ->
                     state.copy(
                         posts = state.posts.updateMatching(post.id) {
-                            it.copy(poll = newPoll).also { post ->
-                                notificationCenter.send(PostUpdatedEvent(post))
+                            it.copy(poll = newPoll).also { p ->
+                                notificationCenter.send(PostUpdatedEvent(p))
                             }
                         },
                     )

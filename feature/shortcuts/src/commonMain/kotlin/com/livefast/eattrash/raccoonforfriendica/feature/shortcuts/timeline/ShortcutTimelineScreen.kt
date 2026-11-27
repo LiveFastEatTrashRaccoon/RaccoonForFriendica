@@ -234,8 +234,8 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                         blurNsfw = uiState.blurNsfw,
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
-                        onClick = { post ->
-                            model.reduce(ShortcutTimelineMvi.Intent.WillOpenDetail(post))
+                        onClick = { p ->
+                            model.reduce(ShortcutTimelineMvi.Intent.WillOpenDetail(p))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -259,8 +259,8 @@ fun ShortcutTimelineScreen(node: String, modifier: Modifier = Modifier) {
                                 ShortcutTimelineMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { post ->
-                            mainRouter.openPostDetail(post)
+                        onOpenQuote = { p ->
+                            mainRouter.openPostDetail(p)
                         },
                         options =
                         buildList {

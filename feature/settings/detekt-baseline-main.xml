@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:ConfigureTimelineTypesScreen.kt:@Composable fun ConfigureTimelineTypesScreen</ID>
+    <ID>CyclomaticComplexMethod:SettingsScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsScreen</ID>
+    <ID>CyclomaticComplexMethod:SettingsViewModel.kt:SettingsViewModel$override fun reduce</ID>
+    <ID>LongMethod:AddTimelineTypeDialog.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun AddTimelineTypeDialog</ID>
+    <ID>LongMethod:ConfigureTimelineTypesScreen.kt:@Composable fun ConfigureTimelineTypesScreen</ID>
+    <ID>LongMethod:SettingsScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsScreen</ID>
+    <ID>LongMethod:TimelineTypeItem.kt:@Composable internal fun TimelineTypeItem</ID>
+    <ID>LongMethod:UserFeedbackScreen.kt:@Composable fun UserFeedbackScreen</ID>
+    <ID>LongParameterList:SettingsViewModel.kt:SettingsViewModel</ID>
+    <ID>TooGenericExceptionCaught:UserFeedbackViewModel.kt:UserFeedbackViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:SettingsViewModel.kt:SettingsViewModel : ViewModelMviDelegateSettingsMvi</ID>
+  </CurrentIssues>
+</SmellBaseline>

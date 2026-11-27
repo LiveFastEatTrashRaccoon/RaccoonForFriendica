@@ -94,7 +94,7 @@ class ComposerViewModel(
     MviDelegate<ComposerMvi.Intent, ComposerMvi.State, ComposerMvi.Effect>
     by DefaultMviDelegate(initialState = ComposerMvi.State()),
     ComposerMvi {
-    private var uploadJobs = mutableMapOf<String, Job>()
+    private val uploadJobs = mutableMapOf<String, Job>()
     private var editedPostId: String? = null
     private var draftId: String? = null
     private var mentionSuggestionJob: Job? = null

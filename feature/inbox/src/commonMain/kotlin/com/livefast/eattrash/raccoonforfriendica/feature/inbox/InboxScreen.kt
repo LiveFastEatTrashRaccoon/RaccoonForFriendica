@@ -328,7 +328,7 @@ fun InboxScreen(
         CustomConfirmDialog(
             title = LocalStrings.current.actionUnfollow,
             onClose = { confirm ->
-                val userId = confirmUnfollowDialogUserId ?: ""
+                val userId = confirmUnfollowDialogUserId.orEmpty()
                 confirmUnfollowDialogUserId = null
                 if (confirm && userId.isNotEmpty()) {
                     model.reduce(InboxMvi.Intent.Unfollow(userId))
@@ -341,7 +341,7 @@ fun InboxScreen(
         CustomConfirmDialog(
             title = LocalStrings.current.actionDeleteFollowRequest,
             onClose = { confirm ->
-                val userId = confirmUnfollowDialogUserId ?: ""
+                val userId = confirmUnfollowDialogUserId.orEmpty()
                 confirmDeleteFollowRequestDialogUserId = null
                 if (confirm && userId.isNotEmpty()) {
                     model.reduce(InboxMvi.Intent.Unfollow(userId))

@@ -97,7 +97,7 @@ class DefaultBBCodeConverter : BBCodeConverter {
                         "q" -> builder.append("[quote]")
 
                         "a" -> {
-                            val url = attributes["href"] ?: ""
+                            val url = attributes["href"].orEmpty()
                             builder.append("[url=$url]")
                         }
 

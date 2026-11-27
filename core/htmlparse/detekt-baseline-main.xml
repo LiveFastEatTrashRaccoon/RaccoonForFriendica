@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:ParseHtml.kt:fun String.parseHtml: AnnotatedString</ID>
+    <ID>LongMethod:ParseHtml.kt:fun String.parseHtml: AnnotatedString</ID>
+    <ID>UnusedParameter:ParseHtml.kt:hideInlineQuotes: Boolean = false</ID>
+  </CurrentIssues>
+</SmellBaseline>

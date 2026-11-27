@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>InjectDispatcher:CheckNotificationWorker.kt:CheckNotificationWorker$IO</ID>
+    <ID>PrintStackTrace:CheckNotificationWorker.kt:CheckNotificationWorker$e</ID>
+    <ID>TooGenericExceptionCaught:CheckNotificationWorker.kt:CheckNotificationWorker$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

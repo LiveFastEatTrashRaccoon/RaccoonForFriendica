@@ -74,7 +74,7 @@ class CirclesViewModel(
                 updateState { state ->
                     val circles = state.items.mapNotNull { (it as? CircleListItem.Circle)?.circle }
                     val newCircles = listOf(circle) + circles
-                    val groupedCircles = newCircles.groupBy { circle -> circle.type }
+                    val groupedCircles = newCircles.groupBy { c -> c.type }
                     state.copy(items = groupedCircles.toListItems())
                 }
             } else {
@@ -139,7 +139,7 @@ class CirclesViewModel(
                 updateState { state ->
                     val circles = state.items.mapNotNull { (it as? CircleListItem.Circle)?.circle }
                     val newCircles = circles.removeMatching { it.id == id }
-                    val groupedCircles = newCircles.groupBy { circle -> circle.type }
+                    val groupedCircles = newCircles.groupBy { c -> c.type }
                     state.copy(items = groupedCircles.toListItems())
                 }
             } else {

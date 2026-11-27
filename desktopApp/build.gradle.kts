@@ -5,6 +5,7 @@ plugins {
     id("com.livefast.eattrash.composeMultiplatform")
     id("com.livefast.eattrash.test")
     id("com.livefast.eattrash.spotless")
+    id("com.livefast.eattrash.detekt")
     alias(libs.plugins.compose.desktop.linux.deps)
     alias(libs.plugins.metro)
 }
@@ -25,7 +26,7 @@ compose.desktop {
     application {
         mainClass = "com.livefast.eattrash.raccoonforfriendica.Main"
         nativeDistributions {
-            javaHome = System.getenv("JAVA_HOME") ?: ""
+            javaHome = System.getenv("JAVA_HOME").orEmpty()
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Raccoon"
             packageVersion = (rootProject.findProperty("versionName") as? String)?.substringBefore("-") ?: "1.0.0"

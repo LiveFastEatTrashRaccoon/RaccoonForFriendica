@@ -618,13 +618,11 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                 top = stickyHeaderTopOffset,
                                 bottom = Spacing.s,
                             ),
-                        titles = titles.map { it.toReadableName() },
+                        titles = titles.map { t -> t.toReadableName() },
                         scrollable = true,
                         currentSection = titles.indexOf(uiState.section),
-                        onSelectSection = {
-                            model.reduce(
-                                UserDetailMvi.Intent.ChangeSection(titles[it]),
-                            )
+                        onSelectSection = { idx ->
+                            model.reduce(UserDetailMvi.Intent.ChangeSection(titles[idx]))
                         },
                     )
                 }
@@ -650,8 +648,8 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                         autoloadImages = uiState.autoloadImages,
                         maxBodyLines = uiState.maxBodyLines,
                         pollEnabled = isHomeInstance,
-                        onClick = { post ->
-                            model.reduce(UserDetailMvi.Intent.WillOpenDetail(post))
+                        onClick = { p ->
+                            model.reduce(UserDetailMvi.Intent.WillOpenDetail(p))
                         },
                         onOpenUrl = { url, allowOpenInternal ->
                             if (allowOpenInternal) {
@@ -673,46 +671,46 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                             )
                         },
                         onReblog =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             val timeSinceCreation =
-                                post.created?.run {
+                                p.created?.run {
                                     getDurationFromDateToNow(this)
                                 } ?: Duration.ZERO
                             when {
-                                !post.reblogged && timeSinceCreation.isOldPost ->
-                                    confirmReblogPost = post
+                                !p.reblogged && timeSinceCreation.isOldPost ->
+                                    confirmReblogPost = p
 
                                 else ->
                                     model.reduce(
-                                        UserDetailMvi.Intent.ToggleReblog(post),
+                                        UserDetailMvi.Intent.ToggleReblog(p),
                                     )
                             }
                         }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                         onBookmark =
-                        { post: PostModel ->
-                            model.reduce(UserDetailMvi.Intent.ToggleBookmark(post))
+                        { p: PostModel ->
+                            model.reduce(UserDetailMvi.Intent.ToggleBookmark(p))
                         }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                         onFavorite =
-                        { post: PostModel ->
-                            model.reduce(UserDetailMvi.Intent.ToggleFavorite(post))
+                        { p: PostModel ->
+                            model.reduce(UserDetailMvi.Intent.ToggleFavorite(p))
                         }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                         onDislike =
-                        { post: PostModel ->
-                            model.reduce(UserDetailMvi.Intent.ToggleDislike(post))
+                        { p: PostModel ->
+                            model.reduce(UserDetailMvi.Intent.ToggleDislike(p))
                         }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
                         onReply =
-                        { post: PostModel ->
+                        { p: PostModel ->
                             mainRouter.openComposer(
-                                inReplyTo = post,
-                                inReplyToUser = post.creator,
+                                inReplyTo = p,
+                                inReplyToUser = p.creator,
                             )
                         }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                         onPollVote =
                         uiState.currentUserId?.let {
-                            { post, choices ->
+                            { p, choices ->
                                 model.reduce(
                                     UserDetailMvi.Intent.SubmitPollVote(
-                                        post = post,
+                                        post = p,
                                         choices = choices,
                                     ),
                                 )
@@ -723,8 +721,8 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
                                 UserDetailMvi.Intent.ToggleTranslation(post.original),
                             )
                         },
-                        onOpenQuote = { post ->
-                            mainRouter.openPostDetail(post)
+                        onOpenQuote = { p ->
+                            mainRouter.openPostDetail(p)
                         },
                         options =
                         buildList {
@@ -929,7 +927,7 @@ fun UserDetailScreen(id: String, modifier: Modifier = Modifier, otherInstance: S
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = uiState.user?.handle ?: ""
+                val handle = uiState.user?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }

@@ -295,12 +295,12 @@ fun ThreadScreen(
                     state = lazyListState,
                 ) {
                     // original post
-                    mainPost?.also { post ->
+                    mainPost?.also { mp ->
                         item {
                             @Composable
                             fun MainPostContent() {
                                 TimelineItem(
-                                    post = post,
+                                    post = mp,
                                     layout = TimelineLayout.Full,
                                     reshareAndReplyVisible = false,
                                     followedHashtagsVisible = false,
@@ -326,37 +326,37 @@ fun ThreadScreen(
                                         )
                                     },
                                     onBookmark =
-                                    { post: PostModel ->
-                                        model.reduce(ThreadMvi.Intent.ToggleBookmark(post))
-                                    }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
+                                    { p: PostModel ->
+                                        model.reduce(ThreadMvi.Intent.ToggleBookmark(p))
+                                    }.takeIf { mp.original.actionPermissions.canBookmark && isHomeInstance },
                                     onFavorite =
-                                    { post: PostModel ->
-                                        model.reduce(ThreadMvi.Intent.ToggleFavorite(post))
-                                    }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
+                                    { p: PostModel ->
+                                        model.reduce(ThreadMvi.Intent.ToggleFavorite(p))
+                                    }.takeIf { mp.original.actionPermissions.canFavorite && isHomeInstance },
                                     onDislike =
-                                    { post: PostModel ->
-                                        model.reduce(ThreadMvi.Intent.ToggleDislike(post))
-                                    }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
-                                    onOpenUsersFavorite = { post ->
+                                    { p: PostModel ->
+                                        model.reduce(ThreadMvi.Intent.ToggleDislike(p))
+                                    }.takeIf { mp.original.actionPermissions.canDislike && isHomeInstance },
+                                    onOpenUsersFavorite = { p ->
                                         mainRouter.openPostUsersFavorite(
-                                            postId = post.id,
-                                            count = post.favoriteCount,
+                                            postId = p.id,
+                                            count = p.favoriteCount,
                                             otherInstance = otherInstance,
                                         )
                                     },
-                                    onOpenUsersReblog = { post ->
+                                    onOpenUsersReblog = { p ->
                                         mainRouter.openPostUsersReblog(
-                                            postId = post.id,
-                                            count = post.reblogCount,
+                                            postId = p.id,
+                                            count = p.reblogCount,
                                             otherInstance = otherInstance,
                                         )
                                     },
                                     onPollVote =
                                     uiState.currentUserId?.let {
-                                        { post, choices ->
+                                        { p, choices ->
                                             model.reduce(
                                                 ThreadMvi.Intent.SubmitPollVote(
-                                                    post = post,
+                                                    post = p,
                                                     choices = choices,
                                                 ),
                                             )
@@ -364,25 +364,25 @@ fun ThreadScreen(
                                     },
                                     onShowOriginal = {
                                         model.reduce(
-                                            ThreadMvi.Intent.ToggleTranslation(post.original),
+                                            ThreadMvi.Intent.ToggleTranslation(mp.original),
                                         )
                                     },
 
                                     options =
                                     buildList {
-                                        if (post.original.actionPermissions.canShare) {
+                                        if (mp.original.actionPermissions.canShare) {
                                             this += OptionId.Share.toOption()
                                             this += OptionId.CopyUrl.toOption()
                                         }
-                                        if (post.original.actionPermissions.canQuote) {
+                                        if (mp.original.actionPermissions.canQuote) {
                                             this += OptionId.Quote.toOption()
                                         }
                                         this += OptionId.ViewDetails.toOption()
                                         this += OptionId.CopyToClipboard.toOption()
                                         val currentLang = uiState.lang.orEmpty()
                                         if (currentLang.isNotEmpty() &&
-                                            post.lang != currentLang &&
-                                            !post.isShowingTranslation
+                                            mp.lang != currentLang &&
+                                            !mp.isShowingTranslation
                                         ) {
                                             this +=
                                                 Option(
@@ -400,7 +400,7 @@ fun ThreadScreen(
                                                     },
                                                 )
                                         }
-                                        val nodeName = post.nodeName
+                                        val nodeName = mp.nodeName
                                         if (nodeName.isNotEmpty() && nodeName != uiState.currentNode) {
                                             this +=
                                                 OptionId.AddShortcut.toOption(
@@ -412,12 +412,12 @@ fun ThreadScreen(
                                     onSelectOption = { optionId ->
                                         when (optionId) {
                                             OptionId.Share -> {
-                                                val urlString = post.url.orEmpty()
+                                                val urlString = mp.url.orEmpty()
                                                 shareHelper.share(urlString)
                                             }
 
                                             OptionId.CopyUrl -> {
-                                                val urlString = post.url.orEmpty()
+                                                val urlString = mp.url.orEmpty()
                                                 scope.launch {
                                                     clipboardHelper.setText(urlString)
                                                     snackbarHostState.showSnackbar(copyToClipboardSuccess)
@@ -426,10 +426,10 @@ fun ThreadScreen(
 
                                             OptionId.ViewDetails ->
                                                 seeDetailsPost =
-                                                    post.original
+                                                    mp.original
 
                                             OptionId.Quote -> {
-                                                post.original.also { toShare ->
+                                                mp.original.also { toShare ->
                                                     mainRouter.openComposer(
                                                         quoted = toShare,
                                                         urlToShare = toShare.url,
@@ -438,23 +438,23 @@ fun ThreadScreen(
                                             }
 
                                             OptionId.CopyToClipboard ->
-                                                post.original.also { post ->
-                                                    model.reduce(ThreadMvi.Intent.CopyToClipboard(post))
+                                                mp.original.also { p ->
+                                                    model.reduce(ThreadMvi.Intent.CopyToClipboard(p))
                                                 }
 
                                             OptionId.Translate ->
-                                                post.original.also { post ->
-                                                    model.reduce(ThreadMvi.Intent.ToggleTranslation(post))
+                                                mp.original.also { p ->
+                                                    model.reduce(ThreadMvi.Intent.ToggleTranslation(p))
                                                 }
 
                                             OptionId.AddShortcut ->
                                                 model.reduce(
-                                                    ThreadMvi.Intent.AddInstanceShortcut(post.nodeName),
+                                                    ThreadMvi.Intent.AddInstanceShortcut(mp.nodeName),
                                                 )
 
                                             OptionId.OpenInBrowser ->
                                                 model.reduce(
-                                                    ThreadMvi.Intent.OpenInBrowser(post),
+                                                    ThreadMvi.Intent.OpenInBrowser(mp),
                                                 )
 
                                             else -> Unit
@@ -512,38 +512,38 @@ fun ThreadScreen(
                                 )
                             },
                             onReblog =
-                            { post: PostModel ->
+                            { p: PostModel ->
                                 val timeSinceCreation =
-                                    post.created?.run {
+                                    p.created?.run {
                                         getDurationFromDateToNow(this)
                                     } ?: Duration.ZERO
                                 when {
-                                    !post.reblogged && timeSinceCreation.isOldPost ->
-                                        confirmReblogPost = post
+                                    !p.reblogged && timeSinceCreation.isOldPost ->
+                                        confirmReblogPost = p
 
                                     else ->
                                         model.reduce(
-                                            ThreadMvi.Intent.ToggleReblog(post),
+                                            ThreadMvi.Intent.ToggleReblog(p),
                                         )
                                 }
                             }.takeIf { post.original.actionPermissions.canReblog && isHomeInstance },
                             onBookmark =
-                            { post: PostModel ->
-                                model.reduce(ThreadMvi.Intent.ToggleBookmark(post))
+                            { p: PostModel ->
+                                model.reduce(ThreadMvi.Intent.ToggleBookmark(p))
                             }.takeIf { post.original.actionPermissions.canBookmark && isHomeInstance },
                             onFavorite =
-                            { post: PostModel ->
-                                model.reduce(ThreadMvi.Intent.ToggleFavorite(post))
+                            { p: PostModel ->
+                                model.reduce(ThreadMvi.Intent.ToggleFavorite(p))
                             }.takeIf { post.original.actionPermissions.canFavorite && isHomeInstance },
                             onDislike =
-                            { post: PostModel ->
-                                model.reduce(ThreadMvi.Intent.ToggleDislike(post))
+                            { p: PostModel ->
+                                model.reduce(ThreadMvi.Intent.ToggleDislike(p))
                             }.takeIf { post.original.actionPermissions.canDislike && isHomeInstance },
                             onReply =
-                            { post: PostModel ->
+                            { p: PostModel ->
                                 mainRouter.openComposer(
-                                    inReplyTo = post,
-                                    inReplyToUser = post.creator,
+                                    inReplyTo = p,
+                                    inReplyToUser = p.creator,
                                 )
                             }.takeIf { post.original.actionPermissions.canReply && isHomeInstance },
                             onShowOriginal = {
@@ -551,8 +551,8 @@ fun ThreadScreen(
                                     ThreadMvi.Intent.ToggleTranslation(post.original),
                                 )
                             },
-                            onOpenQuote = { post ->
-                                mainRouter.openPostDetail(post)
+                            onOpenQuote = { p ->
+                                mainRouter.openPostDetail(p)
                             },
                             options =
                             buildList {
@@ -786,7 +786,7 @@ fun ThreadScreen(
             title =
             buildString {
                 append(LocalStrings.current.actionBlock)
-                val handle = creator?.handle ?: ""
+                val handle = creator?.handle.orEmpty()
                 if (handle.isNotEmpty()) {
                     append(" @$handle")
                 }

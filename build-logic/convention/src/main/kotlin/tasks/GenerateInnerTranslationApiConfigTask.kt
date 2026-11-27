@@ -28,13 +28,13 @@ open class GenerateInnerTranslationApiConfigTask : DefaultTask() {
                         .addProperty(
                             PropertySpec
                                 .builder(name = "TRANSLATION_API_URL", type = String::class)
-                                .initializer(format = "%S", props.getProperty("translation.api.url") ?: "")
+                                .initializer(format = "%S", props.getProperty("translation.api.url").orEmpty())
                                 .build(),
                         )
                         .addProperty(
                             PropertySpec
                                 .builder(name = "TRANSLATION_API_KEY", type = String::class)
-                                .initializer(format = "%S", props.getProperty("translation.api.key") ?: "")
+                                .initializer(format = "%S", props.getProperty("translation.api.key").orEmpty())
                                 .build(),
                         )
                         .build(),

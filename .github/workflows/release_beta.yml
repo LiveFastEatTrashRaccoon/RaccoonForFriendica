@@ -32,6 +32,9 @@ jobs:
       - name: Spotless check
         run: ./gradlew spotlessCheck
 
+      - name: Detekt check
+        run: ./gradlew detekt
+
       - name: Create Sentry config file
         env:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}

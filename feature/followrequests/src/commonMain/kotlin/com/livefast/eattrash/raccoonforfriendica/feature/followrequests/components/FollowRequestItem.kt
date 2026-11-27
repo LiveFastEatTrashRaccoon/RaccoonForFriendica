@@ -85,7 +85,7 @@ fun FollowRequestItem(
                 modifier = Modifier.weight(1f),
             ) {
                 TextWithCustomEmojis(
-                    text = user.displayName ?: user.username ?: "",
+                    text = (user.displayName ?: user.username).orEmpty(),
                     emojis = user.emojis,
                     style = MaterialTheme.typography.titleMedium,
                     color = fullColor,
@@ -94,7 +94,7 @@ fun FollowRequestItem(
                     autoloadImages = autoloadImages,
                 )
                 Text(
-                    text = user.handle ?: user.username ?: "",
+                    text = (user.handle ?: user.username).orEmpty(),
                     style = MaterialTheme.typography.titleMedium,
                     color = ancillaryColor,
                     maxLines = 1,
